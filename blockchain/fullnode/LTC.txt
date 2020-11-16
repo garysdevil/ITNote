@@ -1,0 +1,2 @@
+ curl http://${IP}:3007/insight-lite-api/blocks?limit=1 | grep height
+

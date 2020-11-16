@@ -1,0 +1,38 @@
+﻿
+官网：
+    https://www.tensorflow.org/install
+    tensorflow2.0英文教程  https://tensorflow.google.cn/guide/effective_tf2
+    tensorflow2.0中文教程 http://www.mashangxue123.com/tensorflow/tf2-guide-effective_tf2.html
+
+一：基于pip安装tensorflow（cpu版）：
+        pip install --upgrade pip
+        pip install tensorflow
+    安装中遇到的错误
+        ERROR: Cannot uninstall 'wrapt'. It is a distutils installed project and thus we cannot accurately determine which files belong to it which would lead to only a partial uninstall.
+    解决办法
+        pip install -U --ignore-installed wrapt enum34 simplejson netaddr
+
+二：基于anaconda安装tensorflow
+    搜索版本
+        anaconda search -t conda tensorflow
+    我选择了一个2.0.0版本源，输入如下命令查询安装命令
+        anaconda show chuanqiw/tensorflow
+    安装tensorflow
+        conda install --channel https://conda.anaconda.org/chuanqiw tensorflow
+
+三：tensorflow基本操作：
+    1、 输入python 回车进入python环境中
+    2、 导入tensorflow
+        import tensorflow as tf
+    3、 查看位置和版本号
+        tf.__path__
+    4、 查看版本号
+        tf.__version__
+四：查看python版本
+    import sys 
+    sys.version
+五：Jupyter
+https://www.jianshu.com/p/c71325fc4239
+
+!jupyter kernelspec list
+

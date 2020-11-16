@@ -1,0 +1,8 @@
+rpc：8332
+
+指令
+./omnicore-cli -conf=/home/usdt/cfg/bitcoin-live.conf "omni_getbalance" "1EfGpn8GcMJR6wBMyUkCfAyYLncqCigwqZ" 31
+
+
+--user omnicorerpc
+curl  --data-binary '{"jsonrpc": "2.0", "id":"curltest", "method": "getinfo", "params": [] }' -H 'content-type: application/json; ' http://127.0.0.1:8332/

@@ -1,0 +1,11 @@
+version: '3'
+services:
+  zabbix-agent:
+    image: zabbix/zabbix-agent
+    container_name: zabbix-server-agent
+    network_mode: host
+    environment:
+      ZBX_HOSTNAME: zabbix server
+      ZBX_SERVER_HOST: 127.0.0.1
+    ports:
+      - '10050:10050'

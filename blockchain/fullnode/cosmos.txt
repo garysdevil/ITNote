@@ -1,0 +1,48 @@
+1. 安装Go环境
+
+2. 编译安装
+git clone -b <latest-release-tag> https://github.com/cosmos/gaia
+cd gaia && make install
+
+3. 验证
+gaiad version --long
+gaiacli version --long
+
+4.加入主网
+
+5.启动
+gaiacli  start
+
+查看块高
+gaiacli status | grep latest_block_height
+
+代币：Atom
+
+默认端口：
+RPC: 1317
+P2P: 26656
+
+
+
+
+
+cosmos链
+https://github.com/cosmos/cosmos-sdk
+https://cosmos.network/docs/cosmos-hub
+
+
+systemctl start cosmos
+systemctl start cosmos-rest
+查块高 curl http://127.0.0.1:1317/blocks/latest
+
+更新升级:
+1 确认存在go环境
+2 cd $GOPATH/src/github.com/cosmos/cosmos-sdk
+3 git pull
+4 git checkout ${tag}
+5 systemctl stop cosmos
+6 systemctl stop cosmos-rest 
+7 make tools install
+查看是否更新成功
+gaiad version --long
+gaiacli version --long

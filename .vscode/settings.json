@@ -1,0 +1,7 @@
+{
+    "some_setting": custom_value,
+    "files.associations": {
+          "*.mak": "makefile",
+          "Dockerfile*": "dockerfile",
+      }
+  }

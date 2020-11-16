@@ -1,0 +1,18 @@
+
+
+进程名witness
+自己服务化cyb进程
+
+
+普通升级：更换二进制
+
+生产环境配置文件：/data/data-dir/config.ini
+
+
+区块链游览器
+https://stats.chainx.org/#list/ChainX
+
+默认端口
+rpc: 8086
+ws: 8087
+p2p: 20222

@@ -1,0 +1,8 @@
+scrape_configs:
+  - job_name: minio
+    metrics_path: /minio/prometheus/metrics
+    static_configs:
+      - targets: ['10.10.10.10:9000']
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['10.10.10.11:9100']

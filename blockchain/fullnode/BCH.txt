@@ -1,0 +1,6 @@
+默认端口
+rpc: 3000
+p2p: 8332
+
+RPC
+curl http://bch-i.hub.garys.top:3000/api/BCH/mainnet/block/tip

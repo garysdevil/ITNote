@@ -1,0 +1,20 @@
+# https://hub.docker.com/r/sonatype/nexus3
+# A persistent directory, /nexus-data, 
+# is used for configuration, logs, and storage. 
+# This directory needs to be writable by the Nexus process, which runs as UID 200.
+version: "3"
+services:
+  nexus3:
+    image: sonatype/nexus3:3.18.0 
+    container_name: nexus3
+    # network_mode: "host"
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./nexus-data:/nexus-data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1024k"
+        max-file: "20"
+    restart: always
