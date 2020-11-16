@@ -1,4 +1,10 @@
- 1. http 通过traefik连接 dashboard
+ ## 安装
+ 1. 在k8s集群内通过yaml安装traefik v2.3
+ https://doc.traefik.io/traefik/user-guides/crd-acme/
+
+ ## 需求与解决方案
+
+ 1. http 通过traefik连接 k8s dashboard 需要设置的参数
   ```yaml
     spec:
       containers:
@@ -9,7 +15,7 @@
 
 2. 通过设置sticky session保持每次会话只访问一个Pod
 
-ingressroute
+ingressroute.yaml
 ```yaml
     - name: AAA
       port: 80
