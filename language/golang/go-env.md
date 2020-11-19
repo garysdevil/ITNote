@@ -1,4 +1,4 @@
-## 安装
+## Go安装
 - https://golang.org/dl
 - https://golang.google.cn/dl/
 
@@ -23,7 +23,7 @@ source /etc/profile/golang
 默认安装目录 C:\Go
 默认go path目录 C:\Users\Administrator\go
 
-### 基于vscode的开发
+### 基于vscode的开发环境
 - https://blog.csdn.net/snans/article/details/106939925
 1. 安装插件Go
 ctrl+shift+x 打开插件扩展列表
@@ -31,10 +31,14 @@ ctrl+shift+x 打开插件扩展列表
 
 2. 配置代理
 - https://goproxy.io/zh/docs/getting-started.html
-    1. windows环境变量 GOPROXY=https://goproxy.io”
+    1. windows环境变量 GOPROXY=https://goproxy.io
 
 3. 下载go tools
 ctrl+shift+p 打开命令面板
 搜索 Go:install/update Tools, 点击全选ok
 
 4. 重启vscode
+
+## Go开发规范
+1. 代码质量检查
+ golint .\main.go

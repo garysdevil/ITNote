@@ -12,31 +12,48 @@
 声明与初始化：var balance = [5]float32{1000.0, 2.0, 3.4, 7.0, 50.0}
 
 3. 切片：动态数组
-声明与初始化切片：var identifier []type = make([]T, length, capacity)
-len() 获取长度
-cap() 获取最长可达
-当追加值时，容量不够，则容量进行翻倍。
-
+```go
+// 声明与初始化切片
+var identifier []type = make([]type, length, capacity)
+// 获取长度
+len() 
+// 获取最长可达
+cap()
+// 追加值，当容量不够时，则容量进行翻倍。
+append(切片, 元素)
+```
 4. Map集合
 ```go
 /* 声明变量，默认 map = nil */
 var map_variable map[key_data_type]value_data_type
 /* 使用 make 函数 */
 map_variable := make(map[key_data_type]value_data_type)
-例如
+
+// 例如
 ab := map[string]string{"a":"a1","b":"b1"}
 ab["c"] = "c1"
 
-根据键删除某个值 delete(map_variable,key)
+// 根据键删除某个值 
+delete(map_variable,key)
+```
 
 5. 结构体
 ```go
-type struct_variable_type struct {
-   member definition;
+type Struct_variable_type struct {
+   Member definition;
    ...
-   member definition;
+   Member definition;
+}
+
+structName := new(Struct_variable_type)
+structName := &Struct_variable_type{}
+structName := &struct_variable_type{value1, value2}
+structName := &struct_variable_type{
+   key1 : value1,
+   key2 : value2,
 }
 ```
+
 
 6. 接口
 ```go
@@ -80,6 +97,7 @@ func swap(x, y string) (string, string) {
 
 5. 循环 只有for循坏：break，continue，goto
     - for 循环不需要()
+    - for i := 0; i <= 10; i++{}
     - for k, v := range kvs 循环数组、切片、map，返回元素的索引和索引对应的值。 
 
 6. Go 并发，通过go关键字开启一个 goroutine 协程

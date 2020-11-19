@@ -35,3 +35,8 @@ pipreqs ./
 3. 新环境下安装依赖包的模块
 
 pip install -r requirements.txt
+
+
+## 常用的内置包
+1. json格式化
+echo "{"name": "lucy", "age": "18"}" | python -m json.tool

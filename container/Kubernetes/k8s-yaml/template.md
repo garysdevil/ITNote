@@ -41,7 +41,7 @@ metadata:
   annotations:
       service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
       service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "120"
-    #  service.beta.kubernetes.io/aws-load-balancer-extra-security-groups: security-group-name # 安全组
+    #  service.beta.kubernetes.io/aws-load-balancer-extra-security-groups: security-group-ID # 安全组
     #  service.beta.kubernetes.io/aws-load-balancer-ssl-cert:  arn:aws:acm:eu-central-1:some-account-id:certificate/some-cert-id
     #  service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https-port"
 

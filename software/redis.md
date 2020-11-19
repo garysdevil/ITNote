@@ -1,12 +1,12 @@
 
-参考链接
+- 参考链接
 https://www.jianshu.com/p/6c08d575025d
 https://www.cnblogs.com/gnuhpc/p/4609592.html
 https://www.cnblogs.com/yiwangzhibujian/p/7067575.html
-- http://redisdoc.com/topic/cluster-tutorial.html
-#### 常识
+http://redisdoc.com/topic/cluster-tutorial.html
+## 常识
 1. 基于单机默认有16个库，集群没有数据库的概览。
-#### 数据类型
+### 数据类型
 1. 字符串   
     1. SET keyname value
     2. get keyname
@@ -21,7 +21,7 @@ https://www.cnblogs.com/yiwangzhibujian/p/7067575.html
     2. 查看集合里所有的元素 SMEMBERS key
     3. 查看这个元素是否在集合里 SISMEMBER key value1
 5. 有序集合
-#### 运维操作
+## 运维操作
 1. 连接redis 默认端口6379
 redis-cli -h IP -p PORT -a PASS -c
 参数 -c 表示进入集群模式
@@ -50,30 +50,30 @@ info
 
 8. 临时修改密码
 config set requirepass 123456
-##### 慢日志
+### 慢日志
+
 1. 动态配置慢日志
     - 设置保存慢日志的数量
     config set slowlog-max-len 10
     config get slowlog-max-len
 
     - 执行时间超过多少微秒的请求会被记录到慢日志（1秒等于1 000 000微秒)
-    config set slowlog-log-slower-than 500
+    config set slowlog-log-slower-than 10000
     config get slowlog-log-slower-than 
 2. 操作
-    slowlog len
-
-    slowlog get
+    获取慢日志的数量 slowlog len
+    获取所有的慢日志 slowlog get
 
 3. 结果显示
-1) 1) (integer) 0 //日志唯一标示
-   2) (integer) 1517305551 // 命令执行的UNIX时间戳
-   3) (integer) 8248 // 命令执行的时间（微秒）
-   4) 1) "config" // 执行的命令及参数
-      2) "set"
-      3) "slowlog-log-slower-than"
-      4) "0"
+```conf
+1) 1) (integer) 0 # 日志唯一标识符
+   2) (integer) 1517305551 # 命令执行的UNIX时间戳
+   3) (integer) 8248 # 命令执行的时间（微秒）
+   4) 1) "keys" # 执行的命令及参数
+      2) "*"
 
-#### 常规操作
+```
+### 常规操作
 1. 列出当前db有效的key 
     keys *
 
@@ -82,7 +82,7 @@ config set requirepass 123456
 
 3. 查看数据库类型
     TYPE key名字
-#### 配置
+## 配置文件
 ```conf
 #后勤配置
 
@@ -237,11 +237,6 @@ hz 10 ##设置reids后台任务执行频率，如清除过期键任务等，建�
 #latency monitor
 
 latency-monitor-threshold 0 ##用LATENCY打印redis实例跑命令时的耗时图标，监视频率，0为不监控
-
-
-
-
-
 
 
 #systcl.conf

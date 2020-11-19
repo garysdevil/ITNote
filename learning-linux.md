@@ -189,3 +189,31 @@ Genmask: 目标网络。其中’255.255.255’用于指示单一目标主机；
 
 
  ps -eo pid,lstart,etime,cmd |grep nginx
+
+
+
+
+lld 
+作用：用来查看程式运行所需的共享库,常用来解决程式因缺少某个库文件而不能运行的一些问题。
+
+lld 文件名
+-v
+第一列：程序需要依赖什么库 
+第二列: 系统提供的与程序需要的库所对应的库 
+第三列：库加载的开始地址
+
+
+lib 包含目标文件(object files)与库。
+lib32 表示32位，32位的目标文件和库。
+lib64 表示32位，64位的目标文件和库。
+libexec 包含不由用户和shell script直接执行的二进制文件。
+
+
+参考
+https://medium.com/fcamels-notes/%E8%A7%A3%E6%B1%BA-linux-%E4%B8%8A-c-c-%E7%9A%84-undefined-symbol-%E6%88%96-undefined-reference-a80ee8f85425
+使用 C/C++ 程式分成三個步驟: 編譯 (compile) → 連結 (link) → 執行 (載入 symbol)
+
+配置动态链接库的搜索路径 /etc/ld.so.conf
+重新刷新动态链接库的搜索路径 /sbin/ldconfig
+
+动态库以.so为扩展名，静态库以.a为扩展名
