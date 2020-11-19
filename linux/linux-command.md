@@ -11,7 +11,7 @@ sed -i 's/SELINUXTYPE=targeted/#&/' /etc/selinux/config
 setenforce 0
 ```
 
-# Unix命令行程序和内建指令(更多)
+# Unix命令行程序和内建指令
 文件系统	
 ▪ cat	▪ cd	▪ chmod	▪ chown
 ▪ chgrp	▪ cksum	▪ cmp	▪ cp

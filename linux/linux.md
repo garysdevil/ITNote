@@ -28,7 +28,11 @@ https://c.isme.pub/2019/02/18/linux-proc/
     15. inired:临时目录，初始化引导时候用
     16. proc: 虚拟文件系统。该目录中的数据并不保存在硬盘上，而是保存到内存中。主要保存系统的内核、进程、外部设备状态和网络状态等
     17. sys: 虚拟文件系统。和 /proc/ 目录相似，该目录中的数据都保存在内存中，主要保存与内核相关的信息。
-
+## 各个系统版本
+- 都是基于Linux Kernel开发而成
+- 主要差异
+    1. UI
+    2. 软件源
 ## /proc
 ### 概要
 1. /proc 是Linux 虚拟文件系统文件夹；是Linux内核信息的抽象文件接口；内核运行时参数保存在/proc里面。
@@ -52,10 +56,3 @@ https://c.isme.pub/2019/02/18/linux-proc/
     /proc下一些并非以数字命名的特殊目录
     1. 内核参数 etc
 
-## 内核参数
-/etc/sysctl.conf
-```bash
-sysctl  -a  # 显示当前所有可用的内核参数
-sysctl  kernel.hostname  # 读特定的内核参数，比如kernel.hostname
-sysctl  -p  # 从配置文件sysctl.conf中加载内核参数
-```

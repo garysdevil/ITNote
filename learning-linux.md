@@ -174,46 +174,4 @@ _PID=1 查看指定进程的日志
     6: info
     7: debug
 
-配置临时网卡
-ifconfig eth0:0 192.168.6.100 netmask 255.255.255.0 up
-ifconfg eth0:0 down
-
-# route
-https://ivanzz1001.github.io/records/post/linuxops/2018/11/14/linux-route
-Linux系统的route命令用于显示和操作IP路由表（show/manipulate the IP routing table)。要实现两个不同的子网之间的通信，需要一台连接两个网络的路由器，或者同时位于两个网络的网关来实现。
-在Linux系统中，设置路由通常是为了解决以下问题：该Linux系统在一个局域网中，局域网中有一个网关，能够让机器访问internet，那么就需要将网关地址设置为该Linux机器的默认路由。
-
-Destination: 目标网络(network)或者目标主机(host)
-Gateway: 网关地址，*表示并未设置网关地址；
-Genmask: 目标网络。其中’255.255.255’用于指示单一目标主机；’0.0.0.0’用于指示默认路由，表示所有地址通过对应的网关进行转发
-
-
- ps -eo pid,lstart,etime,cmd |grep nginx
-
-
-
-
-lld 
-作用：用来查看程式运行所需的共享库,常用来解决程式因缺少某个库文件而不能运行的一些问题。
-
-lld 文件名
--v
-第一列：程序需要依赖什么库 
-第二列: 系统提供的与程序需要的库所对应的库 
-第三列：库加载的开始地址
-
-
-lib 包含目标文件(object files)与库。
-lib32 表示32位，32位的目标文件和库。
-lib64 表示32位，64位的目标文件和库。
-libexec 包含不由用户和shell script直接执行的二进制文件。
-
-
-参考
-https://medium.com/fcamels-notes/%E8%A7%A3%E6%B1%BA-linux-%E4%B8%8A-c-c-%E7%9A%84-undefined-symbol-%E6%88%96-undefined-reference-a80ee8f85425
-使用 C/C++ 程式分成三個步驟: 編譯 (compile) → 連結 (link) → 執行 (載入 symbol)
-
-配置动态链接库的搜索路径 /etc/ld.so.conf
-重新刷新动态链接库的搜索路径 /sbin/ldconfig
-
-动态库以.so为扩展名，静态库以.a为扩展名
+ps -eo pid,lstart,etime,cmd |grep nginx
