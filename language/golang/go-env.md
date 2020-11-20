@@ -6,17 +6,17 @@
 ### linux安装
 ```bash
 cd /opt
-curl -O https://dl.google.com/go/go1.12.7.linux-amd64.tar.gz 
+wget https://golang.org/dl/go1.15.5.linux-amd64.tar.gz
 
-tar -zvxf go1.12.7.linux-amd64.tar.gz
+tar -C /usr/local -xzf go1.15.5.linux-amd64.tar.gz
 # linux环境变量
-vi /etc/profile.d/golang
-export GOROOT=/opt/go # go文件夹。    /opt/go/bin  go命令所在的bin目录
-export GOPATH=/opt/go/space  # 存放第三方依赖的源码文件夹。   /opt/go/space/bin 编译后二进制文件的存放目的地和import包的搜索路径（默认为当前目录下）。
+vi /etc/profile.d/golang.sh
+export GOROOT=/opt/go/bin # go命令所在的bin目录
+export GOPATH=/opt/go/space  # 存放第三方依赖的源码文件夹。 编译后二进制文件的存放目的地和import包的搜索路径（默认为当前目录下）。
 
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+export PATH=$PATH:$GOROOT:$GOPATH
 
-source /etc/profile/golang
+source /etc/profile
 ```
 
 ### windows安装
