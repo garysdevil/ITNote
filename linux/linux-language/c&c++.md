@@ -2,8 +2,8 @@
 gcc *.c 默认生成a.out可执行文件
 -o 自定义生成的可执行文件名
 -c 进行编译和汇编但不链接
-
--O 进行优化 
+-static 静态编译
+-O 快速编译
 -Wall 编译时输出更多的信息
 
 ## make
@@ -27,7 +27,19 @@ make clean
 2. 动态编译：将函数库的指针编译进可执行的文件里。
 
 3. 动态库以.so为扩展名；静态库以.a为扩展名。
-### 文件
+
+### Linux可执行文件（ELF文件）
+ELF = Executable and Linkable Format
+- 组成
+    1. 程序头：描述段信息
+    2. Section头：链接与重定位需要的数据
+    3. 程序头与Section头需要的数据.text .data
+1. 查看ELF文件的具体信息
+readelf -a ${file}
+
+
+
+### 相关文件与指令
 1. /etc/ld.so.conf 文件
 文件记录编译时使用的动态链接库的搜索路径，默认情况下编译器只会使用/lib和/usr/lib两个目录下的库文件。
 

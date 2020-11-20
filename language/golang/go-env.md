@@ -38,7 +38,3 @@ ctrl+shift+p 打开命令面板
 搜索 Go:install/update Tools, 点击全选ok
 
 4. 重启vscode
-
-## Go开发规范
-1. 代码质量检查
- golint .\main.go

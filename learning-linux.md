@@ -174,4 +174,5 @@ _PID=1 查看指定进程的日志
     6: info
     7: debug
 
+
 ps -eo pid,lstart,etime,cmd |grep nginx
