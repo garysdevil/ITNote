@@ -99,12 +99,25 @@ chmod +x /usr/local/bin/docker-compose
 docker stats --no-stream
 ### Dockerfile
 1. 从编译阶段的中拷贝编译结果到当前镜像中
+```dockerfile
 COPY --from=builder /build/server /
+```
 2. 直接从一个已经存在的镜像中拷贝
+```dockerfile
 COPY --from=quay.io/coreos/etcd:v3.3.9 /usr/local/bin/etcd /usr/local/bin/
-
+```
 3. Run
 docker run -d -e SW_OAP_ADDRESS=127.0.0.1:11800 -p 9000:9000 -v /etc/nginx/html:/var/www/html skyapm/skywalking-php
 -e 参数
 -p 主机端口:容器端口
 -d 主机路径:容器路径
+
+## 镜像
+### 微型镜像alpine
+- https://alpinelinux.org/
+
+1. Alpine Linux Docker 镜像基于 Alpine Linux 操作系统，后者是一个面向安全的轻型 Linux 发行版。
+2. Alpine Linux 采用了 musl libc 和 busybox 以减小系统的体积和运行时资源消耗。在保持瘦身的同时，Alpine Linux 提供了自己的包管理工具 apk。
+```Dockerfile
+FROM alpine:3.12
+```

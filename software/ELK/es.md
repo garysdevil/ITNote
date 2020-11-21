@@ -3,6 +3,14 @@
 https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-index_.html
 
 https://www.cnblogs.com/wyq178/p/11968529.html
+## 安装
+- 参考
+https://www.elastic.co/cn/downloads/past-releases#elasticsearch
+
+
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.0-linux-x86_64.tar.gz
+启动
+curl http://localhost:9200/
 
 ### 术语
 1. Index 类似于数据库的概念。索引的名字只能是小写,不能是大写。
