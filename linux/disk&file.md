@@ -1,5 +1,6 @@
 [TOC]
-## 非关机状态下扩容
+# Disk
+## 非关机状态下扩容磁盘
 - 添加新硬盘进行扩容，重新扫描SCSI总线来添加设备 
 	echo "- - -" >  /sys/class/scsi_host/host最大的序号/scan
 - 在原有硬盘上进行扩容 
@@ -100,3 +101,20 @@ fdisk /dev/sdb < fdisk.txt
 	vgremove vg_data
 3. 删除物理卷：pvremove 物理卷地址
 	pvremove /dev/sdc 
+
+# File
+1. 硬盘的最小存储单位: 扇区-Sector, 每个扇区储存512字节-相当于0.5KB.
+2. 文件存取的最小单位: 块-block, 操作系统读取硬盘的时候, 不会一个个扇区的读取,这样效率太低,而是一次性连续读取多个扇区, 即一次性读取一个 块-block。 块的大小, 最常见的是4KB, 即连续八个sector组成一个block.
+3. 文件存储在块中。
+4. 文件元信息存储在inode中。
+5. 每一个文件都有对应的inode。
+6. Unix/Linux系统内部不使用文件名，而使用inode号码来识别文件。
+7. 查看文件的inode信息 stat ${file}
+    1. Links 链接数，即有多少文件名指向这个inode
+8. ln
+	1. 硬链接,这两个文件将指向同一个inode 
+		- ln oldFile newFile  
+	2. 软链接,文件newFile将指向文件oldFile的名称  
+		- ln -s oldFile newFile  
+		- cp oldFile newFile
+		

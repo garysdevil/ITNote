@@ -176,3 +176,5 @@ _PID=1 查看指定进程的日志
 
 
 ps -eo pid,lstart,etime,cmd |grep nginx
+
+

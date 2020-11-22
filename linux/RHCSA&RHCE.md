@@ -14,7 +14,7 @@ dd  if=image.name of=/dev/sdc bs=512k
 - 
 - 3.5小时
 
-### ftp
+## ftp
 1. 安装
 yum -y install vsftpd
 2. 端口
@@ -34,8 +34,8 @@ pasv_min_port=1024(default:0(use any port))
 pasv_max_port=65536(default:0(use any port))
 ```
 
-### kvm  等待实践
-1. 依赖的内核模块是否已经被加载
+## kvm  等待实践
+1. 查看依赖的内核模块是否已经被加载
 ```bash
 lsmod | grep kvm
 modprobe kvm_intel
@@ -45,5 +45,26 @@ modprobe kvm_amd # amd处理器
     **未实践操作过**  
     1. virt-install
     2. virsh
-    3. Kickstart
+    3. Kickstart 自动化安装
 
+## 工具
+1. mail
+如果本地启动了SMTP，25端口
+echo 'test' | mail -s '主题'   xxx@qq.com
+
+2. 命令行游览器
+yum install elinks
+elinsk http://baidu.com
+
+3. ftp客户端
+ftp
+lftp 自动尝试匿名登录
+
+## 指令
+1. alias
+创建指令别名  
+alias ll='ls -l'
+
+2. grep
+-v 取反
+-e 通过多个-e指定不同的正则表达式，或的关系
