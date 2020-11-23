@@ -20,17 +20,30 @@ UI 前端
 ## 安装
 - 参考
 https://github.com/apache/skywalking/blob/master/docs/en/setup/README.md
-1. 保存 UI 和 OAP backend 时钟一致
+### 裸安装
+1. wget https://archive.apache.org/dist/skywalking/8.2.0/apache-skywalking-apm-es7-8.2.0.tar.gz
+https://apache.website-solution.net/skywalking/8.2.0/apache-skywalking-apm-8.2.0.tar.gz 
+https://archive.apache.org/dist/skywalking/8.2.0/apache-skywalking-apm-8.2.0.tar.gz
 
-2. 启动
+2. 查看后端使用的数据存储
+grep "storage:" -A 2 ./config/application.yml
+
+3. UI 、 OAP backend 和 agent 所在的服务器要时钟一致
+
+4. 启动
 ./bin/startup.sh
-8080 
-11800
-12800
-
-3. 容器安装
+8080  UI端口
+11800 agent连接的OAP的gRPC端口
+12800  rest端口;UI连接OAP的端口
+### 配置
+config/elasticsearch.yml
+```conf
+   # 每个节点分片量
+```
+### 容器安装
 - 参考  
 https://github.com/apache/skywalking/blob/master/docker/docker-compose.yml
+https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html 
 ```yaml
 version: '3.5'
 services:
@@ -41,7 +54,9 @@ services:
     ports:
       - 9200:9200
     environment:
-      discovery.type: single-node
+      # discovery.type: single-node
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       memlock:
         soft: -1
@@ -77,11 +92,12 @@ services:
       - oap
     restart: always
     ports:
-      - 80:8080
+      - 8080:8080
     environment:
       SW_OAP_ADDRESS: oap:12800
 
 ```
+## Agent
 ### SkyAPM PHP
 - 参考
 https://github.com/SkyAPM/SkyAPM-php-sdk

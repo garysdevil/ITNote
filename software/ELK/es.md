@@ -7,29 +7,36 @@ https://www.cnblogs.com/wyq178/p/11968529.html
 - 参考
 https://www.elastic.co/cn/downloads/past-releases#elasticsearch
 
-
 wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.0-linux-x86_64.tar.gz
 启动
 curl http://localhost:9200/
+### 系统参数要求
+1. ulimit
+2. sysctl -w vm.max_map_count=655360
 
+### 配置文件
+vi config/elasticsearch.yml
+```conf
+cluster.initial_master_nodes: ["node-1"]  # 启动单节点集群
+network.host: 0.0.0.0 # 默认只有本机才能访问 
+```
+## 机制
 ### 术语
 1. Index 类似于数据库的概念。索引的名字只能是小写,不能是大写。
-2. Index 里Type就是分组的概念。 在7.4.2版本中已经去除了Index里type的概念。
+2. Type 是Index里分组的概念。 在7.4.2版本中已经去除了Index里type的概念。6.0的版本不允许一个Index下面有多个Type。
 3. Mapping 类似于mysql中表结构, properties类似于mysql表中的字段概念。 es的mapping创建之后无法修改,如果需要修改则需要重新建立index,然后reindex迁移数据。
-
-
-## Shard
+### Shard
 1. 分片是 Elasticsearch 在集群中分发数据的关键.
-
 2. 分片是装载数据的容器。文档存储在分片中，然后分片分配到集群中的节点上。当集群扩容或缩小，Elasticsearch 将会自动在节点间迁移分片，以使集群保持平衡。
-
 3. 一个分片是一个最小级别“工作单元(worker unit)”，它只是保存了索引中所有数据的一部分。
-
 4. 分片类似于 MySql 的分库分表，只不过 Mysql 分库分表需要借助第三方组件而 ES 内部自身实现了此功能。
-
 5. 分片可以是主分片(primary shard)或者是复制分片(replica shard)。
+6. Version 7+ 默认创建1000个分片。
 
-9. V7+ 默认创建1000个分片。
+### 
+1. 缓存机制:
+将index-buffer中文档（document）解析完成的segment写到filesystem cache之中
+从index-buffer中取数据到filesystem cache中的过程叫做refresh
 
 ## API
 
@@ -43,8 +50,13 @@ curl http://localhost:9200/
 # 查看集群状况
 curl ${IP}:${PORT}/?pretty
 
+# 节点健康状况
+curl "http://${IP}:${PORT}/_cat/health?v"
+
 # 临时改变集群分片的数量    
 curl -XPUT -H "Content-Type: application/json" -d '{"transient":{"cluster":{"max_shards_per_node":10000}}}' "http://${IP}:${PORT}/_cluster/settings"
+
+
 ```
 ### 常规操作
 ```bash
@@ -93,12 +105,5 @@ curl "${IP}:${PORT}/test2-index/_search?pretty"
 curl -XGET "http://${IP}:${PORT}/_count?pretty" 
 # 计算集index下document的数量
 curl -XGET "http://${IP}:${PORT}/${index}/_count?pretty" 
-
-
- 
-
-
-
-
 
 ```

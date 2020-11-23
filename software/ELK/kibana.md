@@ -5,3 +5,5 @@ https://www.elastic.co/cn/webinars/getting-started-kibana?baymax=default&elektra
 
 ### 安装
 https://www.elastic.co/cn/downloads/past-releases
+
+默认端口 5601

@@ -73,6 +73,11 @@ config set requirepass 123456
       2) "*"
 
 ```
+Redis Version >= 4.0
+```conf
+   5) "172.31.92.72:45220"  # 连接Redis的客户端IP:PORT
+   6) ""  # 连接Redis的客户端名字
+```
 ### 常规操作
 1. 列出当前db有效的key 
     keys *

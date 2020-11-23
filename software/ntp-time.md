@@ -14,9 +14,9 @@ restrict 10.118.12.0 mask 255.255.255.0 nomodify
 server 127.127.1.0
 fudge 127.127.1.0 stratum 0
 ```
-3. 国内时钟服务器地址
-ntp-sop.inria.frserver 210.72.145.44(中国国家授时中心服务器IP地址)
-server ntp.sjtu.edu.cn(上海交通大学网络中心NTP服务器地址)
+3. 时钟服务器地址
+ntp.sjtu.edu.cn 上海交通大学网络中心NTP服务器地址
+time.nist.gov 美国标准技术研究院 NTP 服务器
 
 4. 手动调整时钟
     - 需要先关闭ntp服务
