@@ -212,7 +212,7 @@ vpc请求方， vpc接收方，vpc接收方ip地址
 参考文档 https://kubernetes-on-aws.readthedocs.io/en/latest/user-guide/tls-termination.html
 
 ## Amazon CloudFront 
-如果在regional edge cache location找不到指定内容，CloudFront则去请求 源 获取内容并且将内容缓存在regional edge cache location。
+- 如果在regional edge cache location找不到指定内容，CloudFront则去请求 源 获取内容并且将内容缓存在regional edge cache location。
 1. 源类型，可以同时配置多个源
   1. Amazon S3 存储桶
   2. Amazon ELB

@@ -2,6 +2,7 @@
 - 参考
 https://skywalking.apache.org/
 https://skywalking.apache.org/zh/blog/2019-03-29-introduction-of-skywalking-and-simple-practice.html
+https://blog.csdn.net/wuzhiwei549/article/details/108856398
 
 埋点方式：无侵入
 客户端支持：Java, C#, PHP, Node.js, Go
@@ -10,19 +11,24 @@ https://skywalking.apache.org/zh/blog/2019-03-29-introduction-of-skywalking-and-
 - 参考
 https://github.com/apache/skywalking/blob/master/docs/en/concepts-and-designs/overview.md
 
-Probes 负责采集与格式化数据 对于不同的语言会有不同的agent插件
-Platform backend 后端逻辑层 OAP
-Storage 存储  默认自带存储H2, 推荐ElasticSearh
-UI 前端
+1. Probes 负责采集与格式化数据 对于不同的语言会有不同的agent插件
+2. Platform backend 后端逻辑层 OAP
+3. Storage 存储  默认自带存储H2, 推荐ElasticSearh
+4. UI 前端
+
+- 链路跟踪支持： 
+后端服务 游览器 服务网格
+
+## 运行机制
+Skywalking的数据TTL策略是通过线程定时调用ES API条件删除历史数据。目前配置是：链路数据存放7天，每5分钟删除7天前的数据。由于ES删除缓慢，导致数据堆积。恶性循环下导致本来设置的TTL时间为90分钟，结果却堆积了近5天数据。目前直接把TTL时间改为了7天，数据删除依然缓慢，几乎没有删除掉，导致数据堆积越来越多。
 
 
-链路跟踪支持： 后端服务 游览器 服务网格
 ## 安装
 - 参考
 https://github.com/apache/skywalking/blob/master/docs/en/setup/README.md
 ### 裸安装
 1. wget https://archive.apache.org/dist/skywalking/8.2.0/apache-skywalking-apm-es7-8.2.0.tar.gz
-https://apache.website-solution.net/skywalking/8.2.0/apache-skywalking-apm-8.2.0.tar.gz 
+wget https://apache.website-solution.net/skywalking/8.2.0/apache-skywalking-apm-8.2.0.tar.gz 
 https://archive.apache.org/dist/skywalking/8.2.0/apache-skywalking-apm-8.2.0.tar.gz
 
 2. 查看后端使用的数据存储
@@ -30,15 +36,18 @@ grep "storage:" -A 2 ./config/application.yml
 
 3. UI 、 OAP backend 和 agent 所在的服务器要时钟一致
 
-4. 启动
+4. 启动-程序直接在后台运行
 ./bin/startup.sh
+
+5. 默认端口
 8080  UI端口
 11800 agent连接的OAP的gRPC端口
 12800  rest端口;UI连接OAP的端口
 ### 配置
 config/elasticsearch.yml
-```conf
-   # 每个节点分片量
+```yaml
+storage:
+  selector: ${SW_STORAGE:elasticsearch7} # 选择后端存储
 ```
 ### 容器安装
 - 参考  
@@ -97,59 +106,8 @@ services:
       SW_OAP_ADDRESS: oap:12800
 
 ```
-## Agent
-### SkyAPM PHP
-- 参考
-https://github.com/SkyAPM/SkyAPM-php-sdk
-https://github.com/SkyAPM/SkyAPM-php-sdk/blob/master/docs/install.md
-#### 裸安装 v4.0.1
-1. 安装文档 https://github.com/SkyAPM/SkyAPM-php-sdk/blob/master/docs/install.md
-2. 遇到的错误
-```
-sudo apt install build-essential libssl-dev
-sudo apt remove --purge cmake
-# find last stable release at https://github.com/Kitware/CMake/releases and download the source .tar.gz,eg:
-wget https://github.com/Kitware/CMake/releases/download/v3.18.4/cmake-3.18.4.tar.gz
-tar -zxvf cmake-3.18.4.tar.gz
-cd cmake-3.18.4
-./bootstrap
-make 
-sudo make install
-```
-```bash 
-sudo yum install build-essential libssl-dev
-# sudo apt remove --purge cmake
-# find last stable release at https://github.com/Kitware/CMake/releases and download the source .tar.gz,eg:
-wget https://github.com/Kitware/CMake/releases/download/v3.18.4/cmake-3.18.4.tar.gz
-tar -zxvf cmake-3.18.4.tar.gz
-cd cmake-3.18.4
-./bootstrap
-make 
-sudo make install
-```
-3. php配置
-php.ini
-```conf
-[PHP]
-; Loading extensions in PHP
-extension=skywalking.so
 
-; enable skywalking
-skywalking.enable = 1
-
-; Set skyWalking collector version (5 or 6 or 7 or 8)
-skywalking.version = 8
-
-; Set app code e.g. MyProjectName
-skywalking.app_code = MyProjectName
-
-; Set grpc address
-skywalking.grpc=127.0.0.1:11800
-```
-#### 容器安装含有SkyAPM PHP扩展的PHP程序
-docker run -d -e SW_OAP_ADDRESS=127.0.0.1:11800  -p 9000:9000 skyapm/skywalking-php
-
-#### yum安装
+### yum安装
 https://pkgs.org/search/?q=ecl-skywalkin
 
 ## UI与功能

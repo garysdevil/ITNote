@@ -183,7 +183,10 @@ metrics-server 应用程序默认会从 kubelet 的 10250 端口基于 HTTP API 
 
 为防止程序异常而导致数据丢失，采用了WAL机制，即2小时内记录的数据存储在内存中的同时，还会记录一份日志，存储在block下的wal目录中。当程序再次启动时，会将wal目录中的数据写入对应的block中，从而达到恢复数据的效果。
 
-### 内存溢出问题
+### Memory
+1. 内存使用测量
+https://www.robustperception.io/how-much-ram-does-prometheus-2-x-need-for-cardinality-and-ingestion
+#### 内存溢出问题
 
 1. https://developer.aliyun.com/article/765358
 异常恢复问题：Prometheus使用binlog的方式将实时写入的数据持久化，在crash的时候会重新回放binlog来恢复。但由于数据在内存中保存2小时，一次恢复的时间可能很长，而一旦是因为OOM问题重启，Prometheus将无限重启下去。

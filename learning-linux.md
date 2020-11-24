@@ -17,10 +17,37 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub 被免密登陆的主机的IP
 
 yum install bind-utils -y 此软件含nslookup指令
 
-抓包
-tcpdump -n -i eth0 'port 80' -s0 -w <path/to/file>
--X 告诉tcpdump命令，需要把协议头和包内容都原原本本的显示出来（tcpdump会以16进制和ASCII的形式显示），这在进行协议分析时是绝对的利器。
--s snaplen         snaplen表示从一个包中截取的字节数。0表示包不截断，抓完整的数据包。默认的话 tcpdump 只显示部分数据包,默认68字节。
+Linux抓包
+```bash
+tcpdump -n -i eth0 'port 80' -s0 -w result.pcap
+tcpdump -i eth1 udp # 协议过滤  
+tcpdump -i eth0 dst ${HOST} and port ${PORT} # 抓取特定目标ip和端口的包
+
+-X # 告诉tcpdump命令，需要把协议头和包内容都原原本本的显示出来（tcpdump会以16进制和ASCII的形式显示），这在进行协议分析时是绝对的利器。
+-s snaplen  # snaplen表示从一个包中截取的字节数。0表示包不截断，抓完整的数据包。默认的话 tcpdump 只显示部分数据包,默认68字节。
+-c # 指定抓包的数量，达到后终止
+src host ${HOST} # 指定源地址为{HOST}
+src port ${PORT} # 指定源端口为{PORT}
+dst host ${HOST} # 指定目的地址为{HOST}
+dst port ${PORT} # 指定目的端口为{PORT}
+port ${PORT} # 目的或源端口是${PORT}的网络数据
+
+tcpdump -r result.pcap # 读取抓取到的包
+```
+
+TCP Flags
+```
+* F : FIN - 结束; 结束会话
+* S : SYN - 同步; 表示开始会话请求
+* R : RST - 复位;中断一个连接
+* P : PUSH - 推送; 数据包立即发送
+* A : ACK - 应答
+* U : URG - 紧急
+* E : ECE - 显式拥塞提醒回应
+* W : CWR - 拥塞窗口减少
+```
+
+
 
 交换机：
 dis arp 显示ip地址和物理地址的对应关系

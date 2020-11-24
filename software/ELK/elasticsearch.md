@@ -6,20 +6,21 @@ https://www.cnblogs.com/wyq178/p/11968529.html
 ## 安装
 - 参考
 https://www.elastic.co/cn/downloads/past-releases#elasticsearch
-
-wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.0-linux-x86_64.tar.gz
-启动
-curl http://localhost:9200/
+0. 需要java1.8环境
+1. wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.0-linux-x86_64.tar.gz
+2. 配置文件
+vi config/elasticsearch.yml
+```conf
+cluster.initial_master_nodes: ["node-1"]  # 启动单节点集群，单节点必须配置
+network.host: 0.0.0.0 # 默认只有本机才能访问 
+cluster.max_shards_per_node: 3000 # 配置每个节点最大的分片数量，默认为1000
+```
+3. 启动 nohup ./bin/elasticsearch 2>&1 &
+4. 访问 http://localhost:9200/
 ### 系统参数要求
 1. ulimit
 2. sysctl -w vm.max_map_count=655360
 
-### 配置文件
-vi config/elasticsearch.yml
-```conf
-cluster.initial_master_nodes: ["node-1"]  # 启动单节点集群
-network.host: 0.0.0.0 # 默认只有本机才能访问 
-```
 ## 机制
 ### 术语
 1. Index 类似于数据库的概念。索引的名字只能是小写,不能是大写。
@@ -56,6 +57,7 @@ curl "http://${IP}:${PORT}/_cat/health?v"
 # 临时改变集群分片的数量    
 curl -XPUT -H "Content-Type: application/json" -d '{"transient":{"cluster":{"max_shards_per_node":10000}}}' "http://${IP}:${PORT}/_cluster/settings"
 
+curl "http://${IP}:${PORT}/_nodes/{node}/hot_threads"
 
 ```
 ### 常规操作

@@ -2,7 +2,7 @@
 参考文档
 - https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-reference-yml.html
 - https://www.cnblogs.com/cjsblog/p/9495024.html
-- https://segmentfault.com/a/1190000019714761
+- https://segmentfault.com/a/1190000019714761 博客剖析
 ## 概念
 - 语言：Golang
 - 基于libbeat库进行开发而成。

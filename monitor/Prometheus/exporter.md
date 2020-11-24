@@ -62,6 +62,25 @@ kubelet的metrics地址：/api/v1/nodes/[节点名称]/proxy/metrics
 cAdvisor的metrics地址: node_ip:10250/metrics/cadvisor
 kubelet的metrics地址：node_ip:10250/metrics
 
+```yaml
+- job_name: k8s-cadvisor-prometheus
+  honor_timestamps: true
+  metrics_path: /metrics
+  scheme: http
+  kubernetes_sd_configs:  # kubernetes 自动发现
+  - api_server: https://${IP}:${PORT} # apiserver 地址
+    role: node
+    bearer_token_file: ${k8sToken} # 连接 apiserver 的密钥
+    tls_config:
+      insecure_skip_verify: true
+  bearer_token_file: ${k8sToken} # 连接 apiserver 的密钥
+  metric_relabel_configs:
+  - target_label: cluster
+    replacement: ${cluster} # 自定义标签
+  tls_config:
+    insecure_skip_verify: true
+```
+
 #### metrics
 1. cpu
 - 每个pod一分钟内每秒钟cpu的使用情况

@@ -33,11 +33,11 @@ bin/kafka-topics.sh --delete --zookeeper localhost:2181 --topic ${topic}
 ```
 # 压测方法，生产消息
 
-/data/kafka/kafka-1/bin/kafka-producer-perf-test.sh --topic test-rep-one --throughput 1000000 --num-records 2000000 --record-size 350 --producer-props bootstrap.servers=172.16.202.124:9092
+./bin/kafka-producer-perf-test.sh --topic test-rep-one --throughput 1000000 --num-records 2000000 --record-size 350 --producer-props bootstrap.servers=172.16.202.124:9092
 
 # 压测方法，消费消息
 
-/data/kafka/kafka-1/bin/kafka-consumer-perf-test.sh --topic test-topic-1 --messages 1 --zookeeper localhost:2181
+./bin/kafka-consumer-perf-test.sh --topic test-topic-1 --messages 1 --zookeeper localhost:2181
 
 
 # 循环发送消息
@@ -45,7 +45,7 @@ while true
 do
 for i in {1..1500}
 do
-/data/kafka/kafka-1/bin/kafka-producer-perf-test.sh --topic test-topic-${i} --throughput 1000000 --num-records 200 --record-size 350 --producer-props bootstrap.servers=172.16.202.124:9092
+./bin/kafka-producer-perf-test.sh --topic test-topic-${i} --throughput 1000000 --num-records 200 --record-size 350 --producer-props bootstrap.servers=172.16.202.124:9092
 done
 done
 
@@ -54,7 +54,7 @@ while true
 do
 for i in {1..1500}
 do
-/data/kafka/kafka-1/bin/kafka-consumer-perf-test.sh --topic test-topic-${i} --messages 200 --zookeeper localhost:2181
+./bin/kafka-consumer-perf-test.sh --topic test-topic-${i} --messages 200 --zookeeper localhost:2181
 done
 sleep 1s
 done
@@ -62,11 +62,11 @@ done
 # 循环创建topic
 for i in {2..1500}
 do
-/data/kafka/kafka-1/bin/kafka-topics.sh  --create --zookeeper localhost:2181 --topic test-topic-${i} --partitions 2 --replication-factor 1
+./bin/kafka-topics.sh  --create --zookeeper localhost:2181 --topic test-topic-${i} --partitions 2 --replication-factor 1
 done
 for i in {2..1500}
 do
-/data/kafka/kafka-1/bin/kafka-consumer-perf-test.sh --topic test-topic-1 --messages 400 --zookeeper localhost:2181
+./bin/kafka-consumer-perf-test.sh --topic test-topic-1 --messages 400 --zookeeper localhost:2181
 done
 ```
 
