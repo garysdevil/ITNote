@@ -8,6 +8,7 @@ https://www.cnblogs.com/wyq178/p/11968529.html
 https://www.elastic.co/cn/downloads/past-releases#elasticsearch
 0. 需要java1.8环境
 1. wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.0-linux-x86_64.tar.gz
+
 2. 配置文件
 vi config/elasticsearch.yml
 ```conf
@@ -17,6 +18,7 @@ cluster.max_shards_per_node: 3000 # 配置每个节点最大的分片数量，�
 ```
 3. 启动 nohup ./bin/elasticsearch 2>&1 &
 4. 访问 http://localhost:9200/
+
 ### 系统参数要求
 1. ulimit
 2. sysctl -w vm.max_map_count=655360

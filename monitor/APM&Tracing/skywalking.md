@@ -20,7 +20,10 @@ https://github.com/apache/skywalking/blob/master/docs/en/concepts-and-designs/ov
 后端服务 游览器 服务网格
 
 ## 运行机制
-Skywalking的数据TTL策略是通过线程定时调用ES API条件删除历史数据。目前配置是：链路数据存放7天，每5分钟删除7天前的数据。由于ES删除缓慢，导致数据堆积。恶性循环下导致本来设置的TTL时间为90分钟，结果却堆积了近5天数据。目前直接把TTL时间改为了7天，数据删除依然缓慢，几乎没有删除掉，导致数据堆积越来越多。
+1. 历史数据
+Skywalking的数据TTL策略是通过线程定时调用ES API条件删除历史数据。  
+目前配置是：链路数据存放7天，每5分钟删除7天前的数据。
+工程师发现的缺陷：ES删除缓慢，导致数据堆积。恶性循环下导致本来设置的TTL时间为90分钟，结果却堆积了近5天数据。目前直接把TTL时间改为了7天，数据删除依然缓慢，几乎没有删除掉，导致数据堆积越来越多。
 
 
 ## 安装
@@ -44,10 +47,15 @@ grep "storage:" -A 2 ./config/application.yml
 11800 agent连接的OAP的gRPC端口
 12800  rest端口;UI连接OAP的端口
 ### 配置
+- https://github.com/apache/skywalking/blob/master/docs/en/setup/backend/backend-setup.md
+
 config/elasticsearch.yml
 ```yaml
 storage:
   selector: ${SW_STORAGE:elasticsearch7} # 选择后端存储
+
+recordDataTTL: ${SW_CORE_RECORD_DATA_TTL:3} # Unit is day
+metricsDataTTL: ${SW_CORE_METRICS_DATA_TTL:7} # Unit is day
 ```
 ### 容器安装
 - 参考  
