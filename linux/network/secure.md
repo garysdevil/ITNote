@@ -31,8 +31,12 @@ vim /etc/pam.d/login
 ```
 ### 网络工具
 1. nc 使用TCP或UDP协议跨网络连接读写数据
-    nc -v 8080
-    nc -l -u -k 8080 -e /bin/bash
+    1. 检测端口是否在监听 nc -v -z ip port
+    2. 监听 nc -l -u -k 8080 -e /bin/bash
+    3. 一个简单的静态web页面服务器
+        while true;do  nc -l 88  < somepage.html; done
+
+
 2. nmap 网络探索和安全审计的开源工
     rpm -vhU http://nmap.org/dist/nmap-5.21-1.i386.rpm
     rpm -vhU http://nmap.org/dist/zenmap-5.21-1.noarch.rpm
