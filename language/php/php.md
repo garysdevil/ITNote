@@ -11,17 +11,103 @@ composer global show
 <?php
 echo '-----PHP INFO-----';
 phpinfo();
+
 echo "\n----------获取当前加载php.ini配置文件路径\n";
 var_dump(php_ini_loaded_file());  
+
 echo "\n----------如果有另外在加载别的php.ini文件会输出相应的信息,否则输出false\n";
 var_dump(php_ini_scanned_files());
 
-echo "\n---动态加载一个扩展-仅对 CLI 环境有效"
+echo "\n---动态加载一个扩展-仅对 CLI 环境执行时有效"
 dl("skywalking");
+
 echo "\n---查看是否加载了一个扩展";
 echo extension_loaded("skywalking");
 ```
 ## PHP扩展
+### 开发扩展
+- 参考
+https://learnku.com/articles/8237/1-my-first-php-extension
+https://xz.aliyun.com/t/4214  
+https://segmentfault.com/a/1190000007590422
+https://www.jianshu.com/p/3edbbb6bb49e 按照这个方法
+#### 实例一
+1. git clone https://github.com/php/php-src
+2. cd ext
+3. 使用ext_skel生成扩展框架(php7.3之后ext_skel变成了ext_skel.php)
+./ext_skel --extname=hello  
+4. 解注释 vim config.m4 
+```m4
+PHP_ARG_ENABLE(hello, whether to enable hello support,
+Make sure that the comment is aligned:
+[  --enable-hello           Enable hello support])
+```
+5. 编译
+phpize 
+./configure --enable-hello
+make
+make install
+
+5. 验证扩展是否编译成功
+以上命令执行后，会在扩展目录生成hello.php的测试文件，测试文件包含了 动态的方式加载扩展进行测试
+php -d enable_dl=On hello.php
+
+#### 实例二 在扩展里添加一个函数
+1. 更改扩展代码 vim hello.c
+```php
+const zend_function_entry hello_functions[] = {
+        PHP_FE(confirm_hello_compiled,  NULL)           /* For testing, remove later. */
+        PHP_FE(hello_world,  NULL)  // 新添加的扩展函数
+        PHP_FE_END      /* Must be the last line in hello_functions[] */
+};
+
+// 以下为新添加的扩展函数
+PHP_FUNCTION(hello_world)
+{
+        php_printf("Hello World!\n");
+        RETURN_TRUE;
+}
+```
+2. 编译
+```bash
+phpize 
+./configure --enable-hello
+make  # 会在modules文件夹下生成hello.so
+make install
+```
+3. 验证扩展是否编译成功
+php -d enable_dl=On hello.php
+
+4. 向php配置文件中添加扩展
+vim php.ini
+extension = hello.so
+
+5. 验证扩展
+php -a
+hello_world();
+
+#### 实例三 在扩展里添加一个钩子
+vim hello.c 
+```php
+PHP_MINIT_FUNCTION(hello)
+{
+        /* If you have INI entries, uncomment these lines
+        REGISTER_INI_ENTRIES();
+        */
+        zend_set_user_opcode_handler(ZEND_ECHO, ppecho); // 在调用php代码前添加一个钩子ppecho
+        return SUCCESS;
+}
+
+// 钩子ppecho的具体实现
+int ppecho(ZEND_OPCODE_HANDLER_ARGS)
+{
+        php_printf("hook success");
+        // return ZEND_USER_OPCODE_RETURN; // 停止往下执行
+        return ZEND_USER_OPCODE_DISPATCH; // 继续往下执行
+}
+
+```
+### 管理扩展
 1. PECL 是PHP扩展的存储库，提供了所有已知扩展名和目录，用于下载和开发PHP扩展
 pecl seatch 扩展名
 pecl install skywalking
@@ -33,7 +119,6 @@ pecl install skywalking
 ## php.ini
 ```conf
 extension_dir="" # 定义PHP扩展的文件所在目录
-extension=skywalking.so # 要开启的扩展名称
 ```
 
 ## 指令
@@ -50,6 +135,8 @@ php7.3 --ini
 4. php查看扩展包的版本信息 
 php7.3 --ri 扩展名 
 
+5. 动他加载一个扩展
+php -d enable_dl=On hello.php
 ### pecl
 1. 查看pecl安装的扩展
 pecl  -d php_suffix=7.3 list
@@ -72,3 +159,10 @@ make
 make install
 # extension=扩展名.so 
 ```
+
+## PHP7 代码执行过程
+1. PHP 代码
+2. Scanning（Lexing）词法分析，将PHP代码转换为语言片段（Tokens）
+3. Parsing语法分析,生成抽象语法树（AST - Abstract Syntax Tree）
+4. 将语法树转为 Opcodes（PHP的中间代码）
+5. Zend VM的执行单元调用对应的C函数执行Opcodes代码

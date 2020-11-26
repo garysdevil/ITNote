@@ -24,7 +24,7 @@ www.example.com
        | php-fpm 处理完请求，返回给nginx        
        | nginx 将结果通过http返回给浏览器
 ```
-## 二 安装php73-php-fpm
+## 二 yum安装php73-php-fpm
 1. 
 PHP在 5.3.3 之后已经把php-fpm并入到php的核心代码中了，所以php-fpm不需要单独的下载安装。
 要想php支持php-fpm，只需要在编译php源码的时候带上 --enable-fpm。

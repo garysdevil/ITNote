@@ -2,6 +2,9 @@
 - 参考
 https://github.com/SkyAPM/SkyAPM-php-sdk  
 https://github.com/SkyAPM/SkyAPM-php-sdk/blob/master/docs/install.md
+### 裸安装 v3.2.1
+sky-php-agent --grpc 172.31.84.175:11800 /var/run/sky-agent.sock 
+
 ### 裸安装 v3.3.2
 - 参考
 https://www.jianshu.com/p/a30dc7b19f7a
@@ -28,7 +31,7 @@ skywalking.app_code = MyProjectName
 skywalking.sock_path=/tmp/sky-agent.sock
 ```
 2. 启动
-./sky-php-agent --grpc=${IP}:11800 --sky-version=8 --socket=/tmp/sky-agent.sock
+./sky-php-agent --grpc=${IP}:11800 --socket=/tmp/sky-agent.sock
 
 ### 裸安装 v4.0.1
 1. 安装文档 https://github.com/SkyAPM/SkyAPM-php-sdk/blob/master/docs/install.md
@@ -74,6 +77,11 @@ skywalking.app_code = MyProjectName
 
 ; Set grpc address
 skywalking.grpc=127.0.0.1:11800
+
+; 设置日志
+skywalking.log_enable = 1
+skywalking.log_path = /tmp/skywalking-php.log
+
 ```
 ### 容器安装
 docker run -d -e SW_OAP_ADDRESS=127.0.0.1:11800  -p 9000:9000 skyapm/skywalking-php

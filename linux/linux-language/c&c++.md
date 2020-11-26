@@ -7,6 +7,8 @@ gcc *.c 默认生成a.out可执行文件
 -Wall 编译时输出更多的信息
 
 ## make
+- make是增量编译的
+
 1. 配置并且生成Makefile文件
 ./configure
  --prefix=/软件要安装的路径
@@ -18,7 +20,7 @@ make install
 4. 卸载
 make uninstall
 
-5. 將之前产生的可执性文件和其它文件删除
+5. 將之前产生的可执性文件和其它文件删除，再次执行make install即可进行全量编译
 make clean 
 
 ## 编译与函数库

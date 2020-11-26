@@ -186,6 +186,7 @@ mysqlbinlog --base64-output=decode-rows -v --start-datetime="2020--07-24 09:00:0
 ### 开启主从同步
 - 参考  
 https://www.jianshu.com/p/b0cf461451fb  
+https://dev.mysql.com/doc/refman/5.7/en/start-slave.html
 
 1. MySQL主从同步的作用：
     1. 可以作为备份机制，相当于热备份

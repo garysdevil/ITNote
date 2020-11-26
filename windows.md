@@ -1,0 +1,2 @@
+ipconfig /all
+ipconfig /flushdns
