@@ -33,8 +33,46 @@ skywalking.sock_path=/tmp/sky-agent.sock
 2. 启动
 ./sky-php-agent --grpc=${IP}:11800 --socket=/tmp/sky-agent.sock
 
-### 裸安装 v4.0.1
+### centos裸安装 v4.1.0
 1. 安装文档 https://github.com/SkyAPM/SkyAPM-php-sdk/blob/master/docs/install.md
+Install Protobuf
+```bash
+sudo yum install autoconf automake libtool curl make gcc-c++ unzip -y
+git clone https://github.com/protocolbuffers/protobuf.git
+cd protobuf
+git checkout v3.13.0
+git submodule update --init --recursive
+./autogen.sh
+
+./configure
+make -j$(nproc)
+make check
+sudo make install
+sudo ldconfig # refresh shared library cache.
+```
+Install GRPC
+```bash
+yum groupinstall "Development Tools" "Development Libraries"
+yum install  autoconf libtool cmake
+git clone https://github.com/grpc/grpc.git
+cd grpc
+git submodule update --init --recursive
+
+mkdir -p cmake/build
+cd cmake/build
+cmake ../.. -DBUILD_SHARED_LIBS=ON -DgRPC_INSTALL=ON
+make -j$(nproc)
+sudo make install
+make clean
+sudo ldconfig
+```
+```bash
+curl -Lo v4.1.0.tar.gz https://github.com/SkyAPM/SkyAPM-php-sdk/archive/v4.1.0.tar.gz
+tar zxvf v4.1.0.tar.gz
+cd SkyAPM-php-sdk-4.1.0
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/usr/local/lib64/
+phpize && ./configure && make && make install
+```
 2. 如果有多个php版本，注意配置使用的php版本
 ./configure --with-php-config=-----/bin/php-config
 
@@ -42,8 +80,8 @@ skywalking.sock_path=/tmp/sky-agent.sock
 1. cmake: command not found
 解决措施
 ```bash 
-yum install gcc7* # gcc -v 查看gcc版本，根据情况升级
-yum install openssl-devel # 解决 Could not find OpenSSL.
+yum install gcc7* -y # gcc -v 查看gcc版本，根据情况升级
+yum install openssl-devel -y # 解决 Could not find OpenSSL.
 sudo yum install build-essential libssl-dev
 # sudo apt remove --purge cmake
 # find last stable release at https://github.com/Kitware/CMake/releases and download the source .tar.gz,eg:
@@ -59,6 +97,8 @@ echo "end----"
 参考方案：https://github.com/SkyAPM/SkyAPM-php-sdk/issues/289
 解决措施：
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/usr/local/lib64/
+或者将"/usr/local/lib64/" >> /etc/ld.so.conf && ldconfig
+
 #### php配置
 php.ini
 ```conf
@@ -81,7 +121,6 @@ skywalking.grpc=127.0.0.1:11800
 ; 设置日志
 skywalking.log_enable = 1
 skywalking.log_path = /tmp/skywalking-php.log
-
 ```
 ### 容器安装
 docker run -d -e SW_OAP_ADDRESS=127.0.0.1:11800  -p 9000:9000 skyapm/skywalking-php

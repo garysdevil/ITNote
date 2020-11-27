@@ -162,4 +162,21 @@ flock -xn ./test.lock -c "sh ./test.sh"
 
 ps -eo pid,lstart,etime,cmd |grep nginx
 
-
+查看内核报错
+- 参考
+https://blog.csdn.net/zhaohaijie600/article/details/45246569 
+dmesg -LT -w
+cat /var/log/messages 
+```log
+php-fpm-7.1[60143]: segfault at 0 ip 00007fbc4e998ff1 sp 00007ffe5b9c3238 error 4 in libc-2.17.so[7fbc4e82a000+1c3000]
+```
+1. 程序名  php-fpm-7.1
+2. 线程PID  60143
+3. 标识应该是由内存访问越界造成的  segfault  
+4. 具体的错误  error 4
+    1. error 4 转为二进制 error 100
+    2. error ${bit2}${bit1}${bit0}
+        1. bit2: 值为1表示是用户态程序内存访问越界，值为0表示是内核态程序内存访问越界. 
+        2. bit1: 值为1表示是写操作导致内存访问越界，值为0表示是读操作导致内存访问越界.
+        3. bit0: 值为1表示没有足够的权限访问非法地址的内容，值为0表示访问的非法地址根本没有对应的页面，也就是无效地址.
+    

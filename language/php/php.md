@@ -57,11 +57,11 @@ php -d enable_dl=On hello.php
 ```php
 const zend_function_entry hello_functions[] = {
         PHP_FE(confirm_hello_compiled,  NULL)           /* For testing, remove later. */
-        PHP_FE(hello_world,  NULL)  // 新添加的扩展函数
+        PHP_FE(hello_world,  NULL)  // 添加一个新的扩展函数
         PHP_FE_END      /* Must be the last line in hello_functions[] */
 };
 
-// 以下为新添加的扩展函数
+// 新的扩展函数的具体实现
 PHP_FUNCTION(hello_world)
 {
         php_printf("Hello World!\n");
