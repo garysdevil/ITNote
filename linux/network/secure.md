@@ -29,47 +29,6 @@ auth required pam_tally2.so deny=3 unlock_time=60 even_deny_root root_unlock_tim
 
 vim /etc/pam.d/login
 ```
-### 网络工具
-1. nc 使用TCP或UDP协议跨网络连接读写数据
-    1. 检测端口是否在监听 nc -v -z ip port
-    2. 监听 nc -l -u -k 8080 -e /bin/bash
-    3. 一个简单的静态web页面服务器
-        while true;do  nc -l 88  < somepage.html; done
-
-
-2. nmap 网络探索和安全审计的开源工
-    rpm -vhU http://nmap.org/dist/nmap-5.21-1.i386.rpm
-    rpm -vhU http://nmap.org/dist/zenmap-5.21-1.noarch.rpm
-    
-    - 四种基本的扫描方式：
-        + TCP connect()端口扫描（-sT参数）。
-        + TCP同步（SYN）端口扫描（-sS参数）。
-        + UDP端口扫描（-sU参数）。
-        + Ping扫描（-sP参数）。
-    - 扫描结果
-        Open 端口监听
-        filtered 意味着防火墙，过滤器或者其它网络障碍阻止了该端口被访问，Nmap 无法得知 它是 open还是 closed   
-        closed 端口未被监听  
-        unfiltered 无法确定它们是关闭还是开放时   
-        open filtered 监听或者被过滤的  
-        closed filtered 关闭或者被过滤的  
-
-    - 扫描 默认会扫描1-1024端口和其他一些常用端口
-        nmap -sS -p 0-30000 127.0.0.1
-3. dstat 是一个用来替换vmstat、iostat、netstat、nfsstat和ifstat这些命令的工具，是一个全能系统信息统计工具
-    - 分组含义及子项字段含义
-        ```yaml
-        CPU状态: CPU的使用率。显示了用户占比，系统占比、空闲占比、等待占比、硬中断和软中断情况。
-        磁盘统计: 磁盘的读写，分别显示磁盘的读、写总数。
-        网络统计: 网络设备发送和接受的数据，分别显示的网络收、发数据总数。
-        分页统计: 系统的分页活动。分别显示换入（in）和换出（out）。
-        系统统计: 统计中断（int）和上下文切换（csw）。
-        ```
-    - 测网速
-        nc -l 9999 >/dev/null
-        nc IP 9999 </dev/zero
-        dstat
-
 
 ## iptables
 ### firewalld 被封装过的iptables

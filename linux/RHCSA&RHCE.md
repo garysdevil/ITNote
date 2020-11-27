@@ -68,3 +68,12 @@ alias ll='ls -l'
 2. grep
 -v 取反
 -e 通过多个-e指定不同的正则表达式，或的关系
+
+## RHEL7 新网络工具
+1. ip addr
+2. ip addr add 192.168.122.150/24 dev eth0
+3. ip neigh 显示ARP表
+4. ip route 显示路由表
+5. ss -tuna4 显示监听的端口
+
+6. ip link set dev ${device} up 启用指定接口
