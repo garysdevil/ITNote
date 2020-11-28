@@ -8,11 +8,14 @@
 
 ## GoogleBrower DevTool
 - 文档 
-https://developers.google.com/web/tools/chrome-devtools/
-https://www.cnblogs.com/vvjiang/p/12370112.html
+https://developers.google.com/web/tools/chrome-devtools/  
+https://www.cnblogs.com/vvjiang/p/12370112.html   
+https://www.jianshu.com/p/24b93b13e5a9   
 ### Network
 浏览器根据html中外连资源出现的顺序，依次放入队列（Queue）,然后根据优先级确定向服务器获取资源的顺序。同优先级的资源根据html中出现的先后顺序来向服务器获取资源
-1. Time 总共花费的时间
+1. Time： 总共花费的时间
+2. DOMContentLoaded： dom内容加载并解析完成的时间,此时间段页面白屏
+3. Load：页面加载完成时间
 #### waterfall
 https://developers.google.com/web/tools/chrome-devtools/network/reference#timing-explanation
 - 关键指标

@@ -180,3 +180,6 @@ php-fpm-7.1[60143]: segfault at 0 ip 00007fbc4e998ff1 sp 00007ffe5b9c3238 error 
         2. bit1: 值为1表示是写操作导致内存访问越界，值为0表示是读操作导致内存访问越界.
         3. bit0: 值为1表示没有足够的权限访问非法地址的内容，值为0表示访问的非法地址根本没有对应的页面，也就是无效地址.
     
+
+查看/tmp目录下每个子目录文件的数量
+for i in /tmp; do echo $i; find $i |wc -l|sort -nr; done

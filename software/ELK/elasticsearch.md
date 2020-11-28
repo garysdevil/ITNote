@@ -1,8 +1,8 @@
 ## 概览
 - 参考
-https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-index_.html
+https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-index_.html 官方文档
+https://www.cnblogs.com/wyq178/p/11968529.html  ElasticSearch的API使用
 
-https://www.cnblogs.com/wyq178/p/11968529.html
 ## 安装
 - 参考
 https://www.elastic.co/cn/downloads/past-releases#elasticsearch
@@ -35,7 +35,16 @@ cluster.max_shards_per_node: 3000 # 配置每个节点最大的分片数量，�
 4. 分片类似于 MySql 的分库分表，只不过 Mysql 分库分表需要借助第三方组件而 ES 内部自身实现了此功能。
 5. 分片可以是主分片(primary shard)或者是复制分片(replica shard)。
 6. Version 7+ 默认创建1000个分片。
+### 索引与分片和副本
+1. number_of_shards  
+每个索引的主分片数，默认值是 5 。这个配置在索引创建后不能修改。
 
+2. number_of_replicas  
+每个主分片的副本数，默认值是 1 。对于活动的索引库，这个配置可以随时修改。
+
+3. 设置
+number_of_shards 和 number_of_replicas 都是index级别的设置。
+如果打算每个新建的index都设置副本数为0，可以通过index template 来设置。
 ### 
 1. 缓存机制:
 将index-buffer中文档（document）解析完成的segment写到filesystem cache之中

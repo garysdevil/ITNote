@@ -1,10 +1,13 @@
 
 - 参考链接
-https://www.jianshu.com/p/6c08d575025d
-https://www.cnblogs.com/gnuhpc/p/4609592.html
-https://www.cnblogs.com/yiwangzhibujian/p/7067575.html
-http://redisdoc.com/topic/cluster-tutorial.html
-## 常识
+https://www.runoob.com/redis/redis-tutorial.html 增删改查
+https://www.cnblogs.com/gnuhpc/p/4609592.html 指令
+https://www.cnblogs.com/yiwangzhibujian/p/7067575.html 配置
+http://redisdoc.com/topic/cluster-tutorial.html 集群
+https://zhuanlan.zhihu.com/p/111547061 架构
+https://nullcc.github.io/2018/02/15/(%E8%AF%91)Redis%E5%93%8D%E5%BA%94%E5%BB%B6%E8%BF%9F%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/  延迟
+
+## 基础
 1. 基于单机默认有16个库，集群没有数据库的概览。
 ### 数据类型
 1. 字符串   
@@ -21,6 +24,23 @@ http://redisdoc.com/topic/cluster-tutorial.html
     2. 查看集合里所有的元素 SMEMBERS key
     3. 查看这个元素是否在集合里 SISMEMBER key value1
 5. 有序集合
+    1. 增加操作
+        ZADD keyname 1 value1
+        ZADD keyname 2 value2
+
+## 原理
+1. Redis是单线程的。
+2. Redis 单线程如何处理那么多的并发客户端连接?
+Redis的IO多路复用:redis利用epoll来实现IO多路复用，将连接信息和事件放到队列中，依次放到 文件事件分派器，事件分派器将事件分发给事件处理器。
+## 场景
+1. 缓存穿透
+    - 是指查询一个根本不存在的数据， 缓存层和存储层都不会命中， 通常出于容错的考虑， 如果从存储 层查不到数据则不写入缓存层。 
+    缓存穿透将导致不存在的数据每次请求都要到存储层去查询， 失去了缓存保护后端存储的意义。
+    - 解决措施:可以将空对象缓存起来或者设置一个特殊意义的字符串来标示此记录数据库中不存在，直接在缓存层返回.
+2. 缓存雪崩
+    - 如果在某个时间点，有大量缓存失效，那么下一个时间点就会有大量请求访问到数据库，这种情况下，数据库可能因为访问量多大导致“崩溃”
+
+3. 缓存和数据一致性
 ## 运维操作
 1. 连接redis 默认端口6379
 redis-cli -h IP -p PORT -a PASS -c

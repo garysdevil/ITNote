@@ -1,7 +1,10 @@
 ## Dapper
 - 参考
+https://static.googleusercontent.com/media/research.google.com/en-US//archive/papers/dapper-2010-1.pdf
 http://bigbully.github.io/Dapper-translation/ 中文翻译
 https://research.google/pubs/pub36356/
+
+
 
 ## OpenTracing
 - 参考  
