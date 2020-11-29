@@ -38,6 +38,8 @@ fmt.Printf("array=%v\n", out.String())
 ```go
 fmt.Printf("%+v\n", anyType)
 ```
+3. crypto
+https://golang.org/pkg/crypto/cipher/#example_NewCFBEncrypter
 
 ## 三 常用的第三方包
 1. 读取配置与热加载  github.com/spf13/viper  github.com/fsnotify/fsnotify
