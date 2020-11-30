@@ -2,8 +2,7 @@
 - 参考
 https://github.com/SkyAPM/SkyAPM-php-sdk  
 https://github.com/SkyAPM/SkyAPM-php-sdk/blob/master/docs/install.md
-### 裸安装 v3.2.1
-sky-php-agent --grpc 172.31.84.175:11800 /var/run/sky-agent.sock 
+
 
 ### 裸安装 v3.3.2
 - 参考
@@ -99,8 +98,8 @@ echo "end----"
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/usr/local/lib64/
 或者将"/usr/local/lib64/" >> /etc/ld.so.conf && ldconfig
 
-#### php配置
-php.ini
+#### php配置与启动
+1. php.ini
 ```conf
 [skywalking]
 ; Loading extensions in PHP
@@ -122,5 +121,11 @@ skywalking.grpc=127.0.0.1:11800
 skywalking.log_enable = 1
 skywalking.log_path = /tmp/skywalking-php.log
 ```
+2. php-fpm程序必须是前台启动模式
+bin/php-fpm --daemonize no 或者 bin/php-fpm  
+后台启动模式：后台守护进程先启动A主进程，A主进程又另外单独起了B主进程，这个B主进程启动完毕后,A进程会退出。但是v4的消费和生产线程是由A 启动的，A关闭后，相关线程会退出，所以不能用后台守护进程模式启动。  
+
+3. 配置完成后重启php即可
+
 ### 容器安装
 docker run -d -e SW_OAP_ADDRESS=127.0.0.1:11800  -p 9000:9000 skyapm/skywalking-php

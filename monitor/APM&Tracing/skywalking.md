@@ -1,11 +1,14 @@
-
-- 参考
+# Skywalking
+- 参考文档
 https://skywalking.apache.org/
 https://skywalking.apache.org/zh/blog/2019-03-29-introduction-of-skywalking-and-simple-practice.html
 https://blog.csdn.net/wuzhiwei549/article/details/108856398
 
-埋点方式：无侵入
-客户端支持：Java, C#, PHP, Node.js, Go
+- 基于v8.2.0版本记录的笔记
+
+1. 埋点方式：无侵入
+
+2. 客户端支持：Java, C#, PHP, Node.js, Go
 
 ## 组件与架构
 - 参考
@@ -22,14 +25,18 @@ https://github.com/apache/skywalking/blob/master/docs/en/concepts-and-designs/ov
 ## 运行机制
 1. 历史数据
 Skywalking的数据TTL策略是通过线程定时调用ES API条件删除历史数据。  
-目前配置是：链路数据存放7天，每5分钟删除7天前的数据。
-工程师发现的缺陷：ES删除缓慢，导致数据堆积。恶性循环下导致本来设置的TTL时间为90分钟，结果却堆积了近5天数据。目前直接把TTL时间改为了7天，数据删除依然缓慢，几乎没有删除掉，导致数据堆积越来越多。
+默认配置是：链路数据存放3天，每5分钟删除7天前的数据。APM数据存放7天。
+网上工程师发现的缺陷：ES删除缓慢，导致数据堆积。恶性循环下导致本来设置的TTL时间为90分钟，结果却堆积了近5天数据。目前直接把TTL时间改为了7天，数据删除依然缓慢，几乎没有删除掉，导致数据堆积越来越多。
 
+2. 传输机制
+agent 到 OAP 是通过gRPC通信的。
 
 ## 安装
 - 参考
 https://github.com/apache/skywalking/blob/master/docs/en/setup/README.md
 ### 裸安装
+0. java1.8环境
+
 1. wget https://archive.apache.org/dist/skywalking/8.2.0/apache-skywalking-apm-es7-8.2.0.tar.gz
 wget https://apache.website-solution.net/skywalking/8.2.0/apache-skywalking-apm-8.2.0.tar.gz 
 https://archive.apache.org/dist/skywalking/8.2.0/apache-skywalking-apm-8.2.0.tar.gz
@@ -37,7 +44,7 @@ https://archive.apache.org/dist/skywalking/8.2.0/apache-skywalking-apm-8.2.0.tar
 2. 查看后端使用的数据存储
 grep "storage:" -A 2 ./config/application.yml
 
-3. UI 、 OAP backend 和 agent 所在的服务器要时钟一致
+3. 保持 UI 、 OAP backend 和 agent 所在的服务器时钟一致
 
 4. 启动-程序直接在后台运行
 ./bin/startup.sh
@@ -57,7 +64,7 @@ storage:
 recordDataTTL: ${SW_CORE_RECORD_DATA_TTL:3} # Unit is day
 metricsDataTTL: ${SW_CORE_METRICS_DATA_TTL:7} # Unit is day
 ```
-### 容器安装
+### 容器安装 - 使用非官方容器/有点问题
 - 参考  
 https://github.com/apache/skywalking/blob/master/docker/docker-compose.yml
 https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html 
