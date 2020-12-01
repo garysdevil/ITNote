@@ -78,6 +78,9 @@ git log -p -1 + 文件名 （只查看该文件当前这一次的push内容）
 3. 将另一个分支的commit合并到此分支上  
 git  cherry-pick  某次commit的id号
 
+4. 删除本地分支
+git branch -D 分支名
+
 4. 删除远程的分支  
 git push origin:分支名 （没有删除跟踪）   
 git push origin --delete 分支名 （删除了跟踪）  

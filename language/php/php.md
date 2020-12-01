@@ -1,9 +1,12 @@
-## php包管理器composer
+## php依赖管理器composer
+- Composer 不是一个包管理器。是的，它涉及 "packages" 和 "libraries"，但它在每个项目的基础上进行管理，在你项目的某个目录中（例如 vendor）进行安装。默认情况下它不会在全局安装任何东西。因此，这仅仅是一个依赖管理。
+1. 安装composer
+curl -sS https://getcomposer.org/installer | php
 
-1. 列出所有已经安装的包
+2. 列出所有已经安装的包
 composer show -i
 
-2. 查看全局安装的包名称和版本：
+3. 查看全局安装的包名称和版本：
 composer global show
 
 ## php demo
@@ -18,7 +21,7 @@ var_dump(php_ini_loaded_file());
 echo "\n----------如果有另外在加载别的php.ini文件会输出相应的信息,否则输出false\n";
 var_dump(php_ini_scanned_files());
 
-echo "\n---动态加载一个扩展-仅对 CLI 环境执行时有效"
+echo "\n---动态加载一个扩展-仅对 CLI 环境执行时有效"    
 dl("skywalking");
 
 echo "\n---查看是否加载了一个扩展";
