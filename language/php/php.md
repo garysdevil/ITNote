@@ -1,8 +1,15 @@
 ## php依赖管理器composer
 - Composer 不是一个包管理器。是的，它涉及 "packages" 和 "libraries"，但它在每个项目的基础上进行管理，在你项目的某个目录中（例如 vendor）进行安装。默认情况下它不会在全局安装任何东西。因此，这仅仅是一个依赖管理。
 1. 安装composer
+```bash
 curl -sS https://getcomposer.org/installer | php
+mv composer.phar /usr/local/bin/composer
+# 切换为国内镜像
+composer config -g repo.packagist composer https://packagist.phpcomposer.com
 
+# 更新 composer
+composer selfupdate
+```
 2. 列出所有已经安装的包
 composer show -i
 
