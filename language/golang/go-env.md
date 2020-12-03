@@ -3,6 +3,12 @@
 - https://golang.google.cn/dl/
 
 - Go version >= 1.11，并且 GO111MODULE=on (Go MOdule 模式)
+
+- 临时环境
+Go version >= 1.13，直接用go env -w 设置
+go env -w GOPROXY=https://goproxy.io,direct
+go env -w GO111MODULE=on
+
 ### linux安装
 ```bash
 cd /opt

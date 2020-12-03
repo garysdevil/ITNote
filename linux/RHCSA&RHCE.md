@@ -70,6 +70,7 @@ alias ll='ls -l'
 -e 通过多个-e指定不同的正则表达式，或的关系
 
 ## RHEL7 新网络工具
+### ip
 1. ip addr
 2. ip addr add 192.168.122.150/24 dev eth0
 3. ip neigh 显示ARP表
@@ -77,3 +78,16 @@ alias ll='ls -l'
 5. ss -tuna4 显示监听的端口
 
 6. ip link set dev ${device} up 启用指定接口
+
+### 网络配置工具
+- nmcli
+    1. 查看是否启动了网络管理器
+    systemctl status NetworkManager
+    网络管理器包含了 nmcli 命令行工具
+
+    2. 
+    nmcli con reload
+    nmcli con down eth0
+    nmcli con up eth0
+
+- nmtui
