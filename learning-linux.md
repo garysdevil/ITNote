@@ -116,6 +116,16 @@ cat test.tar.bz2* | tar -jxv
 1. ssh-agent bash
 2. ssh-add -k key.pem
 
+### supervisorctl
+1. Supervisor（http://supervisord.org/）是用Python开发的一个client/server服务，是Linux/Unix系统下的一个进程管理工具，不支持Windows系统。它可以很方便的监听、启动、停止、重启一个或多个进程。用Supervisor管理的进程，当一个进程意外被杀死，supervisort监听到进程死后，会自动将它重新拉起。
+2. 安装
+
+3. 启动Supervisor服务
+supervisord -c /etc/supervisor/supervisord.conf
+4. 进入交互界面
+supervisorctl
+
+
 ## 未归类
 获取公网IP ： 
 curl cip.cc 
@@ -183,3 +193,9 @@ php-fpm-7.1[60143]: segfault at 0 ip 00007fbc4e998ff1 sp 00007ffe5b9c3238 error 
 
 查看/tmp目录下每个子目录文件的数量
 for i in /tmp; do echo $i; find $i |wc -l|sort -nr; done
+
+查看所有目录包含隐含目录的大小
+du -sh .[!.]*
+
+除特定文件外删除所有
+rm -rf !(.a|.|..)

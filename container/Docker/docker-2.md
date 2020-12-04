@@ -1,45 +1,5 @@
 # docker
 https://docs.docker.com
-## 原理
-### Docker底层使用的Linux技术
-- https://www.jianshu.com/p/ab423c3db59d
-1. 容器 = cgroup + namespace + rootfs + 容器引擎
-2. 每个容器都是一个进程，这种进程拥有自己的特殊的子namespace、cgroup设置和rootfs挂载
-  - Cgroup： 资源控制
-  - namespace： 访问隔离
-  - rootfs：文件系统隔离。镜像的本质就是一个rootfs文件
-  - 容器引擎：生命周期控制
-
-## docker配置更改
-### 登陆docker仓库Harbor
-1. 通过密钥-手动创建secret
-cat /root/.docker/config.json | base64 -w
-
-2. 通过密钥-自动创建secret
-kubectl create secret docker-registry 密钥的名字 --docker-server=DOCKER_REGISTRY_SERVER --docker-username=DOCKER_USER
---docker-password=DOCKER_PASSWORD --docker-email=DOCKER_EMAIL
-
-3. 通过docker登陆生成认证文件，然后认证文件考到kubelet认证下
-docker login DOCKER_REGISTRY_SERVER
-cp ~/.docker/config.json /var/lib/kubelet/
-
-
-### 更改docker存储目录与镜像仓库地址
-- 参考文档 https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file
-vi /etc/docker/daemon.json 
-1. 更改镜像仓库地址
-```bash
-{
-  "registry-mirrors": ["http://hub-mirror.c.163.com"],
-  "data-root": "/www/docker"
-}
-2. 更改docker存储目录
-ExecStart=/usr/bin/dockerd --graph /home/docker
-# 或者
-{
-    "graph":"/data/docker"
-}
-```
 
 ## 安装docker
 - 官方步骤：
@@ -111,6 +71,36 @@ docker run -d -e SW_OAP_ADDRESS=127.0.0.1:11800 -p 9000:9000 -v /etc/nginx/html:
 -e 参数
 -p 主机端口:容器端口
 -d 主机路径:容器路径
+
+## docker配置更改
+### 登陆docker仓库Harbor
+1. 通过密钥-手动创建secret
+cat /root/.docker/config.json | base64 -w
+
+2. 通过密钥-自动创建secret
+kubectl create secret docker-registry 密钥的名字 --docker-server=DOCKER_REGISTRY_SERVER --docker-username=DOCKER_USER
+--docker-password=DOCKER_PASSWORD --docker-email=DOCKER_EMAIL
+
+3. 通过docker登陆生成认证文件，然后认证文件考到kubelet认证下
+docker login DOCKER_REGISTRY_SERVER
+cp ~/.docker/config.json /var/lib/kubelet/
+
+### 更改docker存储目录与镜像仓库地址
+- 参考文档 https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file
+vi /etc/docker/daemon.json 
+1. 更改镜像仓库地址
+```bash
+{
+  "registry-mirrors": ["http://hub-mirror.c.163.com"],
+  "data-root": "/www/docker"
+}
+2. 更改docker存储目录
+ExecStart=/usr/bin/dockerd --graph /home/docker
+# 或者
+{
+    "graph":"/data/docker"
+}
+```
 
 ## 镜像
 ### 微型镜像alpine
