@@ -60,7 +60,8 @@ git pull origin master
 ### 日常操作
 
 1. diff  
-  git diff 文件路径 origin/xxx  
+  git diff origin/xxx 
+  git diff 文件路径 origin/xxx   
     1. 默认 untracked工作区 和 modified工作区和缓冲区 比较
     2. --cached 缓存区 和 本地仓库 比较
     3. --HEAD 工作目录 和 本地仓库 比较

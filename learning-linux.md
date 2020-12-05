@@ -199,3 +199,7 @@ du -sh .[!.]*
 
 除特定文件外删除所有
 rm -rf !(.a|.|..)
+
+
+ping 缺失
+apt-get install iputils-ping
