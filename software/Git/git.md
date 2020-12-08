@@ -134,6 +134,8 @@ git stash pop
   --local 默认为--local，只对本项目生效。
 
   5. 或者直接Copy上面配置的内容到 .git/config文件里面即可。
+    .git/config  
+    .git-credentials  
 
 - 方式二 clone时将账户密码放入源里，单次生效
 git clone http://username:password@git.github.com/username/project.git
@@ -144,6 +146,18 @@ git remote add origin http://username:password@git.github.com/username/project.g
 ### ssh方式
 1. 生成公钥私钥 ssh-keygen
 2. 将生成的公钥放入Git公共仓库上
+
+### 解决错误
+1. 问题  
+git: 'credential-凭证名字' is not a git command. See 'get --help'.
+2. 方案  
+部分windows系统缺少微软的 Git Credential Manager
+安裝 Git Credential Manager for Windows即可解决该问题
+下载地址  https://github.com/Microsoft/Git-Credential-Manager-for-Windows/releases/latest
+```bash
+# 查看凭证
+git config --global credential.helper
+```
 
 ## Git仓库内的特殊文件
 1. 文件忽略

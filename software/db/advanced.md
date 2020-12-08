@@ -13,3 +13,8 @@ Reading table information for completion of table and column names
 You can turn off this feature to get a quicker startup with -A
 MYSQL中数据库太大,导致读取预读库中表信息时间太长,从而显示这个提示 
 改变数据库信息的操作,比如drop一个很大的表(几千万数据)而中途终止, 造成了锁表,从而显示这个提示  show processlist;
+
+
+## TiDB
+- https://zhuanlan.zhihu.com/p/71073707
+- TiDB 是 PingCAP 公司受 Google Spanner / F1 论文启发而设计的开源分布式 HTAP (Hybrid Transactional and Analytical Processing) 数据库，结合了传统的 RDBMS 和NoSQL 的最佳特性。TiDB 兼容 MySQL，支持无限的水平扩展，具备强一致性和高可用性。TiDB 的目标是为 OLTP(Online Transactional Processing) 和 OLAP (Online Analytical Processing) 场景提供一站式的解决方案。

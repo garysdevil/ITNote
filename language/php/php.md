@@ -129,6 +129,11 @@ pecl install skywalking
 ## php.ini
 ```conf
 extension_dir="" # 定义PHP扩展的文件所在目录
+log_errors = On # 将错误日志记录进文件内
+error_log = /proc/self/fd/2 # 错误日志记录的文件位置
+# error_log = syslog # 指定产生的错误报告写入操作系统的日志里  
+display_errors = Off # 不将错误正常返回
+extension=扩展名.so  # 添加扩展
 ```
 
 ## 指令
