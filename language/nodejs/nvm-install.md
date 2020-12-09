@@ -11,8 +11,16 @@ source ~/.bashrc 或者
 https://github.com/coreybutler/nvm-windows/releases
 
 
-## npm 指定源然后安装包
+## 包管理器 npm
+1. npm install的执行过程
+    1. 发出npm install命令
+    2. npm 向 registry 查询模块压缩包的网址
+    3. 下载压缩包，存放在~/.npm(本地NPM缓存路径)目录
+    4. 解压压缩包到当前项目的node_modules目录
+
+1. npm 指定源然后安装包  
 npm i --registry=https://registry.npm.taobao.org 
+
 
 ## 源管理器
 npm install -g nrm
