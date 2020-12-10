@@ -3,12 +3,10 @@
 https://stupefied-goodall-e282f7.netlify.app/keps/  
 https://draveness.me/kubernetes-contributor/
 
-1. SIG(Special Interest Groups)   
-特别兴趣小组  
+1. SIG(Special Interest Groups) 特别兴趣小组  
 Kubernetes 目前包含 20 多个 SIG，它们分别负责了 Kubernetes 项目中的不同模块。
 
-2. KEP(Kubernetes Enhancement Proposal)  
-提案  
+2. KEP(Kubernetes Enhancement Proposal) 提案  
 因为 Kubernetes 目前已经是比较成熟的项目了，所有的变更都会影响下游的使用者，对于功能和 API 的修改都需要先在 kubernetes/enhancements 仓库对应 SIG 的目录下提交提案才能实施，所有的提案都必须经过讨论、通过社区 SIG Leader 的批准。
 
 4. WG(Working Groups) 工作小组
