@@ -48,3 +48,14 @@ hugo server -D
 # -D 编译预览
 # -t 指定themes目录下的主题
 ```
+
+6. 生成静态代码进public目录
+```
+hugo
+```
+
+## 主题
+https://themes.gohugo.io/
+https://www.gohugo.org/theme/
+
+1. 一个轻量级主题 https://github.com/Track3/hermit
