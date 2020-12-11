@@ -156,11 +156,43 @@ ALB入口控制器 https://aws.amazon.com/cn/premiumsupport/knowledge-center/eks
 将连接请求分发到不同的EC2上
 
 ## Amazon CLI
+- https://docs.aws.amazon.com/zh_cn/cli/latest/userguide/cli-configure-files.html
+- https://aws.amazon.com/cn/blogs/compute/authenticating-amazon-ecr-repositories-for-docker-cli-with-credential-helper/
+1. 安装
 ```bash
-export JAVA_HOME=/usr/lib/jvm/jre
-export EC2_HOME=/root/aws/ec2-api-tools-1.4.3.0
-export EC2_PRIVATE_KEY=pk-4QRF64MVUC7PCHX4K4IDOJ7PKU6KJXME.pem
-export EC2_CERT=cert-4QRF64MVUC7PCHX4K4IDOJ7PKU6KJXME.pem
+apt install awscli
+```
+
+2. 默认读取的配置文件
+~/aws/config
+```conf
+[default]
+output = json
+region = us-east-1
+```
+~/aws/credentials
+```conf
+[default]
+aws_access_key_id = XXX
+aws_secret_access_key =  XXX
+```
+```bash
+aws configure list
+```
+3. aws常用指令
+```bash
+# 推镜像到ECR
+aws ecr get-login --no-include-email --region us-east-1
+docker login –u AWS –p password  https://aws_account_id.dkr.ecr.us-east-1.amazonaws.com
+
+# 遇到的错误与解决措施  https://blog.csdn.net/cckavin/article/details/103591380
+Error saving credentials: error storing credentials - err: exit status 1, out: `Failed to execute child process “dbus-launch” (No such file or directory)`
+apt-get install gnupg2 pass
+
+aws ecr list-images  --repository-name 仓库名
+```
+4. 其它
+```bash
 # 执行ec2指令
 # 查看实例状态
 ec2-describe-instances --region us-east-1 --filter 'tag:aws:cloudformation:stack-name=XXX' --filter 'instance-state-name=running'
