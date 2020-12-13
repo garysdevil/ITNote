@@ -7,8 +7,29 @@
 
 ## descheduler
 - https://github.com/kubernetes-sigs/descheduler
+### 机制
+- 主要工作原理  
+使用封装好的k8s客户端client-go与k8s集群进行通信，获取集群中node和pod的情况，然后读取规则，最终决定是否驱逐node上的pod（通过标记为evicted）进其它的node上。
+
 ### 策略
-LowNodeUtilization： 根据node上所有Pod的request请求资源量/node资源总量 来评估。
+1. LowNodeUtilization： 根据node上所有Pod的request请求资源量/node资源总量 来评估。
+```yaml
+apiVersion: "descheduler/v1alpha1"
+kind: "DeschedulerPolicy"
+strategies:
+  "LowNodeUtilization":
+     enabled: true
+     params:
+       nodeResourceUtilizationThresholds:
+         thresholds:
+           "cpu" : 20 # Request小于20%则为underutilized
+           "memory": 20 # Request小于20%则为underutilized
+           "pods": 20 # Request小于20%则为underutilized
+         targetThresholds:
+           "cpu" : 50
+           "memory": 50
+           "pods": 50
+```
 
 ## 解决方案
 

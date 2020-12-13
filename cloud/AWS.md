@@ -179,11 +179,10 @@ aws_secret_access_key =  XXX
 ```bash
 aws configure list
 ```
-3. aws常用指令
+### CLI推镜像到ECR
 ```bash
-# 推镜像到ECR
 aws ecr get-login --no-include-email --region us-east-1
-docker login –u AWS –p password  https://aws_account_id.dkr.ecr.us-east-1.amazonaws.com
+docker login -u AWS -p password  https://aws_account_id.dkr.ecr.us-east-1.amazonaws.com
 
 # 遇到的错误与解决措施  https://blog.csdn.net/cckavin/article/details/103591380
 Error saving credentials: error storing credentials - err: exit status 1, out: `Failed to execute child process “dbus-launch” (No such file or directory)`
