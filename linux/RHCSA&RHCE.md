@@ -100,3 +100,21 @@ alias ll='ls -l'
     nmcli con up eth0
 
 - nmtui
+
+## 安全选项
+1. drwxrwxrwt.  
+最后的t表示开启‘粘滞’，功能为此目录下只有文件所有者才能删除此文件。
+
+2. 特殊文件属性
+    1. lsattr
+    2. chattr 
+        1. +i  设置root用户也无法删除此文件
+        2. +a 只可以添加内容
+
+3. umask
+定义创建文件和文件夹时的默认文件权限
+设置/etc/profile /etc/bashrc
+
+4. 访问控制列表 acl  ---- 未细看，运维生涯上未使用过此功能
+    1. getfacl
+    2. setfacl
