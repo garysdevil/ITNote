@@ -2,11 +2,13 @@ https://kubernetes.io/docs/concepts/policy/limit-range/
 https://kubernetes.io/zh/docs/tasks/administer-cluster/manage-resources/memory-default-namespace/
 
 ### 概览
-1. 功能
-QoS Class:（Quality of service class）服务质量等级
-    Guranteed:优先级最高。pod中每个容器同时定义了cpu和memory的request和limit，并且两者的request=limit；
-    Burstable:优先级中等。pod中至少有一个容器定义了cpu或memory的request属性，且二者不一定要相等；
-    BestEffort:优先级最低。pod中没有任何一个容器定义了request或limit属性；
+
+1. 服务质量等级
+- QoS Class（Quality of service class）
+- kubernetes 通过requests 和limits 来判断服务质量等级，以维护服务器的安全性。
+  1. Guranteed:优先级最高。pod中每个容器同时定义了cpu和memory的request和limit，并且两者的request=limit；
+  2. Burstable:优先级中等。pod中至少有一个容器定义了cpu或memory的request属性，且二者不一定要相等；
+  3. BestEffort:优先级最低。pod中没有任何一个容器定义了request或limit属性；
   
 2. 
 requests.cpu被转成docker的--cpu-shares参数，与cgroup cpu.shares功能相同
@@ -14,7 +16,8 @@ requests.memory没有对应的docker参数，作为k8s调度依据
 
 limits.cpu会被转换成docker的–cpu-quota参数。与cgroup cpu.cfs_quota_us功能相同
 limits.memory会被转换成docker的–memory参数。用来限制容器使用的最大内存
-### 具体操作
+
+### 设置limit和request
 - CPU的默认单位多少核cpu 
   100m = 0.1CPU
 - 内存的默认单位是Ki

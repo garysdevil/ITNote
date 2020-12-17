@@ -116,3 +116,14 @@ https://zhuanlan.zhihu.com/p/34332367
     2. OnFailure：失败的时候重启，Pod的阶段保持为Running，成功的时候不重启，Pod的阶段转为Succeeded
     3. Never：不管失败还是成功都不重启，Pod的阶段转为Failed或者Succeeded
 3. 对于已完成的Pod（包括Failed和Succeeded的Pod），它们的API对象会保留在系统中。当系统中创建的Pod数量超出了指定阈值（kube-controller-manager中的terminated-pod-gc-threshold）时，控制面板会清理这些已完成的Pod(包括Failed和Succeeded的Pod)。
+
+
+## API
+1. kubernetes通过http rest协议向外暴露api,各组件间和kubectl都是通过rest api调用api-server,并在rest api中使用多个api版本进行版本控制,每个版本有不同的api路径  
+例如:/api/v1或/api/extension/v1beta1
+
+2. api-group  
+kubernetes 的api是按照api-group进行分组的,各api在不同的组下
+  1. core: 核心组, kubernetes早期就存在或者必须的资源, 其路径为 /api/v1, 对应的yaml为:apiVersion: v1
+  2. 其他组: 核心组之外的资源,路径为/apis/Group_Name/Version,yaml为apiVersion: GroupName/Version。  
+        例如Deployment其apiVersion: apps/v1,那么其Rest地址为/apis/apps/v1/namespaces/{namespace}/deployments
