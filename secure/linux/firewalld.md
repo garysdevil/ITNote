@@ -1,19 +1,21 @@
 ## firewalld
-- 参考 https://blog.51cto.com/14154700/2409417
-
+### 概念
 - Redhat Enterprise Linux7已经默认使用firewalld作为防火墙
 
 - 被封装过的iptables
 
 - firewall划分不同的区域，不同的区域里可以指定不同的规则，不同的网卡可以指定使用不同的firewall区域，默认为public区域。
 
+- 服务
+ systemctl status firewalld.service
+
+### firewall-cmd
 - 参数
 --permanent 永久设置
 --runtime-to-permanent 将当前运行时的配置写入规则配置文件中，使当前内存中的规则为永久性配置。
 
-1. systemctl status firewalld.service
 
-2. 查看默认的区域
+1. 区域相关操作
 默认情况下，默认区域是public
 ```bash
 firewall-cmd --get-default-zone # 查看默认区域

@@ -19,7 +19,7 @@
     - POSTROUTING  路由后的数据包
 4. ${packet_pattern} 筛选需要进行检查的数据包
     1. -s 检查所有的数据包，确定它的源IP地址
-
+    2. ...
 5. -j ${what_to_do}
     1. DROP 丢弃数据包
     2. REJECT 丢弃数据包，且向请求计算机发送一个错误消息
