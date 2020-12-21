@@ -281,6 +281,12 @@ filter {
   #      drop {} 
   #  } 
   #}
+  # # 字段类型转换
+  # if [request_time] {
+  #   mutate{
+  #     convert => ["request_time","float"]  #设置request_time的类型为float类型
+  #   }
+  # }
 }
 output {
   stdout {

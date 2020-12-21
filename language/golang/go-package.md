@@ -32,7 +32,8 @@ fmt.Println(string(data))
 data, _ := json.Marshal(结构体对象)
 var out bytes.Buffer
 json.Indent(&out, data, "", "\t")
-fmt.Printf("array=%v\n", out.String())
+fmt.Printf(
+    
 ```
 2. fmt
 ```go
