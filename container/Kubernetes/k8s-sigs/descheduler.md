@@ -36,16 +36,25 @@ strategies:
 1. 基于descheduler项目，通过调用其它工具（例如Prometheus）来获取node资源的实际使用情况UsedResource，然后进行 UsedResource/node资源总量 来评估，是否需要将Pod调度到另一个节点上。
 
 ### 实施过程
-- 功能
-    1. 获取node节点的资源实际使用情况metrics 
-    2. 获取Pod的资源使用情况metrics  
-        - 如何获取Pod的资源使用情况metrics ？？？？
-    3. 获取百分比，然后和配置进行对比，选出资源overActualUtilization的节点。
-    4. 选出overActualUtilization节点上可以evict的pod
-    5. 将pod调度到underActualUtilization的节点上。 
+1. 获取node节点的Allocatable资源 (通过client-go查看Etcd获取Allocatable)
+2. 获取node节点的资源实际使用情况metrics (通过 metric-server)
+3. 获取Pod的资源使用情况metrics (通过 metric-server)
+3. 和配置进行对比，选出资源使用超标的节点
+4. 选出可以evict的pod
+5. 重新调度
+   - 方式一 将pod调度到资源使用低的节点上。  -- 需要重写k8s scheduler
+   - 方式二 terminate pod
 #### 具体细节
 - 使用k8s库go-client和apiserver进行交互
-    1. 节点的时时使用的内存和CPU
-    curl 127.0.0.1:8001/apis/metrics.k8s.io/v1beta1/nodes/ip-172-31-46-147.ec2.internal
-    2. 获取所有节点的内存和CPU
-    curl 127.0.0.1:8001//api/v1/nodes
+  1. 节点真实使用的内存和CPU
+  curl 127.0.0.1:8001/apis/metrics.k8s.io/v1beta1/nodes/${nodename}
+  2. Pod真实使用的内存和CPU
+  curl 127.0.0.1:8001/apis/metrics.k8s.io/v1beta1/${namespace}/pods/${podname}
+  3. 获取所有节点的内存和CPU
+  curl 127.0.0.1:8001//api/v1/nodes/
+
+#### metric-server
+0. Metrics Server 是 Kubernetes 集群核心监控数据的聚合器，Metrics Server 从 Kubelet 收集资源指标，并通过 Merics API 在 Kubernetes APIServer 中提供给缩放资源对象 HPA 使用。也可以通过 Metrics API 提供的 Kubectl top 查看 Pod 资源占用情况，从而实现对资源的自动缩放。
+1. 只保存数据在内存里
+2. 不保存历史数据
+3. metric-server是扩展的apiserver，依赖于kube-aggregator，因此需要在apiserver中开启相关参数。

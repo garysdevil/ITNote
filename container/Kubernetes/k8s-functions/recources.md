@@ -6,7 +6,7 @@ https://kubernetes.io/zh/docs/tasks/administer-cluster/manage-resources/memory-d
 1. 服务质量等级
 - QoS Class（Quality of service class）
 - kubernetes 通过requests 和limits 来判断服务质量等级，以维护服务器的安全性。
-  1. Guranteed:优先级最高。pod中每个容器同时定义了cpu和memory的request和limit，并且两者的request=limit；
+  1. Guaranteed:优先级最高。pod中每个容器同时定义了cpu和memory的request和limit，并且两者的request=limit；
   2. Burstable:优先级中等。pod中至少有一个容器定义了cpu或memory的request属性，且二者不一定要相等；
   3. BestEffort:优先级最低。pod中没有任何一个容器定义了request或limit属性；
   
