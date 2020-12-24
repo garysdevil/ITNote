@@ -112,7 +112,7 @@ func swap(x, y string) (string, string) {
 
 5. 循环 只有for循坏：break，continue，goto
     - for 循环不需要()
-    - for i := 0; i <= 10; i++{}
+    - for i := 0; i < 10; i++{}
     - for k, v := range kvs{} 循环数组、切片、map，返回元素的索引和索引对应的值。 
 
 6. Go 并发，通过go关键字开启一个 goroutine 协程

@@ -153,7 +153,7 @@ spec:
       restartPolicy: Always
 ```
 
-## buxybox
+## busybox
 ```yaml
 kind: Pod
 apiVersion: v1
@@ -174,4 +174,56 @@ spec:
   restartPolicy: "Never"
   # nodeSelector:
   #   kubernetes.io/hostname: 10.200.79.70
+```
+
+## cornjob
+```yaml
+piVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cronjob-name
+  # namespace: kube-system
+spec:
+  schedule: "*/1 * * * *"
+  concurrencyPolicy: "Forbid"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          name: cronjob-name
+        spec:
+          containers:
+          - name: cronjob-name
+            image: busybox
+            command:
+              - "pwd"
+          restartPolicy: "Never"
+```
+
+## job
+```yaml
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-name
+  # namespace: kube-system
+spec:
+  parallelism: 1
+  completions: 1
+  template:
+    metadata:
+      name: job-name
+    spec:
+      # priorityClassName: system-cluster-critical
+      containers:
+        - name: job-name
+          image: busybox
+          command:
+            - "pwd"
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "256Mi"
+      restartPolicy: "Never"
 ```

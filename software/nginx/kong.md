@@ -61,11 +61,13 @@ docker run -d --name kong \
 docker exec -it kong kong reload
 ```
 
-### docker/docker-compose
+### docker/docker-compose 安装
 https://github.com/Kong/docker-kong/tree/master/compose
 
 
-## 安装UI
+### k8s安装
+https://docs.konghq.com/2.2.x/kong-for-kubernetes/install/
+## 安装UI konga
 1. 安装
 ```bash
 dbhost=db

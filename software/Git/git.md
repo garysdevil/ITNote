@@ -69,13 +69,15 @@ git pull origin master
     4. --stat 只显示有差异的文件名和行数
 
 2. log
-git log 输出日志信息。  
--p  用来显示每次提交的内容差异。  
--${NUM} 来仅显示最近两次提交。例如： git log -2  
---pretty=oneline / short 用来精简显示日志。  
-具体例子：  
-git log -p + 文件名 （可查看该文件以前每一次push的修改内容）  
-git log -p -1 + 文件名 （只查看该文件当前这一次的push内容）  
+  - git log 输出日志信息
+  -p  用来显示每次提交的内容差异。  
+  -${NUM} 来仅显示最近两次提交。例如： git log -2  
+  --pretty=oneline / short 用来精简显示日志。  
+  - 具体例子：  
+  git log -p + 文件名 （可查看该文件以前每一次push的修改内容）  
+  git log -p -1 + 文件名 （只查看该文件当前这一次的push内容）  
+
+  - 查看节点树 git log --oneline --graph --decorate --all
 
 3. 将另一个分支的commit合并到此分支上  
 git  cherry-pick  某次commit的id号
@@ -148,6 +150,10 @@ git remote add origin http://username:password@git.github.com/username/project.g
 1. 生成公钥私钥 ssh-keygen
 2. 将生成的公钥放入Git公共仓库上
 
+3. 指定git使用的私钥
+https://blog.csdn.net/SCHOLAR_II/article/details/72191042
+
+GIT_SSH_COMMAND="ssh -i ${privateKeyPath}" git pull
 ### 解决错误
 1. 问题  
 git: 'credential-凭证名字' is not a git command. See 'get --help'.
