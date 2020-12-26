@@ -125,6 +125,44 @@ supervisord -c /etc/supervisor/supervisord.conf
 4. 进入交互界面
 supervisorctl
 
+### linux select 指令建立菜单
+```bash
+#!/bin/bash 
+
+fruits=( 
+"apple" 
+"pear" 
+"orange" 
+"watermelon" 
+) 
+
+# echo "Please guess which fruit I like :" 
+# select var in ${fruits[@]} 
+# do 
+# if [ $var = "apple" ]; then 
+#     echo "Congratulations, you are my good firend!" 
+#     break 
+# else 
+#     echo "Try again!" 
+# fi 
+# done 
+
+select var in ${fruits[@]} 
+do 
+case $var in
+    "apple"|"pear"|"orange") echo "123";break;
+    ;;
+    "watermelon")
+    echo "4" 
+    ;;
+    *)
+    echo "5"
+    exit 1 
+    ;; 
+esac
+done 
+
+```
 
 ## 未归类
 获取公网IP ： 

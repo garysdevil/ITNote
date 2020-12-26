@@ -154,6 +154,7 @@ spec:
 ```
 
 ## busybox
+1. 
 ```yaml
 kind: Pod
 apiVersion: v1
@@ -174,6 +175,54 @@ spec:
   restartPolicy: "Never"
   # nodeSelector:
   #   kubernetes.io/hostname: 10.200.79.70
+```
+2. 
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    project: project-name
+    envoriment: test
+    app: busybox-deploy
+  name: busybox-deploy
+  namespace: default
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: busybox-deploy
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: busybox-deploy
+    spec:
+      containers:
+      - image: busybox
+        command:
+        - "/bin/sh"
+        args:
+        - "-c"
+        - "sleep 600s"
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - "/bin/sh"
+              - "-c"
+              - "sleep 600s"
+        imagePullPolicy: Always
+        name: busybox-deploy
+      restartPolicy: Always
+~                          
 ```
 
 ## cornjob
