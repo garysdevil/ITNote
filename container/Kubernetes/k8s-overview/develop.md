@@ -26,3 +26,7 @@ Kubernetes 项目使用 golint 作为静态检查工具
 
 ## 版本迭代
 alpha --> beta
+
+## 设计模式
+- Kubernetes它工作的整个核心都是围绕Etcd里面存的对象来工作的，称这之为面向API Object的编程模型。
+- Kubernetes里所有的组件，Scheduller，Kubelet等等，全部维护了一个自己的Control Loop，相当于在不断地循环Etcd。

@@ -1,5 +1,4 @@
 # 非内置包
-## 常用的第三方包
 1. 读取配置与热加载  github.com/spf13/viper  github.com/fsnotify/fsnotify
 2. 数据库ORM github.com/jinzhu/gorm  github.com/go-sql-driver/mysql  gorm.io/gorm(v2 要求go1.14版本)
 3. ldap认证 github.com/go-ldap/ldap/v3 学习文档https://godoc.org/gopkg.in/ldap.v3
@@ -7,6 +6,7 @@
 5. Token github.com/dgrijalva/jwt-go
 6. 文档 github.com/swaggo/gin-swagger  github.com/swaggo/files   github.com/swaggo/swag（生成doc）
 7. 日志 github.com/sirupsen/logrus
+8. 命令行程序 https://github.com/spf13/cobra
 
 ## ORM包
 ### gorm
@@ -92,4 +92,69 @@ func sayHello(c *gin.Context) {
 	name := c.Param("name")
 	c.String(http.StatusOK, name+",helloWorld")
 }
+```
+
+## 命令行程序
+cobra
+- https://github.com/spf13/cobra
+```go
+package main
+
+import (
+	"fmt"
+	"strings"
+
+	"github.com/spf13/cobra"
+)
+
+func main() {
+	var echoTimes int
+
+	var cmdPrint = &cobra.Command{
+		Use:   "print [string to print]",
+		Short: "Print anything to the screen",
+		Long: `print is for printing anything back to the screen.
+For many years people have printed back to the screen.`,
+		Args: cobra.MinimumNArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("Print: " + strings.Join(args, " "))
+		},
+	}
+
+	var cmdEcho = &cobra.Command{
+		Use:   "echo [string to echo]",
+		Short: "Echo anything to the screen",
+		Long: `echo is for echoing anything back.
+Echo works a lot like print, except it has a child command.`,
+		Args: cobra.MinimumNArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("Echo: " + strings.Join(args, " "))
+		},
+	}
+
+	var cmdTimes = &cobra.Command{
+		Use:   "times [string to echo]",
+		Short: "Echo anything to the screen more times",
+		Long: `echo things multiple times back to the user by providing
+a count and a string.`,
+		Args: cobra.MinimumNArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			for i := 0; i < echoTimes; i++ {
+				fmt.Println("Echo: " + strings.Join(args, " "))
+			}
+		},
+	}
+
+	cmdTimes.Flags().IntVarP(&echoTimes, "times", "t", 1, "times to echo the input")
+
+	var rootCmd = &cobra.Command{Use: "app"}
+	rootCmd.AddCommand(cmdPrint, cmdEcho)
+	cmdEcho.AddCommand(cmdTimes)
+	rootCmd.Execute()
+}
+
+```
+```bash
+go run . echo "hello"
+go run . echo times -t=3 "hello"
 ```

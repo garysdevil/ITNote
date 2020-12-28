@@ -43,6 +43,12 @@ kubectl api-resources
 9. 查看所有Pod的状态
 kubectl  get po |   awk '{count[$3]++;} END {for(i in count) {print i,"" count[i]}}' | grep -v 'STATUS'
 
+10. 删除pod
+
+kubectl delete po ${pod-name} --grace-period 30
+--grace-period # default 30s
+--force # 强制删除
+
 10. node维护
 cordon 命令将node1标记为不可调度，不影响任何已经在其上的Pod，但新的pod不能被调度过去。 node1状态变为SchedulingDisabled
 drain 命令将运行在node1上运行的pod标记为evicted状态，随后pod平滑的转移其它节点上。

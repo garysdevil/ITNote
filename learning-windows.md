@@ -21,8 +21,6 @@ mkdir
 3. 文件的创建
 type nul>test.go
 
-
-
 ## PowerShell
 
 1. 变量的创建与使用
@@ -35,3 +33,6 @@ get-history
 3. 文件的创建
 new-item $FILENAEM -type file
 
+# Others
+1. RSS
+    - https://juejin.cn/post/6844903760142024711
