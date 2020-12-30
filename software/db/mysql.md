@@ -132,7 +132,8 @@ select * from information_schema.columns where table_schema = '数据库名' and
 set global validate_password_policy=0;
 set global validate_password_length=1;
 
-
+12. 创建数据库
+create database ${DATABASE} charset 'utf8mb4';
 
 ### 登入&查询导出数据
 - 参考  
