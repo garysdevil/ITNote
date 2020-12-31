@@ -1,11 +1,14 @@
-## free
+
 - 参考
     1. https://zhuanlan.zhihu.com/p/80909555
     2. https://freessl.cn/
     3. https://blog.csdn.net/ithomer/article/details/78075006
 
-./certbot-auto certonly -d "*.domain.com" --manual --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory --no-bootstrap
 
+## letsencrypt.org
+1. 申请获取证书
+./certbot-auto certonly -d "*.domain.com" --manual --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory --no-bootstrap
+2. 同一个域名每分钟最多能请求5次
 ## acme
 ### 安装acme
 curl  https://get.acme.sh | sh
@@ -52,7 +55,7 @@ server {
 }
 ```
 
-## acme升级
+### acme自身升级
 ```bash
 # 升级 acme.sh 到最新版
 acme.sh --upgrade
@@ -68,3 +71,29 @@ acme.sh --upgrade  --auto-upgrade  0
 - 参考
     1. https://github.com/Kong/kong-plugin-acme
     2. https://docs.konghq.com/hub/kong-inc/acme/0.2.2.html#parameters
+
+```bash
+# 问题 {"message":"failed to update certificate: acme directory request failed: 20: unable to get local issuer certificate"}
+缺少配置 KONG_LUA_SSL_TRUSTED_CERTIFICATE /etc/ssl/certs/ca-certificates.crt 或者 /etc/ssl/certs/ca-bundle.crt 
+```
+```bash
+# 增加acme插件
+curl http://localhost:8001/plugins \
+    -d name=acme \
+    -d config.account_email=garys163@163.com \
+    -d config.tos_accepted=true \
+    -d config.fail_backoff_minutes=1 \
+    -d config.domains[]=test2.garys.top \
+    -d config.domains[]=test3.garys.top
+# 创建证书
+curl https://test2.garys.top:8443 --resolve test2.garys.top:8443:127.0.0.1 -vk
+# 手动更新证书
+curl http://localhost:8001/acme -d host=mydomain.com
+```
+
+## 检测
+1. 检测SSL证书过期时间  
+echo '' | openssl s_client -servername www.baidu.com -connect www.baidu.com:443 2>/dev/null \
+       |openssl x509 -noout -dates 2> /dev/null |grep notAfter |awk -F '=' '{print $2}'
+2. 检测域名过期时间  
+whois baidu.com | grep 'Registry Expiry Date: '|awk '{print $NF}' |awk -F 'T' '{print $1}'

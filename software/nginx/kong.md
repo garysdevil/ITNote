@@ -9,6 +9,7 @@ https://docs.konghq.com/2.2.x/configuration/
 ## 安装 kong
 - 默认端口
     1. 8000 请求进入端口，kong根据配置的规则转发到真实的后台服务地址。
+    2. 8443 请求进入端口
     2. 8001 管理端口，插件设置、API的增删改查、以及负载均衡等一系列的配置都是通过8001端口进行管理。
 ### docker安装
 - 参考
@@ -65,6 +66,25 @@ docker exec -it kong kong reload
 https://github.com/Kong/docker-kong/tree/master/compose
 
 
+### kong使用
+- 参考
+https://docs.konghq.com/2.0.x/admin-api/
+```bash
+# 查看所有的插件
+curl http://localhost:8001/plugins/ | python -m json.tool
+# 删除一个插件
+curl  http://localhost:8001/plugins/${plugin-id} -XDELETE
+
+# 列出所有证书
+curl  http://localhost:8001/certificates | python -m json.tool
+# 查看某个证书
+curl  http://localhost:8001/certificates/${certificate-id} | python -m json.tool
+# 删除证书
+curl  http://localhost:8001/certificates/${ca_certificate id} -XDELETE
+
+# 查看hostname和证书的对应关系
+curl  http://localhost:8001/snis | python -m json.tool
+```
 ### k8s安装
 https://docs.konghq.com/2.2.x/kong-for-kubernetes/install/
 ## 安装UI konga

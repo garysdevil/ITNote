@@ -20,10 +20,10 @@
 apiVersion: scheduling.k8s.io/v1beta1
 kind: PriorityClass
 metadata:
-  name: high-priority
+  name: priority-10000
 value: 10000 # 数字越大，优先级越高，超过一亿的数字被系统保留，用于指派给系统组件。
 globalDefault: false
-description: "This priority class should be used for xyz service pods only"
+description: "Avoid evicting by descheduler"
 ```
   - globalDefault 
     1. 表示 PriorityClass 的值应该给那些没有设置 PriorityClassName 的 Pod 使用。
