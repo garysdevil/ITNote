@@ -67,33 +67,89 @@ acme.sh  --upgrade  --auto-upgrade
 acme.sh --upgrade  --auto-upgrade  0
 ```
 
-## kong acme
+## kong-plugin-acme
 - 参考
     1. https://github.com/Kong/kong-plugin-acme
     2. https://docs.konghq.com/hub/kong-inc/acme/0.2.2.html#parameters
 
+### 使用
+1. 问题
+    1. 报错 {"message":"failed to update certificate: acme directory request failed: 20: unable to get local issuer certificate"}
+    2. 原因 Kong缺少配置 lua_ssl_trusted_certificate
+    3. 解决措施
+        - KONG_LUA_SSL_TRUSTED_CERTIFICATE=/etc/ssl/certs/ca-certificates.crt (ubuntu系列容器)
+        - KONG_LUA_SSL_TRUSTED_CERTIFICATE=/etc/ssl/certs/ca-bundle.crt (centos系列容器)
+
+2. 创建证书
 ```bash
-# 问题 {"message":"failed to update certificate: acme directory request failed: 20: unable to get local issuer certificate"}
-缺少配置 KONG_LUA_SSL_TRUSTED_CERTIFICATE /etc/ssl/certs/ca-certificates.crt 或者 /etc/ssl/certs/ca-bundle.crt 
-```
-```bash
-# 增加acme插件
+# 1 增加acme插件
+email=
+domain1=
+domain2=
 curl http://localhost:8001/plugins \
     -d name=acme \
-    -d config.account_email=garys163@163.com \
+    -d config.account_email=${email} \
     -d config.tos_accepted=true \
     -d config.fail_backoff_minutes=1 \
-    -d config.domains[]=test2.garys.top \
-    -d config.domains[]=test3.garys.top
-# 创建证书
-curl https://test2.garys.top:8443 --resolve test2.garys.top:8443:127.0.0.1 -vk
-# 手动更新证书
-curl http://localhost:8001/acme -d host=mydomain.com
+    -d config.storage=kong \
+    -d config.domains[]=${domain1}
+# 2. 增加域名，更新插件信息
+curl http://localhost:8001/plugins/{plugin-id} \
+    -d name=acme \
+    -d config.account_email=${email} \
+    -d config.tos_accepted=true \
+    -d config.fail_backoff_minutes=1 \
+    -d config.storage=kong \
+    -d config.domains[]=${domain1} \
+    -d config.domains[]=${domain2} -XPATCH
+
+# 2 为域名${domain1}创建https证书
+curl https://${domain1}:8443 --resolve https://${domain1}:8443:127.0.0.1 -vk
+
+# 3 手动更新证书
+curl http://localhost:8001/acme -d host=${domain1}
 ```
+
+### 检测脚本
+```bash
+
+data=`curl  http://localhost:8001/certificates -s`
+https_port=443
+echo ${data} | jq .data | jq -c  '.[]' | while read i; do
+    domain=`echo $i | jq '.snis[0]'`;
+    domain="${domain%\"}"
+    domain="${domain#\"}"
+    expire_time=`echo '' | openssl s_client -servername ${domain} -connect ${domain}:${https_port} 2>/dev/null \
+       | openssl x509 -noout -dates 2> /dev/null |grep notAfter |awk -F '=' '{print $2}'`
+    
+    expire_timestamp=`date -d "${expire_time}" +%s`
+    cur_timestamp=`date +%s`
+    left_timestamp=$[expire_timestamp - cur_timestamp]
+    alarm_timestamp=$[60*60*24*7]
+
+    # log
+    echo "domain: $domain";
+    echo "expire_time: $expire_time";  # 7days
+    if [ ${left_timestamp} -lt ${alarm_timestamp} ];then 
+        echo -1;
+        # echo $i | jq '.'
+    else 
+        echo ${left_timestamp};
+    fi
+done
+```
+
+### 深入
+1. 
+kong-plugin-acme如果选择了kong作为存储，则自动更新域名证书的信息会被存放在kong的acme_storage表中。  
+如果acme_storage表的信息被更改或者删除，则自动更新域名证书的机制可能会失效。  
+则只能手动检测触发更新 curl http://localhost:8001/acme -XPATCH  
+或者删除插件再重新创建。  
 
 ## 检测
 1. 检测SSL证书过期时间  
 echo '' | openssl s_client -servername www.baidu.com -connect www.baidu.com:443 2>/dev/null \
-       |openssl x509 -noout -dates 2> /dev/null |grep notAfter |awk -F '=' '{print $2}'
+       | openssl x509 -noout -dates 2> /dev/null |grep notAfter |awk -F '=' '{print $2}'
+
 2. 检测域名过期时间  
 whois baidu.com | grep 'Registry Expiry Date: '|awk '{print $NF}' |awk -F 'T' '{print $1}'

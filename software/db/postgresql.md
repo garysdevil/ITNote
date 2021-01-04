@@ -79,6 +79,7 @@ show data_directory;
     6. 查看某个库中某个表的记录：select * from apps limit 1;
     7. 显示字符集：\encoding
     8. 退出psgl：\q
+    9. 格式化输出： \x 
 
 4. 添加索引
 ```sql
