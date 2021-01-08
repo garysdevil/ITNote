@@ -2,12 +2,16 @@
     1. https://github.com/envoyproxy/envoy
     2. https://www.envoyproxy.io/docs/envoy/latest/about_docs
 
+## 概念
+- 设计理念：对应用程序而言，网络应该是透明的。当网络或应用程序出现故障时，应当能够很容易确定问题的根源。
 ## 简单使用
 1. debug
 docker run -d  --name envoy -p 10000:10000 -p 9901:9901 envoyproxy/envoy-debug:v1.16-latest
 docker run -d  --name envoy -p 10000:10000 -p 9901:9901 -v /tmp/envoy.yaml:/etc/envoy/envoy.yaml envoyproxy/envoy-debug:v1.16-latest
-vim envoy.yaml
+docker run -d  --name envoy -p 10000:10000 -p 9901:9901 -v /tmp/envoy.yaml:/etc/envoy/envoy.yaml envoyproxy/envoy-debug:v1.16-latest sh -c -- "whoami && envoy -c /etc/envoy/envoy.yaml --restart-epoch $RESTART_EPOCH"
 
+
+vim envoy.yaml
 ```yaml
 admin:
   access_log_path: /tmp/admin_access.log
