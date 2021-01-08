@@ -8,8 +8,7 @@
 1. debug
 docker run -d  --name envoy -p 10000:10000 -p 9901:9901 envoyproxy/envoy-debug:v1.16-latest
 docker run -d  --name envoy -p 10000:10000 -p 9901:9901 -v /tmp/envoy.yaml:/etc/envoy/envoy.yaml envoyproxy/envoy-debug:v1.16-latest
-docker run -d  --name envoy -p 10000:10000 -p 9901:9901 -v /tmp/envoy.yaml:/etc/envoy/envoy.yaml envoyproxy/envoy-debug:v1.16-latest sh -c -- "whoami && envoy -c /etc/envoy/envoy.yaml --restart-epoch $RESTART_EPOCH"
-
+docker run -d  --name envoy -p 10000:10000 -p 9901:9901 -v /tmp/envoy.yaml:/etc/envoy/envoy.yaml envoyproxy/envoy-dev^C1.16-latest sh -c -- "envoy -c /etc/envoy/envoy.yaml --restart-epoch 0"
 
 vim envoy.yaml
 ```yaml
