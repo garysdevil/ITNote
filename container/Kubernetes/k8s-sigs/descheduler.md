@@ -58,3 +58,7 @@ strategies:
 1. 只保存数据在内存里
 2. 不保存历史数据
 3. metric-server是扩展的apiserver，依赖于kube-aggregator，因此需要在apiserver中开启相关参数。
+
+### 缺陷
+1. 首次调度由Controller决定，descheduler无法控制。
+2. 可能的死循环：descheduler驱逐了Pod-A，新Pod-A每次都会被再次调用到原来的node节点上。

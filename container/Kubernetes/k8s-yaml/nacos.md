@@ -2,7 +2,7 @@
 - k8s部署nacos https://nacos.io/zh-cn/docs/use-nacos-with-kubernetes.html
 
 
-#### 使用已有的StorageClass创建部署nacos
+## 使用已有的StorageClass创建部署nacos
 0. git clone https://github.com/nacos-group/nacos-k8s.git
 
 1. 增加namespace键值 和 更改storageClassName键值，然后执行创建pvc
@@ -21,3 +21,9 @@ kubectl create -f  nacos-k8s/deploy/nacos/nacos-quick-start-ceph.yaml -n 指定�
 6. 登陆nacos的web界面
 http://10.200.79.70:38848/nacos/index.html#/login
 nacos/nacos
+
+## docker-compose
+1. 部署单节点nacos
+git clone https://github.com/nacos-group/nacos-docker
+cd nacos-docker
+docker-compose -f example/standalone-mysql-5.7.yaml up -d

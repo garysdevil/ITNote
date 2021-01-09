@@ -71,6 +71,7 @@ docker run -d -e SW_OAP_ADDRESS=127.0.0.1:11800 -p 9000:9000 -v /etc/nginx/html:
 -e 参数
 -p 主机端口:容器端口
 -d 主机路径:容器路径
+--name 指定容器名字
 
 ## docker配置更改
 ### 登陆docker仓库Harbor
