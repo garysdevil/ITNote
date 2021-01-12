@@ -4,11 +4,14 @@
 
 ## 概念
 - 设计理念：对应用程序而言，网络应该是透明的。当网络或应用程序出现故障时，应当能够很容易确定问题的根源。
-## 简单使用
+## 基本使用
 1. debug
 docker run -d  --name envoy -p 10000:10000 -p 9901:9901 envoyproxy/envoy-debug:v1.16-latest
 docker run -d  --name envoy -p 10000:10000 -p 9901:9901 -v /tmp/envoy.yaml:/etc/envoy/envoy.yaml envoyproxy/envoy-debug:v1.16-latest
-docker run -d  --name envoy -p 10000:10000 -p 9901:9901 -v /tmp/envoy.yaml:/etc/envoy/envoy.yaml envoyproxy/envoy-dev^C1.16-latest sh -c -- "envoy -c /etc/envoy/envoy.yaml --restart-epoch 0"
+docker run -d  --name envoy -p 10000:10000 -p 9901:9901 -v /tmp/envoy.yaml:/etc/envoy/envoy.yaml envoyproxy/envoy-alpine:v1.16-latest sh -c -- "envoy -c /etc/envoy/envoy.yaml"
+
+## 配置
+- 灰度发布，流量分割 https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_conn_man/traffic_splitting.html?highlight=runtime_fraction
 
 vim envoy.yaml
 ```yaml
@@ -96,3 +99,42 @@ static_resources:
 
 ```
 1. host_rewrite：更改 HTTP 请求的入站 Host 头信息
+
+
+## 热重启包装器-Python
+- 脚本 https://github.com/envoyproxy/envoy/blob/release/v1.16/restarter/hot-restarter.py
+- 使用方式 https://www.envoyproxy.io/docs/envoy/latest/operations/hot_restarter#operations-hot-restarter
+
+- python /hot-restarter-1.16.py /start_envoy.sh
+
+- 生成镜像
+```Dockerfile
+FROM envoyproxy/envoy-alpine:v1.16-latest as envoy
+
+COPY hot-restarter-1.16.py start_envoy.sh /
+RUN chmod +x  /start_envoy.sh && echo 'kill -HUP 1' > /restart.sh && apk update python2 && apk add python2 --no-cache
+ENTRYPOINT [ "python2", "/hot-restarter-1.16.py", "/start_envoy.sh" ]
+```
+
+- 信号
+  1. SIGTERM：将干净地终止所有子进程并退出。
+  2. SIGHUP：将重新调用作为第一个参数传递给热重启程序的脚本，来进行热重启。
+  3. SIGCHLD：如果任何子进程意外关闭，那么重启脚本将关闭所有内容并退出以避免处于意外状态。随后，控制进程管理器应该重新启动重启脚本以再次启动Envoy。
+  4. SIGUSR1：将作为重新打开所有访问日志的信号，转发给Envoy。可用于原子移动以及重新打开日志轮转
+
+### 相关参数
+1. --drain-time-s <integer> Defaults to 600 seconds (10 minutes)
+设置排空连接的时间
+
+2. --parent-shutdown-time-s <integer> Defaults to 900 seconds (15 minutes).
+设置热重启时关闭parent process的等待时间
+
+## 配置检查工具
+1. 安装bazel来编译检查工具  
+https://docs.bazel.build/versions/3.7.0/getting-started.html  
+
+2. 编译生成检查工具
+```bash
+bazel build //test/tools/config_load_check:config_load_check_tool  
+bazel-bin/test/tools/config_load_check/config_load_check_tool ${PATH}
+```

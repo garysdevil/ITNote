@@ -51,7 +51,7 @@ timedatectl list-timezones |grep Shanghai    # 查找中国时区的完整名称
 timedatectl set-timezone Asia/Shanghai # 临时设置，重启后失效
 ln -sf /usr/share/zoneinfo/Asia/Hong_Kong /etc/localtime
 
-### linux 上验证websocket的连通性
+### websocket连通性测试
 1. 
 apt install node-ws (ubuntu16)
 npm install -g wscat (centos)
@@ -163,7 +163,14 @@ esac
 done 
 
 ```
-
+### gRPC测试工具
+- https://github.com/bojand/ghz
+- 参数
+    - -c 并发数量 default 50
+    - -n 总共的请求数量 default 200
+    - --call 请求的方法
+    - --insecure
+    - -m 元数据
 ## 未归类
 获取公网IP ： 
 curl cip.cc 

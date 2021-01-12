@@ -221,8 +221,7 @@ spec:
               - "sleep 600s"
         imagePullPolicy: Always
         name: busybox-deploy
-      restartPolicy: Always
-~                          
+      restartPolicy: Always               
 ```
 
 ## cornjob
