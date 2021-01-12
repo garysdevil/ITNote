@@ -118,3 +118,13 @@ alias ll='ls -l'
 4. 访问控制列表 acl  ---- 未细看，运维生涯上未使用过此功能
     1. getfacl
     2. setfacl
+
+4. SELinux  未看
+    1. 安全模型：主题、对象、动作
+        - 主题：进程
+        - 对象：可以被主题访问的资源
+        - 动作
+    2. 查看文件上下文 ls -Z
+    3. /etc/selinux/config
+    4. 三种配置模式：enforcing  permissive  disabled
+

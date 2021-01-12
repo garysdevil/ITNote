@@ -12,11 +12,14 @@
 ## acme
 ### 安装acme
 curl  https://get.acme.sh | sh
+或者
+https://github.com/acmesh-official/get.acme.sh
 
 ### 申请证书
 - 参考 https://github.com/acmesh-official/acme.sh
 1. http 方式
 ```conf
+# nginx的域名必须是完全匹配模式
 server_name test2.garys.top
 ```
 ```bash
