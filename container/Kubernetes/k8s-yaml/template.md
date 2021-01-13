@@ -250,7 +250,6 @@ spec:
 
 ## job
 ```yaml
----
 apiVersion: batch/v1
 kind: Job
 metadata:

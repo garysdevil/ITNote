@@ -84,6 +84,21 @@ show variables like "%character%";
 show variables like "%collation%";
 
 ## SQL增删改查
+### 简单SQL 
+### 复杂SQL
+### 事务
+1. 全局开启事务模式
+SET AUTOCOMMIT=0 禁止自动提交
+
+2. 显式地开启一个事务
+```sql
+BEGIN -- 或 START TRANSACTION 显式地开启一个事务
+-- 执行sql语句
+SAVEPOINT identifier
+-- 执行sql语句
+ROLLBACK TO identifier 
+COMMIT -- 或 ROLLBACK
+```
 
 ## 运维基本操作 
 ### information_schema数据库

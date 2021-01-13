@@ -10,14 +10,14 @@ https://kubernetes.io/zh/docs/tasks/administer-cluster/manage-resources/memory-d
   2. Burstable:优先级中等。pod中至少有一个容器定义了cpu或memory的request属性，且二者不一定要相等；
   3. BestEffort:优先级最低。pod中没有任何一个容器定义了request或limit属性；
   
-2. 
+2. k8s/docker/linux
 requests.cpu被转成docker的--cpu-shares参数，与cgroup cpu.shares功能相同
 requests.memory没有对应的docker参数，作为k8s调度依据
 
 limits.cpu会被转换成docker的–cpu-quota参数。与cgroup cpu.cfs_quota_us功能相同
 limits.memory会被转换成docker的–memory参数。用来限制容器使用的最大内存
 
-### 设置limit和request
+### 设置Pod的limit和request
 - CPU的默认单位多少核cpu 
   100m = 0.1CPU
 - 内存的默认单位是Ki
@@ -71,3 +71,53 @@ spec:
 3. 容器声明了内存限制，而没有声明内存请求；内存请求被设置为它的内存限制相同的值。
 
 4. 容器声明了内存请求，但没有内存限制；则使用命名空间的默认内存限制。
+
+### 命名空间的默认request和limit
+1. 命名空间request和limit默认值
+```yaml
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: mem-limit-range
+spec:
+  limits:
+  - default:
+      memory: 512Mi
+      cpu: 1
+    defaultRequest:
+      memory: 256Mi
+      cpu: 0.5
+    type: Container
+```
+
+2. 最大值最小值
+```yaml
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: mem-min-max-demo-lr
+spec:
+  limits:
+  - max:
+      memory: 1Gi
+    min:
+      memory: 500Mi
+    type: Container
+```
+
+3. 查看limitrange
+kubectl get limitrange
+
+4. 命名空间的配额
+```yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: mem-cpu-demo
+spec:
+  hard:
+    requests.cpu: "1"
+    requests.memory: 1Gi
+    limits.cpu: "2"
+    limits.memory: 2Gi
+```
