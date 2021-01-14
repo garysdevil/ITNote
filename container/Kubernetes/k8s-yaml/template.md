@@ -233,7 +233,7 @@ metadata:
   # namespace: kube-system
 spec:
   schedule: "*/1 * * * *"
-  concurrencyPolicy: "Forbid"
+  concurrencyPolicy: "Forbid" # Allow/Forbid/Replace
   jobTemplate:
     spec:
       template:
@@ -256,8 +256,10 @@ metadata:
   name: job-name
   # namespace: kube-system
 spec:
-  parallelism: 1
-  completions: 1
+  parallelism: 1 # 指定job需要成功运行Pods的次数。默认值: 1
+  completions: 1 # 指定job在任一时刻应该并发运行Pods的数量。默认值: 1
+  # activeDeadlineSeconds: # 指定job可运行的时间期限，超过时间还未结束，系统将会尝试进行终止。
+  backoffLimit: 6 # 指定job失败后进行重试的次数。默认是6次，每次失败后重试会有延迟时间，该时间是指数级增长，最长时间是6min。
   template:
     metadata:
       name: job-name
@@ -274,3 +276,5 @@ spec:
               memory: "256Mi"
       restartPolicy: "Never"
 ```
+1. .spec.template.spec.restartPolicy设置为”OnFailure”时，会与.spec.backoffLimit冲突，可以暂时将restartPolicy设置为”Never”进行规避。
+https://github.com/kubernetes/kubernetes/issues/54870

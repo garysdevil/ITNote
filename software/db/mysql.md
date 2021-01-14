@@ -85,6 +85,16 @@ show variables like "%collation%";
 
 ## SQL增删改查
 ### 简单SQL 
+```sql
+-- add
+
+-- select
+select from TABLE where id = 1 limit 1;
+select from TABLE where username like  "%gary%" limit 1;
+-- delete
+delete from TABLE where id = 1;
+
+```
 ### 复杂SQL
 ### 事务
 1. 全局开启事务模式

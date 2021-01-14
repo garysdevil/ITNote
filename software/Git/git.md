@@ -79,8 +79,11 @@ git pull origin master
 
   - 查看节点树 git log --oneline --graph --decorate --all
 
-3. 将另一个分支的commit合并到此分支上  
-git  cherry-pick  某次commit的id号
+3. 合并
+  1. 将另一个分支的commit合并到此分支上  
+    git  cherry-pick  某次commit的id号
+  2. 将garybranch分支所有的commit合并为一个commit到此分支上
+    git merge --no-ff garybranch
 
 4. 删除本地分支
 git branch -D 分支名
