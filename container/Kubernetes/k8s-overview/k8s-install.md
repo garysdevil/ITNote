@@ -1,4 +1,6 @@
-##
+## 二进制安装
+https://github.com/easzlab/kubeasz
+https://my.oschina.net/u/4255236/blog/4873696
 
 ## kind 测试环境
 - 参考

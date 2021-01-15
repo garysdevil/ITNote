@@ -165,6 +165,7 @@ done
 ```
 ### gRPC测试工具
 - https://github.com/bojand/ghz
+- wget https://github.com/bojand/ghz/releases/download/v0.90.0/ghz-linux-x86_64.tar.gz
 - 参数
     - -c 并发数量 default 50
     - -n 总共的请求数量 default 200
