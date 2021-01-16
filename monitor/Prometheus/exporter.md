@@ -70,7 +70,7 @@ kubelet的metrics地址：node_ip:10250/metrics
   kubernetes_sd_configs:  # kubernetes 自动发现
   - api_server: https://${IP}:${PORT} # apiserver 地址
     role: node
-    bearer_token_file: ${k8sToken} # 连接 apiserver 的密钥
+    bearer_token_file: ${k8sToken} # 连接 apiserver 的token文件位置
     tls_config:
       insecure_skip_verify: true
   bearer_token_file: ${k8sToken} # 连接 apiserver 的密钥
@@ -112,6 +112,10 @@ sum(container_memory_rss{image!=""}) by(pod_name, namespace) / sum(container_spe
 sum(rate(container_network_receive_bytes_total{name=~".+"}[1m])) by (name)
 
 ### blackbox-exporter
+#### 基本
+- https://github.com/prometheus/blackbox_exporter
+curl localhost:9115/probe?target=prometheus.io&module=http_2xx
+#### k8s
 1. service
 ```
 # service http_probe
