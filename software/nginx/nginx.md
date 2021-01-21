@@ -101,10 +101,15 @@ $request_time 从接受用户请求的第一个字节到发送完响应数据的
 $upstream_response_time 从Nginx向后端建立连接开始到接受完数据然后关闭连接为止的时间。
 
 ## 变量设置
+1. 方式一
 set $var prod
 
+2. 方式二
+```conf
+  # map 必须写在 server{} 的外部
   map $server_name $domain {
-    default airyclub;
-    *.floryhub floryhub;
-    *.vova vova;
+    default xxx;
+    *.yyy yyy;
+    *.zzz zzz;
   } 
+```

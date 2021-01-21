@@ -249,3 +249,6 @@ rm -rf !(.a|.|..)
 
 ping 缺失
 apt-get install iputils-ping
+
+遍历获取 Linux 某目录下所有子目录及文件信息
+find . -print0 | xargs -0 stat --printf="%f %N %W %Y %s\n"

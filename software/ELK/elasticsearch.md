@@ -108,15 +108,80 @@ curl  -H "Content-Type: application/json"  -X POST "http://${IP}:${PORT}/test2-i
   }
 }'
 
-# 查看索引下的document
-# /Index/Type/_search
-# /Index/_search
-curl "${IP}:${PORT}/test2-index/_search?pretty"
-
 
 # 计算集群内document的数量
 curl -XGET "http://${IP}:${PORT}/_count?pretty" 
 # 计算集index下document的数量
 curl -XGET "http://${IP}:${PORT}/${index}/_count?pretty" 
 
+```
+
+```bash
+# 查看索引下的document
+# /Index/Type/_search
+# /Index/_search
+curl "${IP}:${PORT}/test2-index/_search?pretty" -d'
+{
+    "size": 10,
+    "query": {
+        "match_all": {}
+    }
+}
+'
+
+curl "${IP}:${PORT}/test2-index/_search?pretty" -d'
+{
+    "size": 10,
+    "query": {
+        "match": {}
+    }
+}
+'
+
+# size 显示多少条数据
+```
+查询status字段为400到499的document数量
+```json
+{
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "query_string": {
+                        "query": "status: [400 TO 499] AND host:\"garys.top\"",
+                        "fields": [],
+                        "type": "best_fields",
+                        "default_operator": "or",
+                        "max_determinized_states": 10000,
+                        "enable_position_increments": true,
+                        "fuzziness": "AUTO",
+                        "fuzzy_prefix_length": 0,
+                        "fuzzy_max_expansions": 50,
+                        "phrase_slop": 0,
+                        "analyze_wildcard": true,
+                        "escape": false,
+                        "auto_generate_synonyms_phrase_query": true,
+                        "fuzzy_transpositions": true,
+                        "boost": 1
+                    }
+                },
+                {
+                    "range": {
+                        "@timestamp": {
+                            "from": "now-100m",
+                            "to": "now",
+                            "include_lower": true,
+                            "include_upper": true,
+                            "format": "epoch_millis",
+                            "boost": 1
+                        }
+                    }
+                }
+            ],
+            "adjust_pure_negative": true,
+            "boost": 1
+        }
+    }
+}
 ```

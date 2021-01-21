@@ -82,8 +82,12 @@ git pull origin master
 3. 合并
   1. 将另一个分支的commit合并到此分支上  
     git  cherry-pick  某次commit的id号
-  2. 将garybranch分支所有的commit合并为一个commit到此分支上
-    git merge --no-ff garybranch
+  2. 默认 fast-forward ，HEAD 指针直接指向被合并的分支
+    git merge 分支名
+  3. 禁止快进式合并
+    git merge --no-ff 分支名
+  4. 将所有的commit整合为一个新的commit提交到主分支上
+    git merge --squash 分支名
 
 4. 删除本地分支
 git branch -D 分支名

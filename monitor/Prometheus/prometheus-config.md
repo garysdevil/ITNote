@@ -15,7 +15,7 @@ rule_files:
 
 # Alertmanager 相关配置
 alerting:
-  alert_relabel_configs: # 告警被发送到Alertmanager前更改标签
+  alert_relabel_configs: # 告警被发出去前进行标签更改
     [ - <relabel_config> ... ]
   alertmanagers:
   - static_configs:

@@ -60,6 +60,9 @@
   23. ELB: CLB NLB ALB
     - 负载均衡服务 https://aws.amazon.com/elasticloadbalancing/features/?nc1=h_ls
 
+  24. emr
+    - 大数据平台 https://docs.aws.amazon.com/emr/index.html
+
 - Advanced
   1. AWS 架构中心 
     - https://aws.amazon.com/cn/architecture/?solutions-all.sort-by=item.additionalFields.sortDate&solutions-all.sort-order=desc&whitepapers-main.sort-by=item.additionalFields.sortDate&whitepapers-main.sort-order=desc&reference-architecture.sort-by=item.additionalFields.sortDate&reference-architecture.sort-order=desc

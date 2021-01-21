@@ -4,6 +4,7 @@ https://www.elastic.co/guide/cn/kibana/current/index.html 官网中文文档-用
 https://www.elastic.co/cn/webinars/getting-started-kibana?baymax=default&elektra=docs&storm=top-video 官网学习视频
 
 ## 安装
+### 裸安装
 - 参考
 https://www.elastic.co/cn/downloads/past-releases
 需要和elasticsearch版本对应
@@ -15,3 +16,14 @@ https://www.elastic.co/cn/downloads/past-releases
 server.host: "0.0.0.0" # 默认为localhost
 elasticsearch.hosts: ["http://localhost:9200"] # 默认为localhost
 ```
+### Alerting
+- 参考
+    - https://github.com/opendistro-for-elasticsearch/alerting
+    - https://opendistro.github.io/for-elasticsearch-docs/docs/alerting/
+
+```Dockerfile
+FROM docker.elastic.co/kibana/kibana:7.6.1
+
+RUN /opt/kibana/bin/kibana-plugin install https://github.com/opendistro-for-elasticsearch/alerting-kibana-plugin/releases/download/v1.12.0.2/opendistro_alerting_kibana.zip
+```
+
