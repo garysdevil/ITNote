@@ -83,6 +83,9 @@ info
 
 8. 临时修改密码
 config set requirepass 123456
+
+9. 扫描占用内存大的键值
+redis-cli -h ${IP} --bigkeys
 ### 慢日志
 
 1. 动态配置慢日志

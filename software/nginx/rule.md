@@ -1,4 +1,4 @@
-1. 路径规则
+### url访问路径规则
 ```
 空	location后没有参数直接跟着URI，表示前缀匹配，代表跟请求中的URI从头开始匹配。
 =	用于标准 uri 前，要求请求字符串与其严格匹配，成功则立即处理，nginx停止搜索其他匹配。
@@ -8,7 +8,7 @@
 @	”@“ 定义一个命名的 location，@定义的locaiton名字一般用在内部定向，例如error_page, try_files命令中。它的功能类似于编程中的goto。
 ```
 
-2. http 转 https
+### http 转 https
 ```conf
 server {
     listen       80;
@@ -17,7 +17,7 @@ server {
 }
 ```
 
-3. https配置/单向&&双向
+### https配置/单向&&双向
 ```conf
     server {
         listen       443 ssl;
@@ -35,7 +35,7 @@ server {
     }
 ```
 
-4. IP访问限制
+### IP访问限制
 - 可放在 server 内, 或者在 location 内
 ```conf IP
 server {
@@ -51,7 +51,7 @@ server {
 }
 ```
 
-5. 速率限制 对整个server生效
+### 速率限制 对整个server生效
 ```conf  
 http {
     limit_req_zone $binary_remote_addr zone=one:10m rate=8r/s;
@@ -65,7 +65,7 @@ http {
 ```
 
 
-6. 默认请求地址
+### 默认请求的server
 http://nginx.org/en/docs/http/request_processing.html
 "default_server"参数从0.8.21版开始可用。在之前的版本中，应该使用"default"参数代替。
 nginx 的 default_server 指令可以定义默认的 server 去处理一些没有匹配到 server_name 的请求，如果没有显式定义，则会选取第一个定义的 server 作为 default_server。
@@ -76,7 +76,7 @@ server {
     return       444;
 }
 ```
-7. server 的匹配顺序
+### server 的匹配顺序
 Nginx中的server_name指令主要用于配置基于名称的虚拟主机，server_name指令在接到请求后的匹配顺序分别为：
 ```conf
 # 1 准确的server_name匹配，例如：
@@ -102,5 +102,30 @@ server {
 listen 80;
 server_name ~^(?.+).domain.com$;
 ...
+}
+```
+
+### 重定向和跳转
+1. 重定向
+```conf
+server {
+    listen 80;
+    server_name garys.top;
+    location /test {
+        rewrite ^(.*)$ http://pornhub.com$request_uri redirect; # 临时重定向 302
+        #rewrite ^(.*)$ http://www.driverzeng.com permanent; # 永久重定向 301
+    }
+}
+# last 相当于Apache里的[L]标记，表示完成rewrite
+# break 终止匹配, 不再匹配后面的规则
+```
+2. 跳转
+```conf
+server {
+    listen 80;
+    server_name garys.top;
+    location /test {
+        proxy_pass  http://test.garys.top ; 
+    }
 }
 ```

@@ -52,3 +52,23 @@ pod.Spec.schedulerName
   2. 软驱逐
 
 ## K8S Controller
+
+
+## K8S kubelet
+- https://kubernetes.io/zh/docs/tasks/administer-cluster/reserve-compute-resources/
+
+资源 = allocatable + (kube-reserved + system-reserved + eviction-threshold)
+
+
+kubectl describe node ${nodename} | grep MemoryPressure\|DiskPressure\|PIDPressure
+
+
+kubernetes 服务器版本必须至少是 1.17 版本，才能使用 kubelet 命令行选项 --reserved-cpus 设置 显式预留 CPU 列表。
+
+- 示范
+
+Kube 预留值: --kube-reserved=[cpu=100m][,][memory=100Mi][,][ephemeral-storage=1Gi][,][pid=1000]
+系统预留值: --system-reserved=[cpu=100m][,][memory=100Mi][,][ephemeral-storage=1Gi][,][pid=1000]
+驱逐阈值 --eviction-hard=[memory.available<500Mi]
+
+如果资源小于 kubelet 将会驱逐Pod

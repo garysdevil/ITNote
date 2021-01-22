@@ -64,8 +64,11 @@ proxy_set_header Connection "upgrade";
 2. 缓存Head https://www.cnblogs.com/everyone/archive/2012/12/04/2801258.html
 
 ## 基本的http权限认证
+1. 按照相关工具
 yum install httpd-tools -y
-htpasswd -c -d /usr/local/openresty/nginx/conf/pass_file magina
+2. 创建登入用户
+htpasswd -c -d /usr/local/openresty/nginx/conf/pass_file 用户名
+3. 配置nginx
 ```conf
 server {
   listen    80; 
