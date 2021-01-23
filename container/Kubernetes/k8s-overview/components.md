@@ -56,19 +56,58 @@ pod.Spec.schedulerName
 
 ## K8S kubelet
 - https://kubernetes.io/zh/docs/tasks/administer-cluster/reserve-compute-resources/
+- https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/
+- https://www.alibabacloud.com/blog/kubernetes-eviction-policies-for-handling-low-ram-and-disk-space-situations---part-1_595202
+- https://www.infoq.cn/article/rrsrvv093hh6f1ymkcez
 
-资源 = allocatable + (kube-reserved + system-reserved + eviction-threshold)
+- 节点可供Pod使用资源总量的计算公式
+  - allocatable = NodeCapacity - [kube-reserved] - [system-reserved] - [eviction-threshold]
+  1. Node Capacity：Node 的硬件资源总量；
+  2. kube-reserved：为 k8s 系统进程预留的资源(包括 kubelet、container runtime 等，不包括以 pod 形式的资源)；
+  3. system-reserved：为 linux 系统守护进程预留的资源；
+  4. eviction-threshold：通--eviction-hard 参数为节点预留内存；
+  5. allocatable：可供节点上 Pod 使用的容量，kube-scheduler 调度 Pod 时的参考此值。
 
+- Kubelet Node Allocatable 的代码
+主要在 pkg/kubelet/cm/node_container_manager.go
 
+- 查看当前node的资源是否达到压力值
 kubectl describe node ${nodename} | grep MemoryPressure\|DiskPressure\|PIDPressure
 
 
-kubernetes 服务器版本必须至少是 1.17 版本，才能使用 kubelet 命令行选项 --reserved-cpus 设置 显式预留 CPU 列表。
+- kubernetes 服务器版本必须至少是 1.17 版本，才能使用 kubelet 命令行选项 --reserved-cpus 设置 显式预留 CPU 列表。
 
 - 示范
+1. Kube预留值: --kube-reserved=[cpu=100m][,][memory=100Mi][,][ephemeral-storage=1Gi][,][pid=1000]
+2. 系统预留值: --system-reserved=[cpu=100m][,][memory=100Mi][,][ephemeral-storage=1Gi][,][pid=1000]
+3. 硬驱逐阈值 --eviction-hard=[memory.available<500Mi]  // 非优雅关闭
+4. 软驱逐阈值 --eviction-soft=[memory.available<1024Mi]   // 优雅关闭
 
-Kube 预留值: --kube-reserved=[cpu=100m][,][memory=100Mi][,][ephemeral-storage=1Gi][,][pid=1000]
-系统预留值: --system-reserved=[cpu=100m][,][memory=100Mi][,][ephemeral-storage=1Gi][,][pid=1000]
-驱逐阈值 --eviction-hard=[memory.available<500Mi]
+--eviction-hard，用来配置 kubelet 的 hard eviction 条件，只支持 memory 和 ephemeral-storage 两种不可压缩资源。当出现 MemoryPressure 时，Scheduler 不会调度新的 Best-Effort QoS Pods 到此节点。当出现 DiskPressure 时，Scheduler 不会调度任何新 Pods 到此节点。
+如果资源小于(kube-reserved + system-reserved + eviction-threshold), kubelet 将会驱逐Pod
 
-如果资源小于 kubelet 将会驱逐Pod
+
+- 默认情况下，kubelet 没有做资源预留限制，这样节点上的所有资源都能被 Pod 使用。
+
+### 配置
+修改/etc/sysconfig/kubelet
+```conf
+# 在kubelet的启动参数中添加：
+KUBELET_EXTRA_ARGS="
+--enforce-node-allocatable=pods,kube-reserved,system-reserved \
+--cgroup-driver=cgroupfs \
+--kube-reserved=cpu=1,memory=1Gi,ephemeral-storage=10Gi \
+--kube-reserved-cgroup=/system.slice/kubelet.service \
+--system-reserved cpu=1,memory=2Gi,ephemeral-storage=10Gi \
+--system-reserved-cgroup=/system.slice \
+--eviction-hard=memory.available<2Gi"
+
+```
+- 设置cgroup结构可参考官方建议。
+```bash
+# 所以需要手工创建相应cpuset子系统：
+sudo mkdir -p /sys/fs/cgroup/cpuset/system.slice
+sudo mkdir -p /sys/fs/cgroup/cpuset/system.slice/kubelet.service
+```
+
+/sys/fs/cgroup/memory/kubepods/memory.limit_in_bytes
