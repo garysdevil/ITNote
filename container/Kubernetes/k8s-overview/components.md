@@ -57,11 +57,14 @@ pod.Spec.schedulerName
 ## K8S kubelet
 - https://kubernetes.io/zh/docs/tasks/administer-cluster/reserve-compute-resources/
 - https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/
+- https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/
 - https://www.alibabacloud.com/blog/kubernetes-eviction-policies-for-handling-low-ram-and-disk-space-situations---part-1_595202
 - https://www.infoq.cn/article/rrsrvv093hh6f1ymkcez
 
 - 节点可供Pod使用资源总量的计算公式
-  - allocatable = NodeCapacity - [kube-reserved] - [system-reserved] - [eviction-threshold]
+  - allocatable = NodeCapacity - [kube-reserved] - [system-reserved]
+  - /sys/fs/cgroup/memory/kubepods/memory.limit_in_bytes = NodeCapacity - [kube-reserved] - [system-reserved]
+  - kubectl top node  = 实际使用资源 / (NodeCapacity - [kube-reserved] - [system-reserved] - [eviction-threshold])
   1. Node Capacity：Node 的硬件资源总量；
   2. kube-reserved：为 k8s 系统进程预留的资源(包括 kubelet、container runtime 等，不包括以 pod 形式的资源)；
   3. system-reserved：为 linux 系统守护进程预留的资源；
@@ -72,7 +75,7 @@ pod.Spec.schedulerName
 主要在 pkg/kubelet/cm/node_container_manager.go
 
 - 查看当前node的资源是否达到压力值
-kubectl describe node ${nodename} | grep MemoryPressure\|DiskPressure\|PIDPressure
+kubectl describe node ${nodename} | grep 'MemoryPressure\|DiskPressure\|PIDPressure'
 
 
 - kubernetes 服务器版本必须至少是 1.17 版本，才能使用 kubelet 命令行选项 --reserved-cpus 设置 显式预留 CPU 列表。
@@ -109,5 +112,13 @@ KUBELET_EXTRA_ARGS="
 sudo mkdir -p /sys/fs/cgroup/cpuset/system.slice
 sudo mkdir -p /sys/fs/cgroup/cpuset/system.slice/kubelet.service
 ```
+kubelet --config /home/kubernetes/kubelet-config.yaml
 
-/sys/fs/cgroup/memory/kubepods/memory.limit_in_bytes
+
+```bash
+a=`cat /sys/fs/cgroup/memory/kubepods/memory.limit_in_bytes`
+b=`cat /sys/fs/cgroup/memory/kubepods/memory.usage_in_bytes`
+c=$((a-b))
+d=$((c/1024/1024))
+echo $d
+```

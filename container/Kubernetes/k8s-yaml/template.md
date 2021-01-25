@@ -62,6 +62,7 @@ spec:
 #     - 127.0.0.1/32
 ```
 ## deployment
+1. standad
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -109,7 +110,7 @@ spec:
         lifecycle:
           postStart:
             exec:
-              command: ["/bin/bash", "-c", "touch tmp2.tmp"]
+              command: ["/bin/bash", "-c","--", "touch tmp2.tmp"]
         # envFrom:
         # - configMapRef:
         #     name: start-cm
@@ -276,5 +277,42 @@ spec:
               memory: "256Mi"
       restartPolicy: "Never"
 ```
-1. .spec.template.spec.restartPolicy设置为”OnFailure”时，会与.spec.backoffLimit冲突，可以暂时将restartPolicy设置为”Never”进行规避。
-https://github.com/kubernetes/kubernetes/issues/54870
+
+## strss
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    project: project-name
+    envoriment: test
+    app: module-name
+  name: module-name
+  namespace: default
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: module-name
+  template:
+    metadata:
+      labels:
+        app: module-name
+    spec:
+      containers:
+      - image: polinux/stress
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "stress --cpu 1 --io 1 --vm 1 --vm-bytes 128M --vm-hang 6000 --timeout 1h --verbose" ]
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/bash", "-c","--", "touch tmp2.tmp"] 
+        imagePullPolicy: Always
+        name: module-name
+      # nodeName: node01
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+```
