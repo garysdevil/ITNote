@@ -43,7 +43,10 @@ https://blog.csdn.net/changzhehuan7809/article/details/100969240
 7. time()
 time() returns the number of seconds since January 1, 1970 UTC. Note that this does not actually return the current time, but the time at which the expression is to be evaluated.
 
-
+### 
+1. 一段时间内的平均值排序
+sort_desc(sum(avg_over_time(aws_elb_request_count_sum[1h]))without(availability_zone))
+#### K8s常用
 Pod的cpu使用率
 sum(rate(container_cpu_usage_seconds_total{image!=""}[1m])) by (pod_name, namespace) / (sum(container_spec_cpu_quota{image!=""}/100000) by (pod_name, namespace)) * 100
 

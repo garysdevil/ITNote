@@ -19,6 +19,7 @@
     --web.external-url 指定暴露的IP端口号
 ​    --storage.tsdb.retention.time 指定存储天数（默认15天）
     --web.enable-admin-api 开启对TSDB执行删除操作的权限
+    --rules.alert.resend-delay=300s 指定告警重复发送的时间
 3. web端
 http://localhost:9090/
 

@@ -81,11 +81,21 @@ kubectl describe node ${nodename} | grep 'MemoryPressure\|DiskPressure\|PIDPress
 - kubernetes 服务器版本必须至少是 1.17 版本，才能使用 kubelet 命令行选项 --reserved-cpus 设置 显式预留 CPU 列表。
 
 - 示范
-1. Kube预留值: --kube-reserved=[cpu=100m][,][memory=100Mi][,][ephemeral-storage=1Gi][,][pid=1000]
-2. 系统预留值: --system-reserved=[cpu=100m][,][memory=100Mi][,][ephemeral-storage=1Gi][,][pid=1000]
-3. 硬驱逐阈值 --eviction-hard=[memory.available<500Mi]  // 非优雅关闭
-4. 软驱逐阈值 --eviction-soft=[memory.available<1024Mi]   // 优雅关闭
+```conf
+# 1. Kube预留值: 
+--kube-reserved=[cpu=100m][,][memory=100Mi][,][ephemeral-storage=1Gi][,][pid=1000]
+# 2. 系统预留值: 
+--system-reserved=[cpu=100m][,][memory=100Mi][,][ephemeral-storage=1Gi][,][pid=1000]
+# 3. 硬驱逐阈值 
+--eviction-hard=[memory.available<500Mi] # 非优雅关闭 # 默认值 imagefs.available<15%,memory.available<100Mi,nodefs.available<10%,nodefs.inodesFree<5%
+# 4. 软驱逐阈值 
+--eviction-soft=[memory.available<1024Mi] # 优雅关闭
+# 5. 软驱逐观察时间 
+--eviction-soft-grace-period="" # 默认为90秒
 
+# 驱逐时Pod的最大关闭时间
+--eviction-max-pod-grace-period="0"
+```
 --eviction-hard，用来配置 kubelet 的 hard eviction 条件，只支持 memory 和 ephemeral-storage 两种不可压缩资源。当出现 MemoryPressure 时，Scheduler 不会调度新的 Best-Effort QoS Pods 到此节点。当出现 DiskPressure 时，Scheduler 不会调度任何新 Pods 到此节点。
 如果资源小于(kube-reserved + system-reserved + eviction-threshold), kubelet 将会驱逐Pod
 

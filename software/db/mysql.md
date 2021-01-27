@@ -126,10 +126,6 @@ select @@GLOBAL.slave_parallel_workers;
 
 3. 在sql语句最后面添加\G，可以格式化输出结果。
 
-4. 中止应用线程
-- 一般出现长时间的select可以考虑kill掉，但是update或者delete不建议kill
-kill id
-
 5. 查看索引
 show indexes from 表名;
 show keys from 表名;
@@ -271,7 +267,7 @@ show slave status\G;
 - Slave_IO_Running和Slave_SQL_Runing两个参数YES，则表示主从复制关系正常。
 
 
-### 查看 Mysql 连接数、状态、最大并发数
+### 连接数、状态、最大并发数
 1. 查看连接数限制 
     show variables like '%connections%';
 2. 查看历史上最大连接数 
@@ -305,7 +301,9 @@ show slave status\G;
     -- 查看非睡眠状态的连接
     select ID,USER,HOST,DB,COMMAND,TIME,STATE from information_schema.processlist where Command != 'Sleep' order by Time desc;
     ```
-
+6. 中止应用线程
+    - 一般出现长时间的select可以考虑kill掉，但是update或者delete不建议kill
+    - kill ${id}
 
 ### 数据库和表的大小
 - 参考  
