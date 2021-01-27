@@ -200,9 +200,12 @@ curl -O https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.p
 ps apt-get install procps
 netstat apt-get install net-tools
 
-
+```bash
 sed -i "s/project-perform/project-prd/g" `find ./ | grep yaml`
-
+# 替换以字符串name开头的行
+var='gary'
+sed -i '/^name/c'name=$var'' 文件名
+```
 
 开机自启脚本
  /etc/rc.d/rc.local

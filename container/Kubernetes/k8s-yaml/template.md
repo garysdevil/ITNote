@@ -209,10 +209,7 @@ spec:
       containers:
       - image: busybox
         command:
-        - "/bin/sh"
-        args:
-        - "-c"
-        - "sleep 600s"
+        - "/bin/sh -c sleep 6000"
         lifecycle:
           preStop:
             exec:

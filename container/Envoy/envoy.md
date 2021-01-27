@@ -104,6 +104,7 @@ static_resources:
 ## 热重启包装器-Python
 - 脚本 https://github.com/envoyproxy/envoy/blob/release/v1.16/restarter/hot-restarter.py
 - 使用方式 https://www.envoyproxy.io/docs/envoy/latest/operations/hot_restarter#operations-hot-restarter
+- 优雅关闭 https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/operations/draining
 
 - python /hot-restarter-1.16.py /start_envoy.sh
 
