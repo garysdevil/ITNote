@@ -19,7 +19,29 @@ socket=/opt/mysql/datadir/mysql.sock
 /opt/mysqld_exporter/mysqld_exporter --config.my-cnf=/opt/mysqld_exporter/.my.cnf
 
 ### node-exporter
-主要通过读取linux的/proc以及/sys目录下的虚拟系统文件获取操作系统运行状态信息。
+- 参考 https://github.com/prometheus/node_exporter
+- 主要通过读取linux的/proc以及/sys目录下的虚拟系统文件获取操作系统运行状态信息。
+- vim docker-compose.yaml
+```yaml
+version: '3.6'
+services:
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    restart: always
+    network_mode: host
+    ports:
+      - 9100:9100
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - --path.procfs=/host/proc
+      - --path.rootfs=/rootfs
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)
+```
 
 ### mysql exporter
 通过读取数据库监控表获取mysql的性能数据

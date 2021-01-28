@@ -129,3 +129,13 @@ server {
     }
 }
 ```
+
+### dns解析
+1. Nginx0.6.18以后的版本中启用了一个resolver指令
+2. 解决错误 no resolver defined to resolve 或 could not be resolved
+```conf
+http {
+    # 依次从左到右
+    resolver 114.114.114 8.8.8.8;
+}
+```
