@@ -100,9 +100,19 @@ location dist/ {
 ```
 
 ## 日志讲解
+- https://www.cnblogs.com/Dy1an/p/11232207.html
+1. 
 $request_time 从接受用户请求的第一个字节到发送完响应数据的时间。
 $upstream_response_time 从Nginx向后端建立连接开始到接受完数据然后关闭连接为止的时间。
 
+2. 
+```conf
+error_log  logs/error.log  error; # 默认值
+# error_log    <FILE>    <LEVEL>;
+# [debug | info | notice | warn | error | crit | alert | emerg]
+
+log_not_found on # | off; # 是否在 error_log 中记录不存在的错误，默认 on
+```
 ## 变量设置
 1. 方式一
 set $var prod
