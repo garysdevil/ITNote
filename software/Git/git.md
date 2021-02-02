@@ -107,6 +107,7 @@ git blame fileName
 7. 入栈出栈操作  
 git stash  
 git stash pop  
+git stash list  
 
 8. 打tag  
     - git tag v1.0.0  

@@ -73,6 +73,10 @@ spec:
 4. 容器声明了内存请求，但没有内存限制；则使用命名空间的默认内存限制。
 
 ### 命名空间的默认request和limit
+- 查看
+kubectl get limitrange
+kubectl get ResourceQuota
+
 1. 命名空间request和limit默认值
 ```yaml
 apiVersion: v1
@@ -105,10 +109,7 @@ spec:
     type: Container
 ```
 
-3. 查看limitrange
-kubectl get limitrange
-
-4. 命名空间的配额
+3. 命名空间的配额
 ```yaml
 apiVersion: v1
 kind: ResourceQuota

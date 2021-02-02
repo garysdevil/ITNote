@@ -55,8 +55,19 @@ chmod +x /usr/local/bin/docker-compose
 
 ## 常用指令
 ### Docker
-1. 容器资源使用情况
+1. Build
+docker build --build-arg PROJECT=pre --no-cache --network=host -f Dockerfile -t ${url}:${image_tag} .
+
+2. Run
+docker run -d -e SW_OAP_ADDRESS=127.0.0.1:11800 -p 9000:9000 -v /etc/nginx/html:/var/www/html skyapm/skywalking-php
+-e 参数
+-p 主机端口:容器端口
+-d 主机路径:容器路径
+--name 指定容器名字
+
+3. 容器资源使用情况
 docker stats --no-stream
+
 ### Dockerfile
 1. 从编译阶段的中拷贝编译结果到当前镜像中
 ```dockerfile
@@ -66,12 +77,7 @@ COPY --from=builder /build/server /
 ```dockerfile
 COPY --from=quay.io/coreos/etcd:v3.3.9 /usr/local/bin/etcd /usr/local/bin/
 ```
-3. Run
-docker run -d -e SW_OAP_ADDRESS=127.0.0.1:11800 -p 9000:9000 -v /etc/nginx/html:/var/www/html skyapm/skywalking-php
--e 参数
--p 主机端口:容器端口
--d 主机路径:容器路径
---name 指定容器名字
+
 
 ## docker配置更改
 ### 登陆docker仓库Harbor
