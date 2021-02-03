@@ -255,3 +255,7 @@ apt-get install iputils-ping
 
 遍历获取 Linux 某目录下所有子目录及文件信息
 find . -print0 | xargs -0 stat --printf="%f %N %W %Y %s\n"
+
+
+- 删除Evicted状态的Pod
+kubectl get pods | grep Evicted | awk '{print $1}' | xargs kubectl delete pod

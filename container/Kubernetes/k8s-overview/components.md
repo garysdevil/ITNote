@@ -45,29 +45,40 @@ pod.Spec.schedulerName
 4. scheduler framework: 
 实现scheduler framework plugins，重新编译kube-scheduler，类似于第一种方案，但是更加标准化，插件化
 
-- 驱逐
-  1. 硬驱逐
-  2. 软驱逐
+#### 驱逐
+1. 硬驱逐
+2. 软驱逐
 
+- MemoryPressure
+禁止BestEffort类型的Pod调度到节点上
+
+- DiskPressure
+禁止新的Pod调度到节点上
 ## K8S Controller
 
-## K8S kubelet
-- https://kubernetes.io/zh/docs/tasks/administer-cluster/reserve-compute-resources/
-- https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/
-- https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/
-- https://www.alibabacloud.com/blog/kubernetes-eviction-policies-for-handling-low-ram-and-disk-space-situations---part-1_595202
-- https://www.infoq.cn/article/rrsrvv093hh6f1ymkcez
-- https://eksctl.io/usage/customizing-the-kubelet/
+## K8S Kubelet
+- 参考
+  - https://kubernetes.io/zh/docs/tasks/administer-cluster/reserve-compute-resources/
+  - https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/
+  - https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/
+  - https://kubernetes.io/docs/concepts/architecture/nodes/
+  - https://www.alibabacloud.com/blog/kubernetes-eviction-policies-for-handling-low-ram-and-disk-space-situations---part-1_595202
+  - https://www.infoq.cn/article/rrsrvv093hh6f1ymkcez
+  - https://eksctl.io/usage/customizing-the-kubelet/
 
-- 节点可供Pod使用资源总量的计算公式
-  - allocatable = NodeCapacity - [kube-reserved] - [system-reserved]
-  - allocatable = /sys/fs/cgroup/memory/kubepods/memory.limit_in_bytes
+-  术语
+  - allocatable = NodeCapacity - [kube-reserved] - [system-reserved] - [eviction-threshold]
+  - allocatable = /sys/fs/cgroup/memory/kubepods/memory.limit_in_bytes + [eviction-threshold]
   - kubectl top node  = 实际使用资源 / (NodeCapacity - [kube-reserved] - [system-reserved] - [eviction-threshold])
   1. Node Capacity：Node 的硬件资源总量；
   2. kube-reserved：为 k8s 系统进程预留的资源(包括 kubelet、container runtime 等，不包括以 pod 形式的资源)；
   3. system-reserved：为 linux 系统守护进程预留的资源；
-  4. eviction-threshold：通--eviction-hard 参数为节点预留内存；
-  5. allocatable：可供节点上 Pod 使用的容量，kube-scheduler 调度 Pod 时的参考此值。
+  4. eviction-threshold：通--eviction-hard 参数指定为节点预留的资源，当实际资源量达不到预留资源量时将触发驱逐Pod的操作；
+  5. allocatable：可供节点上 Pod 使用的资源，kube-scheduler 调度 Pod 时的参考此值。
+
+- 驱逐
+官方说实际使用资源大于allocatable则触发驱逐
+个人测试 实际剩余资源小于[eviction-threshold]一定触发驱逐
 
 - Kubelet Node Allocatable 的代码
 主要在 pkg/kubelet/cm/node_container_manager.go
@@ -87,7 +98,7 @@ kubectl describe node ${nodename} | grep 'MemoryPressure\|DiskPressure\|PIDPress
 # 2. 系统预留值: 
 --system-reserved=[cpu=100m][,][memory=100Mi][,][ephemeral-storage=1Gi][,][pid=1000]
 # 3. 硬驱逐阈值 
---eviction-hard=[memory.available<500Mi] # 非优雅关闭 # 默认值 imagefs.available<15%,memory.available<100Mi,nodefs.available<10%,nodefs.inodesFree<5%
+--eviction-hard=[memory.available<500Mi] # 非优雅关闭 # 默认值 memory.available<100Mi,nodefs.available<10%,nodefs.inodesFree<5%,imagefs.available<15%
 # 4. 软驱逐阈值 
 --eviction-soft=[memory.available<1024Mi] # 优雅关闭
 # 5. 软驱逐观察时间 
@@ -95,34 +106,11 @@ kubectl describe node ${nodename} | grep 'MemoryPressure\|DiskPressure\|PIDPress
 
 # 驱逐时Pod的最大关闭时间
 --eviction-max-pod-grace-period="0"
+# 评估是否达到驱除阈值的频率
+--housekeeping-interval="10s" #默认为10秒
 ```
---eviction-hard，用来配置 kubelet 的 hard eviction 条件，只支持 memory 和 ephemeral-storage 两种不可压缩资源。当出现 MemoryPressure 时，Scheduler 不会调度新的 Best-Effort QoS Pods 到此节点。当出现 DiskPressure 时，Scheduler 不会调度任何新 Pods 到此节点。
-如果资源小于(kube-reserved + system-reserved + eviction-threshold), kubelet 将会驱逐Pod
 
-2. 配置
-```
-修改/etc/sysconfig/kubelet
-```conf
-# 在kubelet的启动参数中添加：
-KUBELET_EXTRA_ARGS="
---enforce-node-allocatable=pods,kube-reserved,system-reserved \
---cgroup-driver=cgroupfs \
---kube-reserved=cpu=1,memory=1Gi,ephemeral-storage=10Gi \
---kube-reserved-cgroup=/system.slice/kubelet.service \
---system-reserved cpu=1,memory=2Gi,ephemeral-storage=10Gi \
---system-reserved-cgroup=/system.slice \
---eviction-hard=memory.available<2Gi"
-
-```
-- 设置cgroup结构可参考官方建议。
-```bash
-# 所以需要手工创建相应cpuset子系统：
-sudo mkdir -p /sys/fs/cgroup/cpuset/system.slice
-sudo mkdir -p /sys/fs/cgroup/cpuset/system.slice/kubelet.service
-```
-kubelet --config /home/kubernetes/kubelet-config.yaml
-
-
+2. 查看节点的allocatable资源、实际使用资源
 ```bash
 allocatable=`cat /sys/fs/cgroup/memory/kubepods/memory.limit_in_bytes`
 used=`cat /sys/fs/cgroup/memory/kubepods/memory.usage_in_bytes`
@@ -138,4 +126,67 @@ echo "used=$used"
 echo "left=$left"
 
 # used/allocatable # kubectl top node
+```
+
+### GKE
+```bash
+/home/kubernetes/bin/kubelet --config /home/kubernetes/kubelet-config.yaml ...
+```
+cat /home/kubernetes/kubelet-config.yaml
+```yaml
+apiVersion: kubelet.config.k8s.io/v1beta1
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    enabled: true
+  x509:
+    clientCAFile: /etc/srv/kubernetes/pki/ca-certificates.crt
+authorization:
+  mode: Webhook
+cgroupRoot: /
+clusterDNS:
+- 10.68.0.10
+clusterDomain: cluster.local
+enableDebuggingHandlers: true
+evictionHard:
+  memory.available: 100Mi
+  nodefs.available: 10%
+  nodefs.inodesFree: 5%
+  pid.available: 10%
+featureGates:
+  DynamicKubeletConfig: false
+  RotateKubeletServerCertificate: true
+  TaintBasedEvictions: false
+kind: KubeletConfiguration
+kubeReserved:
+  cpu: 1060m
+  ephemeral-storage: 41Gi
+  memory: 512Mi
+readOnlyPort: 10255
+serverTLSBootstrap: true
+staticPodPath: /etc/kubernetes/manifests
+```
+
+### 其它
+1. 配置
+```
+修改/etc/sysconfig/kubelet
+```conf
+# 在kubelet的启动参数中添加：
+KUBELET_EXTRA_ARGS="
+--enforce-node-allocatable=pods,kube-reserved,system-reserved \
+--cgroup-driver=cgroupfs \
+--kube-reserved=cpu=1,memory=1Gi,ephemeral-storage=10Gi \
+--kube-reserved-cgroup=/system.slice/kubelet.service \
+--system-reserved cpu=1,memory=2Gi,ephemeral-storage=10Gi \
+--system-reserved-cgroup=/system.slice \
+--eviction-hard=memory.available<2Gi"
+
+```
+2. 设置cgroup结构可参考官方建议。
+```bash
+# 所以需要手工创建相应cpuset子系统：
+sudo mkdir -p /sys/fs/cgroup/cpuset/system.slice
+sudo mkdir -p /sys/fs/cgroup/cpuset/system.slice/kubelet.service
 ```
