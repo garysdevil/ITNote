@@ -67,9 +67,10 @@ pod.Spec.schedulerName
   - https://eksctl.io/usage/customizing-the-kubelet/
 
 -  术语
-  - allocatable = NodeCapacity - [kube-reserved] - [system-reserved] - [eviction-threshold]
-  - allocatable = /sys/fs/cgroup/memory/kubepods/memory.limit_in_bytes + [eviction-threshold]
+  - allocatable = NodeCapacity - [kube-reserved] - [system-reserved] - [eviction-threshold] 
+  - /sys/fs/cgroup/memory/kubepods/memory.limit_in_bytes = NodeCapacity - [kube-reserved] - [system-reserved] - [eviction-threshold] 
   - kubectl top node  = 实际使用资源 / (NodeCapacity - [kube-reserved] - [system-reserved] - [eviction-threshold])
+  - 经验证EKS的计算方式不计入eviction-threshold，GKE的计入
   1. Node Capacity：Node 的硬件资源总量；
   2. kube-reserved：为 k8s 系统进程预留的资源(包括 kubelet、container runtime 等，不包括以 pod 形式的资源)；
   3. system-reserved：为 linux 系统守护进程预留的资源；

@@ -1,11 +1,14 @@
 # docker
-https://docs.docker.com
+- https://docs.docker.com
+- https://www.infoq.cn/article/docker-kernel-knowledge-namespace-resource-isolation  namespace
+- https://www.infoq.cn/article/docker-kernel-knowledge-cgroups-resource-isolation   cgroup
+
 ## 原理
 ### Docker底层使用的Linux技术
 - https://www.jianshu.com/p/ab423c3db59d
 1. 容器 = cgroup + namespace + rootfs + 容器引擎
 2. 每个容器都是一个进程，这种进程拥有自己的特殊的子namespace、cgroup设置和rootfs挂载
-  - Cgroup： 资源控制
+  - cgroup： 资源控制  https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html?highlight=cgroups
   - namespace： 访问隔离
   - rootfs：文件系统隔离。镜像的本质就是一个rootfs文件
   - 容器引擎：生命周期控制
