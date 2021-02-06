@@ -76,4 +76,7 @@
 7. 依赖的外部服务
 8. 服务的源码
 
+## 云原生
+- https://thenewstack.io/the-cloud-native-landscape-the-provisioning-layer-explained/
+
 # 运维具体方案
