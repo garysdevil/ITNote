@@ -14,6 +14,7 @@
     5. 服务治理
     6. 告警系统
     7. 常规演练灾难演练
+    8. 复盘
     - 运维平台化
 
 - 运维的终极目的
@@ -87,3 +88,25 @@ envoy
 - https://thenewstack.io/the-cloud-native-landscape-the-provisioning-layer-explained/
 
 # 运维具体方案
+
+## 发布系统
+CI
+CD
+配置更新
+数据库更新
+自动化功能测试API测试压力测试
+
+## 监控系统
+Zabbix
+Prometheus
+APM
+
+## 告警系统
+- 目的：及时发现系统问题，解决问题，维护稳定优化系统
+1. 接收告警信息
+2. 发布告警信息
+3. 告警看板
+4. 告警的抑制
+
+## 日志系统
+使用ELK
