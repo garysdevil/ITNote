@@ -36,6 +36,10 @@ Redis的IO多路复用:redis利用epoll来实现IO多路复用，将连接信息
 3. 持久化机制
     1. aof（默认值）把写操作指令，持续的写到一个类似日志文件里。
     2. rdb fork一个进程，遍历hash table，利用copy on write，把整个db dump保存下来。save, shutdown, slave 命令会触发这个操作。
+
+## 集群
+- 参考
+    - https://blog.csdn.net/qq_38937634/article/details/112172719
 ## 场景
 1. 缓存穿透
     - 是指查询一个根本不存在的数据， 缓存层和存储层都不会命中， 通常出于容错的考虑， 如果从存储 层查不到数据则不写入缓存层。 
