@@ -43,18 +43,22 @@ https://blog.csdn.net/changzhehuan7809/article/details/100969240
 7. time()
 time() returns the number of seconds since January 1, 1970 UTC. Note that this does not actually return the current time, but the time at which the expression is to be evaluated.
 
-### 
+### 常用表达式
 1. 一段时间内的平均值排序
 sort_desc(sum(avg_over_time(aws_elb_request_count_sum[1h]))without(availability_zone))
-#### K8s常用
-Pod的cpu使用率
+#### K8s Pod常用
+- Pod 的cpu使用率
 sum(rate(container_cpu_usage_seconds_total{image!=""}[1m])) by (pod_name, namespace) / (sum(container_spec_cpu_quota{image!=""}/100000) by (pod_name, namespace)) * 100
 
-Pod 内存使用率
+- Pod 内存使用率
 sum(container_memory_rss{image!=""}) by(pod_name, namespace) / sum(container_spec_memory_limit_bytes{image!=""}) by(pod_name, namespace) * 100 != +inf
 
-Pod 文件系统使用量
+- Pod 文件系统使用量
 sum(container_fs_usage_bytes{image!=""}) by(pod_name, namespace) / 1024 / 1024 / 1024
+#### node 常用
+- node cpu 使用率
+(100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)) > 80
+
 
 ### 查询-操作数据库
 

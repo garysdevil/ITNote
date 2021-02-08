@@ -136,10 +136,72 @@ sum(rate(container_network_receive_bytes_total{name=~".+"}[1m])) by (name)
 ### blackbox-exporter
 #### 基本
 - https://github.com/prometheus/blackbox_exporter
+
 curl localhost:9115/probe?target=prometheus.io&module=http_2xx
+#### docker 安装
+vim docker-compose.yaml
+```yaml
+version: '3'
+services:
+  blackbox-exporter:
+    image: prom/blackbox-exporter
+    container_name: blackbox-exporter
+    restart: always
+    network_mode: "host"
+    ports:
+     - 9115:9115
+    volumes:
+      - ./blackbox.yml:/etc/blackbox_exporter/config.yml
+```
+vim blackbox.yml
+```yaml
+modules:
+  http_maxwell:
+    prober: http
+    timeout: 1s
+    http:
+      method: GET
+      fail_if_body_matches_regexp:
+        - "Could not connect to database"
+      fail_if_body_not_matches_regexp:
+        - "\"healthy\":true"
+  http_2xx:
+    prober: http
+  http_post_2xx:
+    prober: http
+    http:
+      method: POST
+  tcp_connect:
+    prober: tcp
+  pop3s_banner:
+    prober: tcp
+    tcp:
+      query_response:
+      - expect: "^+OK"
+      tls: true
+      tls_config:
+        insecure_skip_verify: false
+  ssh_banner:
+    prober: tcp
+    tcp:
+      query_response:
+      - expect: "^SSH-2.0-"
+  irc_banner:
+    prober: tcp
+    tcp:
+      query_response:
+      - send: "NICK prober"
+      - send: "USER prober prober prober :prober"
+      - expect: "PING :([^ ]+)"
+        send: "PONG ${1}"
+      - expect: "^:[^ ]+ 001"
+  icmp:
+    prober: icmp
+
+```
 #### k8s
 1. service
-```
+```yaml
 # service http_probe
 #prometheus.io/app-info-*开头的注解的label将被替换，label名只保留*部分
 prometheus.io/app-info-env: namespace
@@ -148,7 +210,6 @@ prometheus.io/scrape: 'true'   #以前的配置中需要，目前不需要
 prometheus.io/http-probe: 'true'
 prometheus.io/http-probe-port: '8080'
 prometheus.io/http-probe-path: '/healthz'
-
 
 #service tcp_probe
 #prometheus.io/app-info-*开头的注解的label将被替换，label名只保留*部分
@@ -159,7 +220,7 @@ prometheus.io/tcp-probe: "true"
 prometheus.io/tcp-probe-port: "80"
 ```
 2. endpoint
-```
+```yaml
 # endpoints http_probe
 #prometheus.io/app-info-*开头的注解的label将被替换，label名只保留*部分
 prometheus.io/app-info-env: namespace
@@ -168,7 +229,6 @@ prometheus.io/scrape: 'true'  #以前的配置中需要，目前不需要
 prometheus.io/pod-http-probe: 'true'
 prometheus.io/pod-http-probe-port: '8080'
 prometheus.io/pod-http-probe-path: '/healthz'
-
 
 
 # endpoints tcp_probe
@@ -181,13 +241,12 @@ prometheus.io/pod-tcp-probe-port: "80"
 
 ```
 3. icmp
-```
+```yaml
 # endpoints icmp probe
 prometheus.io/pod-icmp-probe: "true"
 
 # service icmp probe
-#嘻嘻，service不支持icmp ping
-
+service不支持icmp ping
 ```
 
 

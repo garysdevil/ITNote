@@ -1,11 +1,38 @@
-##### 一 进程监控
+### 安装
+```yaml
+version: '3'
+services:
+  pushgateway:
+    image: prom/pushgateway:v1.4.0
+    container_name: pushgateway
+    restart: always
+    ports:
+     - 9091:9091
+```
+
+### 数据库可读取监控
 ```bash
 pushgateway=XXX.XXX.XXX.XXX
 port=9091
 job=chain_index
 instance=XXX.XXX.XXX.XXX
 
-process=platonsync.py
+ok=`bash readmysql.sh`
+process_num=`ps -ef | grep ${process} | grep -v grep | wc -l`
+
+cat <<EOF | curl --data-binary @- http://${pushgateway}:${port}/metrics/job/${job}/instance/${instance}
+# TYPE chain_index_process_num gauge
+chain_index_process_num{process="${process}"} ${process_num}
+EOF
+```
+### 一 进程监控
+```bash
+pushgateway=XXX.XXX.XXX.XXX
+port=9091
+job=chain_index
+instance=XXX.XXX.XXX.XXX
+
+process=进程名
 process_num=`ps -ef | grep ${process} | grep -v grep | wc -l`
 
 cat <<EOF | curl --data-binary @- http://${pushgateway}:${port}/metrics/job/${job}/instance/${instance}
@@ -14,7 +41,7 @@ chain_index_process_num{process="${process}"} ${process_num}
 EOF
 ```
 
-#### 二 通过查看日志是否含有某个关键字来判断节点集群好坏 - 一下脚本有个小问题
+### 二 通过查看日志是否含有某个关键字来判断节点集群好坏 - 一下脚本有个小问题
 1. 写监控脚本
 mkdir  ~/pushgateway_script; cd ~/pushgateway_script && vim garys_status.sh
 ```bash
