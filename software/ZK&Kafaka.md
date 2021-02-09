@@ -1,3 +1,15 @@
+# zookeeper 
+## 概念
+1. 集群的节点必须是基数
+    1. 防止脑裂
+    2. 容错(n-1)/2
+
+2. 默认端口
+    1. 2181
+
+3. 查看集群状态
+echo status | nc localhost 2181
+
 # Kafka
 
 ## 概念
@@ -22,6 +34,8 @@ bin/kafka-server-start.sh -daemon ../config/server.properties
 bin/kafka-server-stop.sh
 ```
 ```bash
+topic='test-topic-1'
+
 # 1. 列出所有的topic
 bin/kafka-topics.sh --zookeeper localhost:2181 --list
 
@@ -30,7 +44,7 @@ bin/kafka-console-consumer.sh  --bootstrap-server ${IP}:9092 --topic ${topic} --
 --from-beginning  # 表示消费topic里的所有数据
 
 # 3. 创建topic
-bin/kafka-topics.sh --create --zookeeper localhost:2181 --topic test-topic-1 --partitions 2 --replication-factor 1
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --topic ${topic} --partitions 2 --replication-factor 1
 
 # 2. 往topic里面发送消息
 bin/kafka-console-producer.sh --broker-list ${IP}:9092 --topic ${topic}
@@ -39,4 +53,3 @@ bin/kafka-console-producer.sh --broker-list ${IP}:9092 --topic ${topic}
 bin/kafka-topics.sh --delete --zookeeper localhost:2181 --topic ${topic}
 
 ```
-
