@@ -182,7 +182,16 @@ aws_secret_access_key =  XXX
 ```bash
 aws configure list
 ```
-### CLI推镜像到ECR
+### CLI操作ECR
+1. 创建ECR
+```bash
+aws ecr create-repository  \
+    --repository-name ECR名称   \
+    --image-scanning-configuration scanOnPush=true  \
+    --region us-east-1
+```
+
+2. 推镜像到ECR
 ```bash
 login=`aws ecr get-login --no-include-email --region us-east-1`
 $login

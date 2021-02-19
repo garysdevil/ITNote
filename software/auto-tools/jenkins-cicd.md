@@ -1,3 +1,9 @@
+## template
+- 参考
+    - https://www.jenkins.io/doc/pipeline/tour/post/  构建结束后操作
+    - https://www.jenkins.io/zh/doc/book/pipeline/syntax/
+
+
 ```groovy
 // clone code
 def git_url = 'ssh://git@IP:PORT/PROJECT.git'
@@ -47,7 +53,7 @@ def super_user = ['gary']
 def ppl_params = [:]
 
 pipeline {
-    agent none
+     
     options {
         timestamps()
         disableConcurrentBuilds()
@@ -72,7 +78,11 @@ pipeline {
             description: 'jenkins job name'
         )
     }
-    // stages {
+    stages {
+        // agent any
+        agent {
+            label "${agent_label}"
+        }
     //     stage('Init Parameters') {
     //         steps {
     //             timeout(time: 300, unit: 'SECONDS') {
@@ -200,7 +210,13 @@ pipeline {
                     checkout([ $class: 'GitSCM',
                             branches: [[name: "$refspec"]],
                             userRemoteConfigs: [[url: "${git_url}", credentialsId: "${git_redentials_id}",]]])
-                    
+                    // if (PhpInstall == "true" || !fileExists("./node_modules")) {
+                    //     sh """docker run -u 0 --rm -v \$(pwd):代码根目录 --name node-build-container node:12.19.0-alpine3.10 sh -c 'cd 代码根目录;rm -rf node_modules package-lock.json;npm install'"""
+                    // }
+                    // sh "docker run --rm -v \$(pwd):代码根目录 --name node-build-container node:12.19.0-alpine3.10 sh -c 'cd 代码根目录;npm run build'; \
+                    //     sudo chown -R ec2-user.ec2-user \$(pwd); \
+                    //     git rev-parse --short HEAD > build/version; \
+                    // "
                     git_ver = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                     docker_image_tag = docker_image_tag + '_' + git_ver + '_' + cur_time
                     sh "cp someconfigfrommachine ./; \
@@ -249,6 +265,26 @@ pipeline {
                     kubectl get svc | grep "${k8s_controller}\\|NAME"; \
                     """
                 }
+            }
+        }
+    }
+    post {
+        cleanup {
+            /* clean up our workspace */
+            deleteDir()
+            /* clean up tmp directory */
+            dir("${workspace}@2") {
+                deleteDir()
+            }
+            dir("${workspace}@tmp") {
+                deleteDir()
+            }
+            dir("${workspace}@2@tmp") {
+                deleteDir()
+            }
+            /* clean up script directory */
+            dir("${workspace}@script") {
+                deleteDir()
             }
         }
     }
