@@ -30,21 +30,25 @@ kubectl rollout undo deployment 名字 --to-revision=1
 
 - 金丝雀发布
 ```bash
+deployment=busybox-deploy-kujiu
+
 # 
-kubectl patch deployments busybox-deploy-kujiu -p '{"spec":{"minReadySeconds":5}}'
-kubectl patch deployments busybox-deploy-kujiu -p '{"spec":{"maxReadySeconds":3600}}'
+kubectl patch deployments ${deployment} -p '{"spec":{"minReadySeconds":5}}' # 默认值为0
+kubectl patch deployments ${deployment} -p '{"spec":{"maxReadySeconds":3600}}'
 
 # 升级
-kubectl set image deployments busybox-deploy-kujiu busybox-deploy=busybox:1.32-musl
+kubectl set image deployments ${deployment} busybox-deploy=busybox:1.32-musl
 # 暂停升级
-kubectl rollout pause deployments busybox-deploy-kujiu
+kubectl rollout pause deployments ${deployment}
+# 查看pod迭代状况
+kubectl rollout status deployment  ${deployment}
 # 继续升级
-kubectl rollout resume deployments busybox-deploy-kujiu
+kubectl rollout resume deployments ${deployment}
 
 # 历史升级记录查看
-kubectl rollout history deployments busybox-deploy-kujiu
+kubectl rollout history deployments ${deployment}
 # 回滚
-kubectl rollout undo deployments busybox-deploy-kujiu
+kubectl rollout undo deployments ${deployment}
 
 
 ```

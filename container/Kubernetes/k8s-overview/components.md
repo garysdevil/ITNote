@@ -58,40 +58,56 @@ pod.Spec.schedulerName
 
 ## K8S Kubelet
 - 参考
-  - https://kubernetes.io/zh/docs/tasks/administer-cluster/reserve-compute-resources/
-  - https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/
-  - https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/
-  - https://kubernetes.io/docs/concepts/architecture/nodes/
-  - https://www.alibabacloud.com/blog/kubernetes-eviction-policies-for-handling-low-ram-and-disk-space-situations---part-1_595202
-  - https://www.infoq.cn/article/rrsrvv093hh6f1ymkcez
-  - https://eksctl.io/usage/customizing-the-kubelet/
+    - https://kubernetes.io/zh/docs/tasks/administer-cluster/reserve-compute-resources/
+    - https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/
+    - https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/
+    - https://kubernetes.io/docs/concepts/architecture/nodes/
+    - https://www.alibabacloud.com/blog/kubernetes-eviction-policies-for-handling-low-ram-and-disk-space-situations---part-1_595202
+    - https://www.infoq.cn/article/rrsrvv093hh6f1ymkcez
+    - https://eksctl.io/usage/customizing-the-kubelet/
 
 -  术语
-  - allocatable = NodeCapacity - [kube-reserved] - [system-reserved] - [eviction-threshold] 
-  - /sys/fs/cgroup/memory/kubepods/memory.limit_in_bytes = NodeCapacity - [kube-reserved] - [system-reserved] - [eviction-threshold] 
-  - kubectl top node  = 实际使用资源 / (NodeCapacity - [kube-reserved] - [system-reserved] - [eviction-threshold])
-  - 经验证EKS的计算方式不计入eviction-threshold，GKE的计入
-  1. Node Capacity：Node 的硬件资源总量；
-  2. kube-reserved：为 k8s 系统进程预留的资源(包括 kubelet、container runtime 等，不包括以 pod 形式的资源)；
-  3. system-reserved：为 linux 系统守护进程预留的资源；
-  4. eviction-threshold：通--eviction-hard 参数指定为节点预留的资源，当实际资源量达不到预留资源量时将触发驱逐Pod的操作；
-  5. allocatable：可供节点上 Pod 使用的资源，kube-scheduler 调度 Pod 时的参考此值。
+    - allocatable = NodeCapacity - [kube-reserved] - [system-reserved] - [eviction-threshold] 
+    - /sys/fs/cgroup/memory/kubepods/memory.limit_in_bytes = NodeCapacity - [kube-reserved] - [system-reserved] - [eviction-threshold] 
+    - kubectl top node  = 实际使用资源 / (NodeCapacity - [kube-reserved] - [system-reserved] - [eviction-threshold]) 经验证EKS的计算方式不计入eviction-threshold，GKE的计入
+    1. Node Capacity：Node 的硬件资源总量；
+    2. kube-reserved：为 k8s 系统进程预留的资源(包括 kubelet、container runtime 等，不包括以 pod 形式的资源)；
+    3. system-reserved：为 linux 系统守护进程预留的资源；
+    4. eviction-threshold：通--eviction-hard 参数指定为节点预留的资源，当实际资源量达不到预留资源量时将触发驱逐Pod的操作；
+    5. allocatable：可供节点上 Pod 使用的资源，kube-scheduler 调度 Pod 时的参考此值。
 
-- 驱逐
+- 驱逐  
 官方说实际使用资源大于allocatable则触发驱逐
-个人测试 实际剩余资源小于[eviction-threshold]一定触发驱逐
+```bash
+# 查看节点的allocatable资源、实际使用资源
+# 当left<0时发生驱逐
+allocatable=`cat /sys/fs/cgroup/memory/kubepods/memory.limit_in_bytes`
+used=`cat /sys/fs/cgroup/memory/kubepods/memory.usage_in_bytes`
 
-- Kubelet Node Allocatable 的代码
+left=$((allocatable-used))
+
+left=$((left/1024/1024))M
+allocatable=$((allocatable/1024/1024))M
+used=$((used/1024/1024))M
+
+echo "allocatable=$allocatable"
+echo "used=$used"
+echo "left=$left"
+
+# used/allocatable # 理论上kubectl top node等于used/allocatable，但往往都大于used/allocatable
+```
+
+- Kubelet Node Allocatable 的代码  
 主要在 pkg/kubelet/cm/node_container_manager.go
 
-- 查看当前node的资源是否达到压力值
+- 查看当前node的资源是否达到压力值  
 kubectl describe node ${nodename} | grep 'MemoryPressure\|DiskPressure\|PIDPressure'
 
-- kubernetes 服务器版本必须至少是 1.17 版本，才能使用 kubelet 命令行选项 --reserved-cpus 设置 显式预留 CPU 列表。
+- kubernetes 服务器版本必须至少是 1.17 版本，才能使用 kubelet 命令行选项 --reserved-cpus 设置 显式预留 CPU 列表。  
 
 - 默认情况下，kubelet 没有做资源预留限制，这样节点上的所有资源都能被 Pod 使用。
 
-### 配置
+### 配置讲解
 1. 参数
 ```conf
 # 1. Kube预留值: 
@@ -109,24 +125,6 @@ kubectl describe node ${nodename} | grep 'MemoryPressure\|DiskPressure\|PIDPress
 --eviction-max-pod-grace-period="0"
 # 评估是否达到驱除阈值的频率
 --housekeeping-interval="10s" #默认为10秒
-```
-
-2. 查看节点的allocatable资源、实际使用资源
-```bash
-allocatable=`cat /sys/fs/cgroup/memory/kubepods/memory.limit_in_bytes`
-used=`cat /sys/fs/cgroup/memory/kubepods/memory.usage_in_bytes`
-
-left=$((allocatable-used))
-
-left=$((left/1024/1024))M
-allocatable=$((allocatable/1024/1024))M
-used=$((used/1024/1024))M
-
-echo "allocatable=$allocatable"
-echo "used=$used"
-echo "left=$left"
-
-# used/allocatable # kubectl top node
 ```
 
 ### GKE
@@ -168,7 +166,8 @@ readOnlyPort: 10255
 serverTLSBootstrap: true
 staticPodPath: /etc/kubernetes/manifests
 ```
-
+### EKS
+cat /etc/eksctl/kubelet.yaml
 ### 其它
 1. 配置
 ```
