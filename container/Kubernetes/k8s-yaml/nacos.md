@@ -24,6 +24,9 @@ nacos/nacos
 
 ## docker-compose
 1. 部署单节点nacos
+```bash
 git clone https://github.com/nacos-group/nacos-docker
 cd nacos-docker
+# 可以更改example/standalone-mysql-5.7.yaml
 docker-compose -f example/standalone-mysql-5.7.yaml up -d
+```

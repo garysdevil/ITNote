@@ -171,17 +171,34 @@ https://www.cnblogs.com/zengkefu/p/5690092.html
             -e "" 指定要执行的sql语句
 
 2. 导出表结构和数据
-mysqldump　--opt　-d　数据库名　-u　root　-p　>　xxx.sql　
+mysqldump　-d　数据库名.表名　-u　root　-p　>　xxx.sql　
 -t  只导出数据
 
-3. 执行sql文件
+--opt Same as --add-drop-table, --add-locks, --create-options,   --quick, --extended-insert, --lock-tables, --set-charset, and --disable-keys. Enabled by default, disable with  --skip-opt 
+
+3. 线上导出数据
+```bash
+time mysqldump --skip-add-locks --single-transaction --default-character-set=utf8mb4 --set-gtid-purged=off  -h${host} -u${user} -p${pass}  ${database} ${table} > ${table}.sql
+
+# --add-locks，这是导出时的默认值，意思是导出某张表时，会在该表上加个锁，导出完成后执行unlock，如果导出过程中表数据有变动（增删改），对应的sql就会被挂起，直到unlock之后才能继续执行，这样执行导出会更高效！但是，如果导出的表，数据量比较大，会导致导出表的时间比较长，而如果业务操作表又比较频繁的话，默认加锁的操作就造成大量业务sql堵塞，影响实际业务运行，不能因为要高效而抛弃了实际业务，这个时候就要用--skip-add-locks跳过加锁模块
+# --single-transaction参数的作用，设置事务的隔离级别为可重复读，即REPEATABLE READ，这样能保证在一个事务中所有相同的查询读取到同样的数据，也就大概保证了在dump期间，如果其他innodb引擎的线程修改了表的数据并提交，对该dump线程的数据并无影响，在这期间不会锁表。
+
+
+```
+```log
+// 2g数据耗时
+real	0m38.495s
+user	0m35.658s
+sys	    0m2.261s
+```
+4. 执行sql文件
 mysql -u${USER} -p${PASSWORD} -P${PORT} -h${HOST} -S ${SOCKPATH} -D${DATABASE} < sql.sql
 
-4. 导出查询到的数据
+5. 导出查询到的数据
 mysql --login-path=aa ${sql脚本} data.txt  
 mysql --login-path=aa -e "${sql语句}" > data.txt
 
-5. 导出为csv文件
+6. 导出为csv文件
 sql语句 into outfile '/tmp/table.csv' fields terminated by ',' optionally enclosed by '"' lines terminated by '\r\n';
 
 
