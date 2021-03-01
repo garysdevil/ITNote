@@ -22,7 +22,8 @@ cat /proc/cpuinfo| grep "processor"| wc -l
 -A (or --user-agent): 设置 "User-Agent" 字段.
 -b (or --cookie): 设置 "Cookie" 字段.
 -e (or --referer): 设置 "Referer" 字段.
-
+-s 静默模式
+-k (or --insecure)不验证证书进行https请求
 
 ### cronjob
 获取所有的任务

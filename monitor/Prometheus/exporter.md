@@ -99,8 +99,22 @@ kubelet的metrics地址：node_ip:10250/metrics
   metric_relabel_configs:
   - target_label: cluster
     replacement: ${cluster} # 自定义标签
+  - source_labels: ['__name__'] # 过滤掉不必要的指标
+    regex: '(cadvisor_version_info|go.*|container_fs.*|container_tasks_state|container_start_time_seconds|container_spec.*|container_cpu_cfs_.*|container_cpu_load_.*|container_cpu_system_seconds_total|container_cpu_usage_seconds_total|container_network_transmit_packets_.*|container_network_receive_packets_.*|container_network_transmit_errors_total|container_memory_failures_total|container_memory_mapped_file|container_memory_working_set_bytes|container_memory_failcnt|container_memory_cache|container_memory_swap|container_memory_max_usage_bytes|container_network_receive_errors_total|container_memory_rss)'
+    action: drop
+    # container_network_receive_bytes_total
+    # container_network_transmit_bytes_total
+    # container_memory_usage_bytes
+    # container_cpu_user_seconds_total
+    # container_last_seen
   tls_config:
     insecure_skip_verify: true
+    - source_labels: ['__address__']
+      separator:     ':'
+      regex:         '(.*):(10250)'
+      target_label:  '__address__'
+      replacement:   '${1}:8080'
+
 ```
 
 #### metrics
