@@ -38,7 +38,6 @@ https://idig8.com/2019/08/21/zoujink8skubernetes1-15-1depod-zidongkuosuorong23/
 1. 手动扩容
 kubectl scale --replicas=5 deployment nginx-deploy
 kubectl scale --replicas=1 deployment garysweb -n project-stg1
-kubectl scale --replicas=1 deployment garyswebcms -n project-stg1
 2. 手动升级
 kubectl set image deployment nginx-deploy nginx-deploy=nginx:1.15-alpine --record
 
