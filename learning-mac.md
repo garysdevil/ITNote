@@ -9,7 +9,13 @@ open -a Docker
 3. 
 osascript -e 'quit app "Docker"'
 
+4. 查看内存  
+top -l 1 | head -n 10 | grep PhysMem
 ### launchctl
+0. 位置
+如果需要 root，并且是需要用户登陆后才能运行，把 plist 放在 /Library/LaunchAgents/下
+如果需要 root，并且不需要用户登陆后都能运行，把 plist 放在 /Library/LaunchDaemons/下
+
 1. 查看所有的服务
 launchctl list
 
@@ -21,15 +27,22 @@ sudo vim /Library/LaunchDaemons/gary.test.plist
 <plist version="1.0">
 <dict>
         <key>Label</key>
-        <string>gary.test.plist</string>
-        <key>ProgramArguments</key>
+        <string>gary.test.plist</string> <!-- 唯一标识 -->
+
+        <key>UserName</key>
+        <string>gary</string> <!-- 运行的用户，只有Launchd作为root运行时生效 -->
+
+        <key>ProgramArguments</key> <!-- 可执行文件位置 -->
         <array>
                 <string>/Users/admin/devops/jenkins_agent/start.sh</string>
         </array>
+
         <key>KeepAlive</key>
         <false/>
-        <key>RunAtLoad</key>
-        <true/>
+
+        <key>RunAtLoad</key> <!-- 表示launchd在加载完该项服务之后立即启动路径指定的可执行文件 -->
+        <true/> 
+
         <key>StandardErrorPath</key>
         <string>/tmp/jenkins_agent.err</string>
         <key>StandardOutPath</key>
@@ -44,3 +57,6 @@ sudo launchctl unload -w /Library/LaunchDaemons/gary.test.plist
 
 4. 停止一个服务
 sudo launchctl stop gary.test.plist
+
+5. plutil命令验证plist的格式是否正确
+plutil -lint gary.test.plist

@@ -12,8 +12,11 @@ sh startup.sh
 访问：http://ip:端口/jenkins
 
 ## 1 通过war安装
+- 参考 https://jenkins-zh.cn/tutorial/get-started/install/war/
+
 curl -O http://mirrors.jenkins.io/war-stable/latest/jenkins.war
 - 启动
+export JENKINS_HOME=~/.jenkins_home
 nohup java -jar jenkins.war --httpPort=8899  > /tmp/jenkins.log 2>&1 &
 
 ## 2 通过rpm安装 
