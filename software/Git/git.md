@@ -38,25 +38,31 @@ git pull origin master
 
 9. Git代理
     - 设置全局代理
-    git config http.proxy http://XXX.XXX.XXX.XXX:2334
+      git config http.proxy http://XXX.XXX.XXX.XXX:2334
 
-    git config --global http.proxy 'socks5://XXX.XXX.XXX.XXX:1080'  
-    git config --global https.proxy 'socks5://XXX.XXX.XXX.XXX:1080'  
+      git config --global http.proxy 'socks5://XXX.XXX.XXX.XXX:1080'  
+      git config --global https.proxy 'socks5://XXX.XXX.XXX.XXX:1080'  
     - 取消代理
-    git config --global --unset http.proxy
-    git config --global --unset https.proxy
+      git config --global --unset http.proxy
+      git config --global --unset https.proxy
 
     - 对某个域名进行代理
-    git config --global http.https://github.com.proxy socks5://XXX.XXX.XXX.XXX:1080   
-    git config --global https.https://github.com.proxy socks5://XXX.XXX.XXX.XXX:1080  
+      git config --global http.https://github.com.proxy socks5://XXX.XXX.XXX.XXX:1080   
+      git config --global https.https://github.com.proxy socks5://XXX.XXX.XXX.XXX:1080  
 
     - 写入配置文件里 ~/.gitconfig
-    ```conf
-    [http]
-      proxy = socks5://XXX.XXX.XXX.XXX:1080
-    [https]
-      proxy = socks5://XXX.XXX.XXX.XXX:1080
-    ```
+      ```conf
+      [http]
+        proxy = socks5://XXX.XXX.XXX.XXX:1080
+      [https]
+        proxy = socks5://XXX.XXX.XXX.XXX:1080
+      ```
+      ```conf
+      [http "https://github.com/"]
+        proxy = socks5://XXX.XXX.XXX.XXX:1080
+      [https "https://github.com/"]
+        proxy = socks5://XXX.XXX.XXX.XXX:1080
+      ```
 ### 日常操作
 
 1. diff  
