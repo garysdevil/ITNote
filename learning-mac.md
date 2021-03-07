@@ -11,6 +11,14 @@ osascript -e 'quit app "Docker"'
 
 4. 查看内存  
 top -l 1 | head -n 10 | grep PhysMem
+
+### Command Line Tools
+1. Command Line Tools 是 Xcode IDE的可选命令行工具子部分
+2. 从MacOS High Sierra，Sierra，OS X El Capitan，Yosemite，Mavericks开始，无需先安装整个Xcode软件包，也无需登录开发人员帐户，就可以单独安装Command Line Tools。
+3. 安装： xcode-select --install
+4. 包含： svn，git，make，GCC，clang，perl，size，strip，strings，libtool，cpp，what以及其他很多能够在Linux默认安装中找到的有用的命令。
+5. 安装好的工具被放置在这个目录内 /Library/Developer/CommandLineTools/usr/bin/
+
 ### launchctl
 0. 位置
 如果需要 root，并且是需要用户登陆后才能运行，把 plist 放在 /Library/LaunchAgents/下
