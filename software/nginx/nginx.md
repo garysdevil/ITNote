@@ -143,7 +143,7 @@ set $var prod
 2. 502 Bad Gateway错误
   - 502 是指请求的php-fpm已经执行，但是由于某种原因而没有执行完毕，最终导致php-fpm 进程终止。 可能与php-fpm.conf的配置有关。
 3. 504 Gateway timeout 网关超时
-  - 504 表示超时，也就是客服端所发出的请求没有到达网关，请求没有到可以执行的php-fpm。 可能与nginx.conf的配置有关。
+  - 504 表示超时，也就是客服端所发出的请求没有到达网关，请求没有到可以执行的php-fpm。 可能与nginx.conf的配置有关，也可能是php-cgi进程不够。
   - nginx.conf
   ```conf
   http {
