@@ -2,6 +2,7 @@ version: '3'
 services:
   jenkins:
     image: jenkinsci/blueocean:1.24.4-bcc31d32159f
+    # image: jenkins4eval/jenkins:slim # ram 指令集架构机器
     container_name: jenkins
     restart: always
     user: root                          

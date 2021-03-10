@@ -84,6 +84,10 @@ kubelet的metrics地址：/api/v1/nodes/[节点名称]/proxy/metrics
 cAdvisor的metrics地址: node_ip:10250/metrics/cadvisor
 kubelet的metrics地址：node_ip:10250/metrics
 
+5. 启动参数
+  - https://github.com/google/cadvisor/blob/master/deploy/kubernetes/overlays/examples/cadvisor-args.yaml
+  - https://github.com/google/cadvisor/blob/release-v0.39/docs/runtime_options.md
+
 ```yaml
 - job_name: k8s-cadvisor-prometheus
   honor_timestamps: true

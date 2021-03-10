@@ -27,11 +27,13 @@ yum install mysql-server
 
 systemctl start mysql && systemctl status mysql
 
-设置免密
+- 设置新密码
 /usr/bin/mysqladmin -u root password 'new-password'
+
 ```conf /etc/my.cnf
 # 跳过密码验证
---skip-grant-tables 
+[mysqld]
+skip-grant-tables 
 ```
 
 ### 安装mysql5.7
@@ -83,6 +85,8 @@ rm -rf /var/lib/mysql # 如果这个目录如果不删除，再重新安装之�
 show variables like "%character%";
 show variables like "%collation%";
 
+3. 更改已存在的表的字符集
+alter 表名  convert to character set utf8mb4 collate utf8mb4_bin;
 ## SQL增删改查
 ### 简单SQL 
 ```sql

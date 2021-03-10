@@ -1,10 +1,11 @@
 - 参考
-https://github.com/Kong/kong  
-https://docs.konghq.com/2.2.x/configuration/
+    - https://github.com/Kong/kong  
+    - https://docs.konghq.com/2.2.x/configuration/
 - Kong
 是由Mashape公司开源的，基于Nginx的API gateway
 - 功能
-授权、日志、ip限制、限流、api 统计分析（存在商业插件Galileo等、也可自己研发）、请求转化、跨域（CORS）、其它功能通过lua编写插件实现
+    - 外部流量的路由转发
+    - 授权、日志、ip限制、限流、api 统计分析（存在商业插件Galileo等、也可自己研发）、请求转化、跨域（CORS）、其它功能通过lua编写插件实现
 
 ## 安装 kong
 - 默认端口
@@ -65,8 +66,15 @@ docker exec -it kong kong reload
 ### docker/docker-compose 安装
 https://github.com/Kong/docker-kong/tree/master/compose
 
+### k8s安装
+- 参考
+    - https://docs.konghq.com/2.2.x/kong-for-kubernetes/install/
+1. Kong Ingress Controller 将 Kubernetes Ingress 资源对象的路由规则转化成kong的实际配置。
+2. kong proxy
 
-### kong使用
+
+## kong使用
+### API
 - 参考
 https://docs.konghq.com/2.0.x/admin-api/
 ```bash
@@ -85,8 +93,6 @@ curl  http://localhost:8001/certificates/${ca_certificate id} -XDELETE
 # 查看hostname和证书的对应关系
 curl  http://localhost:8001/snis | python -m json.tool
 ```
-### k8s安装
-https://docs.konghq.com/2.2.x/kong-for-kubernetes/install/
 ## 安装UI konga
 1. 安装
 ```bash

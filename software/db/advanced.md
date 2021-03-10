@@ -18,3 +18,25 @@ MYSQL中数据库太大,导致读取预读库中表信息时间太长,从而显�
 ## TiDB
 - https://zhuanlan.zhihu.com/p/71073707
 - TiDB 是 PingCAP 公司受 Google Spanner / F1 论文启发而设计的开源分布式 HTAP (Hybrid Transactional and Analytical Processing) 数据库，结合了传统的 RDBMS 和NoSQL 的最佳特性。TiDB 兼容 MySQL，支持无限的水平扩展，具备强一致性和高可用性。TiDB 的目标是为 OLTP(Online Transactional Processing) 和 OLAP (Online Analytical Processing) 场景提供一站式的解决方案。
+
+
+## sql审核平台
+### Yearning
+- 参考
+    - https://github.com/cookieY/Yearning
+    - https://guide.yearning.io/install.html
+
+- 注意
+    - Yearning 1.x版本需inception提供SQL审核及回滚功能
+    - Yearning 2.0开始无需依赖Inception，已自己实现了SQL审核/回滚功能；仅依赖Mysql数据库，mysql版本必须5.7及以上版本
+    - 只支持Mysql的审核
+#### 部署
+1. 下载解压  
+wget https://github.com/cookieY/Yearning/releases/download/v2.3.1/Yearning-2.3.1-GA-linux-amd64.zip
+
+2. 初始化数据库  
+./Yearning -m
+
+3. 默认参数启动  
+./Yearning -s
+
