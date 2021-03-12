@@ -101,7 +101,7 @@ cat /proc/sys/vm/swappiness
 
 ### 公钥
 扫描其它机器的公钥：ssh-keyscan
-生成公钥：ssh-keygen
+生成公钥：ssh-keygen -C "备注信息"
 authorized_keys   id_rsa  id_rsa.pub  know_hosts
 authorized_keys,并修改 authorized_keys 权限为 600,当前目录权限为 700
 
@@ -111,12 +111,16 @@ tar czf - test | split -b 500m - test.tar.bz2
 cat test.tar.bz2* | tar -jxv
 
 ### ssh-agent
-1. 普通登入方式 ssh -i key.pem root@IP
-- ssh-add 把专用密钥添加到ssh-agent的高速缓存中
-- ssh-agent 是一个代理程序，它能帮助我们管理我们的私钥。
-1. ssh-agent bash
-2. ssh-add -k key.pem
+- 参考 https://wiki.archlinux.org/index.php/SSH_keys_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)
 
+- 普通登入方式 ssh -i 私钥文件路径 ${username}@${ip}
+- ssh-agent 是一个代理程序，它能帮助我们管理我们的私钥
+- ssh-add 把私钥密钥添加到ssh-agent的高速缓存中
+```bash
+eval $(ssh-agent) # ssh-agent bash --login -i  # ssh-agent bash
+# 将私钥添加到高速缓存中
+ssh-add -k 私钥文件路径
+```
 ### supervisorctl
 1. Supervisor（http://supervisord.org/）是用Python开发的一个client/server服务，是Linux/Unix系统下的一个进程管理工具，不支持Windows系统。它可以很方便的监听、启动、停止、重启一个或多个进程。用Supervisor管理的进程，当一个进程意外被杀死，supervisort监听到进程死后，会自动将它重新拉起。
 2. 安装
@@ -260,3 +264,6 @@ find . -print0 | xargs -0 stat --printf="%f %N %W %Y %s\n"
 
 - 删除Evicted状态的Pod
 kubectl get pods | grep Evicted | awk '{print $1}' | xargs kubectl delete pod
+
+- 日期
+date -d "yesterday" +%Y-%m-%d

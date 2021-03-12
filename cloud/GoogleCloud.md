@@ -46,6 +46,7 @@ gcloud compute forwarding-rules list
             2. 互联网网络端点组（自定义来源）！！
             3. 无服务网络端点组（App Engine、Cloud RUN、Cloud Functions）
     2. 负载平衡器的后端存储分区
+        - Cloud Storage
 
 - Computer Engine：网络端点组  network endpoint group (NEG)
     1. 互联网端点组（地区级） -- 只能连接GoogleCloud内部的服务

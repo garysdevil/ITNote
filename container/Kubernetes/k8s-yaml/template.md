@@ -58,8 +58,9 @@ spec:
   selector:
     app: module-name
   type: LoadBalancer
-#  loadBalancerSourceRanges:
-#     - 127.0.0.1/32
+#  # 指定只有特定的IP可以访问
+#  loadBalancerSourceRanges: 
+#     - X.X.X.X/32
 ```
 ## deployment
 1. standad

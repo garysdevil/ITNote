@@ -162,7 +162,8 @@ git clone http://username:password@git.github.com/username/project.git
 git remote rm origin
 git remote add origin http://username:password@git.github.com/username/project.git
 ### ssh方式
-1. 生成公钥私钥 ssh-keygen
+1. 生成公钥私钥   
+  ssh-keygen -t rsa -C 'Git邮箱' 
 2. 将生成的公钥放入Git公共仓库上
 
 3. 指定git使用的私钥
