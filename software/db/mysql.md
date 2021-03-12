@@ -90,13 +90,24 @@ alter 表名  convert to character set utf8mb4 collate utf8mb4_bin;
 ## SQL增删改查
 ### 简单SQL 
 ```sql
+create database test;
+use test;
+--- create table
+create table if not exists `user_tb` (`user_id` int unsigned auto_increment , `user_name` varchar(40) not null, primary key ( `user_id` ));
+
 -- add
+insert into user_tb (user_name) values('gary');
+
+-- delete
+delete from user_tb where id = 1;
+
+--update
+update user_tb set user_name = 'adam' where user_name = 'gary';
 
 -- select
-select from TABLE where id = 1 limit 1;
-select from TABLE where username like  "%gary%" limit 1;
--- delete
-delete from TABLE where id = 1;
+select user_id, user_name from user_tb limit 10;
+select * from user_tb where user_name like  "%gary%" limit 1;
+
 
 ```
 ### 复杂SQL
