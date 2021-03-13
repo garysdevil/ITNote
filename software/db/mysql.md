@@ -93,7 +93,7 @@ alter 表名  convert to character set utf8mb4 collate utf8mb4_bin;
 create database test;
 use test;
 --- create table
-create table if not exists `user_tb` (`user_id` int unsigned auto_increment , `user_name` varchar(40) not null, primary key ( `user_id` ));
+create table if not exists `user_tb` (`user_id` int unsigned auto_increment , `user_name` varchar(40) not null, primary key ( `user_id` )) engine=InnoDB default charset=utf8;
 
 -- add
 insert into user_tb (user_name) values('gary');

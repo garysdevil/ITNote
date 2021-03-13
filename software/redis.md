@@ -8,7 +8,7 @@ https://zhuanlan.zhihu.com/p/111547061 架构
 https://nullcc.github.io/2018/02/15/(%E8%AF%91)Redis%E5%93%8D%E5%BA%94%E5%BB%B6%E8%BF%9F%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/  延迟
 
 ## 基础
-1. 基于单机默认有16个库，集群没有数据库的概览。
+1. 基于单机模式默认有16个库，集群没有数据库的概览。
 ### 数据类型
 1. 字符串   
     1. SET keyname value
@@ -29,17 +29,24 @@ https://nullcc.github.io/2018/02/15/(%E8%AF%91)Redis%E5%93%8D%E5%BA%94%E5%BB%B6%
         ZADD keyname 2 value2
 
 ## 原理
+### 单线程
 1. Redis是单线程的。
 2. Redis 单线程如何处理那么多的并发客户端连接?
-Redis的IO多路复用:redis利用epoll来实现IO多路复用，将连接信息和事件放到队列中，依次放到 文件事件分派器，事件分派器将事件分发给事件处理器。
-
-3. 持久化机制
+    Redis的IO多路复用:redis利用epoll来实现IO多路复用，将连接信息和事件放到队列中，依次放到 文件事件分派器，事件分派器将事件分发给事件处理器。
+### 持久化
+1. 持久化机制
     1. aof（默认值）把写操作指令，持续的写到一个类似日志文件里。
     2. rdb fork一个进程，遍历hash table，利用copy on write，把整个db dump保存下来。save, shutdown, slave 命令会触发这个操作。
-
 ## 集群
 - 参考
     - https://blog.csdn.net/qq_38937634/article/details/112172719
+1. 集群可扩展性
+    - 集群通过Sharding实现可扩展性，默认有 16384 个slot
+    - 集群使用hash_slot来切分数据进slot里，slot = CRC16(key) % 16384
+    - 通过指令计算一个key的slot值： CLUSTER KEYSLOT key  或者 通过 http://www.ip33.com/crc.html 参数模型选择CRC-16/XMODEM
+    - 缺陷： 集群添加删除节点，需要重新分配数据进对应的slot里
+2. 集群去中心化
+    - 缺陷：不能把客户端发出的一条指令转发到不同的节点，然后再把结果合并返回给客户端
 ## 场景
 1. 缓存穿透
     - 是指查询一个根本不存在的数据， 缓存层和存储层都不会命中， 通常出于容错的考虑， 如果从存储 层查不到数据则不写入缓存层。 
@@ -90,6 +97,7 @@ config set requirepass 123456
 
 9. 扫描占用内存大的键值
 redis-cli -h ${IP} --bigkeys
+
 ### 慢日志
 
 1. 动态配置慢日志
@@ -127,7 +135,12 @@ Redis Version >= 4.0
 
 3. 查看数据库类型
     TYPE key名字
-## 配置文件
+## 配置
+### 参数
+```conf
+cluster-require-full-coverage
+```
+### 配置文件 
 ```conf
 #后勤配置
 

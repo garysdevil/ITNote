@@ -114,7 +114,12 @@ static_resources:
 
 - python /hot-restarter-1.16.py /start_envoy.sh
 
-- 生成镜像
+- 信号
+  1. SIGTERM：将干净地终止所有子进程并退出。
+  2. SIGHUP：将重新调用作为第一个参数传递给热重启程序的脚本，来进行热重启。
+  3. SIGCHLD：如果任何子进程意外关闭，那么重启脚本将关闭所有内容并退出以避免处于意外状态。随后，控制进程管理器应该重新启动重启脚本以再次启动Envoy。
+  4. SIGUSR1：将作为重新打开所有访问日志的信号，转发给Envoy。可用于原子移动以及重新打开日志轮转
+### 生成镜像
 ```Dockerfile
 FROM envoyproxy/envoy-alpine:v1.16-latest as envoy
 
@@ -122,13 +127,6 @@ COPY hot-restarter-1.16.py start_envoy.sh /
 RUN chmod +x  /start_envoy.sh && echo 'kill -HUP 1' > /restart.sh && apk update python2 && apk add python2 --no-cache
 ENTRYPOINT [ "python2", "/hot-restarter-1.16.py", "/start_envoy.sh" ]
 ```
-
-- 信号
-  1. SIGTERM：将干净地终止所有子进程并退出。
-  2. SIGHUP：将重新调用作为第一个参数传递给热重启程序的脚本，来进行热重启。
-  3. SIGCHLD：如果任何子进程意外关闭，那么重启脚本将关闭所有内容并退出以避免处于意外状态。随后，控制进程管理器应该重新启动重启脚本以再次启动Envoy。
-  4. SIGUSR1：将作为重新打开所有访问日志的信号，转发给Envoy。可用于原子移动以及重新打开日志轮转
-
 ### 相关参数
 1. --drain-time-s <integer> Defaults to 600 seconds (10 minutes)
 设置排空连接的时间
