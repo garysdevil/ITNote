@@ -136,6 +136,6 @@ server {
 ```conf
 http {
     # 依次从左到右
-    resolver 114.114.114 8.8.8.8;
+    resolver 114.114.114 8.8.8.8 valid=3600s;
 }
 ```

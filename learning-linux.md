@@ -226,6 +226,9 @@ flock -xn ./test.lock -c "sh ./test.sh"
 
 ps -eo pid,lstart,etime,cmd |grep nginx
 
+列出所有线程的cpu、内存消耗
+ps -A  -o comm,pmem,pcpu | sort | uniq -c | head -15
+
 查看内核报错
 - 参考
 https://blog.csdn.net/zhaohaijie600/article/details/45246569 

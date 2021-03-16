@@ -37,7 +37,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: module-name-svc
+  name: module-name-elb
   annotations:
       service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
       service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "120"
@@ -61,6 +61,25 @@ spec:
 #  # 指定只有特定的IP可以访问
 #  loadBalancerSourceRanges: 
 #     - X.X.X.X/32
+```
+
+### service google LoadBalancer
+```yaml
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: starssea
+  name: module-name-elb
+  # annotations:
+  #   cloud.google.com/load-balancer-type: "Internal" # 定义集群内部才能访问
+spec:
+ selector:
+   name: dawn-prod
+ ports:
+   - name: http-port
+     port: 8080
+     targetPort: htpp-port
+ type: LoadBalancer
 ```
 ## deployment
 1. standad

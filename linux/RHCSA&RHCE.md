@@ -43,6 +43,16 @@ pasv_min_port=1024(default:0(use any port))
 pasv_max_port=65536(default:0(use any port))
 ```
 
+4. 添加新用户
+```bash
+# 增加用户gary，并指定gary用户的主目录为/data/gary
+useradd -d /data/gary gary
+passwd gary
+usermod -s /sbin/nologin gary
+# 从2.3.5之后，vsftpd增加了安全检查，如果用户被限定在了其主目录下，则该用户的主目录不能再具有写权限了！如果检查发现还有写权限，就会报错。
+chmod a-w /data/gary # 去除用户主目录的写权限 或者增加一行vsftpd配置 allow_writeable_chroot=YES
+```
+
 ## kvm  等待实践
 1. 查看依赖的内核模块是否已经被加载
 ```bash

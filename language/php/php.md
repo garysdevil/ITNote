@@ -126,7 +126,13 @@ pecl install skywalking
 
 3. autoconf 生成可以自动地配置软件源代码
 
-## php.ini
+## 配置
+- php-fpm.conf是PHP-FPM特有的配置文件（有的PHP版本的配置文件路径中是/fpm.d/www.conf）
+- php.ini是php模式中必须的配置文件
+
+- php-fpm.conf是PHP-FPM进程管理器的配置文件，php.ini是PHP解析器的配置文件
+
+### php.ini
 ```conf
 extension_dir="" # 定义PHP扩展的文件所在目录
 log_errors = On # 将错误日志记录进文件内
@@ -135,7 +141,12 @@ error_log = /proc/self/fd/2 # 错误日志记录的文件位置
 display_errors = Off # 不将错误正常返回
 extension=扩展名.so  # 添加扩展
 ```
-
+### php-fpm.conf
+```conf
+# 配置慢日志
+slowlog = /usr/local/var/log/php-fpm.log.slow
+request_slowlog_timeout = 5s
+```
 ## 指令
 ### php
 1. 查看已经加载的扩展
@@ -144,7 +155,7 @@ php7.3 -m | grep skywalking
 2. 查看扩展加载的目录
 php7.3 -i | grep extension_dir
 
-3. 查看php.ini配置文件
+3. 查看php.ini配置文件路径
 php7.3 --ini
 
 4. php查看扩展包的版本信息 

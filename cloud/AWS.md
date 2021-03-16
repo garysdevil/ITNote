@@ -161,12 +161,19 @@ ALB入口控制器 https://aws.amazon.com/cn/premiumsupport/knowledge-center/eks
 ## Amazon CLI
 - https://docs.aws.amazon.com/zh_cn/cli/latest/userguide/cli-configure-files.html
 - https://aws.amazon.com/cn/blogs/compute/authenticating-amazon-ecr-repositories-for-docker-cli-with-credential-helper/
-1. 安装
+###
+1. 安装方式一
 ```bash
 apt install awscli
 ```
-
-2. 默认读取的配置文件
+2. 安装方式二
+```bash
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+```
+### 使用
+1. 在配置文件内配置访问凭证
 ~/aws/config
 ```conf
 [default]
@@ -179,9 +186,15 @@ region = us-east-1
 aws_access_key_id = XXX
 aws_secret_access_key =  XXX
 ```
+2. 在命令行配置访问凭证
+```bash
+aws configure
+```
+3. 列出所有凭证
 ```bash
 aws configure list
 ```
+
 ### CLI操作ECR
 1. 创建ECR
 ```bash

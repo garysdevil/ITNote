@@ -156,7 +156,7 @@ set $var prod
   ```
   - php 配置
   ```conf
-  max_children 30; default 10. 保证有充足的php-cgi进程可以被使用
+  pm.max_children 30; default 10. 保证有充足的php-cgi进程可以被使用
   ```
 3. 501 服务器无法识别请求方法时可能会返回此代码
 
