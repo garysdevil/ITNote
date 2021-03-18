@@ -1,6 +1,5 @@
 - 参考
     - https://www.ibm.com/developerworks/architecture/library/ar-servgov/?S_CMP=cn-a-wes&S_TACT=105AGX52
-    - https://www.ibm.com/developerworks/cn/webservices/ar-servgov/#servdef
 # 运维
 ## 核心
 1. 自动化 - 解放自己的双手 - 方式：通过工具或者代码 
@@ -123,6 +122,20 @@ envoy
 1. 软件存活状态
 2. 软件是否可对外提供服务
 3. 软件性能
+## oncall体系
+1. 解决告警 
+    1. 确定告警源（来自Prometheus、Zabbix、Kibana、Others）
+    2. 确定告警规则
+    3. 确定告警数据的获取来源（如果是Kibana触发的，则查看是哪个索引触发的）
+    4. 查看告警数据
+    5. 分析告警数据 获取触发告警的直接原因
+        - 查看当前异常情况
+        - 和历史数据进行对比
+    6. 解决告警，恢复业务正常
+    7. 总结
+        - 确定根本性告警原因
+        - 是否立刻影响了业务系统的正常运行
+        - 是否为可以自动化解决告警
 
 # 项目
 1. 拓扑结构图

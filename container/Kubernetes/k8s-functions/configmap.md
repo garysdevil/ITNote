@@ -166,7 +166,7 @@ spec:
   restartPolicy: Never
 ```
 
-5. 将 ConfigMap 将 ConfigMap 数据写入卷中
+5. 将 ConfigMap 的某个文件 数据写入卷中
 - 数据键值对 添加到容器中的特定路径下
 ```yaml
 apiVersion: v1
