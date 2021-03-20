@@ -457,3 +457,24 @@ create user username@localhost identified by 'password' password expire;
 
 flush privileges;
 ```
+
+## DBA
+- DBA日常工作 -- 排查性能问题
+
+- 工具
+pt-query-digest 工具是包含在Percona toolkit里的. 相关安装方式可以参考 https://www.percona.com/doc/percona-toolkit/LATEST/installation.html
+
+1. 当问题已经发生则查询这两种表
+    - 查看锁 sys.innodb_lock_waits
+    - 查看线程 information_schema.PROCESSLIST
+
+2. 优化、预防问题发生
+    - sys.statements_with_full_table_scans
+    - sys.schema_unused_indexes
+    - performance_schema.table_io_waits_summary_by_index_usage
+    - performance_schema.table_io_waits_summary_by_table
+    - performance_schema.table_lock_waits_summary_by_table
+
+3. 如果查询时使用的字符集 和 表的字符集 不一致则会导致索引失效
+
+4. 

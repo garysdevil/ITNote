@@ -1,0 +1,3 @@
+# 55 04 * * * docker rmi $(docker images -f "dangling=true" -q)
+# reference https://docs.docker.com/config/pruning/
+10 22 * * * docker image prune -a -f --filter "until=30m" >> /tmp/clean-docker.log 2>&1

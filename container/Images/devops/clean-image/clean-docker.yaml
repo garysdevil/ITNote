@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: clean-docker
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      k8s-app: clean-docker
+  template:
+    metadata:
+      labels:
+        k8s-app: clean-docker
+        kubernetes.io/cluster-service: "true"
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: clean-docker
+          image: garysdevil/devops:clean-image
+          imagePullPolicy: Always
+          # lifecycle:
+          #   postStart:
+          #     exec:
+          #       command: ["/bin/bash", "-c", "/etc/init.d/cron start;crontab -u root /root/cronjob.parms;tail -f /tmp/clean-docker.log"]
+          command: ["/bin/bash", "-c", "/etc/init.d/cron start;crontab -u root /root/cronjob.parms;touch /tmp/clean-docker.log;tail -f /tmp/clean-docker.log"]
+          # args:
+          #   - "/bin/bash"
+          #   - "-c"
+          #   - "sleep 31536000"
+          volumeMounts:
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
+            - name: docker-bin
+              mountPath: /usr/bin/docker
+      volumes:
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: docker-bin
+          hostPath:
+            path: /usr/bin/docker
