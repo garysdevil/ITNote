@@ -269,7 +269,7 @@ spec:
             cpu: "1"
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: "@garys123456"
+          value: "XXXXXX"
         - name: MYSQL_ROOT_HOST
           value: "%"
         volumeMounts:

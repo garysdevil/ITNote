@@ -193,7 +193,7 @@ spec:
     # args:
     # - "-c"
     # - "sleep 6000"
-  restartPolicy: "Never"
+  restartPolicy: "Never" # Always
   # nodeSelector:
   #   kubernetes.io/hostname: 10.200.79.70
 ```

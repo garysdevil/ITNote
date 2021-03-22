@@ -19,7 +19,7 @@ systemctl start mariadb
 systemctl enable mariadb
 
 # 设置密码
- mysqladmin -u root -h localhost password @garys123456
+ mysqladmin -u root -h localhost password XXXXXX
 ```
 2. 配置MariaDB的字符集
 ```bash
@@ -54,8 +54,8 @@ show variables like "%collation%";
 - 官方教程： https://www.zabbix.com/documentation/3.4/manual/installation/install_from_packages/rhel_centos
 ```bash
 # 1 创建zabbix用户和数据库
-mysql -uroot -p@garys123456 -e "create database zabbix character set utf8 collate utf8_bin;"
-mysql -uroot -p@garys123456 -e "grant privileges on zabbix.* to zabbix@localhost identified by 'zabbix'; flush privileges;"
+mysql -uroot -pXXXXXX -e "create database zabbix character set utf8 collate utf8_bin;"
+mysql -uroot -pXXXXXX -e "grant privileges on zabbix.* to zabbix@localhost identified by 'zabbix'; flush privileges;"
 
 # 2 下载zabbix的yum包
 rpm -ivh https://repo.zabbix.com/zabbix/3.4/rhel/7/x86_64/zabbix-release-3.4-2.el7.noarch.rpm
@@ -79,8 +79,8 @@ systemctl status zabbix-server
 #### 二.B 安装zabbix-proxy
 ```bash
 # 1 创建zabbix用户和数据库
-mysql -uroot -p@garys123456 -e "create database zabbix_proxy character set utf8 collate utf8_bin;"
-mysql -uroot -p@garys123456 -e "grant privileges on zabbix_proxy.* to zabbix@localhost identified by 'zabbix'; flush privileges;"
+mysql -uroot -pXXXXXX -e "create database zabbix_proxy character set utf8 collate utf8_bin;"
+mysql -uroot -pXXXXXX -e "grant privileges on zabbix_proxy.* to zabbix@localhost identified by 'zabbix'; flush privileges;"
 
 # 2 下载zabbix的yum包
 rpm -ivh https://repo.zabbix.com/zabbix/3.4/rhel/7/x86_64/zabbix-release-3.4-2.el7.noarch.rpm

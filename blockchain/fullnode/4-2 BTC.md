@@ -50,7 +50,7 @@ zmqpubrawblock=tcp://127.0.0.1:28335
 rpcallowip=0.0.0.0/0
 rpcport=18332
 rpcuser=gary
-rpcpassword=@garys123456
+rpcpassword=XXXXXX
 uacomment=bitcore
 ```
 3. 启动
