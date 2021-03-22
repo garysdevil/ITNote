@@ -10,7 +10,7 @@ wget https://github.com/paritytech/polkadot/releases/download/v0.8.22/polkadot
 
 sudo chmod +x polkadot
 
-./polkadot --pruning archive --name "wx_kusama_node01" --chain kusama  -d /data/polkadot --rpc-external --ws-external --rpc-cors all
+./polkadot --pruning archive --name "gary_kusama_node01" --chain kusama  -d /data/polkadot --rpc-external --ws-external --rpc-cors all
 
 启动参数说明：
 --pruning  archive      运行归档节点，同步所有的区块
@@ -29,7 +29,7 @@ sudo chmod +x polkadot
 vi start.sh
 ```
 log=/home/polkadot/logs/kusama`date '+%Y-%m-%d'`.log
-/home/polkadot/polkadot --pruning archive --name "wx_kusama_node02"  -d /data/polkadot --rpc-external --ws-external --rpc-cors all --chain polkadot  >> $log 2>&1
+/home/polkadot/polkadot --pruning archive --name "gary_kusama_node02"  -d /data/polkadot --rpc-external --ws-external --rpc-cors all --chain polkadot  >> $log 2>&1
 ```
 vi /etc/systemd/system/polkadot.service
 ```conf

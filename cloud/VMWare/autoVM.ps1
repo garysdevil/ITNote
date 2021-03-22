@@ -69,7 +69,7 @@ Function configVMCentOS(){
         $script1 = "echo -e  '$IPSettingText' > $IPFilePath && systemctl restart network"
         $script2 = "hostnamectl set-hostname $SystemName"
         $script = "$script1 && $script2"
-        Invoke-VMScript -ScriptText "$script"  -GuestUser 'root' -GuestPassword 'Root123$' -VM $VMNameList[$i] -Confirm:$false
+        Invoke-VMScript -ScriptText "$script"  -GuestUser 'root' -GuestPassword 'XXXXXX' -VM $VMNameList[$i] -Confirm:$false
     }
     echo "finish set IP"
 }
@@ -82,7 +82,7 @@ Function configVMUbuntu18(){
         $script1 = "sed -i s/${IP}/${IPADDR}/g $IPFilePath ; ip addr flush ens160 ; netplan apply"
         $script2 = "hostnamectl set-hostname $SystemName && systemctl restart ntp"
         $script = "$script1 && $script2"
-        Invoke-VMScript -ScriptText "$script1"  -GuestUser 'root' -GuestPassword '@garys123456' -VM $VMNameList[$i] -Confirm:$false
+        Invoke-VMScript -ScriptText "$script1"  -GuestUser 'root' -GuestPassword 'XXXXXX' -VM $VMNameList[$i] -Confirm:$false
     }
     echo "finish set IP"
 }

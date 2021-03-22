@@ -37,7 +37,7 @@ vim /opt/ripple/etc/validators.txt
 1. 默认端口  
     p2p：51235  
     RPC：5005  
-    wx: 6006  
+    ws: 6006  
 2. 查看连接上的节点  
     /opt/ripple/bin/rippled peers  
 3. 手动连接一个节点  

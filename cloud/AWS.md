@@ -225,10 +225,10 @@ ec2-describe-instances --region us-east-1 --filter 'tag:aws:cloudformation:stack
 ec2-stop-instances
 
 # 删除实例
-aws cloudformation delete-stack --stack-name  lestore-stage-vova-multi-test-29 --region us-east-1
+aws cloudformation delete-stack --stack-name  gary --region us-east-1
 
 # 创建实例
-aws cloudformation create-stack --stack-name lestore-stage-vova-multi-test-29 --region us-east-1  --template-body  stack.json --parameters   ParameterValue=,ParameterKey=Deployer ParameterValue=vova-multi-test-29,ParameterKey=StackShortName --capabilities CAPABILITY_IAM
+aws cloudformation create-stack --stack-name gary --region us-east-1  --template-body  stack.json --parameters   ParameterValue=,ParameterKey=Deployer ParameterValue=gary,ParameterKey=StackShortName --capabilities CAPABILITY_IAM
 
 # 查看在CREATE_IN_PROGRESS,ROLLBACK_IN_PROGRESS,DELETE_IN_PROGRESS,UPDATE_IN_PROGRESS状态的stack
 cfn-list-stacks --region us-east-1 --stack-status CREATE_IN_PROGRESS,ROLLBACK_IN_PROGRESS,DELETE_IN_PROGRESS,UPDATE_IN_PROGRESS
@@ -278,3 +278,5 @@ vpc请求方， vpc接收方，vpc接收方ip地址
   1. 定义用户请求到CloudFront后，CloudFront将流量打到哪个源上
   2. 第一个源被设置为默认的行为
   
+## IAM
+- 限制IP来源 https://aws.amazon.com/cn/premiumsupport/knowledge-center/iam-restrict-calls-ip-addresses/

@@ -49,7 +49,7 @@ zmqpubhashblock=tcp://127.0.0.1:28334
 zmqpubrawblock=tcp://127.0.0.1:28335
 rpcallowip=0.0.0.0/0
 rpcport=18332
-rpcuser=wxuser
+rpcuser=gary
 rpcpassword=@garys123456
 uacomment=bitcore
 ```
@@ -119,8 +119,8 @@ Error: Cannot find module './build/Debug/addon'
           "rpc": {
             "host": "bitcoin",
             "port": 18333,
-            "username": "wxuser",
-            "password": "@wxuser123456"
+            "username": "gary",
+            "password": "@gary123456"
           }
         }
       },

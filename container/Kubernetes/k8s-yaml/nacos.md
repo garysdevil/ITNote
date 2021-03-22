@@ -1,5 +1,5 @@
 - 官网 https://nacos.io/en-us/
-- k8s部署nacos https://nacos.io/zh-cn/docs/use-nacos-with-kubernetes.html
+- 文档 https://nacos.io/zh-cn/docs/deployment.html
 
 
 ## 使用已有的StorageClass创建部署nacos
@@ -30,3 +30,9 @@ cd nacos-docker
 # 可以更改example/standalone-mysql-5.7.yaml
 docker-compose -f example/standalone-mysql-5.7.yaml up -d
 ```
+
+## API
+1. 发布配置  
+curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=test.txt&group=test&content=HelloWorld"
+2. 获取配置  
+curl -X GET "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos.cfg.dataId&group=test&tenant=命名空间ID"
