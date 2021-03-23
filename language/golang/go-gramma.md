@@ -32,7 +32,7 @@ cap()
 // 追加值，当容量不够时，则容量进行翻倍。
 append(切片, 元素)
 ```
-4. Map集合
+4. Map无序集合
 ```go
 /* 声明变量，默认 map = nil */
 var map_variable map[key_data_type]value_data_type
@@ -40,8 +40,8 @@ var map_variable map[key_data_type]value_data_type
 map_variable := make(map[key_data_type]value_data_type)
 
 // 例如
-ab := map[string]string{"a":"a1","b":"b1"}
-ab["c"] = "c1"
+vks := map[string]string{"a":"a1","b":"b1"}
+vks["c"] = "c1"
 
 // 根据键删除某个值 
 delete(map_variable,key)
@@ -111,9 +111,11 @@ func swap(x, y string) (string, string) {
 ```
 
 5. 循环 只有for循坏：break，continue，goto
-    - for 循环不需要()
-    - for i := 0; i < 10; i++{}
-    - for k, v := range kvs{} 循环数组、切片、map，返回元素的索引和索引对应的值。 
+   - for 循环不需要()
+   - for i := 0; i < 10; i++{}
+   - for k, v := range kvs{} 循环数组、切片、map，返回元素的索引和索引对应的值。 
+   - continue 跳过当前循环的剩余语句，然后继续进行下一轮循环
+   - goto 将控制转移到被标记的语句
 
 6. Go 并发，通过go关键字开启一个 goroutine 协程
    ```go
@@ -124,9 +126,10 @@ func swap(x, y string) (string, string) {
 float32(parameter_name)
 
 
+### 常规语法
+1. switch 
 
-
-
+2. 
 
 
 
