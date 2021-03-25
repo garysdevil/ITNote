@@ -63,7 +63,7 @@ vim /etc/ssh/sshd_config
 ```
 ```conf
 Port 22960 # 设置sshd监听端口
-PermitRootLogin no # 禁止用户远程登入
+PermitRootLogin no # 禁止Root用户远程登入
 ```
 ```bash
 systemctl restart sshd

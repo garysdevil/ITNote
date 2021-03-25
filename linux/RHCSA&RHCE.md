@@ -138,3 +138,10 @@ alias ll='ls -l'
     3. /etc/selinux/config
     4. 三种配置模式：enforcing  permissive  disabled
 
+## 引导过程
+- **待学习和实践**
+
+## 文件系统相关
+- fdisk用于管理在BIOS固件上使用传统的MBR分区方案创建的分区。
+- gdisk 和 parted 用于管理在UEFI固件上使用GUID方案创建的分区表GPT。
+1. findmnt 以树状态格式显示所有已挂载的文件系统
