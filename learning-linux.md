@@ -270,3 +270,6 @@ kubectl get pods | grep Evicted | awk '{print $1}' | xargs kubectl delete pod
 
 - 日期
 date -d "yesterday" +%Y-%m-%d
+
+- 查看网络连接
+netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'

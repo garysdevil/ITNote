@@ -1,0 +1,26 @@
+# 参考 https://medium.com/@lynnlin827/use-cloud-armor-to-restrict-ip-access-on-kubernetes-57ca221f43f0
+
+apiVersion: cloud.google.com/v1beta1
+kind: BackendConfig
+metadata:
+  namespace: default
+  name: example-cloud-armor
+spec:
+  securityPolicy:
+    name: cloud armor 的名字
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: default
+  name: 服务名
+  annotations:
+    beta.cloud.google.com/backend-config: '{"ports": {"http":"example-cloud-armor"}}'
+spec:
+  selector:
+    app: nginx
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
