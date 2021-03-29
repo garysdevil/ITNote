@@ -62,7 +62,8 @@ docker build --build-arg PROJECT=pre --no-cache --network=host -f Dockerfile -t 
 docker run -d -e SW_OAP_ADDRESS=127.0.0.1:11800 -p 9000:9000 -v /etc/nginx/html:/var/www/html skyapm/skywalking-php
 -e 参数
 -p 主机端口:容器端口
--d 主机路径:容器路径
+-v 主机路径:容器路径
+-d 后台运行
 --name 指定容器名字
 
 3. 容器资源使用情况
