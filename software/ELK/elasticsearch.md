@@ -70,6 +70,8 @@ curl -XPUT -H "Content-Type: application/json" -d '{"transient":{"cluster":{"max
 
 curl "http://${IP}:${PORT}/_nodes/{node}/hot_threads"
 
+# 查看大索引
+curl -s /dev/null -XGET http://127.0.0.1:9200/_cat/indices?v|grep gb
 ```
 ### 常规操作
 ```bash
