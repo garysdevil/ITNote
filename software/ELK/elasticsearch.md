@@ -65,6 +65,9 @@ curl ${IP}:${PORT}/?pretty
 # 节点健康状况
 curl "http://${IP}:${PORT}/_cat/health?v"
 
+# 查看集群分片状态
+curl https://${IP}:${PORT}/_cat/shards
+
 # 临时改变集群分片的数量    
 curl -XPUT -H "Content-Type: application/json" -d '{"transient":{"cluster":{"max_shards_per_node":10000}}}' "http://${IP}:${PORT}/_cluster/settings"
 
