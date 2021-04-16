@@ -458,6 +458,16 @@ create user username@localhost identified by 'password' password expire;
 flush privileges;
 ```
 
+### 高cpu的sql
+```bash
+top -H -p <mysqld进程id>
+```
+
+```bash
+SELECT a.THREAD_OS_ID,b.user,b.host,b.db,b.command,b.time,b.state,b.info
+FROM performance_schema.threads a,information_schema.processlist b
+WHERE b.id = a.processlist_id;
+```
 ## DBA
 - DBA日常工作 -- 排查性能问题
 
