@@ -332,6 +332,7 @@ show slave status\G;
     show full processlist;
     -- 查看非睡眠状态的连接
     select ID,USER,HOST,DB,COMMAND,TIME,STATE from information_schema.processlist where Command != 'Sleep' order by Time desc;
+    select ID,USER,HOST,DB,COMMAND,TIME,STATE,INFO from information_schema.processlist where Command != 'Sleep'and INFO != "NULL" order by Time desc\G;
     ```
 6. 中止应用线程
     - 一般出现长时间的select可以考虑kill掉，但是update或者delete不建议kill
