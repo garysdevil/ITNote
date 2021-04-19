@@ -6,11 +6,24 @@ https://www.elastic.co/cn/webinars/getting-started-kibana?baymax=default&elektra
 ## 安装
 ### 裸安装
 - 参考
-https://www.elastic.co/cn/downloads/past-releases
-需要和elasticsearch版本对应
-1. wget https://artifacts.elastic.co/downloads/kibana/kibana-7.9.3-linux-x86_64.tar.gz
-2. nohup ./bin/kibana > kibana.log 2>&1 &
-3. 默认端口 5601
+    - https://www.elastic.co/cn/downloads/past-releases
+
+- 需要和elasticsearch版本对应
+
+- 安装
+```bash
+# 1. 
+wget https://artifacts.elastic.co/downloads/kibana/kibana-7.9.3-linux-x86_64.tar.gz
+# 2. 
+nohup ./bin/kibana > kibana.log 2>&1 &
+# 3. 默认端口 5601
+```
+
+- 健康状态查看
+```bash
+curl https://pcielk.gitvv.com/api/status
+# https://pcielk.gitvv.com/status
+```
 ### 配置
 ```conf
 server.host: "0.0.0.0" # 默认为localhost
@@ -26,4 +39,3 @@ FROM docker.elastic.co/kibana/kibana:7.6.1
 
 RUN /opt/kibana/bin/kibana-plugin install https://github.com/opendistro-for-elasticsearch/alerting-kibana-plugin/releases/download/v1.12.0.2/opendistro_alerting_kibana.zip
 ```
-

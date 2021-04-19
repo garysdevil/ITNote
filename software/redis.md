@@ -15,7 +15,7 @@ https://nullcc.github.io/2018/02/15/(%E8%AF%91)Redis%E5%93%8D%E5%BA%94%E5%BB%B6%
     2. get keyname
 2. 哈希     
     1. HSET hkeyname key1 value1 key2 value2 ...
-    2. 列出哈希表中所有的key和value HGETALL hkeyname
+    2. 列出哈希表中所有的key和value     HGETALL hkeyname
 3. 列表     
     1. LPUSH keyname value1 value2 ...
     2. 列出列表里的元素 LRANGE key  start end
@@ -27,6 +27,8 @@ https://nullcc.github.io/2018/02/15/(%E8%AF%91)Redis%E5%93%8D%E5%BA%94%E5%BB%B6%
     1. 增加操作
         ZADD keyname 1 value1
         ZADD keyname 2 value2
+    2. 查看操作
+        ZRANGE keyname start end
 
 ## 原理
 ### 单线程

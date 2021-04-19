@@ -275,3 +275,14 @@ date -d "yesterday" +%Y-%m-%d
 
 - 查看网络连接
 netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
+
+
+- 查看某个节点的所有pod的top
+```bash
+nodename=XXXX
+kubectl get pods -o wide | grep ${nodename} | awk {'print $1'} | xargs -n1 kubectl top pods --no-headers
+
+# xargs 详解
+# -d 指定分隔符
+# -p 等待输入yes后才执行一条语句
+```

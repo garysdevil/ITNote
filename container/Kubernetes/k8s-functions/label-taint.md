@@ -96,18 +96,6 @@ spec:
         app: mytest
     spec:
       containers:
-      tolerations:
-      - key: "dam-taint"
-        operator: "Equal"
-        value: "project"
-        effect: "NoSchedule"
-      tolerations:
-      - key: "dam-taint"
-        operator: "Equal"
-        value: "project"
-        effect: "NoSchedule"
-      nodeSelector:
-        project: "project"
       - image: busybox
         command: [ "/bin/bash", "-c", "--" ]
         args: [ "while true;do sleep 30;done" ]
@@ -118,5 +106,11 @@ spec:
           name: http
           protocol: TCP
       restartPolicy: Always
-
+      tolerations:
+      - key: "dam-taint"
+        operator: "Equal"
+        value: "project"
+        effect: "NoSchedule"
+      nodeSelector:
+        project: "project"
 ```

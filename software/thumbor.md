@@ -26,9 +26,5 @@ http://127.0.0.1:8888/unsafe/300x200/https%3A%2F%2Fgarys.top%2FPMQ%2Fstatic%2Fad
     - https://www.cnpython.com/pypi/thumbor-cloud-storage
     - pip install thumbor-cloud-storage
 
-    行不通证据
-    https://cloud.google.com/storage/docs/interoperability
-    https://cloud.google.com/storage/docs/interoperability
-
 6. s3
     - https://github.com/thumbor-community/aws

@@ -28,6 +28,7 @@ kubectl cluster-info --context ${contexts.context.name}
 
 # 查看 kubectl 已知的位置和凭证
 kubectl config view
+# cat /etc/kubernetes/admin.conf 要么 cat ~/.kube/config
 
 # 加载一个镜像进node里
 kind load docker-image ${image-name}

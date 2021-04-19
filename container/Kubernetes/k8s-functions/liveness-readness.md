@@ -35,3 +35,28 @@
           successThreshold: 1
           timeoutSeconds: 10
 ```
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: goproxy
+  labels:
+    app: goproxy
+spec:
+  containers:
+  - name: goproxy
+    image: k8s.gcr.io/goproxy:0.1
+    ports:
+    - containerPort: 8080
+    readinessProbe:
+      tcpSocket:
+        port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 10
+    livenessProbe:
+      tcpSocket:
+        port: 8080
+      initialDelaySeconds: 15
+      periodSeconds: 20
+```
