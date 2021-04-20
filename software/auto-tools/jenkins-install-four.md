@@ -48,3 +48,8 @@ $JENKINS_HOME/users/用户名/config.xml
 
 ## Jenkins所有插件.hpi下载
 https://updates.jenkins-ci.org/download/plugins/
+
+# 其它
+## 权限管理
+1. 安装插件 Role-based Authorization Strategy
+2. 在 Configure Global Security 中授权策略选择 Role-Based Strategy

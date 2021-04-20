@@ -22,6 +22,7 @@ yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce
 # yum list docker-ce --showduplicates | sort -r
 # 3.默认安装最新版
 yum install -y  docker-ce 
+# aws服务器安装docker异常，执行 rm /etc/yum.repos.d/docker-ce.repo && amazon-linux-extras install docker
 
 # 启动docker-ce
 systemctl start docker
@@ -48,7 +49,9 @@ apt-get install docker-ce docker-ce-cli containerd.io -y
 # https://github.com/docker/compose/releases/
 # 2. 下载
 # curl -L https://github.com/docker/compose/releases/download/1.25.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
-curl -L https://github.com/docker/compose/releases/download/1.27.4/docker-compose-Linux-x86_64 -o /usr/local/bin/docker-compose
+# curl -L https://github.com/docker/compose/releases/download/1.27.4/docker-compose-Linux-x86_64 -o /usr/local/bin/docker-compose
+curl -L https://github.com/docker/compose/releases/download/1.29.0/docker-compose-Linux-x86_64 -o /usr/local/bin/docker-compose
+
 # 给目录增加可执行权限
 chmod +x /usr/local/bin/docker-compose
 ```

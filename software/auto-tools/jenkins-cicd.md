@@ -1,9 +1,20 @@
-## template
+## CICD
 - 参考
     - https://www.jenkins.io/doc/pipeline/tour/post/  构建结束后操作
     - https://www.jenkins.io/zh/doc/book/pipeline/syntax/
 
+### 流程
+- 方式一
+    1. 下载代码（credentialsId登入git仓库）
+    2. build dockerfile
+    3. aws 登入（）
+    4. 推送镜像进入aws
 
+    5. 登入k8s集群（）
+    6. 更新yaml并且apply
+
+
+### template
 ```groovy
 // clone code
 def git_url = 'ssh://git@IP:PORT/PROJECT.git'
@@ -210,6 +221,7 @@ pipeline {
                     checkout([ $class: 'GitSCM',
                             branches: [[name: "$refspec"]],
                             userRemoteConfigs: [[url: "${git_url}", credentialsId: "${git_redentials_id}",]]])
+                    // 免除每次都需下载依赖
                     // if (PhpInstall == "true" || !fileExists("./node_modules")) {
                     //     sh """docker run -u 0 --rm -v \$(pwd):代码根目录 --name node-build-container node:12.19.0-alpine3.10 sh -c 'cd 代码根目录;rm -rf node_modules package-lock.json;npm install'"""
                     // }
@@ -217,6 +229,7 @@ pipeline {
                     //     sudo chown -R ec2-user.ec2-user \$(pwd); \
                     //     git rev-parse --short HEAD > build/version; \
                     // "
+
                     git_ver = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                     docker_image_tag = docker_image_tag + '_' + git_ver + '_' + cur_time
                     sh "cp someconfigfrommachine ./; \

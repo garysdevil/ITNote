@@ -1,8 +1,11 @@
 version: '3'
 services:
   jenkins:
-    image: jenkinsci/blueocean:1.24.4-bcc31d32159f
+    # image: jenkinsci/blueocean:1.24.4-bcc31d32159f
     # image: jenkins4eval/jenkins:slim # ram 指令集架构机器
+    # image: jenkins:2.60.3-alpine # 官方
+    image: jenkins/jenkins:2.277.2-lts-centos
+
     container_name: jenkins
     restart: always
     user: root                          
@@ -11,7 +14,7 @@ services:
       - "50000:50000"
     environment:
       TZ: Asia/Shanghai
-    entrypoint: /bin/bash -c -- " ulimit -c unlimited && /opt/java/openjdk/bin/java -Duser.home=/var/jenkins_home -Djenkins.model.Jenkins.slaveAgentPort=50000 -jar /usr/share/jenkins/jenkins.war"
+    #entrypoint: /bin/bash -c -- " ulimit -c unlimited && /opt/java/openjdk/bin/java -Duser.home=/var/jenkins_home -Djenkins.model.Jenkins.slaveAgentPort=50000 -jar /usr/share/jenkins/jenkins.war"
     volumes:
     - /Users/admin/Desktop/docker/jenkins_home:/var/jenkins_home
     - /var/run/docker.sock:/var/run/docker.sock

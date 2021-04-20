@@ -119,6 +119,7 @@ yum install epel-release
 3. yum仓库管理工具
 yum-config-manager
 yum-config-manager --add-repo repository_url
+
 ### apk
 - 参考 http://www.mamicode.com/info-detail-2685312.html
 1. 列出所有包：
