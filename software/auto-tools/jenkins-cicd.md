@@ -3,16 +3,20 @@
     - https://www.jenkins.io/doc/pipeline/tour/post/  构建结束后操作
     - https://www.jenkins.io/zh/doc/book/pipeline/syntax/
 
+### 信息
+1. 
+
 ### 流程
-- 方式一
-    1. 下载代码（credentialsId登入git仓库）
+- 方式一(aws k8s)
+    1. 下载代码（通过credentialsId登入git仓库）
     2. build dockerfile
     3. aws 登入（）
     4. 推送镜像进入aws
 
-    5. 登入k8s集群（）
+    5. 登入k8s集群（执行pipeline脚本的机器能在k8s集群内执行操作）
     6. 更新yaml并且apply
 
+- 方式二（裸部署方式）
 
 ### template
 ```groovy

@@ -121,6 +121,28 @@ eval $(ssh-agent) # ssh-agent bash --login -i  # ssh-agent bash
 # 将私钥添加到高速缓存中
 ssh-add -k 私钥文件路径
 ```
+
+### systemctl
+/usr/lib/systemd/system/XXXXX.service
+```
+[Unit]
+Description=XXXXX
+Documentation=XXXXX
+After=network.target
+
+[Service]
+Type=simple
+Environment="变量名=变量值"
+ExecStart=/bin/sh -c -- "/usr/bin/java -jar /opt/application/XXXXX/XXXXX.jar 1>> /opt/application/XXXXX/logs/XXXXX.out.log 2>> /opt/application/XXXXX/logs/XXXXX.err.log"
+ExecStop=/bin/kill -s QUIT $MAINPID
+Restart=always
+StartLimitInterval=0
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
+
 ### supervisorctl
 1. Supervisor（http://supervisord.org/）是用Python开发的一个client/server服务，是Linux/Unix系统下的一个进程管理工具，不支持Windows系统。它可以很方便的监听、启动、停止、重启一个或多个进程。用Supervisor管理的进程，当一个进程意外被杀死，supervisort监听到进程死后，会自动将它重新拉起。
 2. 安装

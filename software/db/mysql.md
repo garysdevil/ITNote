@@ -478,6 +478,12 @@ pt-query-digest 工具是包含在Percona toolkit里的. 相关安装方式可�
 1. 当问题已经发生则查询这两种表
     - 查看锁 sys.innodb_lock_waits
     - 查看线程 information_schema.PROCESSLIST
+    
+    - 查看未提交的事务 
+    ```sql
+    select trx_state, trx_started, trx_mysql_thread_id, trx_query from information_schema.innodb_trx\G
+    ```
+
 
 2. 优化、预防问题发生
     - sys.statements_with_full_table_scans

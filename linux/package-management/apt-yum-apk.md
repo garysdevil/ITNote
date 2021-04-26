@@ -109,12 +109,22 @@ gpgcheck=0
     - 163源 http://mirrors.163.com/.help/CentOS7-Base-163.repo
     - aliyun源 http://mirrors.aliyun.com/repo/Centos-7.repo
     - epel源:是社区强烈打造的免费开源发行软件包版本库，系统包含大概有1万多个软件包 http://mirrors.aliyun.com/repo/epel-7.repo
-```bash
-curl -o /etc/yum.repos.d/Aliyun-Base.repo  http://mirrors.aliyun.com/repo/Centos-7.repo
+    - 安装阿里云源
+    ```bash
+    curl -o /etc/yum.repos.d/Aliyun-Base.repo  http://mirrors.aliyun.com/repo/Centos-7.repo
+    ```
+    -  安装epel源
+    ```bash
+    # 方式一
+    # 大陆
+    curl -o /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
+    # 非大陆
+    wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    yum install epel-release-latest-7.noarch.rpm
 
-curl -o /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo 或
-yum install epel-release
-```
+    # 方式二
+    yum install epel-release
+    ```
 
 3. yum仓库管理工具
 yum-config-manager
