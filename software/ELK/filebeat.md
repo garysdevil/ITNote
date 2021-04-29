@@ -48,9 +48,12 @@ filebeat.inputs:
     reload.enabled: false
     # close_older: 1h # default 1h 如果一个文件在某个时间段内没有发生过更新，则关闭监控的文件handle
     # force_close_files: true  # default false 只要filebeat检测到文件名字发生变化，就会关掉这个handle
-    multiline.pattern: '^\<|^[[:space:]]|^[[:space:]]+(at|\.{3})\b|^Caused by:'  # 正则，自定义，一个表示可以匹配多种模式使用or 命令也就是“|”
-    multiline.negate: false # 默认是false，匹配pattern的行合并到上一行；true，不匹配pattern的行合并到上一行
+    # multiline.pattern: '^\<|^[[:space:]]|^[[:space:]]+(at|\.{3})\b|^Caused by:'  # 正则，自定义，“|” 表示可以匹配多种模式
+    multiline.pattern: '^{'
+    multiline.negate: true # 默认是false，匹配pattern的行合并到上一行；true，不匹配pattern的行合并到上一行
     multiline.match: after # 合并到上一行的末尾或开头
+    tail_files: true # 从新文件的最后位置开始读取,而不是从开头读取新文件
+    force_close_files: true  # 只要文件名一变化立刻关闭文件句柄，保证文件可以被删除；可以防止由于文件被删除但句柄还在从而导致磁盘占用空间不被释放
     processors: # 过滤器
     - drop_fields: # 删除一些字段
         fields: ["log"]

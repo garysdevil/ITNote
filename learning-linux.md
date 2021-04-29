@@ -25,11 +25,17 @@ cat /proc/cpuinfo| grep "processor"| wc -l
 -s 静默模式
 -k (or --insecure)不验证证书进行https请求
 
-### cronjob
-获取所有的任务
+### crontab
+1. 配置crontab
+    vim /etc/crontab
+
+2. 获取所有的job任务
+```bash
 for u in `cat /etc/passwd | cut -d":" -f1`;do crontab -l -u $u;done 
-或者
+# 或者
 cd /var/spool/cron && cat *
+```
+
 
 ### 磁盘
 1. 查看所有块设备信息 lsblk -m

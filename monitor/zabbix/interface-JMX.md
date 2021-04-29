@@ -45,7 +45,7 @@ java \
 -Dcom.sun.management.jmxremote.port=12345 \
 -Dcom.sun.management.jmxremote.authenticate=false \
 -Dcom.sun.management.jmxremote.ssl=false \
--jar /usr/share/doc/openjdk-6-jre-headless/demo/jfc/Notepad/Notepad.jar
+-jar 名称.jar
 ```
 
 2. Java程序启动JMX并且认证加密

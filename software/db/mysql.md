@@ -82,8 +82,15 @@ rm -rf /var/lib/mysql # 如果这个目录如果不删除，再重新安装之�
     default-character-set=utf8
 
 2. 查看字符集的配置
-show variables like "%character%";
-show variables like "%collation%";
+    - 查看Mysql的字符集
+        - show variables like "%character%";
+        - show variables like "%collation%";
+    - 查看database字符集
+        - show create database 数据库名;
+    - 查看table的字符集
+        - show create table 数据表名;
+    - 查看字段编码
+        - show full columns from 表名;
 
 3. 更改已存在的表的字符集
 alter 表名  convert to character set utf8mb4 collate utf8mb4_bin;
@@ -108,7 +115,8 @@ update user_tb set user_name = 'adam' where user_name = 'gary';
 select user_id, user_name from user_tb limit 10;
 select * from user_tb where user_name like  "%gary%" limit 1;
 
-
+-- 排序
+sql语句 order by 字段名 desc desc limit 5;
 ```
 ### 复杂SQL
 ### 事务
@@ -418,41 +426,57 @@ https://blog.csdn.net/zdw19861127/article/details/84937562
 
 ### 用户权限操作
 1. 查看用户权限
-show grants for username@'%';
-show grants for username@'localhost';
+    ```sql
+    show grants for username@'%';
+    show grants for username@'localhost';
+    ```
 2. 查看当前用户
-select user();
-
+    ```sql
+    select user();
+    ```
 3. 查看所有的用户
-SELECT HOST,USER FROM mysql.user;
-SELECT DISTINCT CONCAT('User: ''',user,'''@''',host,''';') AS query FROM mysql.user;
-
+    ```sql
+    SELECT HOST,USER FROM mysql.user;
+    SELECT DISTINCT CONCAT('User: ''',user,'''@''',host,''';') AS query FROM mysql.user;
+    ```
 4. 增加管理员并且拥有授权权限
-grant all privileges on *.*  to dbuser@'%' identified by 'password'  with grant option;
-flush privileges;
+```sql
+    grant all privileges on *.*  to `dbuser`@'%' identified by 'password'  with grant option;
+    flush privileges;
+```
 
 5. 增加应用用户
-grant select,insert,update,delete on dbname.* to dbuser@'%' identified by 'password';
-或某个数据库所有权 grant all on *.* to dbuser@'%' indentified by 'password';
-flush privileges;
+    ```sql
+    grant select,insert,update,delete on `dbname`.* to `dbuser`@'%' identified by 'password';
+    -- 或某个数据库所有权 
+    grant all on *.* to `dbuser`@'%' indentified by 'password';
+    flush privileges;
+    ```
 
 6. 撤销权限
-grant all privileges on *.*  from dbuser@'%'
+    ```sql
+    revoke all privileges on *.*  from `dbuser`@'%';
+    revoke update, delete ON *.*  from `dbuser`@'%';
+
+    REVOKE all privileges, GRANT OPTION FROM `dbuser`@'%';
+    ```
 
 7. 改用户密码
-set password for root@localhost = password('123');
+    ```sql
+    set password for root@localhost = password('123');
+    ```
 
 10. 权限与用户
-```bash
-#创建用户
+```sql
+-- 创建用户
 create user username@localhost identified by 'password';
 insert into mysql.user(Host,User,Password) values("localhost","test",password("1234"));
 create user username@localhost identified by 'password' password expire;
 
-# 授予用户的权限：全局层级权限、数据库层级权限、表层级别权限、列层级别权限、子程序层级权限。
-全局层级权限:这些权限存储在mysql.user表中。GRANT ALL ON *.*和REVOKE ALL ON *.*只授予和撤销全局权限。
-数据库层级权限:这些权限存储在mysql.db和mysql.host表中。GRANT ALL ON db_name.*和REVOKE ALL ON db_name.*只授予和撤销数据库权限。
-表层级别权限:这些权限存储在mysql.tables_priv表中。GRANT ALL ON db_name.tbl_name和REVOKE ALL ON db_name.tbl_name只授予和撤销表权限。
+-- 授予用户的权限：全局层级权限、数据库层级权限、表层级别权限、列层级别权限、子程序层级权限。
+全局层级权限:这些权限存储在mysql.user表中。GRANT ALL ON *.*和REVOKE ALL ON *.*; 只授予和撤销全局权限。
+数据库层级权限:这些权限存储在mysql.db和mysql.host表中。GRANT ALL ON db_name.*和REVOKE ALL ON db_name.*; 只授予和撤销数据库权限。
+表层级别权限:这些权限存储在mysql.tables_priv表中。GRANT ALL ON db_name.tbl_name和REVOKE ALL ON db_name.tbl_name; 只授予和撤销表权限。
 列层级别权限:这些权限存储在mysql.columns_priv表中。当使用REVOKE时，您必须指定与被授权列相同的列
 子程序层级权限(存储过程):存储在mysql.procs_priv表
 
@@ -493,5 +517,3 @@ pt-query-digest 工具是包含在Percona toolkit里的. 相关安装方式可�
     - performance_schema.table_lock_waits_summary_by_table
 
 3. 如果查询时使用的字符集 和 表的字符集 不一致则会导致索引失效
-
-4. 

@@ -39,3 +39,21 @@ FROM docker.elastic.co/kibana/kibana:7.6.1
 
 RUN /opt/kibana/bin/kibana-plugin install https://github.com/opendistro-for-elasticsearch/alerting-kibana-plugin/releases/download/v1.12.0.2/opendistro_alerting_kibana.zip
 ```
+
+## 使用
+### 查询语法
+1. 按字段搜索
+    -  字段: 值 AND 字段: 值
+    - source: \/data\/logs\/project-a\/*  AND message: user.login.ERROR
+
+2. 字段本身是否存在
+    - 返回结果中需要有http字段
+        - _exists_:http 
+    - 不能含有http字段
+        - _missing_:http
+
+3. 分组查询
+    - (message: user.login.ERROR OR apache) AND source: \/data\/logs\/project-a\/* 
+
+4. 按数值搜索
+    - nginx.access.request_time:>3
