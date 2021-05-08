@@ -347,13 +347,15 @@ show slave status\G;
     - kill ${id}
 
 ### 数据库和表的大小
-- 参考  
-https://www.cnblogs.com/--smile/p/11451238.html  
 
 ```sql
--- 查看整个mysql的数据容量大小
-select concat(round(sum(DATA_LENGTH/1024/1024),2),'MB') as data from information_schema.tables;
-SELECT sum(DATA_LENGTH+INDEX_LENGTH) FROM information_schema.tables WHERE TABLE_SCHEMA="数据库名";
+-- 查看整个mysql的容量大小
+select concat(round(sum((data_length+index_length)/1024/1024),2),'MB') as volume from information_schema.tables;
+select concat(round(sum((data_length+index_length)/1024/1024/1024),2),'GB') as volume from information_schema.tables;
+
+-- 查看一个数据的容量大小
+set @table_schema="数据库名称";
+select concat(round(sum((data_length+index_length)/1024/1024),2),'MB') as volume from information_schema.tables where table_schema=@table_schema;
 
 -- 查看所有数据库各个容量大小
 select
@@ -367,13 +369,13 @@ order by sum(data_length) desc, sum(index_length) desc;
 
 
 -- 查看某个数据库各个表容量大小
-set @schema_name="数据库名称";
-select
+set @@table_schema="数据库名称";
+select 
 table_name as 'table_name',
 sum(table_rows) as 'table_rows',
 sum(truncate(data_length/1024/1024, 2)) as 'data volumes(MB)',
 sum(truncate(index_length/1024/1024, 2)) as 'index volumes(MB)'
-from information_schema.tables where TABLE_SCHEMA=@schema_name
+from information_schema.tables where table_schema=@@table_schema
 group by table_name
 order by sum(data_length) desc, sum(index_length) desc;
 ```

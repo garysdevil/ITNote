@@ -6,7 +6,7 @@ lsof -i -P
 2. 打开一个服务
 open -a Docker
 
-3. 
+3. 关闭docker服务
 osascript -e 'quit app "Docker"'
 
 4. 查看内存  

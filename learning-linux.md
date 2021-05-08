@@ -46,12 +46,34 @@ lsblk
 fdisk -l
 
 ### shell
-变量的提取和替换
-${var#*/} 去掉变量var从左边算起的第一个'/'字符及其左边的内容
-${var##*/} 去掉变量var从左边算起的最后一个'/'字符及其左边的内容
+- 变量的提取和替换
+```bash
+${var#*/} # 去掉变量var从左边算起的第一个'/'字符及其左边的内容
+${var##*/} # 去掉变量var从左边算起的最后一个'/'字符及其左边的内容
 ${var%/*}
 ${var%/*}
 for name in `ls *.Linux`;do mv $name ${name%.*};done
+```
+- 判断符号
+```
+-e filename 如果 filename存在，则为真
+-d filename 如果 filename为目录，则为真 
+-f filename 如果 filename为常规文件，则为真
+-L filename 如果 filename为符号链接，则为真
+-r filename 如果 filename可读，则为真 
+-w filename 如果 filename可写，则为真 
+-x filename 如果 filename可执行，则为真
+-s filename 如果文件长度不为0，则为真
+-h filename 如果文件是软链接，则为真
+filename1 -nt filename2 如果 filename1比 filename2新，则为真。
+filename1 -ot filename2 如果 filename1比 filename2旧，则为真。
+-eq 等于
+-ne 不等于
+-gt 大于
+-ge 大于等于
+-lt 小于
+-le 小于等于
+```
 
 ### 设置时区 
 timedatectl list-timezones |grep Shanghai    # 查找中国时区的完整名称
@@ -154,7 +176,7 @@ WantedBy=multi-user.target
 2. 安装
 
 3. 启动Supervisor服务
-supervisord -c /etc/supervisor/supervisord.conf
+supervisord -c /etc/supervisord.conf
 4. 进入交互界面
 supervisorctl
 
@@ -205,6 +227,18 @@ done
     - --call 请求的方法
     - --insecure
     - -m 元数据
+
+### 内核报错
+```bash
+
+dmesg -T -w
+# -w 等待新消息
+# -T 显示易读的时间戳
+
+
+cat /var/log/messages 
+```
+
 ## 未归类
 获取公网IP ： 
 curl cip.cc 
@@ -260,8 +294,6 @@ ps -A  -o comm,pmem,pcpu | sort | uniq -c | head -15
 查看内核报错
 - 参考
 https://blog.csdn.net/zhaohaijie600/article/details/45246569 
-dmesg -LT -w
-cat /var/log/messages 
 ```log
 php-fpm-7.1[60143]: segfault at 0 ip 00007fbc4e998ff1 sp 00007ffe5b9c3238 error 4 in libc-2.17.so[7fbc4e82a000+1c3000]
 ```

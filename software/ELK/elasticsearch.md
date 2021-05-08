@@ -1,27 +1,38 @@
 ## 概览
 - 参考
-https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-index_.html 官方文档
-https://www.cnblogs.com/wyq178/p/11968529.html  ElasticSearch的API使用
+    - https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-index_.html 官方文档
+    - https://www.cnblogs.com/wyq178/p/11968529.html  ElasticSearch的API使用
 
 ## 安装
 - 参考
-https://www.elastic.co/cn/downloads/past-releases#elasticsearch
-0. 需要java1.8环境
-1. wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.0-linux-x86_64.tar.gz
+    - https://www.elastic.co/cn/downloads/past-releases#elasticsearch
 
-2. 配置文件
-vi config/elasticsearch.yml
-```conf
-cluster.initial_master_nodes: ["node-1"]  # 启动单节点集群，单节点必须配置
-network.host: 0.0.0.0 # 默认只有本机才能访问 
-cluster.max_shards_per_node: 3000 # 配置每个节点最大的分片数量，默认为1000
-```
-3. 启动 nohup ./bin/elasticsearch 2>&1 &
-4. 访问 http://localhost:9200/
+1. 安装java1.8环境
+2. wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.0-linux-x86_64.tar.gz
+3. 配置文件
+    - vi config/elasticsearch.yml
+    ```conf
+    cluster.initial_master_nodes: ["node-1"]  # 启动单节点集群，单节点必须配置
+    network.host: 0.0.0.0 # 默认只有本机才能访问 
+    cluster.max_shards_per_node: 3000 # 配置每个节点最大的分片数量，默认为1000
+    ```
+4. 启动 nohup ./bin/elasticsearch 2>&1 &
+5. 访问 http://localhost:9200/
 
 ### 系统参数要求
 1. ulimit
-2. sysctl -w vm.max_map_count=655360
+2. vm.max_map_count
+```bash
+# 永久设置
+# echo 'vm.max_map_count=655360' >> /etc/sysctl.conf
+# sysctl -p
+
+# 临时设置
+sysctl -w vm.max_map_count=655360
+# 查看
+sysctl -a|grep vm.max_map_count
+```
+
 
 ## 机制
 ### 术语
@@ -45,8 +56,8 @@ cluster.max_shards_per_node: 3000 # 配置每个节点最大的分片数量，�
 3. 设置
 number_of_shards 和 number_of_replicas 都是index级别的设置。
 如果打算每个新建的index都设置副本数为0，可以通过index template 来设置。
-### 
-1. 缓存机制:
+### 缓存机制
+1. 缓存机制
 将index-buffer中文档（document）解析完成的segment写到filesystem cache之中
 从index-buffer中取数据到filesystem cache中的过程叫做refresh
 
