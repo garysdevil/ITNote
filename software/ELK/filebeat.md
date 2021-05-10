@@ -73,7 +73,7 @@ filebeat.config:
 
 
 ### 日志输出 output
-    - 配置示范 输出到logstash
+- 配置示范 输出到logstash
 ```yaml
     output.logstash:
     hosts: ["127.0.0.1:5044"]
@@ -81,7 +81,34 @@ filebeat.config:
     cloud.id: ${ELASTIC_CLOUD_ID}
     cloud.auth: ${ELASTIC_CLOUD_AUTH}
 ```
- - xxx
+ - 配置示范 输出到elasticsearch
+ ```yaml
+processors:
+  - decode_json_fields:
+      fields: ['message']
+      target: ''
+      overwrite_keys: true
+
+setup.template.settings:
+  index.number_of_shards: 1
+setup.template.enabled: true
+setup.ilm.enabled: false
+setup.template.name: "project-prod"
+setup.template.pattern: "project-prod-*"
+
+
+output.elasticsearch:
+    hosts: ["IP:9200"]
+    index: "project-prod-%{[agent.version]}-%{+yyyy.MM.dd}"
+logging.level: debug
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644
+
+ ```
 
 ### 模块
 1. 

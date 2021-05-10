@@ -1,15 +1,15 @@
 ## 概览
 - 文档
-https://www.elastic.co/guide/cn/kibana/current/index.html 官网中文文档-用户手册
-https://www.elastic.co/cn/webinars/getting-started-kibana?baymax=default&elektra=docs&storm=top-video 官网学习视频
+    - https://www.elastic.co/guide/cn/kibana/current/index.html 官网中文文档-用户手册
+    - https://www.elastic.co/cn/webinars/getting-started-kibana?baymax=default&elektra=docs&storm=top-video 官网学习视频
 
 ## 安装
-### 裸安装
 - 参考
     - https://www.elastic.co/cn/downloads/past-releases
 
 - 需要和elasticsearch版本对应
 
+### 裸安装
 - 安装
 ```bash
 # 1. 
@@ -21,18 +21,22 @@ nohup ./bin/kibana > kibana.log 2>&1 &
 
 - 健康状态查看
 ```bash
-curl https://pcielk.gitvv.com/api/status
-# https://pcielk.gitvv.com/status
+curl 127.0.0.1:5601/api/status
+# 127.0.0.1:5601/status
 ```
 ### 配置
 ```conf
 server.host: "0.0.0.0" # 默认为localhost
 elasticsearch.hosts: ["http://localhost:9200"] # 默认为localhost
 ```
-### Alerting
+## 告警插件
 - 参考
     - https://github.com/opendistro-for-elasticsearch/alerting
     - https://opendistro.github.io/for-elasticsearch-docs/docs/alerting/
+
+- Alerting
+    - 一款开源的kibana告警插件
+    - 官方的kibana告警插件是收费的
 
 ```Dockerfile
 FROM docker.elastic.co/kibana/kibana:7.6.1

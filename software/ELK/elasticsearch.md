@@ -2,6 +2,7 @@
 - 参考
     - https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-index_.html 官方文档
     - https://www.cnblogs.com/wyq178/p/11968529.html  ElasticSearch的API使用
+    - https://www.cnblogs.com/kevingrace/p/10671063.html 常见错误
 
 ## 安装
 - 参考
@@ -40,12 +41,19 @@ sysctl -a|grep vm.max_map_count
 2. Type 是Index里分组的概念。 在7.4.2版本中已经去除了Index里type的概念。6.0的版本不允许一个Index下面有多个Type。
 3. Mapping 类似于mysql中表结构, properties类似于mysql表中的字段概念。 es的mapping创建之后无法修改,如果需要修改则需要重新建立index,然后reindex迁移数据。
 ### Shard
-1. 分片是 Elasticsearch 在集群中分发数据的关键.
-2. 分片是装载数据的容器。文档存储在分片中，然后分片分配到集群中的节点上。当集群扩容或缩小，Elasticsearch 将会自动在节点间迁移分片，以使集群保持平衡。
-3. 一个分片是一个最小级别“工作单元(worker unit)”，它只是保存了索引中所有数据的一部分。
-4. 分片类似于 MySql 的分库分表，只不过 Mysql 分库分表需要借助第三方组件而 ES 内部自身实现了此功能。
-5. 分片可以是主分片(primary shard)或者是复制分片(replica shard)。
-6. Version 7+ 默认创建1000个分片。
+- 分片
+    1. 分片是 Elasticsearch 在集群中分发数据的关键.
+    2. 分片是装载数据的容器。文档存储在分片中，然后分片分配到集群中的节点上。当集群扩容或缩小，Elasticsearch 将会自动在节点间迁移分片，以使集群保持平衡。
+    3. 一个分片是一个最小级别“工作单元(worker unit)”，它只是保存了索引中所有数据的一部分。
+    4. 分片类似于 MySql 的分库分表，只不过 Mysql 分库分表需要借助第三方组件而 ES 内部自身实现了此功能。
+    5. 分片可以是主分片(primary shard)或者是副本分片(replica shard)。
+    6. Version 7+ 默认创建1000个分片。
+- 分片的配置
+    - 参考 
+        - https://www.elastic.co/cn/blog/how-many-shards-should-i-have-in-my-elasticsearch-cluster
+    - 分片过小会导致段过小，进而致使开销增加。尽量将分片的平均大小控制在至少几 GB 到几十 GB 之间。对时序型数据用例而言，分片大小通常介于 20GB 至 40GB 之间。
+
+
 ### 索引与分片和副本
 1. number_of_shards  
 每个索引的主分片数，默认值是 5 。这个配置在索引创建后不能修改。
@@ -56,10 +64,14 @@ sysctl -a|grep vm.max_map_count
 3. 设置
 number_of_shards 和 number_of_replicas 都是index级别的设置。
 如果打算每个新建的index都设置副本数为0，可以通过index template 来设置。
-### 缓存机制
-1. 缓存机制
-将index-buffer中文档（document）解析完成的segment写到filesystem cache之中
-从index-buffer中取数据到filesystem cache中的过程叫做refresh
+### ES写入数据时的步骤
+1. 数据写入到buffer中。
+
+2. 每隔一段时间 (可以在settings中通过refresh_interval手动设置值)刷新buffer，将数据组装并保存到index segment file(可以看作是一份File，只不过目前存储在内存中)
+
+3. index segment file在被创建后，会被立刻读取并写入到OS Cache中(此时数据就可以对客户端提供搜索服务了)。
+
+4. 默认每隔30分钟或translog过大时，ES会将当前内存中所有的index segment标记并形成一个commit point（类似git 的commit id），进行原子性的持久化操作，操作完毕后，删除本次已经已经了持久化的index segment，腾出内存空间。
 
 ## API
 
@@ -70,14 +82,24 @@ number_of_shards 和 number_of_replicas 都是index级别的设置。
 
 ### 集群管理
 ```bash
+IP=127.0.0.1
+PORT=9200
+
 # 查看集群状况
 curl ${IP}:${PORT}/?pretty
 
-# 节点健康状况
-curl "http://${IP}:${PORT}/_cat/health?v"
+# 查看集群健康状况
+curl http://${IP}:${PORT}/_cat/health?v
+curl http://${IP}:${PORT}/_cluster/health?pretty
+
+# 查看节点健康状况
+curl http://${IP}:${PORT}/_cat/nodes?v
 
 # 查看集群分片状态
-curl https://${IP}:${PORT}/_cat/shards
+curl http://${IP}:${PORT}/_cat/shards/?pretty
+
+# 查看 熔断器 内存数据
+curl http://${IP}:${PORT}/_nodes/stats/breaker?pretty
 
 # 临时改变集群分片的数量    
 curl -XPUT -H "Content-Type: application/json" -d '{"transient":{"cluster":{"max_shards_per_node":10000}}}' "http://${IP}:${PORT}/_cluster/settings"
@@ -201,3 +223,60 @@ curl "${IP}:${PORT}/test2-index/_search?pretty" -d'
     }
 }
 ```
+
+## 常见错误
+1. message字段太大，超出了字符偏移量上限
+    - 报错 
+    ```log
+    The length of [message] field of [pAuVMXYBWMKQqimE8lSp] doc of [filebeat-7.6.0-2020.12.05] index has exceeded [1000000] - maximum allowed to be analyzed for highlighting. This maximum can be set by changing the [index.highlight.max_analyzed_offset] index level setting. For large texts, indexing with offsets or term vectors is recommended!"
+    type: "illegal_argument_exception
+
+    ```
+    - 在kibana的Dev Tool内修改
+    ```
+    PUT /索引名*/_settings
+    {
+        "index" : {
+            "highlight.max_analyzed_offset" : 2000000
+        }
+    }
+    ```
+    - 通过elasticsearch的API进行修改
+    ```bash
+    curl -XPUT "127.0.0.1:9200/索引名*/_settings" -H 'Content-Type: application/json' -d '{
+        "index" : {
+            "highlight.max_analyzed_offset" : 2000000
+        }
+    }'
+    ```
+2. 分配给ES的堆内存不够用了
+    - 报错
+    ```log
+    curl http://${IP}:${PORT}/_cat/shards/?pretty
+    {
+    "error" : {
+        "root_cause" : [
+        {
+            "type" : "circuit_breaking_exception",
+            "reason" : "[parent] Data too large, data for [<http_request>] would be [4080692272/3.8gb], which is larger than the limit of [4080218931/3.7gb], real usage: [4080692272/3.8gb], new bytes reserved: [0/0b], usages [request=0/0b, fielddata=0/0b, in_flight_requests=0/0b, accounting=82023656/78.2mb]",
+            "bytes_wanted" : 4080692272,
+            "bytes_limit" : 4080218931,
+            "durability" : "PERMANENT"
+        }
+        ],
+        "type" : "circuit_breaking_exception",
+        "reason" : "[parent] Data too large, data for [<http_request>] would be [4080692272/3.8gb], which is larger than the limit of [4080218931/3.7gb], real usage: [4080692272/3.8gb], new bytes reserved: [0/0b], usages [request=0/0b, fielddata=0/0b, in_flight_requests=0/0b, accounting=82023656/78.2mb]",
+        "bytes_wanted" : 4080692272,
+        "bytes_limit" : 4080218931,
+        "durability" : "PERMANENT"
+    },
+    "status" : 429
+    }
+    ```
+    - 原因 jvm 堆内存不够加载当前查询到的数据 data too large, 请求被熔断，indices.breaker.request.limit 默认为 jvm heap 的 60%。
+        - https://www.elastic.co/guide/en/elasticsearch/reference/7.6/circuit-breaker.html
+    - 解决方案一 编辑 elasticsearch jvm.option配置，将-Xms和-Xmx 调大，初始值都是1G。修改配置后，重启ES。
+    - 解决方案二 清空缓存(临时性解决)
+    ```bash
+    curl -XPOST -u admin:Admin@123 'http://${IP}:${PORT}/elasticsearch/_cache/clear?fielddata=true' 
+    ```
