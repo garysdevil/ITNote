@@ -35,7 +35,7 @@ aws ec2 associate-iam-instance-profile --instance-id ${instance-id} --iam-instan
 aws ec2 describe-instances --query 'Reservations[*].Instances[*].[PublicIpAddress,PrivateIpAddress,InstanceId,Tags[?Key==`Name`].Value]' --output text|grep "${IP}" -A 1
 
 # 12. 升级机器
-aws ec2 modify-instance-attribute   --instance-id    i-05d597e42bd5558ba   --instance-type "{\"Value\": \"c5.xlarge\"}"
+aws ec2 modify-instance-attribute   --instance-id ${instance-id} --instance-type "{\"Value\": \"c5.xlarge\"}"
 ```
 
 ## vpc网络
@@ -89,7 +89,7 @@ aws ec2 create-volume --size 50 --availability-zone ap-south-1b --volume-type gp
 aws ec2 create-tags --resources vol-02aaed26650c96fe5 --tags Key=Name,Value=attach-to-instance01-mb
 
 # 3. 把卷附加到指定实例上
-aws ec2 attach-volume --volume-id vol-02aaed26650c96fe5 --instance-id i-01912a2add60e2f97 --device /dev/sdf
+aws ec2 attach-volume --volume-id vol-02aaed26650c96fe5 --instance-id ${instance-id} --device /dev/sdf
 
 # 4. 查看卷信息
 aws ec2 describe-volumes --volume-id vol-02aaed26650c96fe5
@@ -103,9 +103,8 @@ aws ec2 delete-volume --volume-id vol-02aaed26650c96fe5
 
 7.  ec2机器磁盘扩容
 ```bash
-curl http://169.254.169.254/latest/dynamic/instance-identity/document
 
-aws ec2 describe-volumes --region us-east-1 --filters Name=attachment.instance-id,Values=i-04edbc20feb2883fb
+aws ec2 describe-volumes --region us-east-1 --filters Name=attachment.instance-id,Values=${instance-id}
 
 
 aws ec2 modify-volume --volume-id  vol-0e2b27aecc37135cc   --size 200
@@ -158,16 +157,16 @@ aws s3api create-bucket --bucket ${my-bucket} --region eu-west-1 --create-bucket
 ## elb
 ```bash
 # 1. 查看某个elb
-aws elb describe-load-balancers --load-balancer-name vova-api-pre
+aws elb describe-load-balancers --load-balancer-name project-api-pre
 
 # 2. 查看elbv2以及alb
-aws elbv2 describe-load-balancers --name vova-vomkttest
+aws elbv2 describe-load-balancers --name project-vomkttest
 
 # 3. 将某个ec2注册到elb中
-aws elb register-instances-with-load-balancer --load-balancer-name my-loadbalancer --instances i-4e05f721
+aws elb register-instances-with-load-balancer --load-balancer-name my-loadbalancer --instances ${instance-id}
 
 # 4. 将某个ec2从elb中注销
-aws elb deregister-instances-from-load-balancer --load-balancer-name vova-api-pre --instances i-05659b33439c0b2be
+aws elb deregister-instances-from-load-balancer --load-balancer-name project-api-pre --instances ${instance-id}
 
 # 5. 查看elb健康状态
 aws elb describe-instance-health --load-balancer-name my-load-balancer
@@ -217,45 +216,45 @@ sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,ret
 
 
 ## 安全组规则
-1. 安全组中添加规则
+```bash
+# 1. 安全组中添加规则
 
-aws ec2 authorize-security-group-ingress --group-name  lestore-stage-vova-ldap-prod-0-InstanceSecurityGroup-LK464QT2BB8U --protocol tcp --port 443 --cidr 180.168.193.50/32
+aws ec2 authorize-security-group-ingress --group-name  ${group_name} --protocol tcp --port 443 --cidr ${IP}/32
 
-aws ec2 authorize-security-group-ingress --group-id    sg-06dd649f3eab5d861  --protocol   tcp    --port    49102   --cidr    129.226.116.159/32
+aws ec2 authorize-security-group-ingress --group-id ${group_id} --protocol tcp  --port  49102  --cidr  ${IP}/32
 
-aws ec2 authorize-security-group-ingress --group-id   sg-0299d4fc7230b3ba1  --protocol   tcp  --port  38022   --source-group     sg-0a60a81d3b1489074
+aws ec2 authorize-security-group-ingress --group-id  ${group_id} --protocol tcp  --port  38022   --source-group ${source_group_id}
 
-2. 更新安全组规则
-aws ec2 update-security-group-rule-descriptions-ingress --group-id sg-123abc12 --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "203.0.113.0/16", "Description": "SSH access from ABC office"}]}]'
+# 2. 更新安全组规则
+aws ec2 update-security-group-rule-descriptions-ingress --group-id ${group_id}  --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "${IP}/16", "Description": "SSH access from ABC office"}]}]'
 
 
-3. 删除安全组中的规则
-aws ec2 revoke-security-group-ingress --group-name lestore-stage-vova-confluence-prod-0-InstanceSecurityGroup-1JR2THMDP7V4M --protocol tcp --port 80 --cidr 18.235.2.64/32
+# 3. 删除安全组中的规则
+aws ec2 revoke-security-group-ingress --group-name ${group-name} --protocol tcp --port 80 --cidr ${IP}/32
 
-aws ec2 revoke-security-group-ingress --group-id  sg-06dd649f3eab5d861  --protocol tcp   --port     49102  --cidr       29.226.116.159/32
-
+aws ec2 revoke-security-group-ingress --group-id  ${group_id} --protocol tcp   --port 49102 --cidr ${IP}/32
+```
 ## 添加路由表
-aws ec2 create-route --route-table-id    rtb-044654990eeb5d685     --destination-cidr-block   47.92.33.48/32     --network-interface-id   eni-0ecf1228a078c99e7
+```bash
+aws ec2 create-route --route-table-id ${route_table_id}  --destination-cidr-block ${IP}/32 --network-interface-id   eni-0ecf1228a078c99e7
 
-aws ec2 delete-route --route-table-id rtb-044654990eeb5d685    --destination-cidr-block  222.186.180.161/32
+aws ec2 delete-route --route-table-id rtb-044654990eeb5d685 --destination-cidr-block  ${IP}/32
 
-aws ec2 create-route --route-table-id    rtb-044654990eeb5d685     --destination-cidr-block   47.103.211.94/32     --network-interface-id   eni-0ecf1228a078c99e7
+```
 ## ses
 aws ses get-account-sending-enabled --region us-east-1 
 
 aws ses update-account-sending-enabled --enabled --region us-east-1 
 
 ## 创建ecr
+```bash
 aws ecr create-repository  \
-    --repository-name k8sclient-gateway   \
+    --repository-name ${project}  \
     --image-scanning-configuration scanOnPush=true  \
     --region us-east-1
-
-
-aws ecr create-repository \
-    --repository-name locus   \
-    --image-scanning-configuration scanOnPush=true \
-    --region ap-east-1
+```
 
 ## 创建eks集群
-eksctl create cluster --name vv-pay --version 1.14 --region us-east-1 --vpc-private-subnets=subnet-0bb1762f69c14375d,subnet-0fa86dfc8e7e49e22 --authenticator-role-arn=arn:aws:iam::724258426085:role/vv-pay-role-AWSServiceRoleForAmazonEKS-HH6LVYSXKZ6Q
+```bash
+eksctl create cluster --name project-pay --version 1.14 --region us-east-1 --vpc-private-subnets=subnet-0bb1762f69c14375d,subnet-0fa86dfc8e7e49e22 --authenticator-role-arn=${authenticator_role_arn}
+```
