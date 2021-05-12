@@ -1,5 +1,5 @@
 ## VMware vSphere
-- 是一套虚拟化应用程序
+- 是一套虚拟化系统的应用程序
 
 1. ESXi 是虚拟化服务。
 2. VMware vCenter server 是一个中心化的管理应用。

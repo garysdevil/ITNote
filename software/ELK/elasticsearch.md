@@ -107,7 +107,8 @@ curl -XPUT -H "Content-Type: application/json" -d '{"transient":{"cluster":{"max
 curl "http://${IP}:${PORT}/_nodes/{node}/hot_threads"
 
 # 查看大索引
-curl -s /dev/null -XGET http://127.0.0.1:9200/_cat/indices?v|grep gb
+curl -s /dev/null -XGET http://${IP}:${PORT}/_cat/indices?v|grep gb
+
 ```
 ### 常规操作
 ```bash
@@ -125,6 +126,7 @@ curl "${IP}:${PORT}/test1-index?pretty=true"
 
 # 删除索引
 curl -X DELETE "${IP}:${PORT}/test1-index"
+curl -X DELETE http://${IP}:${PORT}/*`date +%Y.%m.%d -d "-7 days"`?pretty
 
 ## 同时创建index和mapping
 curl  -H "Content-Type: application/json"  -X PUT "http://${IP}:${PORT}/test1-index" -d'
