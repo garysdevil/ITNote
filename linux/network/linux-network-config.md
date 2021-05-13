@@ -46,12 +46,24 @@ netplan apply
 2. 查看
 systemctl status systemd-networkd
 networkctl status 
+
 ### Centos7.5配置
 1. 查看网卡
     ip a
 2. 编辑配置文件
 cd /etc/sysconfig/network-scripts
 vi 网卡所在的文件
+```conf
+TYPE=Ethernet # 网络类型
+NAME=eth0 # 网卡名称
+
+BOOTPROTO=static # 默认dhcp,改为static,表示启用静态IP地址
+ONBOOT=yes # 开启自动启用网络连接
+IPADDR=192.168.1.73 # 静态IP地址，如果使用虚拟机桥接模式，静态IP一定要和主机在同一个网段，且IP唯一未被使用
+GATEWAY=192.168.1.254 # 网关，需和公网主机配置的网关一致
+NETMASK=255.255.255.0 # 子网掩码，需和公网主机配置的网关一致
+DNS1=8.8.8.8 # 第一个dns服务器，BOOTPROTO=static 的时候不会自动生成DNS解析，最好在这里也一并配置上
+```
 
 ## 其它
 ### ifconfig

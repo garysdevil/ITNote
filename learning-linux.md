@@ -239,6 +239,22 @@ dmesg -T -w
 cat /var/log/messages 
 ```
 
+### ps and top
+- ps指令的安装 
+    - apt-get install procps
+- 
+ps -eo pid,lstart,etime,cmd |grep nginx
+
+- 列出所有线程的cpu、内存消耗
+ps -A  -o comm,pmem,pcpu | sort | uniq -c | head -15
+
+- 内存消耗从大到小
+    - ps -eo pid,ppid,%mem,%cpu,cmd --sort=-%mem | head
+    - ps -eo pid,ppid,%mem,%cpu,comm --sort=-%mem | head
+
+    - top -c -b -o +%MEM | head -n 20 | tail -15
+    - top -b -o +%MEM | head -n 20 | tail -15
+
 ## 未归类
 获取公网IP ： 
 curl cip.cc 
@@ -264,7 +280,7 @@ lsof（list open files）是一个列出当前系统打开文件的工具
 linux环境测网速
 curl -O https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py
 
-ps apt-get install procps
+
 netstat apt-get install net-tools
 
 ```bash
@@ -284,12 +300,6 @@ flock -xn ./test.lock -c "sh ./test.sh"
 -n # 非阻塞模式，当获取锁失败时，返回1而不是等待
 -x -e  # 获取一个排它锁，或者称为写入锁，为默认项
 ```
-
-
-ps -eo pid,lstart,etime,cmd |grep nginx
-
-列出所有线程的cpu、内存消耗
-ps -A  -o comm,pmem,pcpu | sort | uniq -c | head -15
 
 查看内核报错
 - 参考

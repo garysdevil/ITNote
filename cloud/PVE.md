@@ -6,4 +6,16 @@
 
 3. unRaid，其实是个NAS系统，是基于Slackware的Linux系统，虚拟机内核也是KVM。磁盘阵列管理非常有特色，灵活性很高。同时还有很不错的插件、Docker和虚拟机支持。
 
+4. KVM + OpenStack
+
 ## Proxmox
+- 参考
+    - https://pve.proxmox.com/pve-docs/
+
+- 安装方式
+    - 方式一：直接通过PVE的ISO安装
+    - 方式二：先装Debian再添加proxmox的安装源来安装
+
+### 指令
+1. 查看集群状态
+    - pvecm status

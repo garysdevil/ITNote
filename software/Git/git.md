@@ -63,6 +63,13 @@ git pull origin master
       [https "https://github.com/"]
         proxy = socks5://XXX.XXX.XXX.XXX:1080
       ```
+10. git pull 策略
+```bash
+git config  --global pull.rebase false  # merge (the default strategy)
+git config  --global pull.rebase true   # rebase
+git config  --global pull.ff only       # fast-forward only
+```
+
 ### 日常操作
 
 1. diff  
