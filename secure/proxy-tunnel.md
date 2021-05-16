@@ -39,7 +39,9 @@ proxy socks -t tcp -p "0.0.0.0:38080"
     - https://www.freebuf.com/sectool/187069.html（Udp2raw-Tunnel：一款功能强大的UDP隧道工具）
 
 ## Openvpn
-
+- 参考
+    - https://openvpn.net/access-server-manual/deployment-overview/
+    - https://www.wanhebin.com/openvpn/639.html
 ### 安装
 ```bash
 # 安装epel 仓库源
@@ -47,5 +49,5 @@ wget http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
 
 rpm -Uvh epel-release-6-8.noarch.rpm
 
-yum install openvpn
+yum install easy-rsa openvpn
 ```

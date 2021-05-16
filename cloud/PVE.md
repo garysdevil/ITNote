@@ -19,3 +19,11 @@
 ### 指令
 1. 查看集群状态
     - pvecm status
+
+### 相关工具
+#### 定时快照工具
+- 参考
+    - https://github.com/Corsinvest/cv4pve-autosnap
+    - http://blog.heishacker.com/Proxomox-autosnapshot
+    
+- cv4pve-autosnap
