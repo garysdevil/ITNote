@@ -134,6 +134,8 @@ sudo xfs_growfs -d /
 aws s3 ls
 aws s3 ls s3://bucket
 aws s3 ls s3://bucket/prefix
+# 批量下载
+aws s3 cp s3://${path} ./${folder} --recursive --profile ${profile}
 ```
 
 2. 拷贝
@@ -257,4 +259,19 @@ aws ecr create-repository  \
 ## 创建eks集群
 ```bash
 eksctl create cluster --name project-pay --version 1.14 --region us-east-1 --vpc-private-subnets=subnet-0bb1762f69c14375d,subnet-0fa86dfc8e7e49e22 --authenticator-role-arn=${authenticator_role_arn}
+```
+
+## 其它
+1. 将aws映像传到s3然后下载下来
+```bash
+# 将aws映像传到s3
+image-id=ami-1111111111
+bucket=test
+aws ec2 export-image --image-id ${image_id} --disk-image-format VMDK --s3-export-location S3Bucket=${bucket},S3Prefix=/
+# 查看 aws映像传到s3 的状态
+task_id=export-ami-07633824272301234 # 上面的指令执行后会输出进程ID
+aws ec2 describe-export-image-tasks --export-image-task-ids ${task_id}  # 查看导出进程状态，直到completed就说明完成了
+# 从s3下载文件
+filename=export-ami-08a410d2a40091234.vmdk
+aws s3 cp s3://${bucket}//${filename} ./
 ```

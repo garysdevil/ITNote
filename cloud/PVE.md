@@ -25,5 +25,12 @@
 - 参考
     - https://github.com/Corsinvest/cv4pve-autosnap
     - http://blog.heishacker.com/Proxomox-autosnapshot
-    
+
 - cv4pve-autosnap
+```bash
+# 下载解压
+https://github.com/Corsinvest/cv4pve-autosnap/tags
+# 
+./cv4pve-autosnap --host xxx.xxx.xxx.xxx --username ${username} --password ${password} --vmid 103 snap --label 'hourly'  --keep=10
+
+```

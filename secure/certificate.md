@@ -1,21 +1,21 @@
 ## PCI DSS
 1. 参考 
-https://www.zhihu.com/question/19728744
-https://baike.baidu.com/item/PCI%20DSS
-https://www.pcisecuritystandards.org/ 组织官网
-https://stripe.com/zh-cn-cz/guides/pci-compliance
+    - https://www.zhihu.com/question/19728744
+    - https://baike.baidu.com/item/PCI%20DSS
+    - https://www.pcisecuritystandards.org/ 组织官网
+    - https://stripe.com/zh-cn-cz/guides/pci-compliance
 
 2. PCI DSS
-支付卡行业数据安全标准
-支付卡行业（PCI，Payment Card Industry）
-数据安全标准（DSS，Data Security Standard）
+    - 支付卡行业数据安全标准
+    - 支付卡行业（PCI，Payment Card Industry）
+    - 数据安全标准（DSS，Data Security Standard）
 
 3. PCI-DSS认证
-PCI 合规级别有 4 个
-级别一 必须通过自我安全检测、漏洞分析以及由协会执行的安全调查这三个步骤，审查范围包括硬件、软件、工作流程、员工、用户等诸多内容，总共有200项审查项目。
+    - PCI 合规级别有 4 个
+    - 级别一 必须通过自我安全检测、漏洞分析以及由协会执行的安全调查这三个步骤，审查范围包括硬件、软件、工作流程、员工、用户等诸多内容，总共有200项审查项目。
 
 ### 获取认证策略
-进行网络隔离，缩小审核范围。
+- 进行网络隔离，缩小审核范围。
 
 ### 数据安全标准 – 主要概述
 建立并维护安全的网络和系统 
@@ -38,15 +38,18 @@ PCI 合规级别有 4 个
 12. 维护针对所有工作人员的信息安全政策
 
 ### 巡检
-至少每个季度运行一次内部和外部网络漏洞扫描
-每年至少执行一次外部穿透测试
-至少每年执行一次内部穿透测试
-对于涉及到PCI DSS的资产，每年进行一次风险评审工作并且生成记录
-安全事件应急演练
-需要将安全事件（防病毒、入侵、文件完整性、帐号登陆）纳入到日常监控中
+- 至少每个季度运行一次内部和外部网络漏洞扫描
+- 每年至少执行一次外部穿透测试
+- 至少每年执行一次内部穿透测试
+- 对于涉及到PCI DSS的资产，每年进行一次风险评审工作并且生成记录
+- 安全事件应急演练
+- 需要将安全事件（防病毒、入侵、文件完整性、帐号登陆）纳入到日常监控中
 
 ## CIS
 Center for Internet Security 是一非盈利组织。
 CIS Controls和CIS Benchmarks是保护IT系统和数据免受最普遍***的全球标准和公认的最佳实践。
 
 ## ISO17799-27001
+
+## PFI
+- 

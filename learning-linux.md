@@ -239,7 +239,7 @@ dmesg -T -w
 cat /var/log/messages 
 ```
 
-### ps and top
+### ps & top & lsof
 - ps指令的安装 
     - apt-get install procps
 - 
@@ -255,6 +255,9 @@ ps -A  -o comm,pmem,pcpu | sort | uniq -c | head -15
     - top -c -b -o +%MEM | head -n 20 | tail -15
     - top -b -o +%MEM | head -n 20 | tail -15
 
+- lsof（list open files）是一个列出当前系统打开文件的工具
+
+    - lsof  -i @fw.google.com:2150=2180
 ## 未归类
 获取公网IP ： 
 curl cip.cc 
@@ -274,8 +277,6 @@ yum install bind-utils -y 此软件含nslookup指令
 docker inspect -f {{.State.Pid}} 容器名或者容器id  
 nsenter  -n --target  PID名称
 
-
-lsof（list open files）是一个列出当前系统打开文件的工具
 
 linux环境测网速
 curl -O https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py
