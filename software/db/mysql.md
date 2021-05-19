@@ -160,9 +160,6 @@ show variables like “参数名称“
 set global variablesname=''（全局）
 set variablesname=''（当前session）
 
-7. 查询是否锁表
-show OPEN TABLES where In_use > 0;
-
 8. 显示当前使用或者指定的database中的每个表的信息。信息包括表类型和表的最新更新时间。
 show table status;
 
@@ -341,6 +338,8 @@ show slave status\G;
     -- 查看非睡眠状态的连接
     select ID,USER,HOST,DB,COMMAND,TIME,STATE from information_schema.processlist where Command != 'Sleep' order by Time desc;
     select ID,USER,HOST,DB,COMMAND,TIME,STATE,INFO from information_schema.processlist where Command != 'Sleep'and INFO != "NULL" order by Time desc;
+    -- 通过事务ID查看线程
+    SELECT * from information_schema.processlist WHERE id = 738178711/G
     ```
 6. 中止应用线程
     - 一般出现长时间的select可以考虑kill掉，但是update或者delete不建议kill
@@ -501,21 +500,34 @@ WHERE b.id = a.processlist_id;
 - 工具
 pt-query-digest 工具是包含在Percona toolkit里的. 相关安装方式可以参考 https://www.percona.com/doc/percona-toolkit/LATEST/installation.html
 
-1. 当问题已经发生则查询这两种表
-    - 查看锁 sys.innodb_lock_waits
-    - 查看线程 information_schema.PROCESSLIST
-    
-    - 查看未提交的事务 
-    ```sql
-    select trx_state, trx_started, trx_mysql_thread_id, trx_query from information_schema.innodb_trx\G
-    ```
+### 当问题已经发生则查询这两种表
+
+- 查看线程 information_schema.PROCESSLIST
+
+- 查看未提交的事务 
+```sql
+select trx_state, trx_started, trx_mysql_thread_id, trx_query from information_schema.innodb_trx\G
+```
+
+- 查询是否锁表
+```sql
+-- 查看锁表情况
+show status like 'Table%';
+-- 查看正在被锁定的的表
+show OPEN TABLES where In_use > 0;
+select * from information_schema.innodb_trx\G
+
+-- sys.innodb_lock_waits
+select * from sys.innodb_lock_waits\G
+```
 
 
-2. 优化、预防问题发生
+### 优化、预防问题发生
+- 通过下面的表进行优化
     - sys.statements_with_full_table_scans
     - sys.schema_unused_indexes
     - performance_schema.table_io_waits_summary_by_index_usage
     - performance_schema.table_io_waits_summary_by_table
     - performance_schema.table_lock_waits_summary_by_table
 
-3. 如果查询时使用的字符集 和 表的字符集 不一致则会导致索引失效
+- 如果查询时使用的字符集 和 表的字符集 不一致则会导致索引失效

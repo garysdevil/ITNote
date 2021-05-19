@@ -84,3 +84,6 @@ $(selector).each(function(index,element))
 2 onclick。
 3 addEventListener(0
 事件委托：解决事件监听过多会消耗内存和减慢加载速度速度的问题。
+
+### pm2
+pm2 list
