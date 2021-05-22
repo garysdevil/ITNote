@@ -30,7 +30,9 @@
 ```bash
 # 下载解压
 https://github.com/Corsinvest/cv4pve-autosnap/tags
-# 
-./cv4pve-autosnap --host xxx.xxx.xxx.xxx --username ${username} --password ${password} --vmid 103 snap --label 'hourly'  --keep=10
+# 在PVE的web界面创建用户,并且给予 VM.Audit 和 VM.Snapshot 权限
+
+#  创建快照
+./cv4pve-autosnap --host 127.0.0.1 --username ${username} --password ${password} --vmid ${vmid} snap --label 'daily' --keep=7 --state
 
 ```

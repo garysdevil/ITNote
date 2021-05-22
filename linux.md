@@ -239,7 +239,7 @@ dmesg -T -w
 cat /var/log/messages 
 ```
 
-### ps & top & lsof
+### ps & top & lsof 
 - ps指令的安装 
     - apt-get install procps
 - 
@@ -258,6 +258,13 @@ ps -A  -o comm,pmem,pcpu | sort | uniq -c | head -15
 - lsof（list open files）是一个列出当前系统打开文件的工具
 
     - lsof  -i @fw.google.com:2150=2180
+
+### awk
+```bash
+awk 'BEGIN{ORS="\n"}{print $0}'
+# ORS 输出时的结束符，默认为\n
+```
+
 ## 未归类
 获取公网IP ： 
 curl cip.cc 

@@ -319,7 +319,7 @@ show slave status\G;
     3. Threads_created 66 # 代表新创建的thread（根据官方文档，如果thread_created增大迅速，需要适当调高 thread_cache_size）。
     4. Threads_running 2 # 激活的连接数，这个数值一般远低于connected数值，准确的来说，Threads_running是代表当前并发数
 
-5.  查看应用连接
+5.  information_schema.processlist
     1. 当前的连接信息都保存在这张表格里 information_schema.processlist, 字段说明如下
     ```yaml
     id: 为连接的应用id号
@@ -340,6 +340,10 @@ show slave status\G;
     select ID,USER,HOST,DB,COMMAND,TIME,STATE,INFO from information_schema.processlist where Command != 'Sleep'and INFO != "NULL" order by Time desc;
     -- 通过事务ID查看线程
     SELECT * from information_schema.processlist WHERE id = 738178711/G
+    ```
+    3. 查看当前连接中连接时间最长的的连接
+    ```sql
+    select host,user,time,state,info from information_schema.processlist order by time desc limit 10;
     ```
 6. 中止应用线程
     - 一般出现长时间的select可以考虑kill掉，但是update或者delete不建议kill
@@ -500,22 +504,36 @@ WHERE b.id = a.processlist_id;
 - 工具
 pt-query-digest 工具是包含在Percona toolkit里的. 相关安装方式可以参考 https://www.percona.com/doc/percona-toolkit/LATEST/installation.html
 
-### 当问题已经发生则查询这两种表
+### information_schema 数据库 
+- 保存了该MySQL服务器上所有的数据库及表信息，表字段类型，访问权限等
 
-- 查看线程 information_schema.PROCESSLIST
+- innodb_trx 保存当前运行的所有事务
+- innodb_locks 保存当前出现的锁
+- innodb_lock_waits 保存锁等待的对应关系
 
-- 查看未提交的事务 
+### 当问题已发生
+- 问题已经发生则查询这两种表
+    - information_schema.PROCESSLIST
+    - sys.innodb_lock_waits\
+
+-  
+
+- 排查
 ```sql
+-- 查看未提交的事务
 select trx_state, trx_started, trx_mysql_thread_id, trx_query from information_schema.innodb_trx\G
-```
 
-- 查询是否锁表
-```sql
--- 查看锁表情况
-show status like 'Table%';
 -- 查看正在被锁定的的表
 show OPEN TABLES where In_use > 0;
-select * from information_schema.innodb_trx\G
+-- 如果数据库存在锁，则在trx_query列中有值的即为锁住表的sql语句 或者 trx_state字段值不是“running”
+select trx_query,trx_state from information_schema.innodb_trx\G 
+-- select * from information_schema.innodb_trx\G 
+
+-- 查看当前用户连接数
+select USER , count(*) as num from information_schema.processlist group by USER order by num desc limit 10;
+
+-- 查看当前连接中各个IP的连接数
+select substring_index(host,':',1) as ip, count(*) as num from information_schema.processlist group by ip order by num desc limit 10;
 
 -- sys.innodb_lock_waits
 select * from sys.innodb_lock_waits\G
@@ -529,5 +547,19 @@ select * from sys.innodb_lock_waits\G
     - performance_schema.table_io_waits_summary_by_index_usage
     - performance_schema.table_io_waits_summary_by_table
     - performance_schema.table_lock_waits_summary_by_table
+
+- 优化
+```sql
+-- 查看锁表情况
+show status like 'Table%';
+
+-- 通过检查InnoDB_row_lock状态变量来分析系统上的行锁的争夺情况
+show status like 'InnoDB_row_lock%';
+-- InnoDB_row_lock_current_waits：当前正在等待锁定的数量；
+-- InnoDB_row_lock_time：从系统启动到现在锁定总时间长度；
+-- InnoDB_row_lock_time_avg：每次等待所花平均时间；
+-- InnoDB_row_lock_time_max：从系统启动到现在等待最常的一次所花的时间；
+-- InnoDB_row_lock_waits：系统启动后到现在总共等待的次数；
+```
 
 - 如果查询时使用的字符集 和 表的字符集 不一致则会导致索引失效

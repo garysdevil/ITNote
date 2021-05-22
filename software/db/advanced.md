@@ -43,7 +43,8 @@ MYSQL中数据库太大,导致读取预读库中表信息时间太长,从而显�
 - https://zhuanlan.zhihu.com/p/71073707
 - TiDB 是 PingCAP 公司受 Google Spanner / F1 论文启发而设计的开源分布式 HTAP (Hybrid Transactional and Analytical Processing) 数据库，结合了传统的 RDBMS 和NoSQL 的最佳特性。TiDB 兼容 MySQL，支持无限的水平扩展，具备强一致性和高可用性。TiDB 的目标是为 OLTP(Online Transactional Processing) 和 OLAP (Online Analytical Processing) 场景提供一站式的解决方案。
 
-
+## 锁
+- InnoDB 引擎行锁是通过给索引上的索引项加锁来实现的，只有通过索引条件检索数据，InnoDB才使用行级锁，否则，InnoDB将使用表锁。
 
 ## sql审核平台
 ### Yearning
