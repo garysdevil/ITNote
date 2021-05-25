@@ -159,6 +159,9 @@ Documentation=XXXXX
 After=network.target
 
 [Service]
+User=myuser
+Group=myuser
+
 Type=simple
 Environment="变量名=变量值"
 ExecStart=/bin/sh -c -- "/usr/bin/java -jar /opt/application/XXXXX/XXXXX.jar 1>> /opt/application/XXXXX/logs/XXXXX.out.log 2>> /opt/application/XXXXX/logs/XXXXX.err.log"

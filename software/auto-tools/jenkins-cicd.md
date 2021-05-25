@@ -339,3 +339,12 @@ def notifyQA(ppl_params) {
     }
 }
 ```
+
+## Notice
+1. jenkins
+    - 如果在agent上有操作，job会创建两个文件夹 ${jobname}  ${jobname}@tmp
+    - 如果在agent上无操作，job会创建一个文件夹 ${jobname}@tmp
+
+2. 插件 SSH Pipeline Steps 
+    - 如果这个文件所属者不属于root用户，root用户操作也会报错
+    - get过来的文件放在${jobname}目录内

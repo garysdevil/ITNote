@@ -526,6 +526,7 @@ select trx_state, trx_started, trx_mysql_thread_id, trx_query from information_s
 -- 查看正在被锁定的的表
 show OPEN TABLES where In_use > 0;
 -- 如果数据库存在锁，则在trx_query列中有值的即为锁住表的sql语句 或者 trx_state字段值不是“running”
+select trx_query,trx_state from information_schema.innodb_trx where trx_state != "RUNNING";
 select trx_query,trx_state from information_schema.innodb_trx\G 
 -- select * from information_schema.innodb_trx\G 
 
@@ -536,7 +537,7 @@ select USER , count(*) as num from information_schema.processlist group by USER 
 select substring_index(host,':',1) as ip, count(*) as num from information_schema.processlist group by ip order by num desc limit 10;
 
 -- sys.innodb_lock_waits
-select * from sys.innodb_lock_waits\G
+select * from sys.innodb_lock_waits limit 10\G
 ```
 
 

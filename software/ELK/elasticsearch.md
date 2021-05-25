@@ -85,12 +85,14 @@ number_of_shards 和 number_of_replicas 都是index级别的设置。
 IP=127.0.0.1
 PORT=9200
 
-# 查看集群状况
+# 查看集群信息
 curl ${IP}:${PORT}/?pretty
 
 # 查看集群健康状况
 curl http://${IP}:${PORT}/_cat/health?v
 curl http://${IP}:${PORT}/_cluster/health?pretty
+curl http://${IP}:${PORT}/_cluster/health?pretty&level=indices # 索引层面
+curl http://${IP}:${PORT}/_cluster/health?pretty&level=shards # 分片层面
 
 # 查看节点健康状况
 curl http://${IP}:${PORT}/_cat/nodes?v
