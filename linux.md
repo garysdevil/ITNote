@@ -35,7 +35,24 @@ for u in `cat /etc/passwd | cut -d":" -f1`;do crontab -l -u $u;done
 # 或者
 cd /var/spool/cron && cat *
 ```
+3. crontab
+```bash
+* * * * * # 每分钟执行 
 
+0 * * * * # 每小时执行 
+
+0 0 * * * # 每天执行
+
+0 0 * * 0 # 每周执行
+
+0 0 1 * * # 每月执行
+
+0 0 1 1 * # 每年执行
+
+10,20 * * * * # 每小时的第10和第20分钟执行
+
+10,20 8-11 * * * # 上午8点到11点的第10和第20分钟执行
+```
 
 ### 磁盘
 1. 查看所有块设备信息 lsblk -m
@@ -266,6 +283,24 @@ ps -A  -o comm,pmem,pcpu | sort | uniq -c | head -15
 ```bash
 awk 'BEGIN{ORS="\n"}{print $0}'
 # ORS 输出时的结束符，默认为\n
+```
+
+### 脚本
+1. 循环日期
+```bash
+#!/bin/bash
+startDate=20210401
+endDate=20230401
+startSec=`date -d "$startDate" "+%s"`
+endSec=`date -d "$endDate" "+%s"`
+for((i=$startSec; i<=$endSec; i+=86400))
+do
+    firstday=`date -d "@$i" "+%Y%m%d"`
+    echo ${firstday}
+    # y=$[$i+86400]
+    # secondday=`date -d "@$y" "+%Y%m%d"`
+    # echo ${secondday}
+done
 ```
 
 ## 未归类

@@ -99,19 +99,21 @@ alter 表名  convert to character set utf8mb4 collate utf8mb4_bin;
 ```sql
 create database test;
 use test;
---- create table
+-- create table
 create table if not exists `user_tb` (`user_id` int unsigned auto_increment , `user_name` varchar(40) not null, primary key ( `user_id` )) engine=InnoDB default charset=utf8;
+-- delete table
+drop table tablename;
 
--- add
+-- add data
 insert into user_tb (user_name) values('gary');
 
--- delete
+-- delete data
 delete from user_tb where id = 1;
 
---update
+--update data
 update user_tb set user_name = 'adam' where user_name = 'gary';
 
--- select
+-- select data
 select user_id, user_name from user_tb limit 10;
 select * from user_tb where user_name like  "%gary%" limit 1;
 
@@ -132,6 +134,7 @@ SAVEPOINT identifier
 ROLLBACK TO identifier 
 COMMIT -- 或 ROLLBACK
 ```
+### 存储过程
 
 ## 运维基本操作 
 ### information_schema数据库
@@ -294,6 +297,14 @@ log_bin_trust_function_creators = 1
 grant replication slave on *.* to 'USER'@'IP' identified by 'PASSWORD';
 flush privileges;
 ```
+4. 设置连接到master主服务器 
+```sql
+-- 主 上进行操作，获取master_log_file 和 master_log_pos
+SHOW MASTER STATUS;
+-- 从 上进行操作
+change master to master_host='IP', master_user='slave', master_password='slave',master_log_file='mysql-bin.000001', master_log_pos=590;
+
+```
 
 4. 启停主从
 stop slave;
@@ -446,29 +457,36 @@ https://blog.csdn.net/zdw19861127/article/details/84937562
     ```
 4. 增加管理员并且拥有授权权限
 ```sql
-    grant all privileges on *.*  to `dbuser`@'%' identified by 'password'  with grant option;
+    grant all privileges on *.*  to 'dbusername'@'%' identified by 'password'  with grant option;
     flush privileges;
 ```
 
 5. 增加应用用户
     ```sql
-    grant select,insert,update,delete on `dbname`.* to `dbuser`@'%' identified by 'password';
-    -- 或某个数据库所有权 
-    grant all on *.* to `dbuser`@'%' indentified by 'password';
+    grant select,insert,update,delete on `dbname`.* to 'dbusername'@'%' identified by 'password';
+    -- 或某个数据库所有权
+    grant all privileges on dbuser.* to 'dbusername'@'%' identified by 'password';
     flush privileges;
     ```
 
 6. 撤销权限
     ```sql
-    revoke all privileges on *.*  from `dbuser`@'%';
-    revoke update, delete ON *.*  from `dbuser`@'%';
+    revoke all privileges on *.*  from 'dbusername'@'%';
+    revoke update, delete ON *.*  from 'dbusername'@'%';
 
-    REVOKE all privileges, GRANT OPTION FROM `dbuser`@'%';
+    REVOKE all privileges, GRANT OPTION FROM 'dbusername'@'%';
     ```
 
 7. 改用户密码
     ```sql
     set password for root@localhost = password('123');
+    ```
+8. 删除用户及权限
+    ```sql
+    delete from mysql.user where User='dbusername' and Host='localhost';
+    flush privileges; -- 刷新权限
+
+    drop user dbusername@'%'; -- 删除账户及权限
     ```
 
 10. 权限与用户
@@ -479,11 +497,17 @@ insert into mysql.user(Host,User,Password) values("localhost","test",password("1
 create user username@localhost identified by 'password' password expire;
 
 -- 授予用户的权限：全局层级权限、数据库层级权限、表层级别权限、列层级别权限、子程序层级权限。
-全局层级权限:这些权限存储在mysql.user表中。GRANT ALL ON *.*和REVOKE ALL ON *.*; 只授予和撤销全局权限。
-数据库层级权限:这些权限存储在mysql.db和mysql.host表中。GRANT ALL ON db_name.*和REVOKE ALL ON db_name.*; 只授予和撤销数据库权限。
-表层级别权限:这些权限存储在mysql.tables_priv表中。GRANT ALL ON db_name.tbl_name和REVOKE ALL ON db_name.tbl_name; 只授予和撤销表权限。
-列层级别权限:这些权限存储在mysql.columns_priv表中。当使用REVOKE时，您必须指定与被授权列相同的列
-子程序层级权限(存储过程):存储在mysql.procs_priv表
+-- 全局层级权限:这些权限存储在mysql.user表中。
+GRANT ALL ON *.*; -- 授予全局权限。
+REVOKE ALL ON *.*; -- 撤销全局权限。
+-- 数据库层级权限:这些权限存储在mysql.db和mysql.host表中。
+GRANT ALL ON db_name.*; -- 授予数据库权限。
+REVOKE ALL ON db_name.*; -- 撤销数据库权限。
+-- 表层级别权限:这些权限存储在mysql.tables_priv表中。
+GRANT ALL ON db_name.tbl_name; 授予表权限
+REVOKE ALL ON db_name.tbl_name; 撤销表权限。
+-- 列层级别权限:这些权限存储在mysql.columns_priv表中。当使用REVOKE时，您必须指定与被授权列相同的列
+-- 子程序层级权限(存储过程):存储在mysql.procs_priv表
 
 flush privileges;
 ```
@@ -493,23 +517,26 @@ flush privileges;
 top -H -p <mysqld进程id>
 ```
 
-```bash
-SELECT a.THREAD_OS_ID,b.user,b.host,b.db,b.command,b.time,b.state,b.info
-FROM performance_schema.threads a,information_schema.processlist b
-WHERE b.id = a.processlist_id;
-```
 ## DBA
 - DBA日常工作 -- 排查性能问题
 
 - 工具
 pt-query-digest 工具是包含在Percona toolkit里的. 相关安装方式可以参考 https://www.percona.com/doc/percona-toolkit/LATEST/installation.html
 
-### information_schema 数据库 
-- 保存了该MySQL服务器上所有的数据库及表信息，表字段类型，访问权限等
 
-- innodb_trx 保存当前运行的所有事务
-- innodb_locks 保存当前出现的锁
-- innodb_lock_waits 保存锁等待的对应关系
+### Mysql自带的数据库
+- information_schema 数据库 
+    - 保存了该MySQL服务器上所有的数据库及表信息，表字段类型，访问权限等
+
+    - innodb_trx表 保存当前运行的所有事务
+    - innodb_locks表 保存当前出现的锁
+    - innodb_lock_waits表 保存锁等待的对应关系
+
+- performance_schema 数据库
+
+- sys 数据库
+
+- mysql 数据库
 
 ### 当问题已发生
 - 问题已经发生则查询这两种表

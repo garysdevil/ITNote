@@ -120,3 +120,7 @@ sudo vim /etc/paths.d/mysql
 编辑该文件，键入路径并保存（关闭该 Terminal 窗口并重新打开一个，就能使用 mysql 命令了）
 /usr/local/mysql/bin
 $ source 相应的文件 生效配置环境
+
+### Shell
+1. 查看本地IP
+ifconfig en0
