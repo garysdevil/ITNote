@@ -64,7 +64,8 @@ jps -ml 获取java进程
 -XX:MaxPermSize：设置持久代最大值。物理内存的1/4。
 
 ### Maven
-1. 安装
+### 安装
+1. 下载
 ```bash
 curl -O http://mirrors.hust.edu.cn/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
 tar xzvf apache-maven-3.6.3-bin.tar.gz
@@ -89,6 +90,8 @@ mvn -v
     <url>http://maven.aliyun.com/nexus/content/groups/public</url>  
 </mirror>
 ```
+
+### 使用
 
 4. 下载jar包
 mvn dependency:get  -DgroupId=junit -DartifactId=junit -Dversion=4.8.2

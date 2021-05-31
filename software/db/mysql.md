@@ -179,7 +179,7 @@ set global validate_password_length=1;
 12. 创建数据库
 create database ${DATABASE} charset 'utf8mb4';
 
-### 登入&查询导出数据
+### 登入&执行sql&查询导出数据
 - 参考  
 https://www.cnblogs.com/zengkefu/p/5690092.html
 
@@ -234,16 +234,41 @@ https://www.jianshu.com/p/b0cf461451fb
 log-bin=mysql-bin
 binlog_format=mixed
 server-id   = 1
-expire_logs_days = 10
+expire_logs_days = 10  # 0 表示永不过期
 ```
-2. 查看数据库是否开启binlog日志
-    show variables like '%log_bin%';
-3. 清理binlog日志
-    purge master logs to 'binlognumber';
-4. 用mysql自身自带的工具，提取出binlog日志进行分析
-mysqlbinlog --base64-output=decode-rows -v --start-datetime="2020--07-24 09:00:00" --stop-datetime="2020--07-24 10:00:00" --database=数据库名 mysql-mysql-bin.000016
---base64-output=decode-rows  binglog格式为row时，进行解码
 
+2. 
+```sql
+-- 查看默认设置的binlog过期时间
+show variables like "%expire_logs%";
+
+-- 临时设置binlog保留时间
+set global expire_logs_days=15
+
+-- 查看数据库是否开启binlog日志
+show variables like '%log_bin%';
+
+-- 查看binlog文件
+show binary logs;
+
+-- 清理binlog日志
+purge master logs to 'binlognumber';
+```
+
+4. 用mysql自身自带的工具，提取出binlog日志进行分析
+    ```bash
+    host=127.0.0.1
+    user=root
+    start_datetime="2021-05-27 10:00:00" # 开始时间
+    stop-datetime="2021-05-27 10:30:00" # 结束时间
+    binlogfile="mysql-binlog.191250" # 从哪个binlog文件开始提取
+    result_file=='mysql-binlog' # 保存结果进文件
+
+    mysqlbinlog --read-from-remote-server  --host=${host} --port=3306 --user ${user} --password  --base64-output=decode-rows -v --start-datetime=${start_datetime} --stop-datetime=${stop-datetime} --stop-never  --result-file=${result_file} ${binlogfile}
+    
+    # --database=数据库名  指定数据库名
+    # --base64-output=decode-rows  binglog格式为row时，进行解码
+    ```
 
 ### 开启主从同步
 - 参考  
@@ -300,7 +325,7 @@ flush privileges;
 4. 设置连接到master主服务器 
 ```sql
 -- 主 上进行操作，获取master_log_file 和 master_log_pos
-SHOW MASTER STATUS;
+show master status;
 -- 从 上进行操作
 change master to master_host='IP', master_user='slave', master_password='slave',master_log_file='mysql-bin.000001', master_log_pos=590;
 
@@ -547,24 +572,30 @@ pt-query-digest 工具是包含在Percona toolkit里的. 相关安装方式可�
 
 - 排查
 ```sql
--- 查看未提交的事务
-select trx_state, trx_started, trx_mysql_thread_id, trx_query from information_schema.innodb_trx\G
+-- 参考 https://aws.amazon.com/cn/premiumsupport/knowledge-center/blocked-mysql-query/
+-- 参考 https://www.cnblogs.com/luyucheng/p/6297752.html
 
--- 查看正在被锁定的的表
+-- 查看表活跃情况
 show OPEN TABLES where In_use > 0;
+-- In_use  表示有多少线程正在使用某张表
+
+-- 查看未提交的事务。
 -- 如果数据库存在锁，则在trx_query列中有值的即为锁住表的sql语句 或者 trx_state字段值不是“running”
 select trx_query,trx_state from information_schema.innodb_trx where trx_state != "RUNNING";
-select trx_query,trx_state from information_schema.innodb_trx\G 
+select trx_state, trx_started, trx_mysql_thread_id, trx_query from information_schema.innodb_trx\G
 -- select * from information_schema.innodb_trx\G 
+
+-- 查看当前锁定的事务
+select * from information_schema.innodb_locks;
+
+-- 查看当前等锁的事务
+select * from sys.innodb_lock_waits limit 10\G
 
 -- 查看当前用户连接数
 select USER , count(*) as num from information_schema.processlist group by USER order by num desc limit 10;
 
 -- 查看当前连接中各个IP的连接数
 select substring_index(host,':',1) as ip, count(*) as num from information_schema.processlist group by ip order by num desc limit 10;
-
--- sys.innodb_lock_waits
-select * from sys.innodb_lock_waits limit 10\G
 ```
 
 
@@ -591,3 +622,18 @@ show status like 'InnoDB_row_lock%';
 ```
 
 - 如果查询时使用的字符集 和 表的字符集 不一致则会导致索引失效
+
+## 问题
+1. slow slave status \G
+Slave_SQL_Running_State: System lock
+
+
+- innodb_flush_log_at_trx_commit和sync_binlog 两个参数是控制MySQL 磁盘写入策略以及数据安全性的关键参数
+- sync_binlog
+    - MySQL提供一个sync_binlog参数来控制数据库的binlog刷到磁盘上去。
+    - 默认，sync_binlog=0，表示MySQL不控制binlog的刷新，由文件系统自己控制它的缓存的刷新。这时候的性能是最好的，但是风险也是最大的。因为一旦系统Crash，在binlog_cache中的所有binlog信息都会被丢失。
+
+- innodb_flush_log_at_trx_commit
+    0. log buffer将每秒一次地写入log file中，并且log file的flush(刷到磁盘)操作同时进行。该模式下在事务提交的时候，不会主动触发写入磁盘的操作。
+    1. 每次事务提交时MySQL都会把log buffer的数据写入log file，并且flush(刷到磁盘)中去，该模式为系统默认。
+    2. 每次事务提交时MySQL都会把log buffer的数据写入log file，但是flush(刷到磁盘)操作并不会同时进行。该模式下，MySQL会每秒执行一次 flush(刷到磁盘)操作。

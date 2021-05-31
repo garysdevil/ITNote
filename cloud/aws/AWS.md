@@ -293,3 +293,10 @@ vpc请求方， vpc接收方，vpc接收方ip地址
   
 ## IAM
 - 限制IP来源 https://aws.amazon.com/cn/premiumsupport/knowledge-center/iam-restrict-calls-ip-addresses/
+
+## RDS
+```sql
+-- 查看binlog配置
+call mysql.rds_show_configuration;
+call mysql.rds_set_configuration('binlog retention hours', 24);
+```
