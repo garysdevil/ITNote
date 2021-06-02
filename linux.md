@@ -34,6 +34,9 @@ cat /proc/cpuinfo| grep "processor"| wc -l
 for u in `cat /etc/passwd | cut -d":" -f1`;do crontab -l -u $u;done 
 # 或者
 cd /var/spool/cron && cat *
+
+# and
+cat /etc/crontab
 ```
 3. crontab
 ```bash

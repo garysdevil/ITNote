@@ -193,21 +193,21 @@ https://www.cnblogs.com/zengkefu/p/5690092.html
             -D 指定要连接的数据库
             -e "" 指定要执行的sql语句
 
-2. 导出表结构和数据
-mysqldump　-d　数据库名.表名　-u　root　-p　>　xxx.sql　
--t  只导出数据
-
---opt Same as --add-drop-table, --add-locks, --create-options,   --quick, --extended-insert, --lock-tables, --set-charset, and --disable-keys. Enabled by default, disable with  --skip-opt 
-
-3. 线上导出数据
+2. 线上导出数据
 ```bash
 time mysqldump --skip-add-locks --single-transaction --default-character-set=utf8mb4 --set-gtid-purged=off  -h${host} -u${user} -p${pass}  ${database} ${table} > ${table}.sql
 
+# -t  只导出数据
+
+# -d 只导出表结构
+
 # --add-locks，这是导出时的默认值，意思是导出某张表时，会在该表上加个锁，导出完成后执行unlock，如果导出过程中表数据有变动（增删改），对应的sql就会被挂起，直到unlock之后才能继续执行，这样执行导出会更高效！但是，如果导出的表，数据量比较大，会导致导出表的时间比较长，而如果业务操作表又比较频繁的话，默认加锁的操作就造成大量业务sql堵塞，影响实际业务运行，不能因为要高效而抛弃了实际业务，这个时候就要用--skip-add-locks跳过加锁模块
+
 # --single-transaction参数的作用，设置事务的隔离级别为可重复读，即REPEATABLE READ，这样能保证在一个事务中所有相同的查询读取到同样的数据，也就大概保证了在dump期间，如果其他innodb引擎的线程修改了表的数据并提交，对该dump线程的数据并无影响，在这期间不会锁表。
 
-
+# --opt Same as --add-drop-table, --add-locks, --create-options,   --quick, --extended-insert, --lock-tables, --set-charset, and --disable-keys. Enabled by default, disable with  --skip-opt 
 ```
+
 ```log
 // 2g数据耗时
 real	0m38.495s
@@ -286,7 +286,9 @@ server_id = 1
 #开启二进制日志                  
 log-bin = mysql-bin    
 #需要复制的数据库名，如果复制多个数据库，重复设置这个选项即可                  
-binlog-do-db = db        
+binlog-do-db = db  
+#需要忽略的数据库
+binlog-ignore-db = db      
 #设置将从服务器从主服务器收到的更新记入到从服务器自己的二进制日志文件中                 
 log-slave-updates                        
 #控制binlog的写入频率。每执行多少次事务写入一次(这个参数性能消耗很大，但可减小MySQL崩溃造成的损失) 
@@ -339,6 +341,14 @@ start slave;
 show slave status\G;
 - Slave_IO_Running和Slave_SQL_Runing两个参数YES，则表示主从复制关系正常。
 
+6. 主从中断
+```sql
+-- InnoDB事务在放弃前等待行锁的时间（秒）。innodb_lock_wait_timeout默认值为50秒。当有试图访问被另一行锁定的行的事务InnoDB事务在发出以下错误：
+-- ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction
+show variables like '%innodb_lock_wait_timeout%';
+-- 参数slave_transaction_retries 设置的为10次，如果事务重试次数超过10次，复制中断。
+show variables like '%slave_transaction_retries%';
+```
 
 ### 连接数、状态、最大并发数
 1. 查看连接数限制 
@@ -630,10 +640,20 @@ Slave_SQL_Running_State: System lock
 
 - innodb_flush_log_at_trx_commit和sync_binlog 两个参数是控制MySQL 磁盘写入策略以及数据安全性的关键参数
 - sync_binlog
-    - MySQL提供一个sync_binlog参数来控制数据库的binlog刷到磁盘上去。
-    - 默认，sync_binlog=0，表示MySQL不控制binlog的刷新，由文件系统自己控制它的缓存的刷新。这时候的性能是最好的，但是风险也是最大的。因为一旦系统Crash，在binlog_cache中的所有binlog信息都会被丢失。
+    - sync_binlog参数控制数据库的binlog刷到磁盘上去。
+    - select @@sync_binlog;
+    1. 默认，sync_binlog=0，表示MySQL不控制binlog的刷新，由文件系统自己控制它的缓存的刷新。这时候的性能是最好的，但是风险也是最大的。因为一旦系统Crash，在binlog_cache中的所有binlog信息都会被丢失。
+    2. sync_binlog=1，事务提交后，将二进制文件写入磁盘并立即执行刷新操作，相当于是同步写入磁盘，不经过操作系统的缓存。
+    3. sync_binlog=N，每写N次操作系统缓冲就执行一次刷新操作。 （将这个参数设为1以上的数值会提高数据库的性能，但同时会伴随数据丢失的风险）
 
 - innodb_flush_log_at_trx_commit
-    0. log buffer将每秒一次地写入log file中，并且log file的flush(刷到磁盘)操作同时进行。该模式下在事务提交的时候，不会主动触发写入磁盘的操作。
-    1. 每次事务提交时MySQL都会把log buffer的数据写入log file，并且flush(刷到磁盘)中去，该模式为系统默认。
-    2. 每次事务提交时MySQL都会把log buffer的数据写入log file，但是flush(刷到磁盘)操作并不会同时进行。该模式下，MySQL会每秒执行一次 flush(刷到磁盘)操作。
+    - innodb_flush_log_at_trx_commit参数设置 Log Buffer 里的数据写入磁盘。
+    - select @@innodb_flush_log_at_trx_commit;
+    - mysql写文件有2块缓存。一块是自己定义在内存的Log Buffer, 另一个是磁盘映射到内存的OS Buffer.  
+    - 写入 ---> Log Buffer --flush-> OS Buffer --fsync-> 磁盘
+
+    - mysql可以 调用 flush 主动将Log Buffer 刷新到磁盘内存映射，也可以调用 fsync 强制操作系同步磁盘映射文件到磁盘。还可以同时调用 flush + fsync, 将缓存直接落盘。
+    1. =0 Log Buffer将每秒写入OS Buffer中一次，并且OS Buffer的flush(刷到磁盘)操作同时进行。该模式下在事务提交的时候，不会主动触发写入磁盘的操作。
+    2. =1（默认值） 每次事务提交时MySQL都会把Log Buffer的数据写入log file，并且flush(刷到磁盘)中去。
+    3. =2 每次事务提交时MySQL都会把Log Buffer的数据写入OS Buffer，但是flush(刷到磁盘)操作并不会同时进行。该模式下，MySQL会每秒执行一次 flush(刷到磁盘)操作。
+
