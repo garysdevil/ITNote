@@ -19,7 +19,8 @@
 ### 指令
 1. 查看集群状态
     - pvecm status
-
+2. 重启PVE服务8006端口
+service pveproxy restart && service pvedaemon restart
 ### 相关工具
 #### 定时快照工具
 - 参考

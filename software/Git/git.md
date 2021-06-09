@@ -92,7 +92,11 @@ git config  --global pull.ff only       # fast-forward only
   git log -p -1 + 文件名 （只查看该文件当前这一次的push内容）  
 
   - 查看节点树 git log --oneline --graph --decorate --all
-
+  - 指定时间
+    - --since="2019-11-21"
+    - --before="2020-11-21"
+    - --since=2.years
+    - --since=2.days
 3. 合并
   1. 将另一个分支的commit合并到此分支上  
     git  cherry-pick  某次commit的id号
@@ -240,4 +244,8 @@ git config submodule.子项目名.url
     - 进入子项目修改代码，然后add commit push
     - 进入主项目，然后add commit push
 
-
+## Git service
+- https://github.com/gogs/gogs
+- https://github.com/Nightonke/Gitee
+- Gitlab
+- Github

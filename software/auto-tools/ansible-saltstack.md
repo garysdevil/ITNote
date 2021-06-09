@@ -1,38 +1,7 @@
 ## Ansible
-### 基本
-0. yum rpm
- https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/
+### 安装
+- 版本 https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/
 
-
-1. 目录结构
-inventory
-vars/
-roles/
-ansible.cfg  公共配置
-
-2. 测试ip是否通
-    ansible -i ./ hosts IP组名 -m ping
-
-4. 运行剧本
-    ansible-playbook  apply-role.yml -e host=127.0.0.1,127.0.0.2 -e @'vars/DMZ'  -e role=filebeat
-    -i 指定host文件
-    -e 指定变量var=value，指定变量文件@'vars/production'
-    --start-at="任务名称" 从指定任务开始运行
-
-
-5. 查看模块的文档
-    ansible-doc 模块名 
-
-6. 运行时有效的模块
-add_host
-group_by
-
-7. 其它
-获取fact的参数：register
-
-保存所有主机的facts: hostvars
-
-手动获取fact：ansible 组名 -m setup -a 'filter=ansible_eth'
 ### 离线安装ansible
 ```bash
 # 1在有网的机器上执行的操作
@@ -62,6 +31,48 @@ yum clean all
 yum makecache
 yum  install ansible
 ```
+
+### 基本
+
+#### 目录结构
+- inventory
+- vars/
+- roles/
+- ansible.cfg  公共配置
+
+1. inventory
+```conf
+[组名字]
+localhost       ansible_connection=local
+39.107.74.200   ansible_connection=ssh    ansible_ssh_user=root
+
+```
+
+#### 
+2. 测试ip是否通
+    ansible -i ./ hosts IP组名 -m ping
+
+4. 运行剧本
+    ansible-playbook  apply-role.yml -e host=127.0.0.1,127.0.0.2 -e @'vars/DMZ'  -e role=filebeat
+    -i 指定host文件
+    -e 指定变量var=value，指定变量文件@'vars/production'
+    --start-at="任务名称" 从指定任务开始运行
+
+
+5. 查看模块的文档
+    ansible-doc 模块名 
+
+6. 运行时有效的模块
+add_host
+group_by
+
+7. 其它
+获取fact的参数：register
+
+保存所有主机的facts: hostvars
+
+手动获取fact：ansible 组名 -m setup -a 'filter=ansible_eth'
+
 
 ## saltstack
 服务端修改

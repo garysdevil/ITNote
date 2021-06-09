@@ -275,3 +275,40 @@ aws ec2 describe-export-image-tasks --export-image-task-ids ${task_id}  # 查看
 filename=export-ami-08a410d2a40091234.vmdk
 aws s3 cp s3://${bucket}//${filename} ./
 ```
+
+## route53
+1. 域名解析
+aws route53 change-resource-record-sets --hosted-zone-id Z10397021NVPZUW2HGARY  --change-batch file://gary.json --profile=gary
+2. 查看域名解析更改后的状态
+aws route53  get-change --id /change/C3QYC83OA0KX5K
+
+- gary.json
+```json
+{
+    "Comment": "Action:CREATE/UPSERT/DELETE",
+    "Changes": [
+        {
+            "Action": "CREATE",
+            "ResourceRecordSet": {
+                "Name": "api-p.garys.top",
+                "Type": "A",
+                "AliasTarget": {
+                    "HostedZoneId": "Z35SXDOTRQGARY",
+                    "DNSName": "dualstack.e390e3e1-sitegroupapip-sit-3726-1957189925.us-east-1.elb.amazonaws.com",
+                    "EvaluateTargetHealth": false
+                }
+            }
+        },
+        {
+            "Action": "CREATE",
+            "ResourceRecordSet": {
+                "Name": "image.garys.top",
+                    "Type": "CNAME",
+                    "TTL": 300,
+                    "ResourceRecords": [{"Value": "xxxxxxx.cloudfront.net"}]
+            }
+        }
+    ]   
+}
+
+```

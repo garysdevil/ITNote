@@ -390,7 +390,10 @@ find . -print0 | xargs -0 stat --printf="%f %N %W %Y %s\n"
 kubectl get pods | grep Evicted | awk '{print $1}' | xargs kubectl delete pod
 
 - 日期
+```bash
 date -d "yesterday" +%Y-%m-%d
+date -d '2 days ago' +%Y-%m-%d # 显示2天前的时间
+```
 
 - 查看网络连接
 netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'

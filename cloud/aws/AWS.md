@@ -295,6 +295,9 @@ vpc请求方， vpc接收方，vpc接收方ip地址
 - 限制IP来源 https://aws.amazon.com/cn/premiumsupport/knowledge-center/iam-restrict-calls-ip-addresses/
 
 ## RDS
+1. https://aws.amazon.com/cn/premiumsupport/knowledge-center/aurora-mysql-synch-wait-events/#:~:text=synch%2Fmutex%2Fsql%2FLOCK_open,the%20size%20of%20these%20caches
+
+2. binlog
 ```sql
 -- 查看binlog配置
 call mysql.rds_show_configuration;

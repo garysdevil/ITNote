@@ -558,6 +558,8 @@ top -H -p <mysqld进程id>
 - 工具
 pt-query-digest 工具是包含在Percona toolkit里的. 相关安装方式可以参考 https://www.percona.com/doc/percona-toolkit/LATEST/installation.html
 
+- 显示内部信息
+show engine innodb status
 
 ### Mysql自带的数据库
 - information_schema 数据库 
@@ -600,6 +602,7 @@ select * from information_schema.innodb_locks;
 
 -- 查看当前等锁的事务
 select * from sys.innodb_lock_waits limit 10\G
+select * from sys.innodb_lock_waits order by wait_age_secs desc limit 10\G
 
 -- 查看当前用户连接数
 select USER , count(*) as num from information_schema.processlist group by USER order by num desc limit 10;
@@ -657,3 +660,5 @@ Slave_SQL_Running_State: System lock
     2. =1（默认值） 每次事务提交时MySQL都会把Log Buffer的数据写入log file，并且flush(刷到磁盘)中去。
     3. =2 每次事务提交时MySQL都会把Log Buffer的数据写入OS Buffer，但是flush(刷到磁盘)操作并不会同时进行。该模式下，MySQL会每秒执行一次 flush(刷到磁盘)操作。
 
+innodb_io_capacity = 3000                        ( 默认为 200, 配置成常用的IOPS使用量 ，可增加写入效能 ) [2]
+innodb_io_capacity_max = 6000               ( 默认为 2000, 配置成RDS常用使用量的2倍，可增加写入效能 ）

@@ -41,7 +41,7 @@ bin/kafka-topics.sh --zookeeper localhost:2181 --list
 
 # 2. 消费topic消息
 bin/kafka-console-consumer.sh  --bootstrap-server ${IP}:9092 --topic ${topic} --from-beginning
---from-beginning  # 表示消费topic里的所有数据
+# --from-beginning  # 表示消费topic里的所有数据
 
 # 3. 创建topic
 bin/kafka-topics.sh --create --zookeeper localhost:2181 --topic ${topic} --partitions 2 --replication-factor 1
