@@ -21,6 +21,9 @@
     - pvecm status
 2. 重启PVE服务8006端口
 service pveproxy restart && service pvedaemon restart
+
+3. 解锁VM
+qm unlock ${PVE_VM_ID}
 ### 相关工具
 #### 定时快照工具
 - 参考

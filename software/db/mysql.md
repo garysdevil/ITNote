@@ -448,6 +448,8 @@ set global long_query_time=1; -- 设置耗时多少秒为慢查询
 slow_query_log = ON
 slow_query_log_file = /usr/local/mysql/data/slow.log
 long_query_time = 1
+log_output = 'FILE,TABLE' -- 日志存储方式 默认值是’FILE’，雀圣写入 host_name-slow.log 文件中。log_output='TABLE’表示将日志存入数据库 mysql.slow_log 表中。
+-- log_queries_not_using_indexes -- 未使用索引的查询也被记录到慢查询日志中（可选项）
 ```
 
 ### MySQL缓存

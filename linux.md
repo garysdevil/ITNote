@@ -74,7 +74,7 @@ ${var%/*}
 ${var%/*}
 for name in `ls *.Linux`;do mv $name ${name%.*};done
 ```
-- 判断符号
+- 判断/比较符号
 ```
 -e filename 如果 filename存在，则为真
 -d filename 如果 filename为目录，则为真 
@@ -93,6 +93,11 @@ filename1 -ot filename2 如果 filename1比 filename2旧，则为真。
 -ge 大于等于
 -lt 小于
 -le 小于等于
+```
+```bash
+if [ $num -gt 182 ]; then
+    touch "$num"
+fi
 ```
 
 ### 设置时区 
@@ -170,7 +175,9 @@ eval $(ssh-agent) # ssh-agent bash --login -i  # ssh-agent bash
 ssh-add -k 私钥文件路径
 ```
 
-### systemctl
+### init（旧版本）
+/etc/init.d/
+### systemctl（新版本）
 /usr/lib/systemd/system/XXXXX.service
 ```
 [Unit]

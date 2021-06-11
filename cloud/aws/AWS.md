@@ -295,7 +295,9 @@ vpc请求方， vpc接收方，vpc接收方ip地址
 - 限制IP来源 https://aws.amazon.com/cn/premiumsupport/knowledge-center/iam-restrict-calls-ip-addresses/
 
 ## RDS
-1. https://aws.amazon.com/cn/premiumsupport/knowledge-center/aurora-mysql-synch-wait-events/#:~:text=synch%2Fmutex%2Fsql%2FLOCK_open,the%20size%20of%20these%20caches
+-  https://aws.amazon.com/cn/premiumsupport/knowledge-center/aurora-mysql-synch-wait-events/#:~:text=synch%2Fmutex%2Fsql%2FLOCK_open,the%20size%20of%20these%20caches
+
+- 最佳实践 https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_BestPractices.html
 
 2. binlog
 ```sql
