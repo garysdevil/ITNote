@@ -95,7 +95,7 @@ setup.template.enabled: true
 setup.ilm.enabled: false
 setup.template.name: "project-prod"
 setup.template.pattern: "project-prod-*"
-
+# filebeat默认值为auto，创建的elasticsearch索引生命周期为50GB+30天。
 
 output.elasticsearch:
     hosts: ["IP:9200"]

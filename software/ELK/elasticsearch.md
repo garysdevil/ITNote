@@ -73,6 +73,50 @@ number_of_shards 和 number_of_replicas 都是index级别的设置。
 
 4. 默认每隔30分钟或translog过大时，ES会将当前内存中所有的index segment标记并形成一个commit point（类似git 的commit id），进行原子性的持久化操作，操作完毕后，删除本次已经已经了持久化的index segment，腾出内存空间。
 
+### ES搜索数据时的步骤
+- 被客户端请求的节点称之为Coordinate节点
+1. Coordinate节点接受请求，将请求转达到分片所在的数据节点
+2. 数据节点执行查询和排序，将结果返回给Coordinate节点
+3. Coordinate节点重新排序数据
+4. Coordinate节点将数据返回给客户端
+
+- 查询结果解读
+```json
+{
+    "took":3, 查询所用的毫秒数
+    "timed_out":false, 是否有分片超时，即是否只返回了部分结果
+    "_shards":{
+        "total":1, 一共查询了多少分片
+        "successful":1, 多少分片成功返回
+        "skipped":0,跳过了多少分片
+        "failed":0　　多少分片查询失败
+    },
+    "hits":{　　
+        "total":{ 
+            "value":1, 该搜索请求中返回的所有匹配的数量
+            "relation":"eq" 文档与搜索值的关系，eq表示相等
+        },
+        "max_score":8.044733, 返回结果中文档的最大得分
+        "hits":[　　查询结果的文档数组
+            {
+                "_index":"kibana_sample_data_ecommerce", 查询的索引
+                "_type":"_doc",　　查询的类型
+                "_id":"4X-j7XEB-r_IFm6PISqV", 返回文档的主键
+                "_score":8.044733,　　返回文档的评分
+                "_source":{  文档的原始内容
+                    "currency":"EUR",
+                    "customer_first_name":"Eddie",
+                    "customer_full_name":"Eddie Underwood",
+                    "customer_gender":"MALE"
+                    ......
+                }
+            }
+        ]
+    }
+}    
+```
+
+
 ## API
 
 - 在HTTP的method中
@@ -87,26 +131,35 @@ PORT=9200
 
 # 查看集群信息
 curl ${IP}:${PORT}/?pretty
+curl "${IP}:${PORT}/_cluster/stats?human&pretty"
 
 # 查看集群健康状况
 curl http://${IP}:${PORT}/_cat/health?v
 curl http://${IP}:${PORT}/_cluster/health?pretty
-curl http://${IP}:${PORT}/_cluster/health?pretty&level=indices # 索引层面
-curl http://${IP}:${PORT}/_cluster/health?pretty&level=shards # 分片层面
+curl "http://${IP}:${PORT}/_cluster/health?&level=indices&pretty" > indices
+curl "http://${IP}:${PORT}/_cluster/health?level=shards&pretty" > shards
+
+# 查看集群设置 # 集群设置的优先级是：临时设置、持久设置、配置文件elasticsearch.yml中的设置。
+curl http://${IP}:${PORT}/_cluster/settings?pretty 
 
 # 查看节点健康状况
 curl http://${IP}:${PORT}/_cat/nodes?v
 
-# 查看集群分片状态
+# 查看集群所有分片状态
 curl http://${IP}:${PORT}/_cat/shards/?pretty
+# 查看集群UNASSIGNED的分片
+curl "http://${IP}:${PORT}/_cat/shards/?h=index,shard,prirep,state,unassigned.reason" | grep UNASSIGNED
 
 # 查看 熔断器 内存数据
 curl http://${IP}:${PORT}/_nodes/stats/breaker?pretty
 
 # 临时改变集群分片的数量    
-curl -XPUT -H "Content-Type: application/json" -d '{"transient":{"cluster":{"max_shards_per_node":10000}}}' "http://${IP}:${PORT}/_cluster/settings"
+curl -XPUT -H "Content-Type: application/json" -d '{"transient":{"cluster":{"max_shards_per_node":2000}}}' "http://${IP}:${PORT}/_cluster/settings"
+# 重启后更改集群分片的数量 
+curl -XPUT -H "Content-Type: application/json" -d '{"persistent":{"cluster":{"max_shards_per_node":2100}}}' "http://${IP}:${PORT}/_cluster/settings"
 
-curl "http://${IP}:${PORT}/_nodes/{node}/hot_threads"
+
+curl -XPUT  -d '{  "number_of_replicas" : 0 }' "http://${IP}:${PORT}/_cluster/settings"
 
 # 查看大索引
 curl -s /dev/null -XGET http://${IP}:${PORT}/_cat/indices?v|grep gb

@@ -16,6 +16,10 @@
     - 方式一：直接通过PVE的ISO安装
     - 方式二：先装Debian再添加proxmox的安装源来安装
 
+- 默认路径
+    - iso存放路径： /var/lib/vz/template/iso/
+    - 备份路径： /var/lib/vz/dump/
+
 ### 指令
 1. 查看集群状态
     - pvecm status
@@ -24,6 +28,10 @@ service pveproxy restart && service pvedaemon restart
 
 3. 解锁VM
 qm unlock ${PVE_VM_ID}
+
+4. 
+
+
 ### 相关工具
 #### 定时快照工具
 - 参考

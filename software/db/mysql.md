@@ -600,7 +600,7 @@ select trx_state, trx_started, trx_mysql_thread_id, trx_query from information_s
 -- select * from information_schema.innodb_trx\G 
 
 -- 查看当前锁定的事务
-select * from information_schema.innodb_locks;
+select * from information_schema.innodb_locks limit 10;
 
 -- 查看当前等锁的事务
 select * from sys.innodb_lock_waits limit 10\G

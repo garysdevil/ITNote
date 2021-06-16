@@ -46,6 +46,13 @@ RUN /opt/kibana/bin/kibana-plugin install https://github.com/opendistro-for-elas
 
 ## 使用
 ### 查询语法
+- 可以实现三种搜索
+    1. DSL 搜索
+    2. KQL 搜索
+    3. Lucene 搜索
+    - 在这三种搜索方法中，DSL 以及 Lucene 搜索可以支持模糊查询 （fuzziness) 以及 通配符查询 （Regex)。KQL 是 Search Bar 的默认搜索方式，但是它不支持模糊查询。
+
+#### KQL
 1. 按字段搜索
     -  字段: 值 AND 字段: 值
     - source: \/data\/logs\/project-a\/*  AND message: user.login.ERROR

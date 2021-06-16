@@ -95,9 +95,50 @@ filename1 -ot filename2 如果 filename1比 filename2旧，则为真。
 -le 小于等于
 ```
 ```bash
+#!/bin/bash
+source /etc/profile
 if [ $num -gt 182 ]; then
     touch "$num"
 fi
+```
+
+#### linux select 指令建立菜单
+```bash
+#!/bin/bash 
+
+fruits=( 
+"apple" 
+"pear" 
+"orange" 
+"watermelon" 
+) 
+
+# echo "Please guess which fruit I like :" 
+# select var in ${fruits[@]} 
+# do 
+# if [ $var = "apple" ]; then 
+#     echo "Congratulations, you are my good firend!" 
+#     break 
+# else 
+#     echo "Try again!" 
+# fi 
+# done 
+
+select var in ${fruits[@]} 
+do 
+case $var in
+    "apple"|"pear"|"orange") echo "123";break;
+    ;;
+    "watermelon")
+    echo "4" 
+    ;;
+    *)
+    echo "5"
+    exit 1 
+    ;; 
+esac
+done 
+
 ```
 
 ### 设置时区 
@@ -176,7 +217,13 @@ ssh-add -k 私钥文件路径
 ```
 
 ### init（旧版本）
+1. init.d
 /etc/init.d/
+
+2. 开机自启脚本
+/etc/rc.d/rc.local
+查看rc-local.service是否启动 systemctl | grep rc-local.service
+
 ### systemctl（新版本）
 /usr/lib/systemd/system/XXXXX.service
 ```
@@ -210,44 +257,7 @@ supervisord -c /etc/supervisord.conf
 4. 进入交互界面
 supervisorctl
 
-### linux select 指令建立菜单
-```bash
-#!/bin/bash 
 
-fruits=( 
-"apple" 
-"pear" 
-"orange" 
-"watermelon" 
-) 
-
-# echo "Please guess which fruit I like :" 
-# select var in ${fruits[@]} 
-# do 
-# if [ $var = "apple" ]; then 
-#     echo "Congratulations, you are my good firend!" 
-#     break 
-# else 
-#     echo "Try again!" 
-# fi 
-# done 
-
-select var in ${fruits[@]} 
-do 
-case $var in
-    "apple"|"pear"|"orange") echo "123";break;
-    ;;
-    "watermelon")
-    echo "4" 
-    ;;
-    *)
-    echo "5"
-    exit 1 
-    ;; 
-esac
-done 
-
-```
 ### gRPC测试工具
 - https://github.com/bojand/ghz
 - wget https://github.com/bojand/ghz/releases/download/v0.90.0/ghz-linux-x86_64.tar.gz
@@ -346,9 +356,7 @@ var='gary'
 sed -i '/^name/c'name=$var'' 文件名
 ```
 
-开机自启脚本
- /etc/rc.d/rc.local
-查看rc-local.service是否启动 systemctl | grep rc-local.service
+
 
 ```bash
 # 只要./test.lock的当前状态未被外部改变，其它flock ./test.lock的就执行失败，直到当前的flock执行结束
@@ -400,6 +408,7 @@ kubectl get pods | grep Evicted | awk '{print $1}' | xargs kubectl delete pod
 ```bash
 date -d "yesterday" +%Y-%m-%d
 date -d '2 days ago' +%Y-%m-%d # 显示2天前的时间
+date '+%Y-%m-%d %H:%M:%S'
 ```
 
 - 查看网络连接

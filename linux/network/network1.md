@@ -6,18 +6,24 @@ https://ivanzz1001.github.io/records/post/linuxops/2018/11/14/linux-route
 3. 在Linux系统中，设置路由通常是为了解决一个问题：该Linux系统在一个局域网中，局域网中有一个网关，能够让机器访问internet，那么就需要将网关地址设置为该Linux机器的默认路由。
 
 4. 查看路由表 route -n
-Destination: 目标网络(network)或者目标主机(host)。
+Destination: 目标网络(network)或者目标主机(host)；’0.0.0.0’用于指示默认路由。
 Gateway: 网关地址，*表示并未设置网关地址。
-Genmask: 子网掩码。其中’255.255.255’用于指示单一目标主机；’0.0.0.0’用于指示默认路由，表示所有地址通过对应的网关进行转发。
+Genmask: 子网掩码。其中’255.255.255’用于指示单一目标主机；’0.0.0.0’用于指示默认路由。
 
-5. 配置缺省网关
+5. 指令
 ```bash
-route del default gw 10.0.0.254 # 删除默认网关
-route add default gw 10.0.0.254 # 添加默认网关
+# 删除默认网关
+route del default gw 10.0.0.254 
 
+# 添加默认网关
+route add default gw 10.0.0.254 
 # 或者
 route add -net 0.0.0.0 netmask 0.0.0.0 gw 10.0.0.254
+
+# 添加一条路由
+ip route add 172.16.0.0/16 via 92.168.0.1 dev eth0
 ```
+
 ## 网关
 1. 网关是一个逻辑概念。
 2. 网关用来连接两个不同网段的网络。
