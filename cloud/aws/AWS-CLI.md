@@ -1,4 +1,10 @@
 
+## 全局参数
+1. 指定需要使用的密钥配置
+    ```bash
+    AWS_PROFILE=${profile} aws指令
+    aws指令 --profile ${profile}
+    ```
 ## ec2实例
 ```bash
 # 1. 查看正在运行的ec2
@@ -136,6 +142,9 @@ aws s3 ls s3://bucket
 aws s3 ls s3://bucket/prefix
 # 批量下载
 aws s3 cp s3://${path} ./${folder} --recursive --profile ${profile}
+# 上传
+aws s3 cp /${folder} s3://${path} --profile ${profile}
+
 ```
 
 2. 拷贝

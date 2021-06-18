@@ -1,31 +1,8 @@
-## update
-- 滚动升级，
-1. update：改变镜像tag：
-  kubectl set image deployment/名字 容器名字=镜像 --record
-  kubectl set image deployment/nginx-deployment nginx=nginx:1.16.1 --record
-  
-2. update：通过edit配置文件改变镜像tag：
-  kubectl edit deployment/pod 名字
-
-3. 查看pod迭代状况
-kubectl rollout status deployment deployment名字
---watch=false 非持续查看
-
-4. 查看特定版本的详细信息：
-  kubectl rollout history deployment
-  kubectl rollout history deployment 名字 --revision=版本
-
-5. 回滚到上一个版本：
-  kubectl rollout undo deployment 名字
-  回滚到特定的版本 --to-revision=版本号
-
-6. 回滚到指定版本
-kubectl rollout undo deployment 名字 --to-revision=1
-
 ## scale HPA
 - 文档参考
-https://kubernetes.io/zh/docs/tasks/run-application/horizontal-pod-autoscale/
-https://idig8.com/2019/08/21/zoujink8skubernetes1-15-1depod-zidongkuosuorong23/
+  - https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+  - https://idig8.com/2019/08/21/zoujink8skubernetes1-15-1depod-zidongkuosuorong23/
+
 
 - 版本说明
   1. 从 Kubernetes 1.8 开始，资源使用指标（如容器 CPU 和内存使用率）通过 Metrics API 在 Kubernetes 中获取, metrics-server(收集及统计资源的利用率) 替代了heapster
@@ -38,10 +15,11 @@ https://idig8.com/2019/08/21/zoujink8skubernetes1-15-1depod-zidongkuosuorong23/
 1. 手动扩容
 kubectl scale --replicas=5 deployment nginx-deploy
 kubectl scale --replicas=1 deployment garysweb -n project-stg1
-2. 手动升级
-kubectl set image deployment nginx-deploy nginx-deploy=nginx:1.15-alpine --record
 
 ### 自动
+0. 机制
+Pod 水平自动扩缩器的实现是一个控制回路，由控制器管理器的 --horizontal-pod-autoscaler-sync-period 参数指定周期（默认值为 15 秒）
+
 1. 通过命令行
 kubectl autoscale deployment foo --min=2 --max=10
 
