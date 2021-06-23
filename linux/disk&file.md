@@ -77,7 +77,7 @@ fdisk /dev/sdb < fdisk.txt
 6. 根据配置文件重新执行挂载操作
 	mount -a
 
-8. 单独挂载某个磁盘
+- 单独挂载某个磁盘
 	mount -t xfs /dev/磁盘分区地址  /目录
 
 ### 添加新pv，扩容现有的lvm逻辑卷

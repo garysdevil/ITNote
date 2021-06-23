@@ -220,6 +220,8 @@ ssh-add -k 私钥文件路径
 1. init.d
 /etc/init.d/
 
+cat /etc/rc.local
+
 2. 开机自启脚本
 /etc/rc.d/rc.local
 查看rc-local.service是否启动 systemctl | grep rc-local.service

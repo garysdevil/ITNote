@@ -119,6 +119,9 @@ number_of_shards 和 number_of_replicas 都是index级别的设置。
 
 ## API
 
+- 参考 
+    - https://www.elastic.co/guide/cn/elasticsearch/guide/current/_cat_api.html
+
 - 在HTTP的method中
 1. PUT  代表具有幂等性操作(多次执行都能得到同样的结果)。
 2. POST 是非幂等，在资源创建时候，执行多次会产生不同的结果。
@@ -144,6 +147,11 @@ curl http://${IP}:${PORT}/_cluster/settings?pretty
 
 # 查看节点健康状况
 curl http://${IP}:${PORT}/_cat/nodes?v
+curl "http://${IP}:${PORT}/_cat/nodes?v&h=ip,ram.current"
+
+————————————————
+版权声明：本文为CSDN博主「ZhaoYingChao88」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/ZYC88888/article/details/102496673
 
 # 查看集群所有分片状态
 curl http://${IP}:${PORT}/_cat/shards/?pretty
