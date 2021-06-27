@@ -216,10 +216,11 @@ eval $(ssh-agent) # ssh-agent bash --login -i  # ssh-agent bash
 ssh-add -k 私钥文件路径
 ```
 
-### init（旧版本）
-1. init.d
-/etc/init.d/
+### 开机自启
+- init.d  （service之前的版本）
+ls /etc/init.d/
 
+- 开机执行
 cat /etc/rc.local
 
 2. 开机自启脚本
@@ -304,7 +305,10 @@ ps -A  -o comm,pmem,pcpu | sort | uniq -c | head -15
 ### awk
 ```bash
 awk 'BEGIN{ORS="\n"}{print $0}'
-# ORS 输出时的结束符，默认为\n
+# ORS 输出记录的分隔符，默认为\n
+
+# 统计各个IP的访问量，并排序
+awk '{a[$1]++}END{for(i in a) print i,a[i] }' ip.list | sort -n -r -k 2n
 ```
 
 ### 脚本

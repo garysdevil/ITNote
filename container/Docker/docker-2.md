@@ -72,6 +72,9 @@ docker run -d -e SW_OAP_ADDRESS=127.0.0.1:11800 -p 9000:9000 -v /etc/nginx/html:
 3. 容器资源使用情况
 docker stats --no-stream
 
+4. 查看容器状态的详细信息
+docker inspect ${container_id}
+
 ### Dockerfile
 1. 从编译阶段的中拷贝编译结果到当前镜像中
 ```dockerfile
@@ -111,4 +114,13 @@ ExecStart=/usr/bin/dockerd --graph /home/docker
 {
     "graph":"/data/docker"
 }
+```
+
+##  其它
+1. 使普通用户也可以操作docker
+```bash
+# 将普通用户添加进docker用户组
+#sudo groupadd docker     # 添加docker用户组 ，如果安装了docker，默认会存在，只需要执行下面的即可
+sudo gpasswd -a ${username} docker     #将 登陆用户加入到docker用户组中
+newgrp docker     # 更新用户组
 ```

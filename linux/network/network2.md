@@ -1,10 +1,5 @@
 ## iptables & ipset
-
-- Linux的2.4版内核引入了一种全新的网络包处理引擎Netfilter
-    - 管理它的命令行工具是 iptables
-    - iptables：administration tool for IPv4/IPv6 packet filtering and NAT
-- ip set 是linux内核的一个内部框架，ipset是iptables的扩展。 
-
+-  [跳转到相关内容](../../secure/linux/iptables.md) 
 
 ## gRPC
 - 参考

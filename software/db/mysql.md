@@ -224,6 +224,16 @@ mysql --login-path=aa -e "${sql语句}" > data.txt
 6. 导出为csv文件
 sql语句 into outfile '/tmp/table.csv' fields terminated by ',' optionally enclosed by '"' lines terminated by '\r\n';
 
+### 死锁日志
+```sql
+show variables like "%innodb_print_all_deadlocks%";
+-- 开启死锁日志，死锁日志被存放进error_log配置的文件里面
+set global innodb_print_all_deadlocks=1
+
+-- innodb_deadlock_detect 死锁检测 mysql 5.7.15，default on
+
+-- innodb_lock_wait_timeout 锁等待超时，自动回滚事务， default 50s
+```
 
 ### binlog日志
 - 参考  

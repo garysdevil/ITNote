@@ -1,8 +1,10 @@
 
 ## iptables
-- Linux内核包含了强大的框架Netfilter，是其它内核模块能提供数据包过滤、网络地址转换、负载均衡等功能。
+- Linux的2.4版内核引入了一种全新的网络包处理引擎Netfilter，能为其它内核模块提供数据包过滤、网络地址转换、负载均衡等功能。
 - iptables 命令是与Netfilter 系统进行交互的主要工具，用于提供数据包过滤和NAT。
 - 基于“过滤规则链”的概念来阻止或转发流量。
+- ip set 是linux内核的一个内部框架，ipset是iptables的扩展。
+
 ### 命令
 - iptables -t ${tabletype} -I ${direction} ${action_direction} ${packet_pattern} -j ${what_to_do}
 1. -t 定义表类型 filter、nat、mangle、raw; 默认为filter.
