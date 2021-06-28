@@ -16,6 +16,13 @@
     cluster.initial_master_nodes: ["node-1"]  # 启动单节点集群，单节点必须配置
     network.host: 0.0.0.0 # 默认只有本机才能访问 
     cluster.max_shards_per_node: 3000 # 配置每个节点最大的分片数量，默认为1000
+    http.max_content_length: 100mb # 设置内容的最大容量，默认为100mb
+    ```
+    - jvm.options
+    ```conf
+    # 设置堆内存为机器内存的一半 # 6.2.x ES_JAVA_OPTS="-Xms15g -Xmx15g" ./bin/elasticsearch
+    -Xms15g
+    -Xmx15
     ```
 4. 启动 nohup ./bin/elasticsearch 2>&1 &
 5. 访问 http://localhost:9200/

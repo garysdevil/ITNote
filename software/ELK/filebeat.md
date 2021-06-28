@@ -51,9 +51,10 @@ filebeat.inputs:
     multiline.pattern: '^{'
     multiline.negate: true # 默认是false，匹配pattern的行合并到上一行；true，不匹配pattern的行合并到上一行
     multiline.match: after # 合并到上一行的末尾或开头
-    tail_files: true # 从新文件的最后位置开始读取,而不是从开头读取新文件
+    tail_files: true # 默认是false； true 从新文件的最后位置开始读取,而不是从开头读取新文件
     close_older: 30m # 一个文件30分钟内不更新，则关闭句柄
     force_close_files: true  # default false 只要filebeat检测到文件名字发生变化，就会关掉这个handle；可以防止由于文件被删除但句柄还在从而导致磁盘占用空间不被释放
+    ignore_older: 1h # default disabled # 忽略指定时间段以外修改的日志内容，例如 2h 或 5m
     processors: # 过滤器
     - drop_fields: # 删除一些字段
         fields: ["log"]

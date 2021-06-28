@@ -258,8 +258,12 @@ set global expire_logs_days=15
 -- 查看数据库是否开启binlog日志
 show variables like '%log_bin%';
 
--- 查看binlog文件
+-- 查看所有binlog文件
 show binary logs;
+
+-- 只查看第一个binlog文件的内容
+show binlog events; 
+-- show binlog events in 'mysql-bin.000003';
 
 -- 清理binlog日志
 purge master logs to 'binlognumber';
