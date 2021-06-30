@@ -217,17 +217,14 @@ ssh-add -k 私钥文件路径
 ```
 
 ### 开机自启
-- init.d  （service之前的版本）
+- init.d  系统开机启动程序
 ls /etc/init.d/
 
 - 开机执行
-cat /etc/rc.local
-
-2. 开机自启脚本
 /etc/rc.d/rc.local
 查看rc-local.service是否启动 systemctl | grep rc-local.service
 
-### systemctl（新版本）
+### systemctl
 /usr/lib/systemd/system/XXXXX.service
 ```
 [Unit]

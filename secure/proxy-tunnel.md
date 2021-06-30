@@ -50,4 +50,6 @@ wget http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
 rpm -Uvh epel-release-6-8.noarch.rpm
 
 yum install easy-rsa openvpn
+
+echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 ```
