@@ -216,15 +216,32 @@ eval $(ssh-agent) # ssh-agent bash --login -i  # ssh-agent bash
 ssh-add -k 私钥文件路径
 ```
 
-### 开机自启
-- init.d  系统开机启动程序
+### 开机自启 service
+- 开机启动程序存放位置
 ls /etc/init.d/
 
-- 开机执行
+```bash
+service ${服务名} start
+service --status-all
+
+chkconfig --list
+# 设置服务开机自动启动
+chkconfig ${service} on
+# 设置服务开机不自动启动
+chkconfig ${service} off
+# 以全屏幕文本界面设置服务开机时是否自动启动
+ntsysv
+```
+
+- 开机执行脚本
 /etc/rc.d/rc.local
 查看rc-local.service是否启动 systemctl | grep rc-local.service
 
-### systemctl
+
+### systemctl 兼容service
+- 参考
+    - http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html
+
 /usr/lib/systemd/system/XXXXX.service
 ```
 [Unit]
@@ -298,6 +315,20 @@ ps -A  -o comm,pmem,pcpu | sort | uniq -c | head -15
 - lsof（list open files）是一个列出当前系统打开文件的工具
 
     - lsof  -i @fw.google.com:2150=2180
+
+### sysstat
+- 分析服务器的性能和资源的使用效率。可以监控CPU、硬盘、网络等数据.
+```bash
+# git://github.com/sysstat/sysstat
+apt-get install sysstat
+yum -y install sysstat
+sar -V
+
+# iostat 工具提供CPU使用率及硬盘吞吐效率的数据；  #比较核心的工具
+# pidstat: 关于运行中的进程/任务、CPU、内存等的统计信息
+# ...
+```
+
 
 ### awk
 ```bash
@@ -426,4 +457,16 @@ kubectl get pods -o wide | grep ${nodename} | awk {'print $1'} | xargs -n1 kubec
 # xargs 详解
 # -d 指定分隔符
 # -p 等待输入yes后才执行一条语句
+```
+
+- screen ssh退出后可以运行在后台的窗口，可以替代nohup
+```bash
+# 创建一个screen
+screen -S  ${screenName}
+# 查看已经存在的screen
+screen -ls
+# 切换到某个screen
+screen -r ${screenName}
+# 将screen切回后台
+Ctr+a 按下后再按下d
 ```

@@ -596,8 +596,6 @@ show engine innodb status
     - information_schema.PROCESSLIST
     - sys.innodb_lock_waits\
 
--  
-
 - 排查
 ```sql
 -- 参考 https://aws.amazon.com/cn/premiumsupport/knowledge-center/blocked-mysql-query/
@@ -627,6 +625,19 @@ select USER , count(*) as num from information_schema.processlist group by USER 
 select substring_index(host,':',1) as ip, count(*) as num from information_schema.processlist group by ip order by num desc limit 10;
 ```
 
+- 排查高CPU的sql
+```bash
+# https://www.percona.com/blog/2020/04/23/a-simple-approach-to-troubleshooting-high-cpu-in-mysql/
+
+# 寻找cpu使用率最大的mysql线程及对应的sql语句及优化
+pidstat -t -p ${mysqld_pid} 1 # 获取cpu使用率最大的mysql线程 TID
+# 1 表示每1秒刷新一次
+# 查询线程对应的sql
+select * from performance_schema.threads where THREAD_OS_ID = ${TID} \G
+# 查找可以优化的地方
+explain ${sql}
+
+```
 
 ### 优化、预防问题发生
 - 通过下面的表进行优化

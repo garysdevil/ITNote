@@ -28,11 +28,18 @@ export no_proxy='localhost,127.0.0.1'
 - https://github.com/snail007/goproxy
 
 ### 安装使用
+```bash
 curl -L https://raw.githubusercontent.com/snail007/goproxy/master/install_auto.sh | bash
 proxy socks -t tcp -p "0.0.0.0:38080"
 --log proxy.log 
 --daemon
 --forever # 防止进程意外退出
+```
+# shadowsocks
+- 参考 
+    - http://ivo-wang.github.io/2018/02/24/ss-redir/
+
+
 
 # 隧道
 - 参考文件
@@ -53,3 +60,8 @@ yum install easy-rsa openvpn
 
 echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 ```
+
+## UDPspeeder
+- 参考
+    - https://github.com/wangyu-/UDPspeeder
+    

@@ -105,3 +105,27 @@ docker-compose -f example/standalone-mysql-5.7.yaml up -d
 curl -X POST "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos.cfg.dataId&group=gary.group&content=HelloWorld"
 2. 获取配置  
 curl -X GET "http://127.0.0.1:8848/nacos/v1/cs/configs?dataId=nacos.cfg.dataId&group=gary.group&tenant=命名空间ID"
+
+# apollo
+- 参考
+    - https://github.com/ctripcorp/apollo
+## 安装
+- 依赖软件
+    - Java JDK 1.8.x
+    - Maven
+    - Mysql 
+    - Apollo
+
+- 裸安装
+```bash
+# 1. 下载三个安装包解压 adminservice,configservice,portal
+
+# 2. 分别配置3个服务
+apollo-adminservice/config/application-github.properties
+
+# 3. 分别启动3个服务
+apollo-adminservice/scripts/start.sh
+
+# 4. 访问 账户密码 apollo/admin
+http://127.0.0.1:8070
+```
