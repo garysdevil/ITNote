@@ -100,22 +100,22 @@ alter 表名  convert to character set utf8mb4 collate utf8mb4_bin;
 create database test;
 use test;
 -- create table
-create table if not exists `user_tb` (`user_id` int unsigned auto_increment , `user_name` varchar(40) not null, primary key ( `user_id` )) engine=InnoDB default charset=utf8;
+create table if not exists `gary_user_tb` (`user_id` int unsigned auto_increment , `user_name` varchar(40) not null, primary key ( `user_id` )) engine=InnoDB default charset=utf8;
 -- delete table
-drop table tablename;
+drop table gary_user_tb;
 
 -- add data
-insert into user_tb (user_name) values('gary');
+insert into gary_user_tb (user_name) values('gary');
 
 -- delete data
-delete from user_tb where id = 1;
+delete from gary_user_tb where id = 1;
 
 --update data
-update user_tb set user_name = 'adam' where user_name = 'gary';
+update gary_user_tb set user_name = 'adam' where user_name = 'gary';
 
 -- select data
-select user_id, user_name from user_tb limit 10;
-select * from user_tb where user_name like  "%gary%" limit 1;
+select user_id, user_name from gary_user_tb limit 10;
+select * from gary_user_tb where user_name like  "%gary%" limit 1;
 
 -- 排序
 sql语句 order by 字段名 desc desc limit 5;

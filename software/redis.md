@@ -67,6 +67,7 @@ Redis 进程占据操作系统的内存（单位是字节），与 top 及 ps �
 除了内存分配器分配的内存之外，used_memory_rss 还包括进程运行本身需要的内存、内存碎片等，但是不包括虚拟内存。
 3. maxmemory
 最大内存限制，0表示无限制
+
 ## 运维操作
 1. 连接redis 默认端口6379
 redis-cli -h IP -p PORT -a PASS -c
@@ -132,11 +133,18 @@ Redis Version >= 4.0
 1. 列出当前db有效的key 
     keys *
 
-2. 查看key剩余的过期时间/秒
+2. 列出指定数量的kye
+    ```bash
+    scan ${游标位置} match * count ${数量}
+    scan 0 match * count 5
+    ```
+
+3. 查看key剩余的过期时间/秒
     TTL key名字
 
-3. 查看数据库类型
+4. 查看数据库类型
     TYPE key名字
+
 ## 配置
 ### 参数
 ```conf

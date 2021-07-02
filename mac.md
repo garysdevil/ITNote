@@ -2,7 +2,7 @@
 ### 终端命令
 1. 查看端口、PID映射
 lsof -i -P
-
+                
 2. 打开一个服务
 open -a Docker
 
@@ -70,16 +70,28 @@ sudo launchctl stop gary.test.plist
 plutil -lint gary.test.plist
 
 
-### 其它
-安装MySQLWorkbench，然后
+### App Store
+1. 安装MySQL客户端
+App Store安装MySQLWorkbench，然后
 export PATH=$PATH:/Applications/MySQLWorkbench.app/Contents/MacOS
+mysql --version
 
-
-
+### brew
+1. 安装
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
 
+2. formulae & casks
+    - formulae 意思是一些软件包，一般是命令行工具、开发库、一些字体、插件，共性是不提供界面，提供给终端或者是开发者使用。
+    - casks 是用户软件，比如 chrome、mvim、wechat、wechatwork 这些提供用户交互界面的软件。
+
+3. 安装mysql
 brew install caskroom/cask/mysql-shell
 
+4. 安装redis
+        brew services start redis
+        Or, if you don't want/need a background service you can just run:
+        /opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redis.conf
 
 
 ### 环境变量

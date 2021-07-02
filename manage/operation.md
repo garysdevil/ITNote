@@ -1,6 +1,10 @@
 - 参考
     - https://www.ibm.com/developerworks/architecture/library/ar-servgov/?S_CMP=cn-a-wes&S_TACT=105AGX52
 # 运维
+1. 保障服务正常的运行。
+2. 维护好整个技术团队的工作流程。
+3. 优化资源配置，节省成本。
+4. 性能配置调优，提升用户体验。
 ## 核心
 1. 自动化 
     - 解放自己的双手。减少了人力成本，降低了操作风险，提高运维效率
