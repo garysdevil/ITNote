@@ -69,31 +69,43 @@ whereis mysql | xargs rm -rf # 删除剩余的文件
 rm -rf /var/lib/mysql # 如果这个目录如果不删除，再重新安装之后，密码还是之前的密码，不会重新初始化！
 ```
 
-
-### 字符编码
+### 配置管理
+- Mysql配置从上到下优先级降低
+    - /etc/my.cnf
+    - /etc/mysql/my.cnf
+    - /usr/local/etc/my.cnf
+    - ~/.my.cnf
+#### 字符集编码配置
 1. 更改字符集编码
-    vi /etc/my.cnf
-    1. 在[mysqld]下添加：
-    default-storage-engine=INNODB
-    character-set-server=utf8
-    collation-server=utf8_general_ci
+ vi /etc/my.cnf
+```conf
+# 在[mysqld]下添加：
+default-storage-engine=INNODB
+character-set-server=utf8
+collation-server=utf8_general_ci
 
-    2. 在[mysql]下添加
-    default-character-set=utf8
+# 在[mysql]下添加
+default-character-set=utf8
+```
 
 2. 查看字符集的配置
-    - 查看Mysql的字符集
-        - show variables like "%character%";
-        - show variables like "%collation%";
-    - 查看database字符集
-        - show create database 数据库名;
-    - 查看table的字符集
-        - show create table 数据表名;
-    - 查看字段编码
-        - show full columns from 表名;
+```sql
+-- 查看Mysql的字符集
+    show variables like "%character%";
+    show variables like "%collation%";
+-- 查看database字符集
+    show create database 数据库名;
+-- 查看table的字符集
+    show create table 数据表名;
+-- 查看字段编码
+    show full columns from 表名;
+```
 
 3. 更改已存在的表的字符集
+```sql
 alter 表名  convert to character set utf8mb4 collate utf8mb4_bin;
+```
+
 ## SQL增删改查
 ### 简单SQL 
 ```sql
@@ -137,9 +149,6 @@ COMMIT -- 或 ROLLBACK
 ### 存储过程
 
 ## 运维基本操作 
-### information_schema数据库
-- 保存了MySQL服务器所有数据库相关的信息。
-
 ### 基础
 1. 设置临时变量
 set @key="value";
@@ -214,14 +223,15 @@ real	0m38.495s
 user	0m35.658s
 sys	    0m2.261s
 ```
-4. 执行sql文件
+
+3. 执行sql文件
 mysql -u${USER} -p${PASSWORD} -P${PORT} -h${HOST} -S ${SOCKPATH} -D${DATABASE} < sql.sql
 
-5. 导出查询到的数据
+4. 导出查询到的数据
 mysql --login-path=aa ${sql脚本} data.txt  
 mysql --login-path=aa -e "${sql语句}" > data.txt
 
-6. 导出为csv文件
+5. 导出为csv文件
 sql语句 into outfile '/tmp/table.csv' fields terminated by ',' optionally enclosed by '"' lines terminated by '\r\n';
 
 ### 死锁日志
@@ -235,19 +245,93 @@ set global innodb_print_all_deadlocks=1
 -- innodb_lock_wait_timeout 锁等待超时，自动回滚事务， default 50s
 ```
 
-### binlog日志
+### 开启主从同步
 - 参考  
 https://www.jianshu.com/p/b0cf461451fb  
-- 功能：记录用户对数据库操作的SQL语句（(除了数据查询语句）信息。
-1. 配置启动binlog日志
+https://dev.mysql.com/doc/refman/5.7/en/start-slave.html
+
+- MySQL主从同步的作用：
+    1. 可以作为备份机制，相当于热备份
+    2. 可以用来做读写分离，均衡数据库负载
+
+1. 在主数据库上启动binlog日志
 ```conf
-log-bin=mysql-bin
-binlog_format=mixed
-server-id   = 1
-expire_logs_days = 10  # 0 表示永不过期
+#主数据库端ID号 # 必须配置否则mysql会启动失败
+server_id = 1     
+#开启二进制日志，配置二进制日志所在路径
+log-bin = mysql-bin
+#二进制日志自动删除的天数，默认值为0,表示“没有自动删除”，启动时和二进制日志循环时可能删除  
+expire_logs_days = 7
+#需要复制的数据库名，如果复制多个数据库，重复设置这个选项即可                  
+binlog-do-db = ${db}
+#需要忽略的数据库
+binlog-ignore-db = ${db}
+#设置将从服务器从主服务器收到的更新记入到从服务器自己的二进制日志文件中                 
+log-slave-updates       
+#控制binlog的写入频率。每执行多少次事务写入一次(这个参数性能消耗很大，但可减小MySQL崩溃造成的损失) 
+sync_binlog = 1  
+#将函数复制到slave  
+log_bin_trust_function_creators = 1  
+
+#这个参数一般用在主主同步中，用来错开自增值, 防止键值冲突
+# auto_increment_offset = 1
+#这个参数一般用在主主同步中，用来错开自增值, 防止键值冲突
+# auto_increment_increment = 1
+
+# binlog_format = row # MySQL 5.7.7 之前，binlog 的默认格式都是 STATEMENT，在 5.7.7 及更高版本中，binlog_format 的默认值是 ROW
+# STATEMENT 模式:每一条会修改数据的sql语句会记录到binlog中 
+# ROW 模式:仅需记录哪条数据被修改了，修改成什么样了
+# MIXED 模式:以上两种模式的混合使用
 ```
 
-2. 
+2. 在从数据库上配置binlog
+```conf
+server_id = 2
+log-bin = mysql-bin
+log-slave-updates
+sync_binlog = 0
+#log buffer将每秒一次地写入log file中，并且log file的flush(刷到磁盘)操作同时进行。该模式下在事务提交的时候，不会主动触发写入磁盘的操作
+innodb_flush_log_at_trx_commit = 0
+#指定slave要复制哪个库，如果复制多个数据库，重复设置这个选项即可
+replicate-do-db = db
+#MySQL主从复制的时候，当Master和Slave之间的网络中断，但是Master和Slave无法察觉的情况下（比如防火墙或者路由问题）。Slave会等待slave_net_timeout设置的秒数后，才能认为网络出现故障，然后才会重连并且追赶这段时间主库的数据
+slave-net-timeout = 60
+log_bin_trust_function_creators = 1
+```
+
+3. 在master数据库上创建允许slave数据库同步数据的账户
+```sql
+grant replication slave on *.* to 'USER'@'IP' identified by 'PASSWORD';
+flush privileges;
+```
+
+4. 设置连接到master数据库 
+```sql
+-- 主 上进行操作，获取master_log_file 和 master_log_pos
+show master status;
+-- 从 上进行操作
+change master to master_host='IP', master_user='slave', master_password='slave',master_log_file='mysql-bin.000001', master_log_pos=590;
+```
+
+4. 启停主从
+stop slave;
+start slave;
+
+5. slave数据库查看主从状态
+show slave status\G;
+- Slave_IO_Running和Slave_SQL_Runing两个参数YES，则表示主从复制关系正常。
+
+6. slave因为锁导致主从中断
+```sql
+-- InnoDB事务在放弃前等待行锁的时间（秒）。innodb_lock_wait_timeout默认值为50秒。当有试图访问被另一行锁定的行的事务InnoDB事务在发出以下错误：
+-- ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction
+show variables like '%innodb_lock_wait_timeout%';
+-- 参数slave_transaction_retries 设置的为10次，如果事务重试次数超过10次，复制中断。
+show variables like '%slave_transaction_retries%';
+```
+
+#### binlog
+1. 查看内存状态的binlog配置
 ```sql
 -- 查看默认设置的binlog过期时间
 show variables like "%expire_logs%";
@@ -269,7 +353,7 @@ show binlog events;
 purge master logs to 'binlognumber';
 ```
 
-4. 用mysql自身自带的工具，提取出binlog日志进行分析
+2. 用mysql自身自带的工具，提取出binlog日志进行分析
     ```bash
     host=127.0.0.1
     user=root
@@ -278,91 +362,13 @@ purge master logs to 'binlognumber';
     binlogfile="mysql-binlog.191250" # 从哪个binlog文件开始提取
     result_file=='mysql-binlog' # 保存结果进文件
 
-    mysqlbinlog --read-from-remote-server  --host=${host} --port=3306 --user ${user} --password  --base64-output=decode-rows -v --start-datetime=${start_datetime} --stop-datetime=${stop-datetime} --stop-never  --result-file=${result_file} ${binlogfile}
+    mysqlbinlog --no-defaults --read-from-remote-server  --host=${host} --port=3306 --user ${user} --password  --base64-output=decode-rows -v --start-datetime=${start_datetime} --stop-datetime=${stop-datetime} --stop-never  --result-file=${result_file} ${binlogfile}
     
-    # --database=数据库名  指定数据库名
+    # --database=数据库名  -d=数据库名
     # --base64-output=decode-rows  binglog格式为row时，进行解码
+    # --skip-gtids=true
     ```
 
-### 开启主从同步
-- 参考  
-https://www.jianshu.com/p/b0cf461451fb  
-https://dev.mysql.com/doc/refman/5.7/en/start-slave.html
-
-1. MySQL主从同步的作用：
-    1. 可以作为备份机制，相当于热备份
-    2. 可以用来做读写分离，均衡数据库负载
-
-2. 在主服务器上配置主从
-```conf
-#主数据库端ID号
-server_id = 1           
-#开启二进制日志                  
-log-bin = mysql-bin    
-#需要复制的数据库名，如果复制多个数据库，重复设置这个选项即可                  
-binlog-do-db = db  
-#需要忽略的数据库
-binlog-ignore-db = db      
-#设置将从服务器从主服务器收到的更新记入到从服务器自己的二进制日志文件中                 
-log-slave-updates                        
-#控制binlog的写入频率。每执行多少次事务写入一次(这个参数性能消耗很大，但可减小MySQL崩溃造成的损失) 
-sync_binlog = 1     
-#二进制日志自动删除的天数，默认值为0,表示“没有自动删除”，启动时和二进制日志循环时可能删除  
-expire_logs_days = 7                    
-#将函数复制到slave  
-log_bin_trust_function_creators = 1     
-
-#这个参数一般用在主主同步中，用来错开自增值, 防止键值冲突
-# auto_increment_offset = 1           
-#这个参数一般用在主主同步中，用来错开自增值, 防止键值冲突
-# auto_increment_increment = 1     
-```
-
-3. 在从服务器上配置
-```conf
-server_id = 2
-log-bin = mysql-bin
-log-slave-updates
-sync_binlog = 0
-#log buffer将每秒一次地写入log file中，并且log file的flush(刷到磁盘)操作同时进行。该模式下在事务提交的时候，不会主动触发写入磁盘的操作
-innodb_flush_log_at_trx_commit = 0        
-#指定slave要复制哪个库
-replicate-do-db = db         
-#MySQL主从复制的时候，当Master和Slave之间的网络中断，但是Master和Slave无法察觉的情况下（比如防火墙或者路由问题）。Slave会等待slave_net_timeout设置的秒数后，才能认为网络出现故障，然后才会重连并且追赶这段时间主库的数据
-slave-net-timeout = 60                    
-log_bin_trust_function_creators = 1
-```
-
-3. 创建允许从服务器同步数据的账户
-```sql
-grant replication slave on *.* to 'USER'@'IP' identified by 'PASSWORD';
-flush privileges;
-```
-4. 设置连接到master主服务器 
-```sql
--- 主 上进行操作，获取master_log_file 和 master_log_pos
-show master status;
--- 从 上进行操作
-change master to master_host='IP', master_user='slave', master_password='slave',master_log_file='mysql-bin.000001', master_log_pos=590;
-
-```
-
-4. 启停主从
-stop slave;
-start slave;
-
-5. 查看主从状态
-show slave status\G;
-- Slave_IO_Running和Slave_SQL_Runing两个参数YES，则表示主从复制关系正常。
-
-6. 主从中断
-```sql
--- InnoDB事务在放弃前等待行锁的时间（秒）。innodb_lock_wait_timeout默认值为50秒。当有试图访问被另一行锁定的行的事务InnoDB事务在发出以下错误：
--- ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction
-show variables like '%innodb_lock_wait_timeout%';
--- 参数slave_transaction_retries 设置的为10次，如果事务重试次数超过10次，复制中断。
-show variables like '%slave_transaction_retries%';
-```
 
 ### 连接数、状态、最大并发数
 1. 查看连接数限制 

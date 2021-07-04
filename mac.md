@@ -77,6 +77,8 @@ export PATH=$PATH:/Applications/MySQLWorkbench.app/Contents/MacOS
 mysql --version
 
 ### brew
+- brew services list
+
 1. 安装
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
@@ -85,14 +87,43 @@ echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
     - formulae 意思是一些软件包，一般是命令行工具、开发库、一些字体、插件，共性是不提供界面，提供给终端或者是开发者使用。
     - casks 是用户软件，比如 chrome、mvim、wechat、wechatwork 这些提供用户交互界面的软件。
 
-3. 安装mysql
+3. 安装mysql-shell
 brew install caskroom/cask/mysql-shell
 
-4. 安装redis
-        brew services start redis
-        Or, if you don't want/need a background service you can just run:
-        /opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redis.conf
+4. mysql
+```bash
+brew install mysql@5.7
+```
+```log
+To connect run:
+    mysql -uroot
 
+mysql@5.7 is keg-only, which means it was not symlinked into /opt/homebrew,
+because this is an alternate version of another formula.
+
+If you need to have mysql@5.7 first in your PATH, run:
+  echo 'export PATH="/opt/homebrew/opt/mysql@5.7/bin:$PATH"' >> ~/.zshrc
+
+For compilers to find mysql@5.7 you may need to set:
+  export LDFLAGS="-L/opt/homebrew/opt/mysql@5.7/lib"
+  export CPPFLAGS="-I/opt/homebrew/opt/mysql@5.7/include"
+
+
+To have launchd start mysql@5.7 now and restart at login:
+  brew services start mysql@5.7
+Or, if you don't want/need a background service you can just run:
+  /opt/homebrew/opt/mysql@5.7/bin/mysql.server start
+```
+
+5. 安装redis
+```bash
+brew install redis
+brew services start redis
+```
+```log
+Or, if you don't want/need a background service you can just run:
+/opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redis.conf
+```
 
 ### 环境变量
 - https://www.jianshu.com/p/acb1f062a925

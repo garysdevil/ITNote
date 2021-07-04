@@ -66,3 +66,7 @@ wget https://github.com/cookieY/Yearning/releases/download/v2.3.1/Yearning-2.3.1
 3. 默认参数启动  
     - ./Yearning -s
     - 默认端口 0.0.0.0:8000
+
+## MySQL表结构同步工具 
+- 参考
+    - https://github.com/hidu/mysql-schema-sync
