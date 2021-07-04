@@ -1,4 +1,13 @@
-1. 
+1. 数据库启用binlog
+
+2. 数据库配置maxwell用户和数据库
+```sql
+create user 'maxwell'@'%' identified BY '123456';
+grant all on maxwell.* TO 'maxwell'@'%';
+grant select, replication client, replication slave on *.* to 'maxwell'@'%'; 
+```
+
+3. 启动maxwell
 ```bash
 /usr/local/lib/maxwell/maxwell-1.29.2/bin/maxwell --user='maxwell' --password='password' --port=33306 --host='mysql_host' --producer=kafka --kafka.bootstrap.servers=${kafka_host_1}:9092,${kafka_host_2}:9092 --kafka_topic=${topic_name} --filter='exclude: *.*, include: db1.table1, include: db2.table1'
 # --producer=kafka
