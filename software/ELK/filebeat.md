@@ -3,6 +3,7 @@
 - https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-reference-yml.html
 - https://www.cnblogs.com/cjsblog/p/9495024.html
 - https://segmentfault.com/a/1190000019714761 博客剖析
+
 ## 概念
 - 语言：Golang
 - 基于libbeat库进行开发而成。
@@ -19,10 +20,28 @@
 
 3. 注意
     如果使用容器部署filebeat，需要将registry文件挂载到宿主机上，否则容器重启后registry文件丢失，会使filebeat从头开始重复采集日志文件。
-## 组成
 
-- version 7.x
+## 安装
+1. 通过yum安装
+```bash
+# 参考 https://www.elastic.co/guide/en/beats/filebeat/current/setup-repositories.html
+rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch
+echo '[elastic-7.x]
+name=Elastic repository for 7.x packages
+baseurl=https://artifacts.elastic.co/packages/7.x/yum
+gpgcheck=1
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+autorefresh=1
+type=rpm-md' >> /etc/yum.repos.d/elastic.repo
+yum install filebeat -y
+systemctl start filebeat
+systemctl enable filebeat
+```
+
+## 组成与配置
 ### 日志收集，主要由两个组件组成：inputs 和  harvesters
+- version 7.x
 1. 一个 harvester 负责读取一个文件的内容。每个文件启动一个 harvester 。
 2. 一个 input 找到所有要读取的源，负责管理 harvesters 。 每个input都在自己的Go协程中运行。
 - 内部机制
@@ -43,18 +62,24 @@ filebeat.inputs:
     paths: # 采集的文件位置
         - /var/log/*.log
         - /var/path2/*.log
-    fields:  # 自定义属性输出到output
-        key: value 
-    reload.enabled: false
-    # close_older: 1h # default 1h 如果一个文件在某个时间段内没有发生过更新，则关闭监控的文件handle
+
+    # 自定义键值对输出到output
+    # fields:  
+    #     mykey: myvalue 
+    # tags: ["tag1", "tag2", "tag3"]
+
+    enabled: true # 默认是true；false 则不采集
     # multiline.pattern: '^\<|^[[:space:]]|^[[:space:]]+(at|\.{3})\b|^Caused by:'  # 正则，自定义，“|” 表示可以匹配多种模式
     multiline.pattern: '^{'
     multiline.negate: true # 默认是false，匹配pattern的行合并到上一行；true，不匹配pattern的行合并到上一行
     multiline.match: after # 合并到上一行的末尾或开头
     tail_files: true # 默认是false； true 从新文件的最后位置开始读取,而不是从开头读取新文件
-    close_older: 30m # 一个文件30分钟内不更新，则关闭句柄
-    force_close_files: true  # default false 只要filebeat检测到文件名字发生变化，就会关掉这个handle；可以防止由于文件被删除但句柄还在从而导致磁盘占用空间不被释放
     ignore_older: 1h # default disabled # 忽略指定时间段以外修改的日志内容，例如 2h 或 5m
+
+    # 以下两个参数在7.13版本后好像没了
+    force_close_files: true  # default false; true 只要filebeat检测到文件名字发生变化，就会关掉这个handle；可以防止由于文件被删除但句柄还在从而导致磁盘占用空间不被释放
+    close_older: 30m # default 1h 如果一个文件在某个时间段内没有发生过更新，则关闭监控的文件handle
+
     processors: # 过滤器
     - drop_fields: # 删除一些字段
         fields: ["log"]
@@ -74,16 +99,17 @@ filebeat.config:
 
 
 ### 日志输出 output
-- 配置示范 输出到logstash
+1. 配置示范 输出到logstash
 ```yaml
     output.logstash:
-    hosts: ["127.0.0.1:5044"]
-    # 输出至Elastic Cloud
-    cloud.id: ${ELASTIC_CLOUD_ID}
-    cloud.auth: ${ELASTIC_CLOUD_AUTH}
+        hosts: ["127.0.0.1:5044"]
+        # 输出至Elastic Cloud
+        cloud.id: ${ELASTIC_CLOUD_ID}
+        cloud.auth: ${ELASTIC_CLOUD_AUTH}
 ```
- - 配置示范 输出到elasticsearch
- ```yaml
+
+2. 配置示范 输出到elasticsearch
+```yaml
 processors:
   - decode_json_fields:
       fields: ['message']
@@ -92,15 +118,30 @@ processors:
 
 setup.template.settings:
   index.number_of_shards: 1
+  index.number_of_replicas: 0
 setup.template.enabled: true
-setup.ilm.enabled: false
+# 从7.0版开始，Filebeat在连接到支持生命周期管理的集群时默认使用索引生命周期管理（ILM）。默认创建的elasticsearch索引生命周期为50GB+30天。 默认值为 auto， auto/true/false
+setup.ilm.enabled: false 
 setup.template.name: "project-prod"
 setup.template.pattern: "project-prod-*"
-# filebeat默认值为auto，创建的elasticsearch索引生命周期为50GB+30天。
 
+
+# josn格式的配置文件
+# if "myvalue" == [mykey] {}
+# if "tag1" in [tags] {}
 output.elasticsearch:
     hosts: ["IP:9200"]
-    index: "project-prod-%{[agent.version]}-%{+yyyy.MM.dd}"
+    index: "project-default-%{[agent.version]}-%{+yyyy.MM.dd}"
+    indices:
+        - index: "warning-%{[agent.version]}-%{+yyyy.MM.dd}"
+            when.equals:
+                mykey: "WARN"
+        - index: "error-%{[agent.version]}-%{+yyyy.MM.dd}"
+            when.contains:
+                tags: "ERR"
+        
+
+# 日志配置
 logging.level: debug
 logging.to_files: true
 logging.files:
@@ -109,7 +150,7 @@ logging.files:
   keepfiles: 7
   permissions: 0644
 
- ```
+```
 
 ### 模块
 1. 

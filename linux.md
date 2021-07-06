@@ -243,7 +243,7 @@ ntsysv
     - http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html
 
 /usr/lib/systemd/system/XXXXX.service
-```
+```confe
 [Unit]
 Description=XXXXX
 Documentation=XXXXX

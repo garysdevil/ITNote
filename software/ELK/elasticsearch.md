@@ -9,11 +9,24 @@
     - https://www.elastic.co/cn/downloads/past-releases#elasticsearch
 
 1. 安装java1.8环境
-2. wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.0-linux-x86_64.tar.gz
+2. 下载安装elasticsearch
+```bash
+useradd elk;
+
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.3-linux-x86_64.tar.gz
+
+# [1]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
+/sbin/sysctl -p
+
+```
+
 3. 配置文件
     - vi config/elasticsearch.yml
     ```conf
-    cluster.initial_master_nodes: ["node-1"]  # 启动单节点集群，单节点必须配置
+    cluster.initial_master_nodes: ["elasticsearch_master_1"]  # 启动单节点集群，单节点必须配置
+    # cluster.name: elasticsearch_prod # 集群名字，不设置则为elasticsearch
+    # node.name: elasticsearch_master_1 # node名字
     network.host: 0.0.0.0 # 默认只有本机才能访问 
     cluster.max_shards_per_node: 3000 # 配置每个节点最大的分片数量，默认为1000
     http.max_content_length: 100mb # 设置内容的最大容量，默认为100mb
@@ -26,20 +39,6 @@
     ```
 4. 启动 nohup ./bin/elasticsearch 2>&1 &
 5. 访问 http://localhost:9200/
-
-### 系统参数要求
-1. ulimit
-2. vm.max_map_count
-```bash
-# 永久设置
-# echo 'vm.max_map_count=655360' >> /etc/sysctl.conf
-# sysctl -p
-
-# 临时设置
-sysctl -w vm.max_map_count=655360
-# 查看
-sysctl -a|grep vm.max_map_count
-```
 
 
 ## 机制
@@ -156,10 +155,6 @@ curl http://${IP}:${PORT}/_cluster/settings?pretty
 curl http://${IP}:${PORT}/_cat/nodes?v
 curl "http://${IP}:${PORT}/_cat/nodes?v&h=ip,ram.current"
 
-————————————————
-版权声明：本文为CSDN博主「ZhaoYingChao88」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
-原文链接：https://blog.csdn.net/ZYC88888/article/details/102496673
-
 # 查看集群所有分片状态
 curl http://${IP}:${PORT}/_cat/shards/?pretty
 # 查看集群UNASSIGNED的分片
@@ -173,7 +168,7 @@ curl -XPUT -H "Content-Type: application/json" -d '{"transient":{"cluster":{"max
 # 重启后更改集群分片的数量 
 curl -XPUT -H "Content-Type: application/json" -d '{"persistent":{"cluster":{"max_shards_per_node":2100}}}' "http://${IP}:${PORT}/_cluster/settings"
 
-
+# 临时修改副本数量
 curl -XPUT  -d '{  "number_of_replicas" : 0 }' "http://${IP}:${PORT}/_cluster/settings"
 
 # 查看大索引

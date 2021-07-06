@@ -14,9 +14,11 @@
 ```bash
 # 1. 
 wget https://artifacts.elastic.co/downloads/kibana/kibana-7.9.3-linux-x86_64.tar.gz
-# 2. 
+# 2. 更改配置 vim kibana.yml
+server.host: "0.0.0.0"
+# 3. 启动
 nohup ./bin/kibana > kibana.log 2>&1 &
-# 3. 默认端口 5601
+#  默认端口 5601
 ```
 
 - 健康状态查看
@@ -68,3 +70,16 @@ RUN /opt/kibana/bin/kibana-plugin install https://github.com/opendistro-for-elas
 
 4. 按数值搜索
     - nginx.access.request_time:>3
+
+### Dev Tool
+```
+GET _settings
+```
+
+## 常见错误
+1. 1
+```log
+{"statusCode":413,"error":"Request Entity Too Large","message":"Payload content length greater than maximum allowed: 1048576"}
+```
+更改kibana配置 config/kibana.yml
+server.maxPayloadBytes: 10485760
