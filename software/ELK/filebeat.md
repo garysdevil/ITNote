@@ -62,6 +62,7 @@ filebeat.inputs:
     paths: # 采集的文件位置
         - /var/log/*.log
         - /var/path2/*.log
+    exclude_lines: ['127.0.0.1']  # 排查包含此字段的行
 
     # 自定义键值对输出到output
     # fields:  
@@ -69,14 +70,19 @@ filebeat.inputs:
     # tags: ["tag1", "tag2", "tag3"]
 
     enabled: true # 默认是true；false 则不采集
-    # multiline.pattern: '^\<|^[[:space:]]|^[[:space:]]+(at|\.{3})\b|^Caused by:'  # 正则，自定义，“|” 表示可以匹配多种模式
+
+    # multiline.pattern: '^\< | ^[[:space:]] | ^[[:space:]]+(at|\.{3})\b|^Caused by: | ^\[[0-9]{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\]'  # 正则，自定义，“|” 表示可以匹配多种模式
     multiline.pattern: '^{'
     multiline.negate: true # 默认是false，匹配pattern的行合并到上一行；true，不匹配pattern的行合并到上一行
     multiline.match: after # 合并到上一行的末尾或开头
+    max_lines: 500 # default 500;可合并的最大行数
+
     tail_files: true # 默认是false； true 从新文件的最后位置开始读取,而不是从开头读取新文件
     ignore_older: 1h # default disabled # 忽略指定时间段以外修改的日志内容，例如 2h 或 5m
+    clean_inactive: 24h # 删除不活跃的文件状态
+    clean_removed: true # default true;
 
-    # 以下两个参数在7.13版本后好像没了
+    # 以下两个参数在7.x版本后被其它参数取代了
     force_close_files: true  # default false; true 只要filebeat检测到文件名字发生变化，就会关掉这个handle；可以防止由于文件被删除但句柄还在从而导致磁盘占用空间不被释放
     close_older: 30m # default 1h 如果一个文件在某个时间段内没有发生过更新，则关闭监控的文件handle
 
@@ -110,6 +116,7 @@ filebeat.config:
 
 2. 配置示范 输出到elasticsearch
 ```yaml
+# 解析json格式日志
 processors:
   - decode_json_fields:
       fields: ['message']

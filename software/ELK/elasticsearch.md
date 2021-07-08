@@ -225,23 +225,24 @@ curl -XGET "http://${IP}:${PORT}/${index}/_count?pretty"
 # 查看索引下的document
 # /Index/Type/_search
 # /Index/_search
-curl "${IP}:${PORT}/test2-index/_search?pretty" -d'
-{
-    "size": 10,
-    "query": {
-        "match_all": {}
-    }
-}
-'
+index="dapi-p-6.6.2-2021.07.07"
 
-curl "${IP}:${PORT}/test2-index/_search?pretty" -d'
-{
-    "size": 10,
-    "query": {
-        "match": {}
-    }
-}
-'
+# 查看所有
+curl -H "Content-Type: application/json" "${IP}:${PORT}/${index}/_search?pretty" -d'
+{   "size": 10000,
+    "from": 0,
+    "query": { "match_all": {} }
+}'
+
+# 条件查询
+curl -H "Content-Type: application/json" "${IP}:${PORT}/${index}/_search" -d'
+{   "size": 1,
+    "query": {"match": {"log.file.path": "/data/logs/fdapi/message-2021-07-07.log"} }
+}'
+
+curl -H "Content-Type: application/json" "${IP}:${PORT}/${index}/_search?from=0&size=20&pretty" -d'
+{   "query": { "term": {"log.file.path": "/data/logs/fdapi/message-2021-07-07.log"} }
+}'
 
 # size 显示多少条数据
 ```
