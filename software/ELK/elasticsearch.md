@@ -172,7 +172,7 @@ curl -XPUT -H "Content-Type: application/json" -d '{"persistent":{"cluster":{"ma
 curl -XPUT  -d '{  "number_of_replicas" : 0 }' "http://${IP}:${PORT}/_cluster/settings"
 
 # 查看大索引
-curl -s /dev/null -XGET http://${IP}:${PORT}/_cat/indices?v|grep gb
+curl -s /dev/null -XGET "http://${IP}:${PORT}/_cat/indices?v&s" |grep gb
 
 ```
 ### 常规操作

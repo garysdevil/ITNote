@@ -332,11 +332,36 @@ sar -V
 
 ### awk
 ```bash
-awk 'BEGIN{ORS="\n"}{print $0}'
-# ORS 输出记录的分隔符，默认为\n
+# 内置变量
+# FS：输入字符分隔符，默认为空白字符
+# OFS：输出字段分隔符，默认为空白字符
+# RS：输入记录分隔符，默认为\n
+# ORS：输出记录分隔符，默认为\n
+
+# NF：当前记录的字段的个数
+# NR：当前处理的文本记录的行号
+
+# FNR：文件记录的数量
+# FILENAME：当前文件名
+# ARGC：命令行参数的个数
+
+# 替换操作 = sed 's/one/two'
+awk '{sub(/one/,"two");print}'
+# 过滤操作 = grep -E 'one|two'
+awk '(/one|two/)'
 
 # 统计各个IP的访问量，并排序
 awk '{a[$1]++}END{for(i in a) print i,a[i] }' ip.list | sort -n -r -k 2n
+
+# 统计每日es的数据量(初略)
+awk '/20210708|2021.07.08/&&$9~/gb/ {print; sub(/gb/,"",$9); total=total+$9; i++;print} END{printf"num=%d size=%dgb\n",i,total}'
+# 统计每日es的数据量(详细)
+cat a | awk '/20210708|2021.07.08/&&$9~/mb|gb/  \
+{i++; \
+if($9~/gb$/){print $9;sub(/gb/,"",$9);total=total+$9*1024}  \
+else{sub(/mb$/,"",$9); total+=$9}  \
+} \
+END{printf"num=%d size=%fgb\n",i,total/1024}'
 ```
 
 ### 脚本
