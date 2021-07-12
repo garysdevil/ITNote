@@ -24,11 +24,14 @@ echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
 3. 配置文件
     - vi config/elasticsearch.yml
     ```conf
-    cluster.initial_master_nodes: ["elasticsearch_master_1"]  # 启动单节点集群，单节点必须配置
+    node.name: elasticsearch_master_1 # node名字
+    
     # cluster.name: elasticsearch_prod # 集群名字，不设置则为elasticsearch
-    # node.name: elasticsearch_master_1 # node名字
-    network.host: 0.0.0.0 # 默认只有本机才能访问 
     cluster.max_shards_per_node: 3000 # 配置每个节点最大的分片数量，默认为1000
+    cluster.initial_master_nodes: ["elasticsearch_master_1"]  # 填写每个节点的node.name
+    
+    network.host: 0.0.0.0 # 默认只有本机才能访问 
+    
     http.max_content_length: 100mb # 设置内容的最大容量，默认为100mb
     ```
     - jvm.options
@@ -42,10 +45,23 @@ echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
 
 
 ## 机制
+### 节点角色
+- 一个节点可以充当一个或多个角色，默认四个角色都有。
+- 协调节点：一个节点只作为接收请求、转发请求到其他节点、汇总各个节点返回数据等功能的节点。就叫协调节点。
+1. Master
+2. Data Node
+3. Coordinating Node 
+4. Ingest Node
+
 ### 术语
 1. Index 类似于数据库的概念。索引的名字只能是小写,不能是大写。
-2. Type 是Index里分组的概念。 在7.4.2版本中已经去除了Index里type的概念。6.0的版本不允许一个Index下面有多个Type。
-3. Mapping 类似于mysql中表结构, properties类似于mysql表中的字段概念。 es的mapping创建之后无法修改,如果需要修改则需要重新建立index,然后reindex迁移数据。
+    - Type 是Index里分组的概念。 在7.4.2版本中已经去除了Index里type的概念。6.0的版本不允许一个Index下面有多个Type。
+    - Mapping 类似于mysql中表结构, properties类似于mysql表中的字段概念。 es的mapping创建之后无法修改,如果需要修改则需要重新建立index,然后reindex迁移数据。
+
+2. invertedindex 逆向索引
+    - es维护一个逆向索引的表，表内包含了所有文档中出现的所有单词，同时记录了这个单词在哪个文档中出现过。
+    - lucene将一个大的逆向索引拆分成了多个小的段segment
+    - 客户端每次进行搜索时都会通过逆向索引的表来提取 Index里的document。
 ### Shard
 - 分片
     1. 分片是 Elasticsearch 在集群中分发数据的关键.
@@ -60,16 +76,17 @@ echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
     - 分片过小会导致段过小，进而致使开销增加。尽量将分片的平均大小控制在至少几 GB 到几十 GB 之间。对时序型数据用例而言，分片大小通常介于 20GB 至 40GB 之间。
 
 
-### 索引与分片和副本
+### 索引的主分片数和主分片的副本数
 1. number_of_shards  
-每个索引的主分片数，默认值是 5 。这个配置在索引创建后不能修改。
+    - 每个索引的主分片数，默认值是 5 。这个配置在索引创建后不能修改。
 
 2. number_of_replicas  
-每个主分片的副本数，默认值是 1 。对于活动的索引库，这个配置可以随时修改。
+    - 每个主分片的副本数，默认值是 1 。对于活动的索引库，这个配置可以随时修改。
 
 3. 设置
-number_of_shards 和 number_of_replicas 都是index级别的设置。
-如果打算每个新建的index都设置副本数为0，可以通过index template 来设置。
+    - number_of_shards 和 number_of_replicas 都是index级别的设置。
+    - 如果打算每个新建的index都设置副本数为0，可以通过index template 来设置。
+
 ### ES写入数据时的步骤
 1. 数据写入到buffer中。
 
@@ -227,14 +244,14 @@ curl -XGET "http://${IP}:${PORT}/${index}/_count?pretty"
 # /Index/_search
 index="dapi-p-6.6.2-2021.07.07"
 
-# 查看所有
+# 查询某个index的document
 curl -H "Content-Type: application/json" "${IP}:${PORT}/${index}/_search?pretty" -d'
 {   "size": 10000,
     "from": 0,
     "query": { "match_all": {} }
 }'
 
-# 条件查询
+# 条件查询某个index的document
 curl -H "Content-Type: application/json" "${IP}:${PORT}/${index}/_search" -d'
 {   "size": 1,
     "query": {"match": {"log.file.path": "/data/logs/fdapi/message-2021-07-07.log"} }
@@ -311,9 +328,10 @@ curl -H "Content-Type: application/json" "${IP}:${PORT}/${index}/_search?from=0&
     ```
     - 通过elasticsearch的API进行修改
     ```bash
-    curl -XPUT "127.0.0.1:9200/索引名*/_settings" -H 'Content-Type: application/json' -d '{
+    index=aaa
+    curl -XPUT "127.0.0.1:9200/${index}/_settings" -H 'Content-Type: application/json' -d '{
         "index" : {
-            "highlight.max_analyzed_offset" : 2000000
+            "highlight.max_analyzed_offset" : 3000000
         }
     }'
     ```

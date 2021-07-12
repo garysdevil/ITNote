@@ -333,7 +333,7 @@ sar -V
 ### awk
 ```bash
 # 内置变量
-# FS：输入字符分隔符，默认为空白字符
+# FS：输入字段分隔符，默认为空白字符
 # OFS：输出字段分隔符，默认为空白字符
 # RS：输入记录分隔符，默认为\n
 # ORS：输出记录分隔符，默认为\n
@@ -353,13 +353,14 @@ awk '(/one|two/)'
 # 统计各个IP的访问量，并排序
 awk '{a[$1]++}END{for(i in a) print i,a[i] }' ip.list | sort -n -r -k 2n
 
-# 统计每日es的数据量(初略)
-awk '/20210708|2021.07.08/&&$9~/gb/ {print; sub(/gb/,"",$9); total=total+$9; i++;print} END{printf"num=%d size=%dgb\n",i,total}'
+
+# 统计每日es的数据量(初略) /_cat/indices?v&s
+awk '/20210708|2021.07.08/&&$10~/gb/ {print; sub(/gb/,"",$10); total=total+$10; i++;print} END{printf"num=%d size=%dgb\n",i,total}'
 # 统计每日es的数据量(详细)
-cat a | awk '/20210708|2021.07.08/&&$9~/mb|gb/  \
+cat data | awk '/20210703|2021.07.03/&&$10~/mb|gb/&&$3!~/es_/  \
 {i++; \
-if($9~/gb$/){print $9;sub(/gb/,"",$9);total=total+$9*1024}  \
-else{sub(/mb$/,"",$9); total+=$9}  \
+if($10~/gb$/){print $0;sub(/gb/,"",$10);total=total+$10*1024}  \
+else{sub(/mb$/,"",$10); total+=$10}  \
 } \
 END{printf"num=%d size=%fgb\n",i,total/1024}'
 ```
@@ -412,7 +413,7 @@ netstat apt-get install net-tools
 sed -i "s/project-perform/project-prd/g" `find ./ | grep yaml`
 # 替换以字符串name开头的行
 var='gary'
-sed -i '/^name/c'name=$var'' 文件名
+sed -i "/^name/c\name=$var" 文件名
 ```
 
 

@@ -62,6 +62,9 @@
 
   24. emr
     - 大数据平台 https://docs.aws.amazon.com/emr/index.html
+  25. athea
+    - https://docs.aws.amazon.com/zh_cn/cur/latest/userguide/cur-query-athena.html
+    
 
 - Advanced
   1. AWS 架构中心 

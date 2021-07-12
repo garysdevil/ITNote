@@ -1,8 +1,8 @@
-## Ansible
-### 安装
+# Ansible
+## 安装
 - 版本 https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/
 
-### 离线安装ansible
+## 离线安装ansible
 ```bash
 # 1在有网的机器上执行的操作
 yum -y install ansible --downloadonly --downloaddir /opt/ansible-pac
@@ -32,32 +32,68 @@ yum makecache
 yum  install ansible
 ```
 
-### 基本
+## 基本
 
-#### 目录结构
+### 目录结构
+- ansible.cfg  公共配置
 - inventory
+- playbooks.yaml
 - vars/
 - roles/
-- ansible.cfg  公共配置
+    - role1/main.yaml
+    - role2/main.yaml
 
+0. ansible.cfg 
+```conf
+[defaults]
+host_key_checking = False
+```
 1. inventory
 ```conf
-[组名字]
-localhost       ansible_connection=local
-39.107.74.200   ansible_connection=ssh    ansible_ssh_user=root
-
+[组名]
+localhost     ansible_connection=local
+39.107.74.200 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass='123' ansible_sudo_pass='123'
+39.107.74.200 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_private_key_file=~/.ssh/keyfile.pem
 ```
 
-#### 
-2. 测试ip是否通
-    ansible -i ./ hosts IP组名 -m ping
+2. playbooks.yaml
+```yaml
+- name: Init
+  hosts: default
+  gather_facts: no
+  roles:
+    - role1
+    - role2
+```
+3. /role1/main.yaml
 
-4. 运行剧本
-    ansible-playbook  apply-role.yml -e host=127.0.0.1,127.0.0.2 -e @'vars/DMZ'  -e role=filebeat
-    -i 指定host文件
-    -e 指定变量var=value，指定变量文件@'vars/production'
-    --start-at="任务名称" 从指定任务开始运行
+#### 简单示范
+```yaml
+#!/usr/bin/env ansible-playbook
+- name: set_host
+  hosts: default
+  become: true
+  tasks:
+    - name: set_host_1
+      shell: array_doamin=('master.garys.top') && for domain in ${array_doamin[@]};do sed -i "/ ${domain}/c\\{{ domain_ip }}      ${domain}" /etc/hosts; done
+```
+```bash
+ansible-playbook  -i hosts  simple.yaml --key-file  .test_rsa.pem  -e domain_ip=5.5.5.6
+```
+### 操作 
+- 指令
+```bash
+# 运行剧本
+ansible-playbook  apply-role.yml -e host=127.0.0.1,127.0.0.2 -e @'vars/DMZ'  -e role=filebeat
+-i # 指定host文件
+-e # 指定变量var1=value1,var2=value2 # 指定变量文件 @'vars/production'
+--start-at="任务名称" # 从指定任务开始运行
 
+"~/.ssh/mykey.pem" # ssh登入时使用密钥登入
+
+# 测试ip是否通
+ansible -i ./hosts ${IP_GROUP} -m ping
+```
 
 5. 查看模块的文档
     ansible-doc 模块名 
@@ -74,7 +110,7 @@ group_by
 手动获取fact：ansible 组名 -m setup -a 'filter=ansible_eth'
 
 
-## saltstack
+# saltstack
 服务端修改
 master：
 interface:192.168.1.1
@@ -94,7 +130,7 @@ Saltstack默认使用zeromq传递消息，zeromq会随着Salt的安装而安装�
 4505         # 发送指令
 4506          # 接受结果
 
-### 安装
+## 安装
 ```bash
 apt-get install python-software-properties
 add-apt-repository  ppa:saltstack/salt
@@ -102,13 +138,13 @@ apt-get update
 apt-get install salt-master    #服务端
 apt-get install salt-minion    #客户端
 ```
-### 端口
+## 端口
 - master
 4505（publish_port）—Salt Master pub接口 提供远程执行命令发送功能
 4506（ret_port）—Salt Master Ret接口 支持认证、文件服务、结果收集等功能
 
 
-### 指令
+## 指令
 salt 执行salt的执行模块，通常在master端运行
 salt-cp 分发文件到minion上,不支持目录分发，通常在master运行
 salt-key 密钥管理，通常在master端执行
