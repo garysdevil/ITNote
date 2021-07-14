@@ -357,7 +357,7 @@ awk '{a[$1]++}END{for(i in a) print i,a[i] }' ip.list | sort -n -r -k 2n
 # 统计每日es的数据量(初略) /_cat/indices?v&s
 awk '/20210708|2021.07.08/&&$10~/gb/ {print; sub(/gb/,"",$10); total=total+$10; i++;print} END{printf"num=%d size=%dgb\n",i,total}'
 # 统计每日es的数据量(详细)
-cat data | awk '/20210703|2021.07.03/&&$10~/mb|gb/&&$3!~/es_/  \
+cat data.txt | awk '/20210703|2021.07.03/&&$10~/mb|gb/&&$3!~/es_/  \
 {i++; \
 if($10~/gb$/){print $0;sub(/gb/,"",$10);total=total+$10*1024}  \
 else{sub(/mb$/,"",$10); total+=$10}  \

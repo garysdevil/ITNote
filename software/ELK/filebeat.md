@@ -3,23 +3,35 @@
 - https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-reference-yml.html
 - https://www.cnblogs.com/cjsblog/p/9495024.html
 - https://segmentfault.com/a/1190000019714761 博客剖析
+- https://www.elastic.co/guide/en/beats/filebeat/6.4/filebeat-module-nginx.html 模块
 
 ## 概念
 - 语言：Golang
 - 基于libbeat库进行开发而成。
-1. 工作流程
-    不同的harvester goroutine采集到的日志数据都会发送至一个全局的队列queue中，queue的实现有两种：基于内存和基于磁盘的队列，目前基于磁盘的队列还是处于alpha阶段，filebeat默认启用的是基于内存的缓存队列。 
-    每当队列中的数据缓存到一定的大小或者超过了定时的时间（默认1s)，会被注册的client从队列中消费，发送至配置的后端。目前可以设置的client有kafka、elasticsearch、redis等。
-    
-2. 代码的实现角度
-    input: 找到配置的日志文件，启动harvester
-    harvester: 读取文件，发送至spooler
-    spooler: 缓存日志数据，直到可以发送至publisher
-    publisher: 发送日志至后端，同时通知registrar
-    registrar: 记录日志文件被采集的状态
 
-3. 注意
-    如果使用容器部署filebeat，需要将registry文件挂载到宿主机上，否则容器重启后registry文件丢失，会使filebeat从头开始重复采集日志文件。
+1. 日志收集，主要由两个组件组成：inputs 和  harvesters
+    - version 7.x
+    1. 一个 harvester 负责读取一个文件的内容。每个文件启动一个 harvester 。
+    2. 一个 input 找到所有要读取的源，负责管理 harvesters。 每个input都在自己的Go协程中运行。
+
+
+2. 工作流程
+    - 不同的harvester goroutine采集到的日志数据都会发送至一个全局的队列queue中，queue的实现有两种：基于内存和基于磁盘的队列，目前基于磁盘的队列还是处于alpha阶段，filebeat默认启用的是基于内存的缓存队列。 
+    - 每当队列中的数据缓存到一定的大小或者超过了定时的时间（默认1s)，会被注册的client从队列中消费，发送至配置的后端。目前可以设置的client有kafka、elasticsearch、redis等。
+    
+3. 组成结构
+    - input: 找到配置的日志文件，启动harvester
+    - harvester: 读取文件，发送至spooler
+    - spooler: 缓存日志数据，直到可以发送至publisher
+    - publisher: 发送日志至后端，同时通知registrar
+    - registrar: 记录日志文件被采集的状态
+
+4. 内部机制
+    1. 保存文件状态在注册表文件registry中
+    2. 至少投递一次
+
+## 注意
+1. 如果使用容器部署filebeat，需要将registry文件挂载到宿主机上，否则容器重启后registry文件丢失，会使filebeat从头开始重复采集日志文件。
 
 ## 安装
 1. 通过yum安装
@@ -39,15 +51,8 @@ systemctl start filebeat
 systemctl enable filebeat
 ```
 
-## 组成与配置
-### 日志收集，主要由两个组件组成：inputs 和  harvesters
-- version 7.x
-1. 一个 harvester 负责读取一个文件的内容。每个文件启动一个 harvester 。
-2. 一个 input 找到所有要读取的源，负责管理 harvesters 。 每个input都在自己的Go协程中运行。
-- 内部机制
-    1. 保存文件状态在注册表文件registry中
-    2. 至少投递一次
-- 配置示范 从日志文件读取
+## 配置
+### input 从日志文件读取数据
 ```yaml
 filebeat.config: # 全局配置
     inputs: # 包含额外的input文件列表
@@ -90,11 +95,9 @@ filebeat.inputs:
     - drop_fields: # 删除一些字段
         fields: ["log"]
 
-
-
 ```
 
-3. version 6.1 https://www.elastic.co/guide/en/beats/filebeat/6.1/configuration-filebeat-options.html
+2. version 6.1 https://www.elastic.co/guide/en/beats/filebeat/6.1/configuration-filebeat-options.html
 filebeat.yml
 ```yaml
 filebeat.config:
@@ -104,7 +107,7 @@ filebeat.config:
 ```
 
 
-### 日志输出 output
+### output 数据输出 
 1. 配置示范 输出到logstash
 ```yaml
     output.logstash:
@@ -146,9 +149,11 @@ output.elasticsearch:
         - index: "error-%{[agent.version]}-%{+yyyy.MM.dd}"
             when.contains:
                 tags: "ERR"
-        
+```
 
-# 日志配置
+### others
+```conf
+# Filebeat自身日志配置
 logging.level: debug
 logging.to_files: true
 logging.files:
@@ -159,35 +164,72 @@ logging.files:
 
 ```
 
+### 标准输入标准输出
+```yaml
+filebeat.inputs:
+- type: stdin
+  enabled: true
+
+output.console:
+  pretty: true
+  enable: true
+```
 ### 模块
-1. 
+1. es
 ```bash
+# 这两个插件用来捕获地理位置和浏览器信息，以供可视化组件所用
 sudo bin/elasticsearch-plugin install ingest-geoip
 sudo bin/elasticsearch-plugin install ingest-user-agent
 ```
 重启Elasticsearc
-1.使用
+
+2. 设置初始环境
+```bash
+# Setup index template, dashboards and ML jobs
+./filebeat setup -e
+```
+
+3. 开启nginx模块
+```bash
+./filebeat modules enable nginx
+```
 ```yaml
-filebeat.modules: # 使用模块
+filebeat.config.modules: 
+    path: ${path.config}/modules.d/*.yml # 需要加载的模块配置文件的位置
+    # 直接在次配置文件里配置nginx模块进行日志收集
     - module: nginx
-    access: # Access logs
+    access:
         enabled: true
         # Set custom paths for the log files. If left empty,
         # Filebeat will choose the paths depending on your OS.
-        var.paths:
+        var.paths: ["/var/log/nginx/access*.log"]
         # Input configuration (advanced). Any input configuration option
         # can be added under this section.
-        input:
-    error: # 
+    error:
+        enabled: true
+        var.paths: ["/var/log/nginx/error.log"]
 ```
 
 ## 指令
-1. 查看支持哪些模块
+```bash
+# 指定家目录 --path.home ./
+
+# 1 查看支持哪些模块
 ./filebeat modules list
-2. 启动nginx模块
+# 2 启动nginx模块
 ./filebeat modules enable nginx
-3. 禁用nginx模
+# 3 禁用nginx模
 ./filebeat modules disable nginx
+
+# 检验配置文件
+filebeat test config filebeat.yml
+
+# debug
+./filebeat -c filebeat.yml
+# -e: Filebeat日志输出到标准输出，默认输出到syslog和logs下 
+# -c: 指定配置文件
+# -d: 启用对指定选择器的调试 # 没用过
+```
 
 ## 调优
 正常启动filebeat，一般确实只会占用3、40MB内存。

@@ -47,11 +47,15 @@ echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
 ## 机制
 ### 节点角色
 - 一个节点可以充当一个或多个角色，默认四个角色都有。
-- 协调节点：一个节点只作为接收请求、转发请求到其他节点、汇总各个节点返回数据等功能的节点。就叫协调节点。
-1. Master
-2. Data Node
+1. Master 
+    - 主节点：存储节点状态和元数据信息
+    - 配置 普通服务器即可(CPU 内存 消耗一般)
+2. Data Node 
+    - 主要消耗磁盘，内存
 3. Coordinating Node 
-4. Ingest Node
+    - 协调节点：一个节点作为接收请求、转发请求到其他节点、汇总各个节点返回数据等功能的节点。就叫协调节点。
+4. Ingest Node/Client Node 
+    - 普通服务器即可(如果要进行分组聚合操作的话，建议这个节点内存也分配多一点)
 
 ### 术语
 1. Index 类似于数据库的概念。索引的名字只能是小写,不能是大写。
@@ -171,6 +175,7 @@ curl http://${IP}:${PORT}/_cluster/settings?pretty
 # 查看节点健康状况
 curl http://${IP}:${PORT}/_cat/nodes?v
 curl "http://${IP}:${PORT}/_cat/nodes?v&h=ip,ram.current"
+curl -s "${IP}:${PORT}/_cat/nodes?h=name,fm,fcm,sm,qcm,im&v"
 
 # 查看集群所有分片状态
 curl http://${IP}:${PORT}/_cat/shards/?pretty

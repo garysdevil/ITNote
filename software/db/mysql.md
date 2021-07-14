@@ -537,6 +537,10 @@ https://blog.csdn.net/zdw19861127/article/details/84937562
 7. 改用户密码
     ```sql
     set password for root@localhost = password('123');
+
+    -- 另一种方式 mysql5.7
+    update user set authentication_string = password('newpass') where user = 'root';
+    flush privileges;
     ```
 8. 删除用户及权限
     ```sql

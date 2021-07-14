@@ -19,9 +19,18 @@
 
 ## 日志收集
 ### ES & Kibana
-1. 配置与规模
+1. 35G每日
     - 两个节点的集群
     - 8c 16G ES
     - 8c 32G ES & Kibana
     - index设置为一个分片一个副本
     - 每天数据收集量为15G ～ 35G
+
+2. 1200G每日
+    - 20个节点的集群
+    - 5c 8G ES client node ；memory 日常消耗7G ； cpu 日常消耗200m到500m
+    - 14c 24G ES data node ；memory 日常消耗16G ； cpu 日常消耗200m到2000m，有时会突增到7C。
+    - 
+
+    - index设置为一个分片一个副本
+    - 每天数据收集量为1200G左右 ；200G左右

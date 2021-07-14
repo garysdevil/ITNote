@@ -210,6 +210,8 @@ aws configure list
   - --profile
   ```bash
   aws s3 ls --profile default
+
+  aws configure set region ap-east-1 --profile default
   ```
 ### CLI操作ECR
 1. 创建ECR

@@ -73,7 +73,7 @@ nginx 的 default_server 指令可以定义默认的 server 去处理一些没�
 server {
     listen       80  default_server; # 
     server_name  _;
-    return       444;
+    return       200 '请访问garys.top';
 }
 ```
 ### server 的匹配顺序

@@ -2,7 +2,7 @@
 ## 安装
 - 版本 https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/
 
-## 离线安装ansible
+### 离线安装ansible
 ```bash
 # 1在有网的机器上执行的操作
 yum -y install ansible --downloadonly --downloaddir /opt/ansible-pac
@@ -40,8 +40,10 @@ yum  install ansible
 - playbooks.yaml
 - vars/
 - roles/
+    - common/main.yaml
     - role1/main.yaml
-    - role2/main.yaml
+    - templates/
+    - files/
 
 0. ansible.cfg 
 ```conf
@@ -66,13 +68,20 @@ localhost     ansible_connection=local
     - role2
 ```
 3. /role1/main.yaml
+```yaml
+- name: Update apt cache.
+  apt: update_cache=yes cache_valid_time=86400
+  changed_when: false
+```
 
-#### 简单示范
+#### 一个简单的剧本
 ```yaml
 #!/usr/bin/env ansible-playbook
 - name: set_host
   hosts: default
-  become: true
+  vars:
+    var1: testfile
+  become: true # sudo
   tasks:
     - name: set_host_1
       shell: array_doamin=('master.garys.top') && for domain in ${array_doamin[@]};do sed -i "/ ${domain}/c\\{{ domain_ip }}      ${domain}" /etc/hosts; done
