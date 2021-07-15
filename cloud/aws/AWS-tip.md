@@ -1,5 +1,14 @@
 1. 磁盘在线扩容
     - https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/recognize-expanded-volume-linux.html
+    - 扩展 NVMe EBS 卷的文件系统
+    ```bash
+    # 如果有分区 在则 扩展卷的分区
+    sudo growpart /dev/nvme0n1 1
+    # 扩展每个卷上的文件系统
+    sudo xfs_growfs -d /data  # XFS 文件系统 # yum install xfsprogs
+    # sudo resize2fs /dev/nvme1n1 # ext4 文件系统
+
+    ```
 
 2. 添加多个IP
     1. 实例 --> 联网 --> 管理私有IP地址 --> 分配新IP
