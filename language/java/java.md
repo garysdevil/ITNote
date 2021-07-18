@@ -1,14 +1,16 @@
 # Java
 ## 安装openjdk
 1. CentOS7源安装
-    yum install java-1.8.0-openjdk* -y
-
-    yum insatll java的默认路径（默认只装jar）
-    yum install java-devel（包含javac）
+```bash
+yum install java-1.8.0-openjdk -y
+# yum install java-1.8.0-openjdk* -y # 安装所有相关文件
+```
 
 2. Ubuntu16源安装
+```bash
 apt-get update -y
 apt-get install openjdk-8-jdk -y
+```
 
 - java -version
 - java目录 /usr/lib/jvm/
@@ -33,7 +35,15 @@ ln -fs /usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java /etc/alternatives/java
         apt-get remove oracle-java8-installer
     - 若是openjdk
         apt-get remove/purge openjdk* 
-        
+
+### aws ec2
+```bash
+# 安装jdk11
+amazon-linux-extras install java-openjdk11
+# 切换Java版本
+alternatives --config java
+```
+
 ## JVM
 
 ### 指令
