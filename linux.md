@@ -243,7 +243,7 @@ ntsysv
     - http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html
 
 /usr/lib/systemd/system/XXXXX.service
-```confe
+```conf
 [Unit]
 Description=XXXXX
 Documentation=XXXXX
@@ -255,7 +255,10 @@ Group=myuser
 
 Type=simple
 Environment="变量名=变量值"
+Environment="JVM_OPTIONS=-server -Xms64m -Xmx64m -XX:MetaspaceSize=16m $GC_OPTS $GC_LOG_OPTS $OTHER_OPTS"
+ExecStartPre=/bin/sh -c -- 'pwd'
 ExecStart=/bin/sh -c -- "/usr/bin/java -jar /opt/application/XXXXX/XXXXX.jar 1>> /opt/application/XXXXX/logs/XXXXX.out.log 2>> /opt/application/XXXXX/logs/XXXXX.err.log"
+ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s QUIT $MAINPID
 Restart=always
 StartLimitInterval=0

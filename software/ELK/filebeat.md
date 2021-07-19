@@ -52,6 +52,7 @@ systemctl enable filebeat
 ```
 
 ## 配置
+- 版本 7.X
 ### input 从日志文件读取数据
 ```yaml
 filebeat.config: # 全局配置
@@ -67,7 +68,7 @@ filebeat.inputs:
     paths: # 采集的文件位置
         - /var/log/*.log
         - /var/path2/*.log
-    exclude_lines: ['127.0.0.1']  # 排查包含此字段的行
+    exclude_lines: ['127.0.0.1']  # 排除包含此字段的行
 
     # 自定义键值对输出到output
     # fields:  
@@ -81,6 +82,7 @@ filebeat.inputs:
     multiline.negate: true # 默认是false，匹配pattern的行合并到上一行；true，不匹配pattern的行合并到上一行
     multiline.match: after # 合并到上一行的末尾或开头
     max_lines: 500 # default 500;可合并的最大行数
+    max_bytes: 10485760 # default 10MB
 
     tail_files: true # 默认是false； true 从新文件的最后位置开始读取,而不是从开头读取新文件
     ignore_older: 1h # default disabled # 忽略指定时间段以外修改的日志内容，例如 2h 或 5m
@@ -209,6 +211,13 @@ filebeat.config.modules:
         enabled: true
         var.paths: ["/var/log/nginx/error.log"]
 ```
+
+## 模块 -- Elasticsearch Pipeline
+- 参考
+    - https://blog.csdn.net/xujiamin0022016/article/details/86306571
+
+- 在ES 5.x之后的版本中，ES增量了Ingest node功能（对数据进行预处理）
+
 
 ## 指令
 ```bash

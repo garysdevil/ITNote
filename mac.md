@@ -125,6 +125,15 @@ Or, if you don't want/need a background service you can just run:
 /opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redis.conf
 ```
 
+6. java
+```bash
+brew tap adoptopenjdk/openjdk # 加载第三方仓库
+brew install adoptopenjdk/openjdk/adoptopenjdk8
+
+brew tap homebrew/cask-versions  # 加载第三方仓库
+brew reinstall adoptopenjdk8
+```
+
 ### 环境变量
 - https://www.jianshu.com/p/acb1f062a925
 
