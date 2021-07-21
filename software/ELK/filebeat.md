@@ -132,10 +132,19 @@ setup.template.settings:
   index.number_of_shards: 1
   index.number_of_replicas: 0
 setup.template.enabled: true
-# 从7.0版开始，Filebeat在连接到支持生命周期管理的集群时默认使用索引生命周期管理（ILM）。默认创建的elasticsearch索引生命周期为50GB+30天。 默认值为 auto， auto/true/false
-setup.ilm.enabled: false 
 setup.template.name: "project-prod"
 setup.template.pattern: "project-prod-*"
+# 从7.0版开始，Filebeat在连接到支持生命周期管理的集群时默认使用索引生命周期管理（ILM）。
+# 默认的elasticsearch索引生命周期为50GB+30天。 默认值为 auto， auto/true/false
+# 默认会自动创建elasticsearch索引。filebeat-%{[agent.version]}-%{+yyyy.MM.dd}-000001
+setup.ilm.enabled: false
+# setup.ilm.policy_name: "mypolicy"
+
+# 如果启用了Elasticsearch输出，Filebeat会自动加载推荐的模板文件fields.yml
+# setup.template.fields: "./fields.yml"
+
+
+
 
 
 # josn格式的配置文件
@@ -143,7 +152,7 @@ setup.template.pattern: "project-prod-*"
 # if "tag1" in [tags] {}
 output.elasticsearch:
     hosts: ["IP:9200"]
-    index: "project-default-%{[agent.version]}-%{+yyyy.MM.dd}"
+    index: "project-default-%{[agent.version]}-%{+yyyy.MM.dd}" # 默认索引
     indices:
         - index: "warning-%{[agent.version]}-%{+yyyy.MM.dd}"
             when.equals:

@@ -216,68 +216,6 @@ eval $(ssh-agent) # ssh-agent bash --login -i  # ssh-agent bash
 ssh-add -k 私钥文件路径
 ```
 
-### 开机自启 service
-- 开机启动程序存放位置
-ls /etc/init.d/
-
-```bash
-service ${服务名} start
-service --status-all
-
-chkconfig --list
-# 设置服务开机自动启动
-chkconfig ${service} on
-# 设置服务开机不自动启动
-chkconfig ${service} off
-# 以全屏幕文本界面设置服务开机时是否自动启动
-ntsysv
-```
-
-- 开机执行脚本
-/etc/rc.d/rc.local
-查看rc-local.service是否启动 systemctl | grep rc-local.service
-
-
-### systemctl 兼容service
-- 参考
-    - http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html
-
-/usr/lib/systemd/system/XXXXX.service
-```conf
-[Unit]
-Description=XXXXX
-Documentation=XXXXX
-After=network.target
-
-[Service]
-User=myuser
-Group=myuser
-
-Type=simple
-Environment="变量名=变量值"
-Environment="JVM_OPTIONS=-server -Xms64m -Xmx64m -XX:MetaspaceSize=16m $GC_OPTS $GC_LOG_OPTS $OTHER_OPTS"
-ExecStartPre=/bin/sh -c -- 'pwd'
-ExecStart=/bin/sh -c -- "/usr/bin/java -jar /opt/application/XXXXX/XXXXX.jar 1>> /opt/application/XXXXX/logs/XXXXX.out.log 2>> /opt/application/XXXXX/logs/XXXXX.err.log"
-ExecReload=/bin/kill -s HUP $MAINPID
-ExecStop=/bin/kill -s QUIT $MAINPID
-Restart=always
-StartLimitInterval=0
-RestartSec=10
-
-[Install]
-WantedBy=multi-user.target
-```
-
-### supervisorctl
-1. Supervisor（http://supervisord.org/）是用Python开发的一个client/server服务，是Linux/Unix系统下的一个进程管理工具，不支持Windows系统。它可以很方便的监听、启动、停止、重启一个或多个进程。用Supervisor管理的进程，当一个进程意外被杀死，supervisort监听到进程死后，会自动将它重新拉起。
-2. 安装
-
-3. 启动Supervisor服务
-supervisord -c /etc/supervisord.conf
-4. 进入交互界面
-supervisorctl
-
-
 ### gRPC测试工具
 - https://github.com/bojand/ghz
 - wget https://github.com/bojand/ghz/releases/download/v0.90.0/ghz-linux-x86_64.tar.gz
@@ -498,4 +436,26 @@ screen -ls
 screen -r ${screenName}
 # 将screen切回后台
 Ctr+a 按下后再按下d
+```
+
+```bash
+# 默认参数为 -15
+
+# 重新加载进程
+kill -1 ${PID} 
+kill -s HUP ${PID}
+
+# 中断进程（同 Ctrl + c）
+kill -2 ${PID}
+
+# 退出进程（同 Ctrl + \） 进程各个线程的堆栈信息被保存进 /proc/${pid}/cwd/antBuilderOutput.log
+kill -3 ${PID}
+kill -s QUIT ${PID}
+
+# 杀死进程。进程立刻被关闭，运行中的数据将丢失。
+kill -9 ${PID} 
+kill -KILL ${PID} 
+
+# 终止进程。进程可以用一段时间来正常关闭，一个程序的正常关闭一般需要一段时间来保存进度并释放资源。
+kill -15 ${PID} 
 ```

@@ -8,11 +8,14 @@ https://geek-docs.com/vscode/vscode-tutorials/what-is-vscode.html
 
 2. 
 
-## code指令
-1. -r 使用现有的vscode窗口
+## vscode指令
+```bash
+# 1. 使用现有的vscode窗口打开一个文件
+vscode -r ${filename}
 
-2. 比较两个文件的区别
--d filename1 filename2
+# 2. 比较两个文件的区别
+vscode -d ${filename1} ${filename2}
+```
 
 ## 配置
 - 所有配置放在.vscode文件夹中
@@ -41,3 +44,8 @@ https://www.cnblogs.com/bindong/p/6045957.html
         先按下  ctrl 和 K，再按下 ctrl 和 0
     2. 展开所有折叠区域代码的快捷键
         先按下  ctrl 和 K，再按下 ctrl 和 J
+
+## 插件
+1. Better Jinja
+
+2. 

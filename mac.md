@@ -127,6 +127,7 @@ Or, if you don't want/need a background service you can just run:
 
 6. java
 ```bash
+# 本人选择从官方下载dmg包进行安装 https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html
 brew tap adoptopenjdk/openjdk # 加载第三方仓库
 brew install adoptopenjdk/openjdk/adoptopenjdk8
 
