@@ -45,7 +45,7 @@ https://www.cnblogs.com/bindong/p/6045957.html
     2. 展开所有折叠区域代码的快捷键
         先按下  ctrl 和 K，再按下 ctrl 和 J
 
-## 插件
+## 我的插件
 1. Better Jinja
 
-2. 
+2. GitLens — Git supercharged
