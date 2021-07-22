@@ -85,7 +85,7 @@ pipeline {
             description: 'QA 负责人；多个人时使用英文输入法的半角逗号分隔；不要带空格，空格不会被忽略'
         )
         choice(name: 'git_project_name',
-            choices: 'PROJECT',
+            choices: 'PROJECT1\nPROJECT2',
             description: 'git project name'
         )
         choice(name: 'jenkins_job_name',

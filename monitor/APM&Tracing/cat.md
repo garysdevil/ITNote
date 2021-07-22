@@ -15,7 +15,7 @@ yum install tomcat
 2. 更改tomcat启动参数 vim tomcat/bin/setenv.sh
 ```bash
 export CAT_HOME=/data/appdatas/cat/
-# 修改启动参数
+# 修改启动参数 java对内存分配
 CATALINA_OPTS="$CATALINA_OPTS -server -DCAT_HOME=$CAT_HOME -Djava.awt.headless=true -Xms25G -Xmx25G -XX:PermSize=256m -XX:MaxPermSize=256m -XX:NewSize=10144m -XX:MaxNewSize=10144m -XX:SurvivorRatio=10 -XX:+UseParNewGC -XX:ParallelGCThreads=4 -XX:MaxTenuringThreshold=13 -XX:+UseConcMarkSweepGC -XX:+DisableExplicitGC -XX:+UseCMSInitiatingOccupancyOnly -XX:+ScavengeBeforeFullGC -XX:+UseCMSCompactAtFullCollection -XX:+CMSParallelRemarkEnabled -XX:CMSFullGCsBeforeCompaction=9 -XX:CMSInitiatingOccupancyFraction=60 -XX:+CMSClassUnloadingEnabled -XX:SoftRefLRUPolicyMSPerMB=0 -XX:-ReduceInitialCardMarks -XX:+CMSPermGenSweepingEnabled -XX:CMSInitiatingPermOccupancyFraction=70 -XX:+ExplicitGCInvokesConcurrent -Djava.nio.channels.spi.SelectorProvider=sun.nio.ch.EPollSelectorProvider -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationConcurrentTime -XX:+PrintHeapAtGC -Xloggc:/data/applogs/heap_trace.txt -XX:-HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data/applogs/HeapDumpOnOutOfMemoryError -Djava.util.Arrays.useLegacyMergeSort=true"
 
 ```
@@ -69,9 +69,13 @@ cd /data/appdatas/cat/
 ### 数据库配置 和 配置war包
 ```bash
 git clone https://github.com/dianping/cat.git
+
 # 创建数据库cat和用户cat
 mysql -ucat -Dcat -p < script/CatApplication.sql
+
 # 修改系统参数max_allowed_packet为128M并且重启
+# [mysqld]
+# max_allowed_packet=1000M
 
 # cd cat && mvn clean install -DskipTests
 wget http://unidal.org/nexus/service/local/repositories/releases/content/com/dianping/cat/cat-home/3.0.0/cat-home-3.0.0.war
@@ -87,3 +91,8 @@ systemctl restart tomcat
 systemctl enable tomcat
 http://${IP}:8080/cat/s/config?op=routerConfigUpdat/
 ```
+
+## 问题
+1. 报表在小时模式里有数据，但在历史模式下没有数据
+	- 在web界面修改服务端配置 
+	- job-machine : 定义当前服务是否为报告工作机（开启生成汇总报告和统计报告的任务，只需要一台服务机开启此功能），默认为 false；

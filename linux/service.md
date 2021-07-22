@@ -48,9 +48,9 @@ ExecStart=/bin/sh -c -- "/usr/bin/java -jar /opt/application/XXXXX/XXXXX.jar 1>>
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s QUIT $MAINPID
 # ExecStopPost=
-Restart=always
-StartLimitInterval=0
-RestartSec=10
+Restart=always # 只要不是通过systemctl stop来停止服务，任何情况下都必须要重启服务，默认值为no
+StartLimitInterval=0 # 默认是10秒内如果重启超过5次则不再重启，设置为0表示不限次数重启
+RestartSec=10 # 重启间隔,默认值0.1s
 
 [Install]
 WantedBy=multi-user.target
