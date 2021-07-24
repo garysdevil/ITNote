@@ -141,11 +141,6 @@ done
 
 ```
 
-### 设置时区 
-timedatectl list-timezones |grep Shanghai    # 查找中国时区的完整名称
-timedatectl set-timezone Asia/Shanghai # 临时设置，重启后失效
-ln -sf /usr/share/zoneinfo/Asia/Hong_Kong /etc/localtime
-
 ### websocket连通性测试
 1. 
 apt install node-ws (ubuntu16)
@@ -156,21 +151,30 @@ wscat -c ws://IP:PORT
 new WebSocket("wss://XXX.XXX.XXX.XXX:9944");
 
 ### journalctl
+```bash
 journalctl -ef -n 100 -p 4
---since "2012-10-30 18:17:16"
--b 0 查看系统本次启动的日志
--k 查看内核日志（不显示应用日志）
--u 查看某个Unit的日志
-_PID=1 查看指定进程的日志
--p 指定显示的日志级别
-    0: emerg
-    1: alert
-    2: crit
-    3: err
-    4: warning
-    5: notice
-    6: info
-    7: debug
+# -e 从末行开始显示
+# --since "2012-10-30 18:17:16"
+# -b 0 查看系统本次启动的日志
+# -k 查看内核日志（不显示应用日志）
+# -u 查看某个Unit的日志
+# _PID=1 查看指定进程的日志
+# -p 指定显示的日志级别
+#     0: emerg
+#     1: alert
+#     2: crit
+#     3: err
+#     4: warning
+#     5: notice
+#     6: info
+#     7: debug
+
+# 检查当前journal使用磁盘量
+journalctl --disk-usage
+# 日志清理
+journalctl --vacuum-time=2d
+journalctl --vacuum-size=500M
+```
 
 ### swap
 ```bash
@@ -459,3 +463,12 @@ kill -KILL ${PID}
 # 终止进程。进程可以用一段时间来正常关闭，一个程序的正常关闭一般需要一段时间来保存进度并释放资源。
 kill -15 ${PID} 
 ```
+
+
+linux系统中英文切换
+vim /etc/locale.conf 或者 vim /etc/sysconfig/i18n
+```conf
+LANG=en_US.UTF-8
+LANG=zh_CN.UTF-8
+```
+source /etc/locale.conf

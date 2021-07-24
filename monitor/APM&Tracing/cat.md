@@ -27,24 +27,14 @@ CATALINA_OPTS="$CATALINA_OPTS -server -DCAT_HOME=$CAT_HOME -Djava.awt.headless=t
            redirectPort="8443" />  <!-- 增加  URIEncoding="utf-8"  -->  
 ```
 
-### 配置cat  /data/appdatas/cat/
+### 配置cat集群  /data/appdatas/cat/
 1. 创建
 ```bash
 mkdir -p /data/appdatas/cat/
 chmod -R 777 /data/
 cd /data/appdatas/cat/
 ```
-2. 集群配置 vim client.xml
-```xml
-<!-- 告诉客户端应该去连接哪个服务端，从哪个服务端里获取配置信息 -->
-<?xml version="1.0" encoding="utf-8"?>
-<config mode="client">
-    <servers>
-        <server ip="IP地址" port="2280" http-port="8080"/>
-    </servers>
-</config>
-```
-3. 数据库配置 vim /data/appdatas/cat/datasources.xml
+2. 数据库配置 vim /data/appdatas/cat/datasources.xml
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 
@@ -66,6 +56,19 @@ cd /data/appdatas/cat/
 
 ```
 
+### cat客户端配置
+2. 集群配置 vim client.xml
+```xml
+<!-- 告诉客户端应该去连接哪个服务端，从哪个服务端里获取配置信息 -->
+<?xml version="1.0" encoding="utf-8"?>
+<config mode="client">
+	<!-- 配置Domain ID，默认为cat -->
+    <!-- <domain id="cat" enabled="true" max-message-size="1000"/> -->
+    <servers>
+        <server ip="IP地址" port="2280" http-port="8080"/>
+    </servers>
+</config>
+```
 ### 数据库配置 和 配置war包
 ```bash
 git clone https://github.com/dianping/cat.git

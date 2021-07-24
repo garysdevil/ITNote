@@ -1,9 +1,12 @@
-### 网络时间协议
-- 协议说明 https://en.wikipedia.org/wiki/Network_Time_Protocol
-- 功能 进行时钟同步，保证服务器之间的时间是一致的。
-1. 安装
-yum -y install ntp
+## 网络时间协议 ntp
+- 协议说明：https://en.wikipedia.org/wiki/Network_Time_Protocol
+- 功能：进行时钟同步，保证服务器之间的时间是一致的。
 - 使用UDP协议，端口123
+
+1. 安装
+```bash
+yum -y install ntp
+```
 2.  配置
 vi /etc/ntp.conf
 ```conf 
@@ -29,7 +32,7 @@ time.nist.gov 美国标准技术研究院 NTP 服务器
     ntpq -p
     ntpstat
 
-### 关于时间
+## 时区
 1. 查看每个time zone当前的时间
     zdump Hongkong
 
@@ -37,5 +40,10 @@ time.nist.gov 美国标准技术研究院 NTP 服务器
     ln -sf /usr/share/zoneinfo/posix/Asia/Shanghai /etc/localtime
     或者 tzselect
 
-3. 查看机器上的硬件时间(always in local time zone)
+timedatectl list-timezones |grep Shanghai    # 查找中国时区的完整名称
+timedatectl set-timezone Asia/Shanghai # 临时设置，重启后失效
+ln -sf /usr/share/zoneinfo/Asia/Hong_Kong /etc/localtime
+
+## 其它
+1. 查看机器上的硬件时间(always in local time zone)
     hwclock --show
