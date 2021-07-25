@@ -7,20 +7,38 @@
 	2. GO111MODULE=on，go命令行会使用modules，而一点也不会去GOPATH目录下查找。
 	3. GO111MODULE=auto，默认值，go命令行将会根据当前目录来决定是否启用module功能。
 
-1. 初始化modules
-    go mod init 自定义项目名
-
-2. 依赖的第三方包存储位置
+- 依赖的第三方包存储位置
     - go.mod  $GOPATH/pkg/mod/
     - 传统的  $GOPATH/src
-## go的各种import方式
+
+- go mod 指令
+```bash
+# 初始化modules
+go mod init 自定义项目名
+# 下载依赖包
+go mod download 包全名
+# 打印模块依赖图
+go mod graph
+# 验证依赖是否正确
+go mod verify
+# 拉取缺少的模块 和 移除不用的模块
+go mod tidy
+# 将依赖复制到vendor目录下
+go mod vendor
+# 解释为什么需要依赖
+go mod why
+```
+
+
+
+## 依赖包的import方式
 - https://blog.csdn.net/stpeace/article/details/82901633
 ```go
 
 import "fmt" 
-import . "fmt"
-import _ "fmt"
-import x "fmt"
+import . "fmt" // 带点后， 在调用函数时可以省略包名
+import _ "fmt" // 只调用fmt的init函数，禁止使用fmt包中的变量和函数
+import F "fmt" // 设置fmt包的别名为F
 ```
 
 ## 内置包

@@ -6,8 +6,6 @@ https://geek-docs.com/vscode/vscode-tutorials/what-is-vscode.html
 1. 命令面板：VS Code 的绝大多数命令都可以在命令面板里搜到   
     打开方式 F1 或者“Ctrl+Shift+P”
 
-2. 
-
 ## vscode指令
 ```bash
 # 1. 使用现有的vscode窗口打开一个文件
@@ -31,6 +29,8 @@ vscode -d ${filename1} ${filename2}
 
       },
     //  "explorer.autoReveal"
+    "http.proxy": "http://127.0.0.1:1080",
+    "http.proxyStrictSSL": false
 }
 ```
 2. 调试设置 launch.json

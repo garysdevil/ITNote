@@ -77,6 +77,10 @@ export PATH=$PATH:/Applications/MySQLWorkbench.app/Contents/MacOS
 mysql --version
 
 ### brew
+
+- 设置代理
+  - export ALL_PROXY=socks5://127.0.0.1:1080
+
 - brew services list
 
 1. 安装
@@ -135,6 +139,32 @@ brew tap homebrew/cask-versions  # 加载第三方仓库
 brew reinstall adoptopenjdk8
 ```
 
+7. ansible
+  ```bash
+  brew install ansible
+  # brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb
+  arch -arm64 brew install sshpass.rb
+  ```
+  - sshpass.rb
+  ```rb 
+  require 'formula'
+
+  class Sshpass < Formula
+    url 'http://sourceforge.net/projects/sshpass/files/sshpass/1.06/sshpass-1.06.tar.gz'
+    homepage 'http://sourceforge.net/projects/sshpass'
+    sha256 'c6324fcee608b99a58f9870157dfa754837f8c48be3df0f5e2f3accf145dee60'
+
+    def install
+      system "./configure", "--disable-debug", "--disable-dependency-tracking",
+                            "--prefix=#{prefix}"
+      system "make install"
+    end
+
+    def test
+      system "sshpass"
+    end
+  end
+  ```
 ### 环境变量
 - https://www.jianshu.com/p/acb1f062a925
 

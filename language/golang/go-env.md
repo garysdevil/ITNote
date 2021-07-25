@@ -2,13 +2,6 @@
 - https://golang.org/dl
 - https://golang.google.cn/dl/
 
-- Go version >= 1.11，并且 GO111MODULE=on (Go MOdule 模式)
-
-- 临时环境
-Go version >= 1.13，直接用go env -w 设置
-go env -w GOPROXY=https://goproxy.io,direct
-go env -w GO111MODULE=on
-
 ### linux安装
 ```bash
 cd /opt
@@ -30,6 +23,15 @@ source /etc/profile
 默认安装目录 C:\Go
 默认go path目录 C:\Users\Administrator\go
 
+### mac安装
+```bash
+brew install go
+
+echo 'export GOPATH=/Users/gary/go
+export GOBIN=$GOPATH/bin
+export PATH=$PATH:$GOBIN' >> ~/.zshrc
+```
+source ~/.zshrc
 ### 基于vscode的开发环境
 - https://blog.csdn.net/snans/article/details/106939925
 1. 安装插件Go
@@ -45,3 +47,11 @@ ctrl+shift+p 打开命令面板
 搜索 Go:install/update Tools, 点击全选ok
 
 4. 重启vscode
+
+## Go指令
+- 临时环境变量
+    - Go version >= 1.13，直接用go env -w 设置
+    ```bash
+    go env -w GOPROXY=https://goproxy.io,direct
+    go env -w GO111MODULE=on
+    ```
