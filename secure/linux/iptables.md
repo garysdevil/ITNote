@@ -7,7 +7,9 @@
 
 ### 命令
 - iptables -t ${tabletype} ${action_direction} ${direction}  ${packet_pattern} -j ${what_to_do}
-1. -t 定义表类型 filter、nat、mangle、raw; 默认为filter. （每张表提供了特定的功能）
+1. ${tabletype}
+     - -t 定义表类型 
+     - filter、nat、mangle、raw; 默认为filter. （每张表提供了特定的功能）
 2. ${direction} 5个方向(五链) （每个链都代表了数据需要经过的地点）
     1. PREROUTING 路由前的数据包
     2. FORWARD 转发的数据包
@@ -44,13 +46,15 @@ iptables -t nat -I PREROUTING -p tcp --dport 80 -m set --match-set kujiutest dst
 iptables -t nat -I PREROUTING -p tcp -m multiport --dports 80,443 -m set --match-set kujiutest dst -j REDIRECT  --to-port 1080
 # -m 指定要加载的模块
 
+# 禁止访问某个IP
+iptables -A OUTPUT -d 192.168.9.9 -j REJECT
 ```
 
 ### ipset
 1. 安装
 yum install ipset
 
-2. ip封禁流程
+2. 禁止IP访问
     ```bash
     ipset create blacklist hash:ip # 创建名为 blacklist 的集合，以 hash 方式存储，存储内容是 IP 地址
     # ipset -N blacklist iphash

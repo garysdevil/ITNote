@@ -112,7 +112,7 @@ alter 表名  convert to character set utf8mb4 collate utf8mb4_bin;
 create database test;
 use test;
 -- create table
-create table if not exists `gary_user_tb` (`user_id` int unsigned auto_increment , `user_name` varchar(40) not null, primary key ( `user_id` )) engine=InnoDB default charset=utf8;
+create table if not exists `gary_user_tb` (`user_id` int unsigned auto_increment , `user_name` varchar(40) not null, primary key ( `user_id` )) comment '表的注释' engine=InnoDB default charset=utf8;
 -- delete table
 drop table gary_user_tb;
 
@@ -358,11 +358,11 @@ purge master logs to 'binlognumber';
     host=127.0.0.1
     user=root
     start_datetime="2021-05-27 10:00:00" # 开始时间
-    stop-datetime="2021-05-27 10:30:00" # 结束时间
+    stop_datetime="2021-05-27 10:30:00" # 结束时间
     binlogfile="mysql-binlog.191250" # 从哪个binlog文件开始提取
-    result_file=='mysql-binlog' # 保存结果进文件
+    result_file=='mysql-binlog.txt' # 保存结果进文件
 
-    mysqlbinlog --no-defaults --read-from-remote-server  --host=${host} --port=3306 --user ${user} --password  --base64-output=decode-rows -v --start-datetime=${start_datetime} --stop-datetime=${stop-datetime} --stop-never  --result-file=${result_file} ${binlogfile}
+    mysqlbinlog --no-defaults --read-from-remote-server  --host=${host} --port=3306 --user ${user} --password  --base64-output=decode-rows -v --start-datetime="${start_datetime}" --stop_datetime="${stop_datetime}" --stop-never  --result-file=${result_file} ${binlogfile}
     
     # --database=数据库名  -d=数据库名
     # --base64-output=decode-rows  binglog格式为row时，进行解码

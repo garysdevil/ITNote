@@ -47,6 +47,8 @@ alternatives --config java
 ```
 
 ## JVM
+- HotSpot VM
+- JRockit VM
 
 ### 指令
 - 参考 https://www.jdon.com/51214
