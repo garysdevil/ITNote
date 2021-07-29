@@ -3,6 +3,12 @@
 0. 变量的声明与赋值。
    ```go
    var var_name string = "gary" 
+   var var_name1,var_name2 string = "gary1","gary2"
+   // 多个不同类型变量的声明
+   var (
+      var_name2 string
+      var_name2 int
+   )
    // 函数内可简写为。
    var_name := "gary" // 一种动态声明方式，左侧的变量不能是已经被声明过的，否则会导致编译错误，此方式只能在函数体中出现。
    ```
