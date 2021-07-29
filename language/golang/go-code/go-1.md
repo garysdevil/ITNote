@@ -1,7 +1,9 @@
+```golang
 package main
 
 import "fmt"
 
+// 输入
 func ScanFunc1(){
 	var (
         name string
@@ -40,19 +42,19 @@ func ScanFunc3() {
 	fmt.Println(total)
 }
 
+// 输入num个字符串并且排序
+func sortString() {
+	var num int
+	fmt.Scan(&num)
+	var slice = make([]string, num)
 
-// 求n次方 math.Pow(num,power)
-func exponent(num,power int)int{
-    var result int
-    if num==0{
-        return 0
-    }
-    if power==0{
-        return 1
-    }
-    for i:=0; i<power-1; i++{
-        result = num*num
-    }
-    return result
+	for i := 0; i < num; i++ {
+		fmt.Scan(&slice[i])
+	}
+	sort.Strings(slice)
+	str := strings.Join(slice, " ")
+	fmt.Println(str)
 }
+
+```
 

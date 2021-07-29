@@ -35,6 +35,7 @@
    ```go
    // 声明与初始化切片
    var var_slice_name []type = make([]var_type, var_length, var_capacity)
+   var_slice_name := []int{1,2,3}
    // 获取长度
    len() 
    // 获取最长可达

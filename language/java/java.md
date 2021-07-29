@@ -96,10 +96,23 @@ jstat -gcutil ${PID}
 
 - -XX:MaxPermSize：设置永久代最大值。物理内存的1/4。
 
+- -XX:ReservedCodeCacheSize
+    - JIT编译的代码都放在Code Cache中，若Code Cache空间不足则JIT无法继续编译，编译执行改为解释执行，性能将会降低
+
 ### GC
+#### 垃圾回收器
+1. CMS（-XX:+UseConcMarkSweepGC）
+    - 基于“标记—清除”算法实现
+    - 一般新生代使用ParNew（复制回收），老年代的用CMS
+2. G1（-XX:+UseG1GC）
+    - G1 把堆划分成多个大小相等的独立区域（Region），新生代和老年代不再物理隔离。
+    - 算法：标记—整理 （old，humongous） 和复制回收算法(survivor)。
+    - 1.9之后是默认，1.7之后才有，1.8才算成熟。
+    - 区域划分很散（2048块），不适合小内存使用
+####
 - Java的堆内存逻辑上分成两块：新生代、老年代
 - 根据垃圾收集回收的区域不同可分为： Young GC、Old GC、Full GC、Mixed GC
-- 大多数情况下，对象在先新生代Eden区中分配。当Eden区没有足够空间进行分配时，虚拟机将发起一次Young GC。
+- 大多数情况下，对象在新生代Eden区中分配。当Eden区没有足够空间进行分配时，虚拟机将发起一次Young GC。
 - -XX:PretenureSizeThreshold
 - -XX:MaxTenuringThreshold
 - 
