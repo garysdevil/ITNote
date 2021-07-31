@@ -477,3 +477,10 @@ LANG=en_US.UTF-8
 LANG=zh_CN.UTF-8
 ```
 source /etc/locale.conf
+
+
+### 排查问题
+- dmesg 并发量太大导致三次握手时超过资源限制，需要调整内核参数
+```log
+SYN flooding on port 80. Sending cookies.  Check SNMP counters.
+```

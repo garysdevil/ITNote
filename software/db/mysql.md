@@ -206,15 +206,21 @@ https://www.cnblogs.com/zengkefu/p/5690092.html
 ```bash
 time mysqldump --skip-add-locks --single-transaction --default-character-set=utf8mb4 --set-gtid-purged=off  -h${host} -u${user} -p${pass}  ${database} ${table} > ${table}.sql
 
-# -t  只导出数据
-
-# -d 只导出表结构
+# -t 只导出数据 --no-create-info
+# -d 不导出任何数据，只导出数据库表结构 --no-data
+# -R 导出存储过程以及自定义函数 --routines
+# -E 导出事件 --events
+# --triggers  默认导出触发器 使用--skip-triggers屏蔽导出
 
 # --add-locks，这是导出时的默认值，意思是导出某张表时，会在该表上加个锁，导出完成后执行unlock，如果导出过程中表数据有变动（增删改），对应的sql就会被挂起，直到unlock之后才能继续执行，这样执行导出会更高效！但是，如果导出的表，数据量比较大，会导致导出表的时间比较长，而如果业务操作表又比较频繁的话，默认加锁的操作就造成大量业务sql堵塞，影响实际业务运行，不能因为要高效而抛弃了实际业务，这个时候就要用--skip-add-locks跳过加锁模块
 
 # --single-transaction参数的作用，设置事务的隔离级别为可重复读，即REPEATABLE READ，这样能保证在一个事务中所有相同的查询读取到同样的数据，也就大概保证了在dump期间，如果其他innodb引擎的线程修改了表的数据并提交，对该dump线程的数据并无影响，在这期间不会锁表。
 
 # --opt Same as --add-drop-table, --add-locks, --create-options,   --quick, --extended-insert, --lock-tables, --set-charset, and --disable-keys. Enabled by default, disable with  --skip-opt 
+
+# --set-gtid-purged=on # 清掉bin-log和gtid信息
+
+# --column-statistics=0 # 最新的mysqldump版本需要这个参数才能进行导出操作
 ```
 
 ```log

@@ -44,6 +44,11 @@ ln -fs /usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java /etc/alternatives/java
 amazon-linux-extras install java-openjdk11
 # 切换Java版本
 alternatives --config java
+
+# 安装tomcat8.5
+amazon-linux-extras enable tomcat8.5
+yum clean metadata
+yum install tomcat
 ```
 
 ## JVM
