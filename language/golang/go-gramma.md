@@ -104,9 +104,31 @@
    ch := make(chan int, 100)
    ``` 
 
-8. 函数类型 *todu 等待深入*
+8. 函数类型
+   - 声明
    ```go
    type func_name func(name string) string
+   ```
+   - 示范
+   ```go
+   //定义函数类型 Doing
+   type Doing func(thing string) string
+
+   func eating(food string) string {
+      return "我正在吃" + food
+   }
+   func drinking(drink string) string {
+      return "我正在喝" + drink
+   }
+
+   //形参指定传入参数为函数类型Doing
+   func Action(doing Doing, thing string) string {
+      return doing(thing)
+   }
+   func main() {
+      result := Action(eating, "苹果")
+      fmt.Println(result)
+   }
    ```
 
 9. 指针类型
@@ -115,14 +137,20 @@
    ```
 
 10. 引用类型
-数组切片、字典(map)、通道（channel）、接口（interface）
+   - 数组切片、字典(map)、通道（channel）、接口（interface）
 
-## 特有语法
+## 语法特性
+### 基本特性
 1. 在函数内，变量声明而不使用，编译时则会报错。
 
 2. 结构体变量名：大写表示外部可以访问。
 
-3. 关于函数的大括号
+3. 支持类型转换
+   ```go
+   float32(var_name)
+   ```
+### 函数
+1. 关于函数的大括号
 ```go
 func main()  
 {  // 错误，{ 不能在单独的行上
@@ -130,41 +158,71 @@ func main()
 }
 ```
 
-4. 函数可以直接返回多个值
+2. 函数可以直接返回多个值
 ```go
 func swap(x, y string) (string, string) {
    return y, x
 }
 ```
 
-5. 循环 只有for循坏：break，continue，goto
-   - for 循环不需要()
-   - for i := 0; i < 10; i++{}
-   - for k, v := range kvs{} 循环数组、切片、map，返回元素的索引和索引对应的值。 
-   - continue 跳过当前循环的剩余语句，然后继续进行下一轮循环
-   - goto 将控制转移到被标记的语句
+3. 匿名函数
+```go
+func(){
+    fmt.Println("hello")
+}
+```
 
-6. Go 并发，通过go关键字开启一个 goroutine 协程
+
+### for与switch
+1. 循环 只有for循坏：break，continue，goto
+   - for 循环不需要()
+      ```go
+      for i := 0; i < 10; i++{} 
+      ```
+   - 循环数组、切片、map，返回元素的索引和索引对应的值。
    ```go
-   go function_name ( parameter parameter_type ){}
+   for k, v := range kvs{
+      if v == 1 {continue} // 跳过当前循环的剩余语句，然后继续进行下一轮循环
+      goto MyBreak // 将控制转移到被标记的语句
+   } 
+   MyBreak: fmt.Println("my break")
    ```
 
-7. 支持类型转换
-float32(parameter_name)
+2. switch 
+```go
+func main() {
+   // 使用方式一
+   var x interface{}    
+   switch i := x.(type) {
+      case nil:  
+         fmt.Printf(" x 的类型 :%T",i)                
+      case int:  
+         fmt.Printf("x 是 int 型")                      
+      case float64:
+         fmt.Printf("x 是 float64 型")          
+      case func(int) float64:
+         fmt.Printf("x 是 func(int) 型")                      
+      case bool, string:
+         fmt.Printf("x 是 bool 或 string 型" )      
+      default:
+         fmt.Printf("未知型")    
+   }
+   // 使用方式二
+   grade := "D"
+   switch {
+      case grade == "A" :
+         fmt.Printf("优秀!\n" )    
+      case grade == "B", grade == "C" :
+         fmt.Printf("良好\n" )      
+      default:
+         fmt.Printf("差\n" );
+   }
+}
+```
 
-
-## 常规语法
-1. switch 
-
-2. 
-
-
-
-
-
-
-
-
-
-
+### goroutine与channel
+1. Go 并发，通过go关键字开启一个 goroutine 协程
+   ```go
+   go function_name ( var_value )
+   ```
 

@@ -1,11 +1,99 @@
 # vscode
 - 参考文档  
-https://geek-docs.com/vscode/vscode-tutorials/what-is-vscode.html
+    - https://geek-docs.com/vscode/vscode-tutorials/what-is-vscode.html
+    - https://segmentfault.com/a/1190000037516796
+    - https://www.cnblogs.com/bindong/p/6045957.html
 
-## 基本操作
-1. 命令面板：VS Code 的绝大多数命令都可以在命令面板里搜到   
-    打开方式 F1 或者“Ctrl+Shift+P”
+## 快捷键 
+- 在Mac系统内，快捷键的Ctrl按键往往被替换为Cmd按键
 
+### 自定义快捷键
+- 打开
+    - Ctrl + Shift + P 
+    - Preferences: Open Keyboard shortcurs(JSON)
+```conf
+# 新终端和切换终端的快捷键
+[
+    { "key": "ctrl+1",                "command": "workbench.action.terminal.focusAtIndex1", "when": "terminalFocus" },
+    { "key": "ctrl+2",                "command": "workbench.action.terminal.focusAtIndex2", "when": "terminalFocus" },
+    { "key": "ctrl+3",                "command": "workbench.action.terminal.focusAtIndex3", "when": "terminalFocus" },
+    { "key": "ctrl+4",                "command": "workbench.action.terminal.focusAtIndex4", "when": "terminalFocus" },
+    { "key": "ctrl+5",                "command": "workbench.action.terminal.focusAtIndex5", "when": "terminalFocus" },
+    { "key": "ctrl+6",                "command": "workbench.action.terminal.focusAtIndex6", "when": "terminalFocus" },
+    { "key": "ctrl+7",                "command": "workbench.action.terminal.focusAtIndex7", "when": "terminalFocus" },
+    { "key": "ctrl+8",                "command": "workbench.action.terminal.focusAtIndex8", "when": "terminalFocus" },
+    { "key": "ctrl+9",                "command": "workbench.action.terminal.focusAtIndex9", "when": "terminalFocus" },
+    { "key": "ctrl+t",                "command": "workbench.action.terminal.new" }
+
+]
+
+```
+
+### 工作区快捷键
+1. 显示命令面板：VS Code 的绝大多数命令都可以在命令面板里搜到   
+    - F1 或者 “Ctrl + Shift + P”
+
+2. 折叠和展开
+    1. 折叠所有区域代码的快捷键
+        - 先按下  Ctrl + K，再按下 Ctrl 和 0
+    2. 展开所有折叠区域代码的快捷键
+        - 先按下  Ctrl 和 K，再按下 Ctrl 和 J
+
+3. 显示/隐藏侧边栏
+    - Ctrl + B
+
+4. 聚焦到第 1、第 2 个编辑器
+    - Ctrl + 1
+    - Ctrl + 2
+
+5. 将工作区放大/缩小
+    - Ctrl +
+    - Ctrl -
+
+6. 显示/隐藏控制台
+    - Ctrl + J
+
+7. 新建文件
+    - Ctrl + N
+
+8. 关闭当前文件
+    - Ctrl + W
+
+9. 重新开一个软件的窗口
+    - Ctrl + Shift + N
+### 其它快捷键
+1. 切换文件
+    - Ctrl + Option + 左右方向键
+    - Ctrl + Tab （Mac也是这个快捷键）
+
+2. 文件内进行方法或标题间的跳转
+    - Ctrl + shift + O
+
+3. 跳转到指定行
+    - Ctrl + G （Mac也是这个快捷键）
+
+4. 跳到词首词尾
+    - Ctrl + 左右按键    option + 左右按键（Mac）
+5. 跳到行首行尾
+    - Fn + 左右按键    Cmd + 左右按键（Mac）
+
+6. 在连续的多列上，同时出现光标
+    - Ctrl + Alt + 上下键    Cmd + Option + 上下键
+
+7. 代码格式化
+    - Alt + shift + F    Option + Shift + F（Mac）
+
+8. 全局搜索内容
+    - Ctrl + Shift +F
+
+9. 全局搜索文件
+    - Ctrl + P
+
+10. 打开终端
+    - Ctrl + `
+
+11. 打开多个终端
+    - Ctrl + shift + `
 ## vscode指令
 ```bash
 # 1. 使用现有的vscode窗口打开一个文件
@@ -36,14 +124,6 @@ vscode -d ${filename1} ${filename2}
 2. 调试设置 launch.json
 
 3. 任务设置 tasks.json
-
-## 快捷键 
-https://www.cnblogs.com/bindong/p/6045957.html
-1. 折叠和展开
-    1. 折叠所有区域代码的快捷键
-        先按下  ctrl 和 K，再按下 ctrl 和 0
-    2. 展开所有折叠区域代码的快捷键
-        先按下  ctrl 和 K，再按下 ctrl 和 J
 
 ## 我的插件
 1. Better Jinja
