@@ -139,12 +139,12 @@ SET AUTOCOMMIT=0 禁止自动提交
 
 2. 显式地开启一个事务
 ```sql
-BEGIN -- 或 START TRANSACTION 显式地开启一个事务
--- 执行sql语句
-SAVEPOINT identifier
--- 执行sql语句
-ROLLBACK TO identifier 
-COMMIT -- 或 ROLLBACK
+BEGIN; -- 或 START TRANSACTION 显式地开启一个事务
+-- 执行sql语句;
+SAVEPOINT identifier;
+-- 执行sql语句;
+ROLLBACK TO identifier;
+COMMIT; -- 或 ROLLBACK
 ```
 ### 存储过程
 
@@ -320,14 +320,20 @@ change master to master_host='IP', master_user='slave', master_password='slave',
 ```
 
 4. 启停主从
-stop slave;
-start slave;
+    ```sql
+    set global read_only=1; -- 设置从库只读,防止意外写入，造成同步数据产生冲突，停止同步。
+    stop slave;
+    start slave;
+    ```
 
 5. slave数据库查看主从状态
-show slave status\G;
-- Slave_IO_Running和Slave_SQL_Runing两个参数YES，则表示主从复制关系正常。
+    ```sql
+    show slave status\G;
+    ```
+    - Slave_IO_Running和Slave_SQL_Runing两个参数YES，则表示主从复制关系正常。
 
-6. slave因为锁导致主从中断
+#### 主从同步问题
+1. slave因为锁导致主从中断
 ```sql
 -- InnoDB事务在放弃前等待行锁的时间（秒）。innodb_lock_wait_timeout默认值为50秒。当有试图访问被另一行锁定的行的事务InnoDB事务在发出以下错误：
 -- ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction
@@ -335,6 +341,44 @@ show variables like '%innodb_lock_wait_timeout%';
 -- 参数slave_transaction_retries 设置的为10次，如果事务重试次数超过10次，复制中断。
 show variables like '%slave_transaction_retries%';
 ```
+
+#### 事物的隔离级别
+```sql
+-- 参考 https://www.cnblogs.com/micro-chen/p/5629188.html
+
+-- 事物的过程： begin; 执行sql; commit;
+
+-- 进行select操作时不添加锁
+SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+SELECT * FROM TABLE_NAME ;
+SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
+SELECT @@global.tx_isolation; -- the global isolation level
+SELECT @@tx_isolation; -- current session isolation level
+set tx_isolation = 'read-uncommitted'; -- set current session isolation level
+
+在MySQL中，实现了这四种隔离级别，分别有可能产生问题如下所示：
+-- Serializable (串行化)：可避免脏读、不可重复读、幻读的发生。
+-- Repeatable-read(可重复读)：可避免脏读、不可重复读。默认值。Mysql的Repeatable-read隔离级别也实现了避免幻读的发生。
+-- Read-committed (读已提交)：可避免脏读的发生。
+-- Readuncommitted (读未提交)：最低级别，任何情况都无法保证。
+
+-- 脏读  A事物执行过程中，B读取了A事物未commit的修改，但是由于某些原因，发生RollBack了操作，则B事务所读取的数据就会是不正确的。
+-- 不可重复读  B事务读取了两次数据，在这两次的读取过程中A事务修改了数据，B事务的这两次读取出来的数据不一样。
+-- 幻读  B事务读取了两次数据，在这两次的读取过程中A事务添加了数据，B事务的这两次读取出来的集合不一样。
+
+```
+- 基于锁实现Repeatable-Read
+    1. 多线程同时更新同一条记录，加X锁。所以并发场景下的 update 是串行执行的。
+    2. 工业定义上的 select 一条记录，这个时候会在记录上加读共享锁(S锁)，并到事务结束，因为在这种情况下才能实现记录在事务时间跨度上的可重复读。在读的时候不允许其他事务修改这条记录。
+    3. update 一条语句，这个时候会在记录上加行级排他锁(X锁)，并到事务结束，这中场景下，其他读事务会被阻塞。
+- Mysql实现Repeatable-Read
+    - MVVC (Multi-Version Concurrency Control) (注：与MVCC相对的，是基于锁的并发控制，Lock-Based Concurrency Control)是一种基于多版本的并发控制协议，只有在InnoDB引擎下存在。
+    - MVCC只在 READ COMMITTED 和 REPEATABLE READ 两个隔离级别下工作
+    1. 读不影响写：事务以排他锁的形式修改原始数据，读时不加锁，因为 MySQL 在事务隔离级别Read-committed 、Repeatable-Read下，InnoDB 存储引擎采用非锁定性一致读－－即读取不占用不等待表上的锁。即采用的是MVCC中一致性非锁定读模式。因读时不加锁，所以不会阻塞其他事物在相同记录上加 X锁来更改这行记录。
+    2. 写不影响读：事务以排他锁的形式修改原始数据，当读取的行正在执行 delete 或者 update 操作，这时读取操作不会因此去等待行上锁的释放。相反地，InnoDB 存储引擎会去读取行的一个快照数据。
+
+
 
 #### binlog
 1. 查看内存状态的binlog配置
@@ -616,6 +660,8 @@ show engine innodb status
 ```sql
 -- 参考 https://aws.amazon.com/cn/premiumsupport/knowledge-center/blocked-mysql-query/
 -- 参考 https://www.cnblogs.com/luyucheng/p/6297752.html
+
+show processlist;
 
 -- 查看表活跃情况
 show OPEN TABLES where In_use > 0;

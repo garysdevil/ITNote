@@ -208,12 +208,13 @@ func main() {
          fmt.Printf("未知型")    
    }
    // 使用方式二
-   grade := "D"
+   grade := "C"
    switch {
       case grade == "A" :
          fmt.Printf("优秀!\n" )    
       case grade == "B", grade == "C" :
-         fmt.Printf("良好\n" )      
+         fmt.Printf("良好\n" )
+         fallthrough // 设置不判断下一条case表达式而直接执行case里面的语句
       default:
          fmt.Printf("差\n" );
    }
