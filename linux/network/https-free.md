@@ -48,7 +48,7 @@ dig  -t txt _acme-challenge.test.garys.top @8.8.8.8
 ```bash
 ./acme.sh --installcert  -d  test2.garys.top   \
         --key-file   /etc/nginx/ssl/test2.garys.top.key \
-        --fullchain-file /etc/nginx/ssl/fullchain.cer \
+        --fullchain-file /etc/nginx/ssl/test2.garys.top.cer \
         --reloadcmd  "service nginx force-reload"
 ```
 
@@ -62,6 +62,12 @@ server {
     ssl_certificate   /etc/nginx/ssl/fullchain.cer;
     ssl_certificate_key  /etc/nginx/ssl/test2.garys.top.key;
 }
+```
+
+### 证书自动更新脚本
+```bash
+0 0 1 * * /root/.acme.sh/acme.sh --cron --home "/root/.acme.sh" --force
+0 1 1 * * ${ssl_folder}=/opt/nginx && /root/.acme.sh/acme.sh --installcert  -d  garys.top --key-file   ${ssl_folder}/garys.top.key --fullchain-file ${ssl_folder}/garys.top.cer --reloadcmd  "nginx -s reload"
 ```
 
 ### acme自身升级

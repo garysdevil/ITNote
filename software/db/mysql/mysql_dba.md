@@ -1,155 +1,5 @@
-# Mysql总览
-1. 按功能分：
-    - 连接层  数据库的连接，验证
-    - SQL层	解析查询，优化查询，执行查询	
-    - 存储层   磁盘（InnoDB，MyISAM），内存memory，网络ndb
-
-2. sql语句分类如下
-    1. DDL 数据定义语言，用来定义数据库对象：库、表、列
-    代表性关键字：create alter drop
-    2. DML 数据操作语言，用来定义数据库记录
-    代表性关键字:insert delete update
-    3. DCL 数据控制语言，用来定义访问权限和安全级别
-    代表性关键字:grant deny revoke
-    4. DQL 数据查询语言，用来查询记录数据
-    代表性关键字:select
-
-## 安装
-### 安装mysql5.6
-- https://blog.csdn.net/pengjunlee/article/details/81212250
-rpm -qa|grep -i mariadb | xargs rpm -e --nodeps
-curl -O http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
-rpm -ivh mysql-community-release-el7-5.noarch.rpm
-yum repolist all | grep mysql 
-rpm -qa | grep mysql
-yum install mysql-server
-
-
-systemctl start mysql && systemctl status mysql
-
-- 设置新密码
-/usr/bin/mysqladmin -u root password 'new-password'
-
-```conf /etc/my.cnf
-# 跳过密码验证
-[mysqld]
-skip-grant-tables 
-```
-
-### 安装mysql5.7
-```bash
-wget http://repo.mysql.com/mysql57-community-release-el7-10.noarch.rpm
-rpm -Uvh mysql57-community-release-el7-10.noarch.rpm
-yum install -y mysql-community-server
-```
-```
-非互联网状态下
-安装MySql57
-mysql-community-client-5.7.30-1.el7.x86_64
-mysql-community-libs-compat-5.7.30-1.el7.x86_64
-mysql57-community-release-el7-10.noarch
-mysql-community-server-5.7.30-1.el7.x86_64
-mysql-community-common-5.7.30-1.el7.x86_64
-```
-
-systemctl start mysqld.service
-systemctl status mysqld.service
-systemctl enable mysqld
-
-```bash
-# 获取MySQL临时用户名密码
-grep 'temporary password' /var/log/mysqld.log
-# 2020-10-30T16:33:29.896472Z 1 [Note] A temporary password is generated for root@localhost: 1Z>qq%pFim:!
-```
-### 彻底卸载mysql5.6
-```bash
-rpm -qa|grep mysql | xargs yum remove -y
-rm -f /etc/my.cnf
-whereis mysql | xargs rm -rf # 删除剩余的文件
-rm -rf /var/lib/mysql # 如果这个目录如果不删除，再重新安装之后，密码还是之前的密码，不会重新初始化！
-```
-
-### 配置管理
-- Mysql配置从上到下优先级降低
-    - /etc/my.cnf
-    - /etc/mysql/my.cnf
-    - /usr/local/etc/my.cnf
-    - ~/.my.cnf
-#### 字符集编码配置
-1. 更改字符集编码
- vi /etc/my.cnf
-```conf
-# 在[mysqld]下添加：
-default-storage-engine=INNODB
-character-set-server=utf8
-collation-server=utf8_general_ci
-
-# 在[mysql]下添加
-default-character-set=utf8
-```
-
-2. 查看字符集的配置
-```sql
--- 查看Mysql的字符集
-    show variables like "%character%";
-    show variables like "%collation%";
--- 查看database字符集
-    show create database 数据库名;
--- 查看table的字符集
-    show create table 数据表名;
--- 查看字段编码
-    show full columns from 表名;
-```
-
-3. 更改已存在的表的字符集
-```sql
-alter 表名  convert to character set utf8mb4 collate utf8mb4_bin;
-```
-
-## SQL增删改查
-### 简单SQL 
-```sql
-create database test;
-use test;
--- create table
-create table if not exists `gary_user_tb` (`user_id` int unsigned auto_increment , `user_name` varchar(40) not null, primary key ( `user_id` )) comment '表的注释' engine=InnoDB default charset=utf8;
--- delete table
-drop table gary_user_tb;
-
--- add data
-insert into gary_user_tb (user_name) values('gary');
-
--- delete data
-delete from gary_user_tb where id = 1;
-
---update data
-update gary_user_tb set user_name = 'adam' where user_name = 'gary';
-
--- select data
-select user_id, user_name from gary_user_tb limit 10;
-select * from gary_user_tb where user_name like  "%gary%" limit 1;
-
--- 排序
-sql语句 order by 字段名 desc desc limit 5;
-```
-### 复杂SQL
-### 事务
-1. 全局开启事务模式
-SET AUTOCOMMIT=0 禁止自动提交
-
-2. 显式地开启一个事务
-```sql
-BEGIN; -- 或 START TRANSACTION 显式地开启一个事务
--- 执行sql语句;
-SAVEPOINT identifier;
--- 执行sql语句;
-ROLLBACK TO identifier;
-COMMIT; -- 或 ROLLBACK
-```
-### 存储过程
-
 ## 运维基本操作 
-### 基础
+### 常规操作
 1. 设置临时变量
 set @key="value";
 select @num:=1; 
@@ -188,21 +38,19 @@ set global validate_password_length=1;
 12. 创建数据库
 create database ${DATABASE} charset 'utf8mb4';
 
-### 登入&执行sql&查询导出数据
-- 参考  
-https://www.cnblogs.com/zengkefu/p/5690092.html
 
-1. 登入
-    1. mysql --login-path=backup
-        - login-path是MySQL5.6开始支持的新特性。通过借助mysql_config_editor工具将登陆MySQL服务的认证信息加密保存在.mylogin.cnf文件(默认位于用户主目录)。之后，MySQL客户端工具可通过读取该加密文件连接MySQL，避免重复输入登录信息，避免敏感信息暴露。
 
-    2. mysql -u${USER} -p${PASSWORD} -P${PORT} -h${HOST} -S ${SOCKPATH} -D${DATABASE}
-        - 参数
-            -S 是指定mysql.sock
-            -D 指定要连接的数据库
-            -e "" 指定要执行的sql语句
+### 导入导出数据
+#### mysql
+```sql
+-- 1. 导出查询到的数据
+mysql --login-path=aa ${sql脚本} data.txt  
+mysql --login-path=aa -e "${sql语句}" > data.txt
 
-2. 线上导出数据
+-- 2. 导出查询到的数据为csv文件
+sql语句 into outfile '/tmp/table.csv' fields terminated by ',' optionally enclosed by '"' lines terminated by '\r\n';
+```
+#### mysqldump
 ```bash
 time mysqldump --skip-add-locks --single-transaction --default-character-set=utf8mb4 --set-gtid-purged=off  -h${host} -u${user} -p${pass}  ${database} ${table} > ${table}.sql
 
@@ -211,6 +59,7 @@ time mysqldump --skip-add-locks --single-transaction --default-character-set=utf
 # -R 导出存储过程以及自定义函数 --routines
 # -E 导出事件 --events
 # --triggers  默认导出触发器 使用--skip-triggers屏蔽导出
+# -n 不导出数据 --no-data
 
 # --add-locks，这是导出时的默认值，意思是导出某张表时，会在该表上加个锁，导出完成后执行unlock，如果导出过程中表数据有变动（增删改），对应的sql就会被挂起，直到unlock之后才能继续执行，这样执行导出会更高效！但是，如果导出的表，数据量比较大，会导致导出表的时间比较长，而如果业务操作表又比较频繁的话，默认加锁的操作就造成大量业务sql堵塞，影响实际业务运行，不能因为要高效而抛弃了实际业务，这个时候就要用--skip-add-locks跳过加锁模块
 
@@ -218,27 +67,47 @@ time mysqldump --skip-add-locks --single-transaction --default-character-set=utf
 
 # --opt Same as --add-drop-table, --add-locks, --create-options,   --quick, --extended-insert, --lock-tables, --set-charset, and --disable-keys. Enabled by default, disable with  --skip-opt 
 
-# --set-gtid-purged=on # 清掉bin-log和gtid信息
+# --set-gtid-purged=on # 清掉bin-log和gtid信息，默认为on
 
 # --column-statistics=0 # 最新的mysqldump版本需要这个参数才能进行导出操作
 ```
 
-```log
-// 2g数据耗时
-real	0m38.495s
-user	0m35.658s
-sys	    0m2.261s
-```
+- 记录
+    - 导出2g数据耗时
+        ```log
+        real	0m38.495s
+        user	0m35.658s
+        sys	    0m2.261s
+        ```
 
-3. 执行sql文件
+### 登入&执行sql文件
+- 参考  
+https://www.cnblogs.com/zengkefu/p/5690092.html
+
+1. 
+```bash
+# -S 是指定mysql.sock
+# -D 指定要连接的数据库
+# -e "" 指定要执行的sql语句
+
+# 通过账户密码连接MySQL
+mysql -u${USER} -p${PASSWORD} -P${PORT} -h${HOST} -S ${SOCKPATH} -D${DATABASE}
+
+
+# 通过读取加密文件连接MySQL
+mysql --login-path=backup
+# login-path是MySQL5.6开始支持的新特性。通过借助mysql_config_editor工具将登陆MySQL服务的认证信息加密保存在.mylogin.cnf文件(默认位于用户主目录)。之后，MySQL客户端工具可通过读取该加密文件连接MySQL，避免重复输入登录信息，避免敏感信息暴露。
+
+
+# 执行sql文件
 mysql -u${USER} -p${PASSWORD} -P${PORT} -h${HOST} -S ${SOCKPATH} -D${DATABASE} < sql.sql
 
-4. 导出查询到的数据
-mysql --login-path=aa ${sql脚本} data.txt  
-mysql --login-path=aa -e "${sql语句}" > data.txt
+```
 
-5. 导出为csv文件
-sql语句 into outfile '/tmp/table.csv' fields terminated by ',' optionally enclosed by '"' lines terminated by '\r\n';
+
+
+
+## 一
 
 ### 死锁日志
 ```sql
@@ -246,132 +115,54 @@ show variables like "%innodb_print_all_deadlocks%";
 -- 开启死锁日志，死锁日志被存放进error_log配置的文件里面
 set global innodb_print_all_deadlocks=1
 
+-- 参数
 -- innodb_deadlock_detect 死锁检测 mysql 5.7.15，default on
-
 -- innodb_lock_wait_timeout 锁等待超时，自动回滚事务， default 50s
 ```
 
-### 开启主从同步
-- 参考  
-https://www.jianshu.com/p/b0cf461451fb  
-https://dev.mysql.com/doc/refman/5.7/en/start-slave.html
 
-- MySQL主从同步的作用：
-    1. 可以作为备份机制，相当于热备份
-    2. 可以用来做读写分离，均衡数据库负载
-
-1. 在主数据库上启动binlog日志
-```conf
-#主数据库端ID号 # 必须配置否则mysql会启动失败
-server_id = 1     
-#开启二进制日志，配置二进制日志所在路径
-log-bin = mysql-bin
-#二进制日志自动删除的天数，默认值为0,表示“没有自动删除”，启动时和二进制日志循环时可能删除  
-expire_logs_days = 7
-#需要复制的数据库名，如果复制多个数据库，重复设置这个选项即可                  
-binlog-do-db = ${db}
-#需要忽略的数据库
-binlog-ignore-db = ${db}
-#设置将从服务器从主服务器收到的更新记入到从服务器自己的二进制日志文件中                 
-log-slave-updates       
-#控制binlog的写入频率。每执行多少次事务写入一次(这个参数性能消耗很大，但可减小MySQL崩溃造成的损失) 
-sync_binlog = 1  
-#将函数复制到slave  
-log_bin_trust_function_creators = 1  
-
-#这个参数一般用在主主同步中，用来错开自增值, 防止键值冲突
-# auto_increment_offset = 1
-#这个参数一般用在主主同步中，用来错开自增值, 防止键值冲突
-# auto_increment_increment = 1
-
-# binlog_format = row # MySQL 5.7.7 之前，binlog 的默认格式都是 STATEMENT，在 5.7.7 及更高版本中，binlog_format 的默认值是 ROW
-# STATEMENT 模式:每一条会修改数据的sql语句会记录到binlog中 
-# ROW 模式:仅需记录哪条数据被修改了，修改成什么样了
-# MIXED 模式:以上两种模式的混合使用
-```
-
-2. 在从数据库上配置binlog
-```conf
-server_id = 2
-log-bin = mysql-bin
-log-slave-updates
-sync_binlog = 0
-#log buffer将每秒一次地写入log file中，并且log file的flush(刷到磁盘)操作同时进行。该模式下在事务提交的时候，不会主动触发写入磁盘的操作
-innodb_flush_log_at_trx_commit = 0
-#指定slave要复制哪个库，如果复制多个数据库，重复设置这个选项即可
-replicate-do-db = db
-#MySQL主从复制的时候，当Master和Slave之间的网络中断，但是Master和Slave无法察觉的情况下（比如防火墙或者路由问题）。Slave会等待slave_net_timeout设置的秒数后，才能认为网络出现故障，然后才会重连并且追赶这段时间主库的数据
-slave-net-timeout = 60
-log_bin_trust_function_creators = 1
-```
-
-3. 在master数据库上创建允许slave数据库同步数据的账户
-```sql
-grant replication slave on *.* to 'USER'@'IP' identified by 'PASSWORD';
-flush privileges;
-```
-
-4. 设置连接到master数据库 
-```sql
--- 主 上进行操作，获取master_log_file 和 master_log_pos
-show master status;
--- 从 上进行操作
-change master to master_host='IP', master_user='slave', master_password='slave',master_log_file='mysql-bin.000001', master_log_pos=590;
-```
-
-4. 启停主从
-    ```sql
-    set global read_only=1; -- 设置从库只读,防止意外写入，造成同步数据产生冲突，停止同步。
-    stop slave;
-    start slave;
-    ```
-
-5. slave数据库查看主从状态
-    ```sql
-    show slave status\G;
-    ```
-    - Slave_IO_Running和Slave_SQL_Runing两个参数YES，则表示主从复制关系正常。
-
-#### 主从同步问题
+### 主从同步问题 -- 不理解/从库只读，为什么会产生死锁
 1. slave因为锁导致主从中断
 ```sql
 -- InnoDB事务在放弃前等待行锁的时间（秒）。innodb_lock_wait_timeout默认值为50秒。当有试图访问被另一行锁定的行的事务InnoDB事务在发出以下错误：
 -- ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction
 show variables like '%innodb_lock_wait_timeout%';
--- 参数slave_transaction_retries 设置的为10次，如果事务重试次数超过10次，复制中断。
+
+-- 参数 slave_transaction_retries 设置的为10次，如果事务重试次数超过10次，复制中断。
 show variables like '%slave_transaction_retries%';
 ```
 
-#### 事物的隔离级别
-```sql
--- 参考 https://www.cnblogs.com/micro-chen/p/5629188.html
+### 事物的隔离级别
+- 参考 https://www.cnblogs.com/micro-chen/p/5629188.html
 
--- 事物的过程： begin; 执行sql; commit;
+- 在MySQL中，实现了这四种隔离级别，分别有可能产生问题如下所示：
+    1. Serializable (串行化)：可避免脏读、不可重复读、幻读的发生。
+    2. Repeatable-read(可重复读)：可避免脏读、不可重复读。默认值。Mysql的Repeatable-read隔离级别也实现了避免幻读的发生。
+    3. Read-committed (读已提交)：可避免脏读的发生。
+    4. Readuncommitted (读未提交)：最低级别，任何情况都无法保证。
 
--- 进行select操作时不添加锁
-SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
-SELECT * FROM TABLE_NAME ;
-SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+    - 脏读  A事物执行过程中，B读取了A事物未commit的修改，但是由于某些原因，发生RollBack了操作，则B事务所读取的数据就会是不正确的。
+    - 不可重复读  B事务读取了两次数据，在这两次的读取过程中A事务修改了数据，B事务的这两次读取出来的数据不一样。
+    - 幻读  B事务读取了两次数据，在这两次的读取过程中A事务添加了数据，B事务的这两次读取出来的集合不一样。
 
-SELECT @@global.tx_isolation; -- the global isolation level
-SELECT @@tx_isolation; -- current session isolation level
-set tx_isolation = 'read-uncommitted'; -- set current session isolation level
+- 设置事物的隔离级别
+    ```sql
+    -- 类似于select操作时不添加锁
+    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+    SELECT * FROM TABLE_NAME ;
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
-在MySQL中，实现了这四种隔离级别，分别有可能产生问题如下所示：
--- Serializable (串行化)：可避免脏读、不可重复读、幻读的发生。
--- Repeatable-read(可重复读)：可避免脏读、不可重复读。默认值。Mysql的Repeatable-read隔离级别也实现了避免幻读的发生。
--- Read-committed (读已提交)：可避免脏读的发生。
--- Readuncommitted (读未提交)：最低级别，任何情况都无法保证。
+    -- 设置事物的隔离级别
+    SELECT @@global.tx_isolation; -- the global isolation level
+    SELECT @@tx_isolation; -- current session isolation level
+    set tx_isolation = 'read-uncommitted'; -- set current session isolation level
+    ```
 
--- 脏读  A事物执行过程中，B读取了A事物未commit的修改，但是由于某些原因，发生RollBack了操作，则B事务所读取的数据就会是不正确的。
--- 不可重复读  B事务读取了两次数据，在这两次的读取过程中A事务修改了数据，B事务的这两次读取出来的数据不一样。
--- 幻读  B事务读取了两次数据，在这两次的读取过程中A事务添加了数据，B事务的这两次读取出来的集合不一样。
-
-```
 - 基于锁实现Repeatable-Read
     1. 多线程同时更新同一条记录，加X锁。所以并发场景下的 update 是串行执行的。
     2. 工业定义上的 select 一条记录，这个时候会在记录上加读共享锁(S锁)，并到事务结束，因为在这种情况下才能实现记录在事务时间跨度上的可重复读。在读的时候不允许其他事务修改这条记录。
     3. update 一条语句，这个时候会在记录上加行级排他锁(X锁)，并到事务结束，这中场景下，其他读事务会被阻塞。
+
 - Mysql实现Repeatable-Read
     - MVVC (Multi-Version Concurrency Control) (注：与MVCC相对的，是基于锁的并发控制，Lock-Based Concurrency Control)是一种基于多版本的并发控制协议，只有在InnoDB引擎下存在。
     - MVCC只在 READ COMMITTED 和 REPEATABLE READ 两个隔离级别下工作
@@ -380,30 +171,30 @@ set tx_isolation = 'read-uncommitted'; -- set current session isolation level
 
 
 
-#### binlog
+### binlog
 1. 查看内存状态的binlog配置
-```sql
--- 查看默认设置的binlog过期时间
-show variables like "%expire_logs%";
+    ```sql
+    -- 查看默认设置的binlog过期时间
+    show variables like "%expire_logs%";
 
--- 临时设置binlog保留时间
-set global expire_logs_days=15
+    -- 临时设置binlog保留时间
+    set global expire_logs_days=15
 
--- 查看数据库是否开启binlog日志
-show variables like '%log_bin%';
+    -- 查看数据库是否开启binlog日志
+    show variables like '%log_bin%';
 
--- 查看所有binlog文件
-show binary logs;
+    -- 查看所有binlog文件
+    show binary logs;
 
--- 只查看第一个binlog文件的内容
-show binlog events; 
--- show binlog events in 'mysql-bin.000003';
+    -- 只查看第一个binlog文件的内容
+    show binlog events; 
+    -- show binlog events in 'mysql-bin.000003';
 
--- 清理binlog日志
-purge master logs to 'binlognumber';
-```
+    -- 清理binlog日志
+    purge master logs to 'binlognumber';
+    ```
 
-2. 用mysql自身自带的工具，提取出binlog日志进行分析
+2. 用mysql自带的工具，提取出binlog日志进行分析
     ```bash
     host=127.0.0.1
     user=root
@@ -420,53 +211,8 @@ purge master logs to 'binlognumber';
     ```
 
 
-### 连接数、状态、最大并发数
-1. 查看连接数限制 
-    show variables like '%connections%';
-2. 查看历史上最大连接数 
-    show global status like 'max_used_connections';
-3. 设置最大连接数 
-    set global max_connections=1000 
-4. 查看连接数信息
-    show status like 'Threads%';
-    - 输出说明：
-    1. Threads_cached  34 # mysql管理的线程池中还有多少可以被复用的资源
-    2. Threads_connected 32 # 打开的连接数
-    3. Threads_created 66 # 代表新创建的thread（根据官方文档，如果thread_created增大迅速，需要适当调高 thread_cache_size）。
-    4. Threads_running 2 # 激活的连接数，这个数值一般远低于connected数值，准确的来说，Threads_running是代表当前并发数
-
-5.  information_schema.processlist
-    1. 当前的连接信息都保存在这张表格里 information_schema.processlist, 字段说明如下
-    ```yaml
-    id: 为连接的应用id号
-    user: 为连接数据库的用户
-    host: 为连接数据的主机IP地址和端口
-    db: 为连接访问的数据库
-    command: 为当前正在执行的SQL语句类型，分为Query，Update，Updating等
-    time: 为应用的Sleep时间
-    state: 为当前连接的状态，共包括Copying to tmp table on disk，Flushing tables，Sending data等二十多种状态。
-    info: 为当前应用连接执行的SQL语句，如果语句过长，可能会显示不完整。
-    ```
-    2. 查看应用的连接
-    ```sql
-    show processlist;
-    show full processlist;
-    -- 查看非睡眠状态的连接
-    select ID,USER,HOST,DB,COMMAND,TIME,STATE from information_schema.processlist where Command != 'Sleep' order by Time desc;
-    select ID,USER,HOST,DB,COMMAND,TIME,STATE,INFO from information_schema.processlist where Command != 'Sleep'and INFO != "NULL" order by Time desc;
-    -- 通过事务ID查看线程
-    SELECT * from information_schema.processlist WHERE id = 738178711/G
-    ```
-    3. 查看当前连接中连接时间最长的的连接
-    ```sql
-    select host,user,time,state,info from information_schema.processlist order by time desc limit 10;
-    ```
-6. 中止应用线程
-    - 一般出现长时间的select可以考虑kill掉，但是update或者delete不建议kill
-    - kill ${id}
 
 ### 数据库和表的大小
-
 ```sql
 -- 查看整个mysql的容量大小
 select concat(round(sum((data_length+index_length)/1024/1024),2),'MB') as volume from information_schema.tables;
@@ -501,51 +247,50 @@ order by sum(data_length) desc, sum(index_length) desc;
 
 ### 慢日志
 1. 临时配置
-```sql
-show variables like 'slow_query%';
-show variables like 'long_query_time';
+    ```sql
+    show variables like 'slow_query%';
+    show variables like 'long_query_time';
 
-set global slow_query_log='ON'; 
+    set global slow_query_log='ON'; 
 
-set global slow_query_log_file='/tmp/garyslow.log'; -- linux
-set global slow_query_log_file='D:\\mysq\data\slow.log';  -- windows
+    set global slow_query_log_file='/tmp/garyslow.log'; -- linux
+    set global slow_query_log_file='D:\\mysq\data\slow.log';  -- windows
 
-set global long_query_time=1; -- 设置耗时多少秒为慢查询
-``` 
+    set global long_query_time=1; -- 设置耗时多少秒为慢查询
+    ``` 
+
 2. 永久配置
-```sql
-[mysqld]
-slow_query_log = ON
-slow_query_log_file = /usr/local/mysql/data/slow.log
-long_query_time = 1
-log_output = 'FILE,TABLE' -- 日志存储方式 默认值是’FILE’，雀圣写入 host_name-slow.log 文件中。log_output='TABLE’表示将日志存入数据库 mysql.slow_log 表中。
--- log_queries_not_using_indexes -- 未使用索引的查询也被记录到慢查询日志中（可选项）
-```
+    ```sql
+    [mysqld]
+    slow_query_log = ON
+    slow_query_log_file = /usr/local/mysql/data/slow.log
+    long_query_time = 1
+    log_output = 'FILE,TABLE' -- 日志存储方式 默认值是’FILE’，雀圣写入 host_name-slow.log 文件中。log_output='TABLE’表示将日志存入数据库 mysql.slow_log 表中。
+    -- log_queries_not_using_indexes -- 未使用索引的查询也被记录到慢查询日志中（可选项）
+    ```
 
-### MySQL缓存
+### MySQL缓存QCache
 - 参考  
-https://blog.csdn.net/zdw19861127/article/details/84937562
+    - https://blog.csdn.net/zdw19861127/article/details/84937562
 
 - 机制： 缓存SELECT操作 或 预处理查询（5.1.17开始支持）的结果集和SQL语句
 
-1.  查看是否开启了缓存
-    ```sql
-    show variables like '%query%';
-    ```
-    1. query_cache_type 和 query_cache_size -- 都不为0表示开启了查询缓存功能。
-    2. query_cache_type  
-        1(ON)： 启用查询缓存，只要符合查询缓存的要求，客户端的查询语句和记录集斗可以 缓存起来，共其他客户端使用；
-        2(DEMAND):  启用查询缓存，只要查询语句中添加了参数：sql_cache，且符合查询缓存的要求，客户端的查询语句和记录集，则可以缓存起来，共其他客户端使用；
+- 查看
+```sql
+-- 查看是否开启了缓存
+show variables like '%query%';
+-- query_cache_type 和 query_cache_size -- 都不为0表示开启了查询缓存功能。
+-- query_cache_type  
+    -- 1(ON)： 启用查询缓存，只要符合查询缓存的要求，客户端的查询语句和记录集合可以 缓存起来，共其他客户端使用；
+    -- 2(DEMAND):  启用查询缓存，只要查询语句中添加了参数：sql_cache，且符合查询缓存的要求，客户端的查询语句和记录集，则可以缓存起来，共其他客户端使用；
 
-2. 查看缓存的具体状态
-    show global status like 'QCache%';
+-- 查看缓存的具体状态
+show global status like 'QCache%';
 
-3. 查询缓存会生成碎片，通过下面命令来清理碎片
-    flush query cache;
-    清理内存中的碎片：
-    reset query cache
-    两个命令同时使用，彻底清理碎片。
-
+-- 查询缓存会生成碎片，通过下面命令来清理碎片
+flush query cache;
+reset query cache
+```
 
 ### 用户权限操作
 1. 查看用户权限
@@ -623,10 +368,7 @@ REVOKE ALL ON db_name.tbl_name; 撤销表权限。
 flush privileges;
 ```
 
-### 高cpu的sql
-```bash
-top -H -p <mysqld进程id>
-```
+
 
 ## DBA
 - DBA日常工作 -- 排查性能问题
@@ -637,6 +379,51 @@ pt-query-digest 工具是包含在Percona toolkit里的. 相关安装方式可�
 - 显示内部信息
 show engine innodb status
 
+### 连接数、状态、最大并发数
+1. 查看连接数限制 
+    show variables like '%connections%';
+2. 查看历史上最大连接数 
+    show global status like 'max_used_connections';
+3. 设置最大连接数 
+    set global max_connections=1000 
+4. 查看连接数信息
+    show status like 'Threads%';
+    - 输出说明：
+    1. Threads_cached  34 # mysql管理的线程池中还有多少可以被复用的资源
+    2. Threads_connected 32 # 打开的连接数
+    3. Threads_created 66 # 代表新创建的thread（根据官方文档，如果thread_created增大迅速，需要适当调高 thread_cache_size）。
+    4. Threads_running 2 # 激活的连接数，这个数值一般远低于connected数值，准确的来说，Threads_running是代表当前并发数
+
+5.  information_schema.processlist
+    1. 当前的连接信息都保存在这张表格里 information_schema.processlist, 字段说明如下
+    ```yaml
+    id: 为连接的应用id号
+    user: 为连接数据库的用户
+    host: 为连接数据的主机IP地址和端口
+    db: 为连接访问的数据库
+    command: 为当前正在执行的SQL语句类型，分为Query，Update，Updating等
+    time: 为应用的Sleep时间
+    state: 为当前连接的状态，共包括Copying to tmp table on disk，Flushing tables，Sending data等二十多种状态。
+    info: 为当前应用连接执行的SQL语句，如果语句过长，可能会显示不完整。
+    ```
+    2. 查看应用的连接
+    ```sql
+    show processlist;
+    show full processlist;
+    -- 查看非睡眠状态的连接
+    select ID,USER,HOST,DB,COMMAND,TIME,STATE from information_schema.processlist where Command != 'Sleep' order by Time desc;
+    select ID,USER,HOST,DB,COMMAND,TIME,STATE,INFO from information_schema.processlist where Command != 'Sleep'and INFO != "NULL" order by Time desc;
+    -- 通过事务ID查看线程
+    SELECT * from information_schema.processlist WHERE id = 738178711/G
+    ```
+    3. 查看当前连接中连接时间最长的的连接
+    ```sql
+    select host,user,time,state,info from information_schema.processlist order by time desc limit 10;
+    ```
+6. 中止应用线程
+    - 一般出现长时间的select可以考虑kill掉，但是update或者delete不建议kill
+    - kill ${id}
+    
 ### Mysql自带的数据库
 - information_schema 数据库 
     - 保存了该MySQL服务器上所有的数据库及表信息，表字段类型，访问权限等
@@ -687,18 +474,19 @@ select USER , count(*) as num from information_schema.processlist group by USER 
 select substring_index(host,':',1) as ip, count(*) as num from information_schema.processlist group by ip order by num desc limit 10;
 ```
 
-- 排查高CPU的sql
+- 排查高CPU的SQL
 ```bash
-# https://www.percona.com/blog/2020/04/23/a-simple-approach-to-troubleshooting-high-cpu-in-mysql/
+# 参考 https://www.percona.com/blog/2020/04/23/a-simple-approach-to-troubleshooting-high-cpu-in-mysql/
 
 # 寻找cpu使用率最大的mysql线程及对应的sql语句及优化
-pidstat -t -p ${mysqld_pid} 1 # 获取cpu使用率最大的mysql线程 TID
-# 1 表示每1秒刷新一次
+pidstat -t -p ${mysqld_pid} 1 # 获取cpu使用率最大的mysql线程 TID ，1表示每1秒刷新一次
+top -H -p ${mysqld_pid} # 查看mysql线程的资源使用情况
+
 # 查询线程对应的sql
 select * from performance_schema.threads where THREAD_OS_ID = ${TID} \G
+
 # 查找可以优化的地方
 explain ${sql}
-
 ```
 
 ### 优化、预防问题发生
@@ -724,6 +512,33 @@ show status like 'InnoDB_row_lock%';
 ```
 
 - 如果查询时使用的字符集 和 表的字符集 不一致则会导致索引失效
+
+### 统计
+```sql
+show global status like 'uptime'; -- 开机时间
+
+-- 统计qps
+show  global  status like 'Question%'; --总共的
+-- QPS = Questions / uptime
+
+show global status like 'Com_commit'; --只统计显式提交的事务
+show global status like 'Handler_commit'; --显示所有内部的事务
+show global status like 'Handler_rollback';
+-- TPS = Handler_commit-Handler_rollback / seconds 
+
+-- InnoDB Buffer命中率 
+-- InnoDB Buffer缓存的是整张表中的数据
+show status like 'innodb_buffer_pool_read%'; 
+-- innodb_buffer_pool_reads 表示read请求的次数
+-- innodb_buffer_pool_read_requests 表示从物理磁盘中读取数据的请求次数
+-- innodb_buffer_read_hits = (1 - innodb_buffer_pool_reads / innodb_buffer_pool_read_requests) * 100% 
+
+
+-- Query Cache命中率 
+-- Qcacche缓存的是SQL语句及对应的结果集
+show status like 'Qcache%'; 
+-- Query_cache_hits = (Qcahce_hits / (Qcache_hits + Qcache_inserts )) * 100%; 
+```
 
 ## 问题
 1. slow slave status \G
