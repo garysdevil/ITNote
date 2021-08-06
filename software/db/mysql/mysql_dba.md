@@ -36,7 +36,7 @@ set global validate_password_policy=0;
 set global validate_password_length=1;
 
 12. 创建数据库
-create database ${DATABASE} charset 'utf8mb4';
+create database ${datapath} charset 'utf8mb4';
 
 
 
@@ -44,8 +44,8 @@ create database ${DATABASE} charset 'utf8mb4';
 #### mysql
 ```sql
 -- 1. 导出查询到的数据
-mysql --login-path=aa ${sql脚本} data.txt  
-mysql --login-path=aa -e "${sql语句}" > data.txt
+mysql --login-path=${key_name} ${sql脚本路径} data.txt  
+mysql --login-path={key_name} -e "${sql语句}" > data.txt
 
 -- 2. 导出查询到的数据为csv文件
 sql语句 into outfile '/tmp/table.csv' fields terminated by ',' optionally enclosed by '"' lines terminated by '\r\n';
@@ -91,16 +91,22 @@ https://www.cnblogs.com/zengkefu/p/5690092.html
 # -e "" 指定要执行的sql语句
 
 # 通过账户密码连接MySQL
-mysql -u${USER} -p${PASSWORD} -P${PORT} -h${HOST} -S ${SOCKPATH} -D${DATABASE}
+mysql -u${user} -p${password} -P${PORT} -h${host} -S ${sockpath} -D${datapath}
 
-
+key_name=kujiutest
 # 通过读取加密文件连接MySQL
-mysql --login-path=backup
-# login-path是MySQL5.6开始支持的新特性。通过借助mysql_config_editor工具将登陆MySQL服务的认证信息加密保存在.mylogin.cnf文件(默认位于用户主目录)。之后，MySQL客户端工具可通过读取该加密文件连接MySQL，避免重复输入登录信息，避免敏感信息暴露。
-
+mysql --login-path=${key_name}
+# login-path是MySQL5.6开始支持的新特性。通过借助mysql_config_editor工具将登陆MySQL服务的认证信息加密保存在 ~/.mylogin.cnf 文件。之后，MySQL客户端工具可通过读取该加密文件连接MySQL，避免重复输入登录信息，避免敏感信息暴露。
+mysql_config_editor set --login-path=${key_name} --user=${user}  --host=${host} --port=${port} --password
+# 查看配置login-path
+mysql_config_editor print --login-path=${key_name}
+mysql_config_editor print --all
+# 删除配置login-path
+mysql_config_editor reset # 删除所有的
+mysql_config_editor remove --login-path=${key_name}
 
 # 执行sql文件
-mysql -u${USER} -p${PASSWORD} -P${PORT} -h${HOST} -S ${SOCKPATH} -D${DATABASE} < sql.sql
+mysql -u${user} -p${password} -P${PORT} -h${host} -S ${sockpath} -D${datapath} < sql.sql
 
 ```
 
@@ -122,7 +128,23 @@ set global innodb_print_all_deadlocks=1
 
 
 ### 主从同步问题 -- 不理解/从库只读，为什么会产生死锁
-1. slave因为锁导致主从中断
+- 错误日志 
+    ```log
+    show slave status\G
+    ...
+    Last_SQL_Errno: 1205
+    Last_Error: Slave SQL thread retried transaction 20 time(s) in vain, giving up. Consider raising the value of the slave_transaction_retries variable.
+    ...
+
+    /var/log/mysqld.log
+    ...
+    2021-08-05T07:48:36.255411Z 27177963 [Warning] Slave SQL for channel '': Could not execute Write_rows event on table 被同步的数据库名.表名; Lock wait timeout exceeded; try restarting transaction, Error_code: 1205; handler error HA_ERR_LOCK_WAIT_TIMEOUT; the event's master log m    ysql-bin-changelog.150903, end_log_pos 2250513, Error_code: 1205
+    2021-08-05T07:48:36.256217Z 27177963 [ERROR] Slave SQL for channel '': Slave SQL thread retried transaction 20 time(s) in vain, giving up. Consider raising the value of the slave_transaction_retries variable. Error_code: 1205
+    2021-08-05T07:48:36.256228Z 27177963 [Warning] Slave: Lock wait timeout exceeded; try restarting transaction Error_code: 1205
+    2021-08-05T07:48:36.256866Z 27177963 [ERROR] Error running query, slave SQL thread aborted. Fix the problem, and restart the slave SQL thread with "SLAVE START". We stopped at log 'mysql-bin-changelog.150903' position 2248860.
+    2021-08-05T07:54:37.147338Z 27162992 [Note] Aborted connection 27162992 to db: 'mysql' user: '用户名' host: 'IP地址' (Got an error reading communication packets)
+    ```
+- slave因为锁导致主从中断
 ```sql
 -- InnoDB事务在放弃前等待行锁的时间（秒）。innodb_lock_wait_timeout默认值为50秒。当有试图访问被另一行锁定的行的事务InnoDB事务在发出以下错误：
 -- ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction
@@ -566,3 +588,22 @@ Slave_SQL_Running_State: System lock
 
 innodb_io_capacity = 3000                        ( 默认为 200, 配置成常用的IOPS使用量 ，可增加写入效能 ) [2]
 innodb_io_capacity_max = 6000               ( 默认为 2000, 配置成RDS常用使用量的2倍，可增加写入效能 ）
+
+2. zabbix远程执行指令
+    - Remote Commands执行 mysql -V，touch /tmp/test 都成功了
+    - su - zabbix 后执行/usr/bin/mysql --login-path=${key_name} -e "stop slave; start slave;"; 也成功了
+    ```bash
+    key_name=''
+    /usr/bin/mysql --login-path=${key_name} -e "stop slave; start slave;";
+    echo '--------'
+    mysql_config_editor print --all
+    ```
+    ```log
+    ERROR 1045 (28000): Access denied for user 'zabbix'@'localhost' (using password: NO)
+    --------
+    failed to set login file name
+    operation failed.
+    ```
+    - 最后的解决措施
+        - visudo 添加配置 zabbix  ALL=(ALL)       NOPASSWD: ALL
+        - Remote Commads 配置 sudo /usr/bin/mysql --login-path=${key_name} -e "stop slave; start slave;";

@@ -39,6 +39,17 @@ https://nullcc.github.io/2018/02/15/(%E8%AF%91)Redis%E5%93%8D%E5%BA%94%E5%BB%B6%
 1. 持久化机制
     1. aof（默认值）把写操作指令，持续的写到一个类似日志文件里。
     2. rdb fork一个进程，遍历hash table，利用copy on write，把整个db dump保存下来。save, shutdown, slave 命令会触发这个操作。
+
+### 缓存淘汰策略
+1. noeviction 拒绝写请求，读可继续 （默认策略）
+
+2. 过期key
+    - volatile-lru 淘汰设置了过期时间的key
+    - volatile-ttl ttl越小越先被淘汰
+    - allkeys-random 随机淘汰设置了过期时间的key
+3. 全部key
+    - allkeys-lru
+    - volatile-random
 ## 集群
 - 参考
     - https://blog.csdn.net/qq_38937634/article/details/112172719

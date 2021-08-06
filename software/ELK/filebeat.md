@@ -77,6 +77,13 @@ filebeat.inputs:
 
     enabled: true # 默认是true；false 则不采集
 
+    # 发往output机制，合理设置可以避免内存突然增大(单条日志大小，爆发量)
+    # 10MB为filebeat支持的单条日志最大长度,超过的将会被截断丢弃
+    # bytes_each_log * spool_size * M + a*N 
+    # bytes_each_log是单条日志大小, spool_size是配置文件里配置项,  M是单条日志在内存里的溢价系数(>1), N表示采集的文件个数,a为常数。
+    spool_size: 2048 # 后台事件计数阈值，可以理解为线程存在内存里的最多日志数量. default 2048
+    filebeat.idle_timeout: 5s # 后台刷新超时时间，超过定义时间后强制发送，不管spool_size是否达到，默认5秒
+
     # multiline.pattern: '^\< | ^[[:space:]] | ^[[:space:]]+(at|\.{3})\b|^Caused by: | ^\[[0-9]{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\]'  # 正则，自定义，“|” 表示可以匹配多种模式
     multiline.pattern: '^{'
     multiline.negate: true # 默认是false，匹配pattern的行合并到上一行；true，不匹配pattern的行合并到上一行

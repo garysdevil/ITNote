@@ -143,7 +143,7 @@ alter 表名  convert to character set utf8mb4 collate utf8mb4_bin;
     #log buffer将每秒一次地写入log file中，并且log file的flush(刷到磁盘)操作同时进行。该模式下在事务提交的时候，不会主动触发写入磁盘的操作
     innodb_flush_log_at_trx_commit = 0
     #指定slave要复制哪个库，如果复制多个数据库，重复设置这个选项即可
-    replicate-do-db = db
+    replicate-do-db = ${db}
     #MySQL主从复制的时候，当Master和Slave之间的网络中断，但是Master和Slave无法察觉的情况下（比如防火墙或者路由问题）。Slave会等待slave_net_timeout设置的秒数后，才能认为网络出现故障，然后才会重连并且追赶这段时间主库的数据
     slave-net-timeout = 60
     log_bin_trust_function_creators = 1
