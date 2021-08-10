@@ -28,4 +28,7 @@ Include=/etc/zabbix/zabbix_agentd.d/*.conf # 默认位置
 AlertScriptsPath=/usr/lib/zabbix/alertscripts # 自定义告警的默认位置
 
 RefreshActiveChecks=120    #被监控端到服务器获取监控项的周期，默认120s
+
+# 自定义监控项
+UserParameter=item_name[*],$(shell)
 ```

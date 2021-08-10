@@ -73,4 +73,19 @@ echo "hello" | bin/kafka-console-producer.sh  --broker-list ${IP}:9092 --sync --
 bin/kafka-console-consumer.sh  --bootstrap-server ${IP}:9092 --topic ${Topic} --from-beginning
 # --from-beginning  # 表示消费topic里的所有数据
 # --consumer.config client.properties # 加密认证
+
+# 查看消费者consumer group列表
+./bin/kafka-consumer-groups.sh  --bootstrap-server ${IP}:9092 --list
+
+# 查看消费者详情
+./bin/kafka-consumer-groups.sh  --bootstrap-server --bootstrap-server ${IP}:9092 --describe --group ${group_name}
+# CURRENT-OFFSET 当前已消费的条数
+# LOG-END-OFFSET 总条数
+# LAG 未消费的条数
+
+# 获取当前topic消息数量
+bin/kafka-run-class.sh kafka.tools.GetOffsetShell --topic ${topic_name}  --time -2 --broker-list ${IP}:9092  --partitions 0
+# --time -1 获取指定topic所有分区当前的最大位移，表示的是历史上该topic生产的最大消息数量
+# --time -2 获取当前最早位移，表示被删除的消息数量
+# 当前topic消息数量 = $(--time -1）- $(--time -2)
 ```

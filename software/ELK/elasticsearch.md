@@ -55,7 +55,7 @@ echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
 3. Coordinating Node 
     - 协调节点：一个节点作为接收请求、转发请求到其他节点、汇总各个节点返回数据等功能的节点。就叫协调节点。
 4. Ingest Node/Client Node 
-    - 普通服务器即可(如果要进行分组聚合操作的话，建议这个节点内存也分配多一点)
+    - 在数据被索引之前，通过预定义好的处理管道对数据进行预处理(如果要进行分组聚合操作的话，建议这个节点内存也分配多一点)
 
 ### 术语
 1. Index 类似于数据库的概念。索引的名字只能是小写,不能是大写。
@@ -185,17 +185,26 @@ curl "http://${IP}:${PORT}/_cat/shards/?h=index,shard,prirep,state,unassigned.re
 # 查看 熔断器 内存数据
 curl http://${IP}:${PORT}/_nodes/stats/breaker?pretty
 
+# 查看大索引
+curl -s /dev/null -XGET "http://${IP}:${PORT}/_cat/indices?v&s" |grep gb
+
+# 查看缓存
+curl -s /dev/null -XGET "http://${IP}:${PORT}/_stats/fielddata?fields=*&pretty"
+curl -s /dev/null -XGET "http://${IP}:${PORT}/_nodes/stats/indices/fielddata?fields=*&pretty" # 最简短
+curl -s /dev/null -XGET "http://${IP}:${PORT}/_nodes/stats/indices/fielddata?level=indices&fields=*&pretty"
+
+```
+### 设置
+```bash
 # 临时改变集群分片的数量    
 curl -XPUT -H "Content-Type: application/json" -d '{"transient":{"cluster":{"max_shards_per_node":2000}}}' "http://${IP}:${PORT}/_cluster/settings"
 # 重启后更改集群分片的数量 
 curl -XPUT -H "Content-Type: application/json" -d '{"persistent":{"cluster":{"max_shards_per_node":2100}}}' "http://${IP}:${PORT}/_cluster/settings"
 
 # 临时修改副本数量
-curl -XPUT  -d '{  "number_of_replicas" : 0 }' "http://${IP}:${PORT}/_cluster/settings"
+curl -XPUT "Content-Type: application/json" -d '{  "number_of_replicas" : 0 }' "http://${IP}:${PORT}/_cluster/settings"
 
-# 查看大索引
-curl -s /dev/null -XGET "http://${IP}:${PORT}/_cat/indices?v&s" |grep gb
-
+# indices.fielddata.cache.size: 20% # 设置单个索引占用缓存的大小，如果超出这个值，该数据将被逐出，默认值为unbounded无限
 ```
 ### 常规操作
 ```bash

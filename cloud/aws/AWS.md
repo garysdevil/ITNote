@@ -64,6 +64,8 @@
     - 大数据平台 https://docs.aws.amazon.com/emr/index.html
   25. athea
     - https://docs.aws.amazon.com/zh_cn/cur/latest/userguide/cur-query-athena.html
+    - alb日志 https://aws.amazon.com/cn/premiumsupport/knowledge-center/athena-analyze-access-logs/
+    - alb日志 https://docs.aws.amazon.com/athena/latest/ug/application-load-balancer-logs.html#create-alb-table
     
 
 - Advanced

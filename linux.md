@@ -290,6 +290,9 @@ sar -V
 # FILENAME：当前文件名
 # ARGC：命令行参数的个数
 
+# 指定分隔符
+awk -v FS=":" '{print $3}'
+
 # 替换操作 = sed 's/one/two'
 awk '{sub(/one/,"two");print}'
 # 过滤操作 = grep -E 'one|two'
@@ -354,14 +357,6 @@ curl -O https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.p
 
 netstat apt-get install net-tools
 
-```bash
-sed -i "s/project-perform/project-prd/g" `find ./ | grep yaml`
-# 替换以字符串name开头的行
-var='gary'
-sed -i "/^name/c\name=$var" 文件名
-```
-
-
 
 ```bash
 # 只要./test.lock的当前状态未被外部改变，其它flock ./test.lock的就执行失败，直到当前的flock执行结束
@@ -409,6 +404,15 @@ find . -print0 | xargs -0 stat --printf="%f %N %W %Y %s\n"
 find ./ -type f  -mtime +7 -exec rm -rf {} \;
 # 将7天内修改的文件移进新文件夹
 find ./ -type f -mtime -7 | xargs -I file mv file ./new
+
+
+```
+
+```bash
+sed -i "s/project-perform/project-prd/g" `find ./ | grep yaml`
+# 替换以字符串name开头的行
+var='gary'
+sed -i "/^name/c\name=$var" 文件名
 ```
 
 - 删除Evicted状态的Pod

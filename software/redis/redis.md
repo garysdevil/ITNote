@@ -322,3 +322,9 @@ latency-monitor-threshold 0 ##用LATENCY打印redis实例跑命令时的耗时�
 
 #vm.overcommit_memory=1
 ```
+
+## 问题与解决
+1. 没有连接redis集群的连接地址，而是使用primary node的连接地址，故障转移后，导致
+```log
+SlimMonoLogger.ERROR: RedisException: READONLY You can't write against a read only replica
+```

@@ -25,6 +25,8 @@ nohup ./bin/kibana > kibana.log 2>&1 &
 ```bash
 curl 127.0.0.1:5601/api/status
 # 127.0.0.1:5601/status
+
+# http://erpkibana.abcrender.com/api/ui_metric/report （POST请求）
 ```
 ### 配置
 ```conf

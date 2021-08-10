@@ -30,6 +30,10 @@ https://www.cnblogs.com/skyflask/p/7523535.html
 ```json
 {"data":[{"{#custom_name}":"value1"},{"{#custom_name}":"value12"}]}
 ```
-2. 在web界面配置Discovery rule，Item prototypes，Trigger prototypes
 
-3. 在web界面配置
+2. 在web界面配置Discovery rule
+
+3. 在web界面配置Item prototypes
+    - 可以使用Discovery rule里返回的变量 item_name_{#custom_name}[参数1, ${custom_name}]
+
+3. 在web界面配置Trigger prototypes
