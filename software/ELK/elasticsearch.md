@@ -10,16 +10,15 @@
 
 1. 安装java1.8环境
 2. 下载安装elasticsearch
-```bash
-useradd elk;
+    ```bash
+    useradd elk;
 
-wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.3-linux-x86_64.tar.gz
+    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.3-linux-x86_64.tar.gz
 
-# [1]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
-echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
-/sbin/sysctl -p
-
-```
+    # [1]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+    echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
+    /sbin/sysctl -p
+    ```
 
 3. 配置文件
     - vi config/elasticsearch.yml
@@ -92,19 +91,22 @@ echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
     - 如果打算每个新建的index都设置副本数为0，可以通过index template 来设置。
 
 ### ES写入数据时的步骤
-1. 数据写入到buffer中。
 
-2. 每隔一段时间 (可以在settings中通过refresh_interval手动设置值)刷新buffer，将数据组装并保存到index segment file(可以看作是一份File，只不过目前存储在内存中)
+1. 数据写入到buffer中，同时写translog（每隔5秒translog会被写入磁盘）
+
+2. 每隔 1 秒钟 (可以在settings中通过 refresh_interval 手动设置值)刷新buffer，将数据组装并保存到index segment file(可以看作是一份File，只不过目前存储在内存中)
 
 3. index segment file在被创建后，会被立刻读取并写入到OS Cache中(此时数据就可以对客户端提供搜索服务了)。
 
 4. 默认每隔30分钟或translog过大时，ES会将当前内存中所有的index segment标记并形成一个commit point（类似git 的commit id），进行原子性的持久化操作，操作完毕后，删除本次已经已经了持久化的index segment，腾出内存空间。
 
 ### ES搜索数据时的步骤
-- 被客户端请求的节点称之为Coordinate节点
 1. Coordinate节点接受请求，将请求转达到分片所在的数据节点
+
 2. 数据节点执行查询和排序，将结果返回给Coordinate节点
+
 3. Coordinate节点重新排序数据
+
 4. Coordinate节点将数据返回给客户端
 
 - 查询结果解读

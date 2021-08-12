@@ -36,10 +36,15 @@ select * from gary_user_tb where user_name like  "%gary%" limit 1;
 sql语句 order by 字段名 desc limit 5;
 ```
 
-### 复杂SQL
+### 进阶SQL
 ```sql
 -- 将查询的结果插入表中
 insert into gary_user_tb(user_name) select user_name from gary_user_tb where user_id=1;
+
+-- 显式加 S 锁
+select ... lock in share mode;
+-- 显式加 X 锁 
+select ... for update;
 ```
 
 ### 事务

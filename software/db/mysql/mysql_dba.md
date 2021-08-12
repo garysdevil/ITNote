@@ -1,5 +1,67 @@
-## 运维基本操作 
-### 常规操作
+## 特性
+
+### 事物隔离级别
+
+- 参考 https://www.cnblogs.com/micro-chen/p/5629188.html
+
+- 在MySQL中，实现了这四种隔离级别，分别有可能产生问题如下所示：
+    1. Serializable (串行化)：可避免脏读、不可重复读、幻读的发生。
+    2. Repeatable-read(可重复读)：可避免脏读、不可重复读。默认值。Mysql的Repeatable-read隔离级别也实现了避免幻读的发生。
+    3. Read-committed (读已提交)：可避免脏读的发生。
+    4. Readuncommitted (读未提交)：最低级别，任何情况都无法保证。
+
+    - 脏读  A事物执行过程中，B读取了A事物未commit的修改，但是由于某些原因，发生RollBack了操作，则B事务所读取的数据就会是不正确的。
+    - 不可重复读  B事务读取了两次数据，在这两次的读取过程中A事务修改了数据，B事务的这两次读取出来的数据不一样。
+    - 幻读  B事务读取了两次数据，在这两次的读取过程中A事务添加了数据，B事务的这两次读取出来的集合不一样。
+
+- 设置事物的隔离级别
+    ```sql
+    -- 类似于select操作时不添加锁
+    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+    SELECT * FROM TABLE_NAME ;
+    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
+    -- 设置事物的隔离级别
+    SELECT @@global.tx_isolation; -- the global isolation level
+    SELECT @@tx_isolation; -- current session isolation level
+    set tx_isolation = 'read-uncommitted'; -- set current session isolation level
+    ```
+
+- 基于锁实现Repeatable-Read
+    1. 多线程同时更新同一条记录，加X锁。所以并发场景下的 update 是串行执行的。
+    2. 工业定义上的 select 一条记录，这个时候会在记录上加读共享锁(S锁)，并到事务结束，因为在这种情况下才能实现记录在事务时间跨度上的可重复读。在读的时候不允许其他事务修改这条记录。
+    3. update 一条语句，这个时候会在记录上加行级排他锁(X锁)，并到事务结束，这中场景下，其他读事务会被阻塞。
+
+- Mysql实现Repeatable-Read
+    - MVVC (Multi-Version Concurrency Control) (注：与MVCC相对的，是基于锁的并发控制，Lock-Based Concurrency Control)是一种基于多版本的并发控制协议，只有在InnoDB引擎下存在。
+    - MVCC只在 READ COMMITTED 和 REPEATABLE READ 两个隔离级别下工作
+    1. 读不影响写：事务以排他锁的形式修改原始数据，读时不加锁，因为 MySQL 在事务隔离级别Read-committed 、Repeatable-Read下，InnoDB 存储引擎采用非锁定性一致读－－即读取不占用不等待表上的锁。即采用的是MVCC中一致性非锁定读模式。因读时不加锁，所以不会阻塞其他事物在相同记录上加 X锁来更改这行记录。
+    2. 写不影响读：事务以排他锁的形式修改原始数据，当读取的行正在执行 delete 或者 update 操作，这时读取操作不会因此去等待行上锁的释放。相反地，InnoDB 存储引擎会去读取行的一个快照数据。
+
+### 缓存QCache
+- 参考  
+    - https://blog.csdn.net/zdw19861127/article/details/84937562
+
+- 机制： 缓存SELECT操作 或 预处理查询（5.1.17开始支持）的结果集和SQL语句
+
+- 查看
+    ```sql
+    -- 查看是否开启了缓存
+    show variables like '%query%';
+    -- query_cache_type 和 query_cache_size -- 都不为0表示开启了查询缓存功能。
+    -- query_cache_type  
+        -- 1(ON)： 启用查询缓存，只要符合查询缓存的要求，客户端的查询语句和记录集合可以 缓存起来，共其他客户端使用；
+        -- 2(DEMAND):  启用查询缓存，只要查询语句中添加了参数：sql_cache，且符合查询缓存的要求，客户端的查询语句和记录集，则可以缓存起来，共其他客户端使用；
+
+    -- 查看缓存的具体状态
+    show global status like 'QCache%';
+
+    -- 查询缓存会生成碎片，通过下面命令来清理碎片
+    flush query cache;
+    reset query cache
+    ```
+
+## 运维基本操作一
 1. 设置临时变量
 set @key="value";
 select @num:=1; 
@@ -38,7 +100,34 @@ set global validate_password_length=1;
 12. 创建数据库
 create database ${datapath} charset 'utf8mb4';
 
+## 运维基本操作二
 
+### 登入&执行sql脚本
+- 参考 https://www.cnblogs.com/zengkefu/p/5690092.html
+
+```bash
+# -S 是指定mysql.sock
+# -D 指定要连接的数据库
+# -e "" 指定要执行的sql语句
+
+# 通过账户密码连接MySQL
+mysql -u${user} -p${password} -P${PORT} -h${host} -S ${sockpath} -D${datapath}
+
+key_name=kujiutest
+# 通过读取加密文件连接MySQL
+mysql --login-path=${key_name}
+# login-path是MySQL5.6开始支持的新特性。通过借助mysql_config_editor工具将登陆MySQL服务的认证信息加密保存在 ~/.mylogin.cnf 文件。之后，MySQL客户端工具可通过读取该加密文件连接MySQL，避免重复输入登录信息，避免敏感信息暴露。
+mysql_config_editor set --login-path=${key_name} --user=${user}  --host=${host} --port=${port} --password
+# 查看配置login-path
+mysql_config_editor print --login-path=${key_name}
+mysql_config_editor print --all
+# 删除配置login-path
+mysql_config_editor reset # 删除所有的
+mysql_config_editor remove --login-path=${key_name}
+
+# 执行sql文件
+mysql -u${user} -p${password} -P${PORT} -h${host} -S ${sockpath} -D${datapath} < sql.sql
+```
 
 ### 导入导出数据
 #### mysql
@@ -80,134 +169,17 @@ time mysqldump --skip-add-locks --single-transaction --default-character-set=utf
         sys	    0m2.261s
         ```
 
-### 登入&执行sql文件
-- 参考  
-https://www.cnblogs.com/zengkefu/p/5690092.html
-
-1. 
-```bash
-# -S 是指定mysql.sock
-# -D 指定要连接的数据库
-# -e "" 指定要执行的sql语句
-
-# 通过账户密码连接MySQL
-mysql -u${user} -p${password} -P${PORT} -h${host} -S ${sockpath} -D${datapath}
-
-key_name=kujiutest
-# 通过读取加密文件连接MySQL
-mysql --login-path=${key_name}
-# login-path是MySQL5.6开始支持的新特性。通过借助mysql_config_editor工具将登陆MySQL服务的认证信息加密保存在 ~/.mylogin.cnf 文件。之后，MySQL客户端工具可通过读取该加密文件连接MySQL，避免重复输入登录信息，避免敏感信息暴露。
-mysql_config_editor set --login-path=${key_name} --user=${user}  --host=${host} --port=${port} --password
-# 查看配置login-path
-mysql_config_editor print --login-path=${key_name}
-mysql_config_editor print --all
-# 删除配置login-path
-mysql_config_editor reset # 删除所有的
-mysql_config_editor remove --login-path=${key_name}
-
-# 执行sql文件
-mysql -u${user} -p${password} -P${PORT} -h${host} -S ${sockpath} -D${datapath} < sql.sql
-
-```
-
-
-
-
-## 一
-
-### 死锁日志
-```sql
-show variables like "%innodb_print_all_deadlocks%";
--- 开启死锁日志，死锁日志被存放进error_log配置的文件里面
-set global innodb_print_all_deadlocks=1
-
--- 参数
--- innodb_deadlock_detect 死锁检测 mysql 5.7.15，default on
--- innodb_lock_wait_timeout 锁等待超时，自动回滚事务， default 50s
-```
-
-
-### 主从同步问题 -- 不理解/从库只读，为什么会产生死锁
-- 错误日志 
-    ```log
-    show slave status\G
-    ...
-    Last_SQL_Errno: 1205
-    Last_Error: Slave SQL thread retried transaction 20 time(s) in vain, giving up. Consider raising the value of the slave_transaction_retries variable.
-    ...
-
-    /var/log/mysqld.log
-    ...
-    2021-08-05T07:48:36.255411Z 27177963 [Warning] Slave SQL for channel '': Could not execute Write_rows event on table 被同步的数据库名.表名; Lock wait timeout exceeded; try restarting transaction, Error_code: 1205; handler error HA_ERR_LOCK_WAIT_TIMEOUT; the event's master log m    ysql-bin-changelog.150903, end_log_pos 2250513, Error_code: 1205
-    2021-08-05T07:48:36.256217Z 27177963 [ERROR] Slave SQL for channel '': Slave SQL thread retried transaction 20 time(s) in vain, giving up. Consider raising the value of the slave_transaction_retries variable. Error_code: 1205
-    2021-08-05T07:48:36.256228Z 27177963 [Warning] Slave: Lock wait timeout exceeded; try restarting transaction Error_code: 1205
-    2021-08-05T07:48:36.256866Z 27177963 [ERROR] Error running query, slave SQL thread aborted. Fix the problem, and restart the slave SQL thread with "SLAVE START". We stopped at log 'mysql-bin-changelog.150903' position 2248860.
-    2021-08-05T07:54:37.147338Z 27162992 [Note] Aborted connection 27162992 to db: 'mysql' user: '用户名' host: 'IP地址' (Got an error reading communication packets)
-    ```
-- slave因为锁导致主从中断
-```sql
--- InnoDB事务在放弃前等待行锁的时间（秒）。innodb_lock_wait_timeout默认值为50秒。当有试图访问被另一行锁定的行的事务InnoDB事务在发出以下错误：
--- ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction
-show variables like '%innodb_lock_wait_timeout%';
-
--- 参数 slave_transaction_retries 设置的为10次，如果事务重试次数超过10次，复制中断。
-show variables like '%slave_transaction_retries%';
-```
-
-### 事物的隔离级别
-- 参考 https://www.cnblogs.com/micro-chen/p/5629188.html
-
-- 在MySQL中，实现了这四种隔离级别，分别有可能产生问题如下所示：
-    1. Serializable (串行化)：可避免脏读、不可重复读、幻读的发生。
-    2. Repeatable-read(可重复读)：可避免脏读、不可重复读。默认值。Mysql的Repeatable-read隔离级别也实现了避免幻读的发生。
-    3. Read-committed (读已提交)：可避免脏读的发生。
-    4. Readuncommitted (读未提交)：最低级别，任何情况都无法保证。
-
-    - 脏读  A事物执行过程中，B读取了A事物未commit的修改，但是由于某些原因，发生RollBack了操作，则B事务所读取的数据就会是不正确的。
-    - 不可重复读  B事务读取了两次数据，在这两次的读取过程中A事务修改了数据，B事务的这两次读取出来的数据不一样。
-    - 幻读  B事务读取了两次数据，在这两次的读取过程中A事务添加了数据，B事务的这两次读取出来的集合不一样。
-
-- 设置事物的隔离级别
-    ```sql
-    -- 类似于select操作时不添加锁
-    SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
-    SELECT * FROM TABLE_NAME ;
-    SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
-
-    -- 设置事物的隔离级别
-    SELECT @@global.tx_isolation; -- the global isolation level
-    SELECT @@tx_isolation; -- current session isolation level
-    set tx_isolation = 'read-uncommitted'; -- set current session isolation level
-    ```
-
-- 基于锁实现Repeatable-Read
-    1. 多线程同时更新同一条记录，加X锁。所以并发场景下的 update 是串行执行的。
-    2. 工业定义上的 select 一条记录，这个时候会在记录上加读共享锁(S锁)，并到事务结束，因为在这种情况下才能实现记录在事务时间跨度上的可重复读。在读的时候不允许其他事务修改这条记录。
-    3. update 一条语句，这个时候会在记录上加行级排他锁(X锁)，并到事务结束，这中场景下，其他读事务会被阻塞。
-
-- Mysql实现Repeatable-Read
-    - MVVC (Multi-Version Concurrency Control) (注：与MVCC相对的，是基于锁的并发控制，Lock-Based Concurrency Control)是一种基于多版本的并发控制协议，只有在InnoDB引擎下存在。
-    - MVCC只在 READ COMMITTED 和 REPEATABLE READ 两个隔离级别下工作
-    1. 读不影响写：事务以排他锁的形式修改原始数据，读时不加锁，因为 MySQL 在事务隔离级别Read-committed 、Repeatable-Read下，InnoDB 存储引擎采用非锁定性一致读－－即读取不占用不等待表上的锁。即采用的是MVCC中一致性非锁定读模式。因读时不加锁，所以不会阻塞其他事物在相同记录上加 X锁来更改这行记录。
-    2. 写不影响读：事务以排他锁的形式修改原始数据，当读取的行正在执行 delete 或者 update 操作，这时读取操作不会因此去等待行上锁的释放。相反地，InnoDB 存储引擎会去读取行的一个快照数据。
-
-
-
 ### binlog
 1. 查看内存状态的binlog配置
     ```sql
     -- 查看默认设置的binlog过期时间
     show variables like "%expire_logs%";
-
     -- 临时设置binlog保留时间
     set global expire_logs_days=15
-
     -- 查看数据库是否开启binlog日志
     show variables like '%log_bin%';
-
     -- 查看所有binlog文件
     show binary logs;
-
     -- 只查看第一个binlog文件的内容
     show binlog events; 
     -- show binlog events in 'mysql-bin.000003';
@@ -232,9 +204,7 @@ show variables like '%slave_transaction_retries%';
     # --skip-gtids=true
     ```
 
-
-
-### 数据库和表的大小
+### 查看数据库和表的大小
 ```sql
 -- 查看整个mysql的容量大小
 select concat(round(sum((data_length+index_length)/1024/1024),2),'MB') as volume from information_schema.tables;
@@ -267,7 +237,7 @@ group by table_name
 order by sum(data_length) desc, sum(index_length) desc;
 ```
 
-### 慢日志
+### 配置慢日志
 1. 临时配置
     ```sql
     show variables like 'slow_query%';
@@ -291,28 +261,7 @@ order by sum(data_length) desc, sum(index_length) desc;
     -- log_queries_not_using_indexes -- 未使用索引的查询也被记录到慢查询日志中（可选项）
     ```
 
-### MySQL缓存QCache
-- 参考  
-    - https://blog.csdn.net/zdw19861127/article/details/84937562
 
-- 机制： 缓存SELECT操作 或 预处理查询（5.1.17开始支持）的结果集和SQL语句
-
-- 查看
-```sql
--- 查看是否开启了缓存
-show variables like '%query%';
--- query_cache_type 和 query_cache_size -- 都不为0表示开启了查询缓存功能。
--- query_cache_type  
-    -- 1(ON)： 启用查询缓存，只要符合查询缓存的要求，客户端的查询语句和记录集合可以 缓存起来，共其他客户端使用；
-    -- 2(DEMAND):  启用查询缓存，只要查询语句中添加了参数：sql_cache，且符合查询缓存的要求，客户端的查询语句和记录集，则可以缓存起来，共其他客户端使用；
-
--- 查看缓存的具体状态
-show global status like 'QCache%';
-
--- 查询缓存会生成碎片，通过下面命令来清理碎片
-flush query cache;
-reset query cache
-```
 
 ### 用户权限操作
 1. 查看用户权限
@@ -398,8 +347,6 @@ REVOKE ALL ON db_name.tbl_name; 撤销表权限。
 flush privileges;
 ```
 
-
-
 ## DBA
 - DBA日常工作 -- 排查性能问题
 
@@ -407,7 +354,9 @@ flush privileges;
 pt-query-digest 工具是包含在Percona toolkit里的. 相关安装方式可以参考 https://www.percona.com/doc/percona-toolkit/LATEST/installation.html
 
 - 显示内部信息
-show engine innodb status
+    ```sql
+    show engine innodb status
+    ```
 
 ### 连接数、状态、最大并发数
 1. 查看连接数限制 
@@ -543,7 +492,19 @@ show status like 'InnoDB_row_lock%';
 
 - 如果查询时使用的字符集 和 表的字符集 不一致则会导致索引失效
 
-### 统计
+- 死锁日志
+```sql
+show variables like "%innodb_print_all_deadlocks%";
+-- 开启死锁日志，死锁日志被存放进error_log配置的文件里面
+set global innodb_print_all_deadlocks=1
+
+-- 参数
+-- innodb_deadlock_detect 死锁检测 mysql 5.7.15，default on
+-- innodb_lock_wait_timeout 锁等待超时，自动回滚事务， default 50s
+```
+
+
+### 统计数据
 ```sql
 show global status like 'uptime'; -- 开机时间
 
@@ -571,9 +532,13 @@ show status like 'Qcache%';
 ```
 
 ## 问题
-1. slow slave status \G
-Slave_SQL_Running_State: System lock
 
+### 磁盘压力过大导致主从同步延迟
+
+- slow slave status \G
+    ```log
+    Slave_SQL_Running_State: System lock
+    ```
 
 - innodb_flush_log_at_trx_commit和sync_binlog 两个参数是控制MySQL 磁盘写入策略以及数据安全性的关键参数
 - sync_binlog
@@ -597,11 +562,11 @@ Slave_SQL_Running_State: System lock
 innodb_io_capacity = 3000                        ( 默认为 200, 配置成常用的IOPS使用量 ，可增加写入效能 ) [2]
 innodb_io_capacity_max = 6000               ( 默认为 2000, 配置成RDS常用使用量的2倍，可增加写入效能 ）
 
-2. zabbix远程执行指令
+### zabbix远程执行mysql指令失败
     - Remote Commands执行 mysql -V，touch /tmp/test 都成功了
-    - su - zabbix 后执行/usr/bin/mysql --login-path=${key_name} -e "stop slave; start slave;"; 也成功了
+    - su - zabbix 后执行 key_name='gary' && /usr/bin/mysql --login-path=${key_name} -e "stop slave; start slave;"; 也成功了
     ```bash
-    key_name=''
+    key_name='gary'
     /usr/bin/mysql --login-path=${key_name} -e "stop slave; start slave;";
     echo '--------'
     mysql_config_editor print --all
@@ -615,3 +580,31 @@ innodb_io_capacity_max = 6000               ( 默认为 2000, 配置成RDS常用
     - 最后的解决措施
         - visudo 添加配置 zabbix  ALL=(ALL)       NOPASSWD: ALL
         - Remote Commads 配置 sudo /usr/bin/mysql --login-path=${key_name} -e "stop slave; start slave;";
+
+### 死锁导致主从同步异常 -- 不理解/从库只读，为什么会产生死锁
+- 错误日志 
+    ```log
+    show slave status\G
+    ...
+    Last_SQL_Errno: 1205
+    Last_Error: Slave SQL thread retried transaction 20 time(s) in vain, giving up. Consider raising the value of the slave_transaction_retries variable.
+    ...
+
+    /var/log/mysqld.log
+    ...
+    2021-08-05T07:48:36.255411Z 27177963 [Warning] Slave SQL for channel '': Could not execute Write_rows event on table 被同步的数据库名.表名; Lock wait timeout exceeded; try restarting transaction, Error_code: 1205; handler error HA_ERR_LOCK_WAIT_TIMEOUT; the event's master log m    ysql-bin-changelog.150903, end_log_pos 2250513, Error_code: 1205
+    2021-08-05T07:48:36.256217Z 27177963 [ERROR] Slave SQL for channel '': Slave SQL thread retried transaction 20 time(s) in vain, giving up. Consider raising the value of the slave_transaction_retries variable. Error_code: 1205
+    2021-08-05T07:48:36.256228Z 27177963 [Warning] Slave: Lock wait timeout exceeded; try restarting transaction Error_code: 1205
+    2021-08-05T07:48:36.256866Z 27177963 [ERROR] Error running query, slave SQL thread aborted. Fix the problem, and restart the slave SQL thread with "SLAVE START". We stopped at log 'mysql-bin-changelog.150903' position 2248860.
+    2021-08-05T07:54:37.147338Z 27162992 [Note] Aborted connection 27162992 to db: 'mysql' user: '用户名' host: 'IP地址' (Got an error reading communication packets)
+    ```
+
+- slave因为锁导致主从中断
+```sql
+-- InnoDB事务在放弃前等待行锁的时间（秒）。innodb_lock_wait_timeout默认值为50秒。当有试图访问被另一行锁定的行的事务InnoDB事务在发出以下错误：
+-- ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction
+show variables like '%innodb_lock_wait_timeout%';
+
+-- 参数 slave_transaction_retries 设置的为10次，如果事务重试次数超过10次，复制中断。
+show variables like '%slave_transaction_retries%';
+```
