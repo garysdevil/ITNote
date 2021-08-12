@@ -32,10 +32,15 @@ update gary_user_tb set user_name = 'adam' where user_name = 'gary';
 select user_id, user_name from gary_user_tb limit 10;
 select * from gary_user_tb where user_name like  "%gary%" limit 1;
 
--- 排序
-sql语句 order by 字段名 desc desc limit 5;
+-- 排序 默认asc 升序
+sql语句 order by 字段名 desc limit 5;
 ```
+
 ### 复杂SQL
+```sql
+-- 将查询的结果插入表中
+insert into gary_user_tb(user_name) select user_name from gary_user_tb where user_id=1;
+```
 
 ### 事务
 1. 禁止事务自动提交

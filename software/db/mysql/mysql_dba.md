@@ -367,6 +367,14 @@ reset query cache
     drop user dbusername@'%'; -- 删除账户及权限
     ```
 
+9. 赋予super权限
+    ```sql
+    select user,Super_priv from mysql.user;
+    update mysql.user set Super_priv='Y' where user='gary';
+    update mysql.user set Super_priv='N' where user='gary';
+    flush privileges;
+    ```
+
 10. 权限与用户
 ```sql
 -- 创建用户
