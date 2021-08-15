@@ -1,17 +1,23 @@
 
-### 终端命令
-1. 查看端口、PID映射
+## 终端命令
+```bash
+# 1. 查看端口、PID映射
 lsof -i -P
                 
-2. 打开一个服务
+# 2. 打开一个服务
 open -a Docker
 
-3. 关闭docker服务
+# 3. 关闭docker服务
 osascript -e 'quit app "Docker"'
 
-4. 查看内存  
+# 4. 查看内存  
 top -l 1 | head -n 10 | grep PhysMem
 
+# 5. 查看本地IP
+ifconfig en0
+```
+
+## 软件
 ### Command Line Tools
 1. Command Line Tools 是 Xcode IDE的可选命令行工具子部分
 2. 从MacOS High Sierra，Sierra，OS X El Capitan，Yosemite，Mavericks开始，无需先安装整个Xcode软件包，也无需登录开发人员帐户，就可以单独安装Command Line Tools。
@@ -19,62 +25,13 @@ top -l 1 | head -n 10 | grep PhysMem
 4. 包含： svn，git，make，GCC，clang，perl，size，strip，strings，libtool，cpp，what以及其他很多能够在Linux默认安装中找到的有用的命令。
 5. 安装好的工具被放置在这个目录内 /Library/Developer/CommandLineTools/usr/bin/
 
-### launchctl
-0. 位置
-如果需要 root，并且是需要用户登陆后才能运行，把 plist 放在 /Library/LaunchAgents/下
-如果需要 root，并且不需要用户登陆后都能运行，把 plist 放在 /Library/LaunchDaemons/下
-
-1. 查看所有的服务
-launchctl list
-
-2. 设置服务开机启动
-sudo vim /Library/LaunchDaemons/gary.test.plist
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-        <key>Label</key>
-        <string>gary.test.plist</string> <!-- 唯一标识 -->
-
-        <key>UserName</key>
-        <string>gary</string> <!-- 运行的用户，只有Launchd作为root运行时生效 -->
-
-        <key>ProgramArguments</key> <!-- 可执行文件位置 -->
-        <array>
-                <string>/Users/admin/devops/jenkins_agent/start.sh</string>
-        </array>
-
-        <key>KeepAlive</key>
-        <false/>
-
-        <key>RunAtLoad</key> <!-- 表示launchd在加载完该项服务之后立即启动路径指定的可执行文件 -->
-        <true/> 
-
-        <key>StandardErrorPath</key>
-        <string>/tmp/jenkins_agent.err</string>
-        <key>StandardOutPath</key>
-        <string>/tmp/jenkins_agent.out</string>
-</dict>
-</plist>
-```
-sudo launchctl load -w /Library/LaunchDaemons/gary.test.plist
-
-3. 设置服务开机不启动
-sudo launchctl unload -w /Library/LaunchDaemons/gary.test.plist
-
-4. 停止一个服务
-sudo launchctl stop gary.test.plist
-
-5. plutil命令验证plist的格式是否正确
-plutil -lint gary.test.plist
-
-
 ### App Store
 1. 安装MySQL客户端
-App Store安装MySQLWorkbench，然后
-export PATH=$PATH:/Applications/MySQLWorkbench.app/Contents/MacOS
-mysql --version
+  ```bash
+  # App Store安装MySQLWorkbench，然后
+  export PATH=$PATH:/Applications/MySQLWorkbench.app/Contents/MacOS
+  mysql --version
+  ```
 
 ### brew
 
@@ -83,63 +40,67 @@ mysql --version
 
 - brew services list
 
-1. 安装
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+1. 安装brew
+  ```bash
+  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+  ```
 
 2. formulae & casks
     - formulae 意思是一些软件包，一般是命令行工具、开发库、一些字体、插件，共性是不提供界面，提供给终端或者是开发者使用。
     - casks 是用户软件，比如 chrome、mvim、wechat、wechatwork 这些提供用户交互界面的软件。
 
-3. 安装mysql-shell
-brew install caskroom/cask/mysql-shell
+#### brew下载软件
 
-4. mysql
-```bash
-brew install mysql@5.7
-```
-```log
-To connect run:
-    mysql -uroot
+1. 安装mysql-shell
+  - brew install caskroom/cask/mysql-shell
 
-mysql@5.7 is keg-only, which means it was not symlinked into /opt/homebrew,
-because this is an alternate version of another formula.
+2. mysql
+  ```bash
+  brew install mysql@5.7
+  ```
+  ```log
+  To connect run:
+      mysql -uroot
 
-If you need to have mysql@5.7 first in your PATH, run:
-  echo 'export PATH="/opt/homebrew/opt/mysql@5.7/bin:$PATH"' >> ~/.zshrc
+  mysql@5.7 is keg-only, which means it was not symlinked into /opt/homebrew,
+  because this is an alternate version of another formula.
 
-For compilers to find mysql@5.7 you may need to set:
-  export LDFLAGS="-L/opt/homebrew/opt/mysql@5.7/lib"
-  export CPPFLAGS="-I/opt/homebrew/opt/mysql@5.7/include"
+  If you need to have mysql@5.7 first in your PATH, run:
+    echo 'export PATH="/opt/homebrew/opt/mysql@5.7/bin:$PATH"' >> ~/.zshrc
+
+  For compilers to find mysql@5.7 you may need to set:
+    export LDFLAGS="-L/opt/homebrew/opt/mysql@5.7/lib"
+    export CPPFLAGS="-I/opt/homebrew/opt/mysql@5.7/include"
 
 
-To have launchd start mysql@5.7 now and restart at login:
-  brew services start mysql@5.7
-Or, if you don't want/need a background service you can just run:
-  /opt/homebrew/opt/mysql@5.7/bin/mysql.server start
-```
+  To have launchd start mysql@5.7 now and restart at login:
+    brew services start mysql@5.7
+  Or, if you don't want/need a background service you can just run:
+    /opt/homebrew/opt/mysql@5.7/bin/mysql.server start
+  ```
 
-5. 安装redis
-```bash
-brew install redis
-brew services start redis
-```
-```log
-Or, if you don't want/need a background service you can just run:
-/opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redis.conf
-```
+3. 安装redis
+  ```bash
+  brew install redis
+  brew services start redis
+  ```
+  ```log
+  Or, if you don't want/need a background service you can just run:
+  /opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redis.conf
+  ```
 
-6. java
-```bash
-# 本人选择从官方下载dmg包进行安装 https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html
-brew tap adoptopenjdk/openjdk # 加载第三方仓库
-brew install adoptopenjdk/openjdk/adoptopenjdk8
+4. java
+  ```bash
+  # 本人选择从官方下载dmg包进行安装 https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html
+  brew tap adoptopenjdk/openjdk # 加载第三方仓库
+  brew install adoptopenjdk/openjdk/adoptopenjdk8
 
-brew tap homebrew/cask-versions  # 加载第三方仓库
-brew reinstall adoptopenjdk8
-```
+  brew tap homebrew/cask-versions  # 加载第三方仓库
+  brew reinstall adoptopenjdk8
+  ```
 
-7. ansible
+5. ansible
   ```bash
   brew install ansible
   # brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb
@@ -165,9 +126,63 @@ brew reinstall adoptopenjdk8
     end
   end
   ```
-### 环境变量
-- https://www.jianshu.com/p/acb1f062a925
 
+## 服务
+### launchctl
+1. 位置
+  - 如果需要 root，并且是需要用户登陆后才能运行，把 plist 放在 /Library/LaunchAgents/下
+  - 如果需要 root，并且不需要用户登陆后都能运行，把 plist 放在 /Library/LaunchDaemons/下
+
+1. 查看所有的服务
+  - launchctl list
+
+2. 设置服务开机启动
+  - sudo vim /Library/LaunchDaemons/gary.test.plist
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+  <plist version="1.0">
+  <dict>
+          <key>Label</key>
+          <string>gary.test.plist</string> <!-- 唯一标识 -->
+
+          <key>UserName</key>
+          <string>gary</string> <!-- 运行的用户，只有Launchd作为root运行时生效 -->
+
+          <key>ProgramArguments</key> <!-- 可执行文件位置 -->
+          <array>
+                  <string>/Users/admin/devops/jenkins_agent/start.sh</string>
+          </array>
+
+          <key>KeepAlive</key>
+          <false/>
+
+          <key>RunAtLoad</key> <!-- 表示launchd在加载完该项服务之后立即启动路径指定的可执行文件 -->
+          <true/> 
+
+          <key>StandardErrorPath</key>
+          <string>/tmp/jenkins_agent.err</string>
+          <key>StandardOutPath</key>
+          <string>/tmp/jenkins_agent.out</string>
+  </dict>
+  </plist>
+  ```
+  sudo launchctl load -w /Library/LaunchDaemons/gary.test.plist
+
+3. 设置服务开机不启动
+  - sudo launchctl unload -w /Library/LaunchDaemons/gary.test.plist
+
+4. 停止一个服务
+  - sudo launchctl stop gary.test.plist
+
+5. plutil命令验证plist的格式是否正确
+  - plutil -lint gary.test.plist
+
+
+## 环境变量
+- 参考 https://www.jianshu.com/p/acb1f062a925
+
+```txt
 Mac系统的环境变量，加载顺序为：
 /etc/profile /etc/paths ~/.bash_profile ~/.bash_login ~/.profile ~/.bashrc
 
@@ -203,7 +218,23 @@ sudo vim /etc/paths.d/mysql
 编辑该文件，键入路径并保存（关闭该 Terminal 窗口并重新打开一个，就能使用 mysql 命令了）
 /usr/local/mysql/bin
 $ source 相应的文件 生效配置环境
+```
 
-### Shell
-1. 查看本地IP
-ifconfig en0
+## 快捷键
+1. Command + F3  显示桌面
+2. Control + Space  切换输入法
+3. Command + Q  退出程序
+4. Command + W  关闭当前窗口
+
+5. Command + T  打开新的窗口/新建标签页
+6. Command + L  游览器快速输入网址
+7. Command + Option + I 游览器开发者工具
+8. Command + left 游览器页面后退
+9. Command + R 刷新页面
+10. Command + up APP后退
+11. Command + Shift + 3 整个屏幕截图
+12. Command + Shift + 4 选择区域截图
+13. Command + Shift + + Control + 4 选择区域截图
+
+14. open -nj /Applications/WeChat.app/Contents/MacOS/WeChat 双开微信
+ 

@@ -31,6 +31,9 @@ go build -ldflags "-s -w"
 
 # 4. 编译时使用vendor中的依赖
 go build -mod vendor
+
+# 5. 查看执行 go install 时，二进制被安装的路径。二进制会被安装在 $GOBIN 目录下
+go list -f '{{.Target}}'
 ```
 ### gofmt
 - 官方提供的代码格式化工具

@@ -47,7 +47,7 @@ iptables -t nat -I PREROUTING -p tcp -m multiport --dports 80,443 -m set --match
 # -m 指定要加载的模块
 
 # 禁止访问某个IP
-iptables -A OUTPUT -d 192.168.9.9 -j REJECT
+iptables -A OUTPUT -d ${IP} -j REJECT
 ```
 
 ### ipset

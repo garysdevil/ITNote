@@ -72,9 +72,9 @@
 2. 无序集合map
    ```go
    /* 声明变量，默认 map = nil */
-   var var_map_name map[key_data_type]value_data_type
+   var var_map_name map[key_type]value_type
    /* 使用 make 函数初始化变量 */
-   var_map_name := make(map[key_data_type]value_data_type)
+   var_map_name := make(map[key_type]value_type)
 
    // 例如
    vks := map[string]string{"a":"a1","b":"b1"}

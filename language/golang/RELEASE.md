@@ -1,6 +1,5 @@
 ## Go
-- 官网
- https://golang.org/
+- 官网 https://golang.org/
 
 1. 起源：Google工程师20%时间的产物
 2. 定位：系统开发语言。

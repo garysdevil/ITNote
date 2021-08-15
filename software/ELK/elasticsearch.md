@@ -37,7 +37,7 @@
     ```conf
     # 设置堆内存为机器内存的一半 # 6.2.x ES_JAVA_OPTS="-Xms15g -Xmx15g" ./bin/elasticsearch
     -Xms15g
-    -Xmx15
+    -Xmx15g
     ```
 4. 启动 nohup ./bin/elasticsearch 2>&1 &
 5. 访问 http://localhost:9200/

@@ -27,6 +27,8 @@ go mod tidy
 go mod vendor
 # 解释为什么需要依赖
 go mod why
+# 改变go.mod里包的引用
+go mod edit -replace example.com/greetings=../greetings
 ```
 
 
@@ -42,6 +44,54 @@ import F "fmt" // 设置fmt包的别名为F
 ```
 
 ## 内置包
+1. fmt
+	```go
+	fmt.Printf("%+v\n", anyType)
+	```
+
+2. errors
+	```go
+	errors.New("defined error")
+	```
+3. log
+```go
+	log.SetPrefix("main: ")
+	// log.SetFlags(0)
+	log.Println("mylog")
+```
+
+4. time
+	```go
+	// 获取时间戳
+	time.Now().UnixNano()
+
+	// 生成随机数
+	rand.Seed(time.Now().UnixNano()) // "math/rand"
+	fmt.Println(rand.Intn(100))
+	```
+
+5. test 
+	```bash
+	# 参考 https://appliedgo.net/testmain/
+	# 注意：当module名字为main时，在根目录下执行go test则会报错 /var/folders/8h/1m7cpf3935z6tgyxtqm7805h0000gn/T/go-build3557744028/b001/_testmain.go:13:2: cannot import "main"
+	# 注意：一次只能单元测试一个目录内的文件,执行 go test -v ./*/*.go 则会报错 named files must all be in one directory;
+	go test // go test ./
+	# 默认会对当前目录内 文件名字为 *_test.go 的文件，名字以 Test开头的函数进行单元测试。
+	```
+	```go
+	func Test_gary(t *testing.T) {
+		name := "Gary"
+		want := regexp.MustCompile(`\b` + name + `\b`)
+		msg := "Gary" 
+		if !want.MatchString(msg) {
+			t.Fatalf("msg string must contain %v", name)
+		}
+	}
+	```
+
+
+
+
 1. encoding/json  
 ```go
 data, _ := json.Marshal(结构体对象)
@@ -53,10 +103,8 @@ json.Indent(&out, data, "", "\t")
 fmt.Printf(
     
 ```
-2. fmt
-```go
-fmt.Printf("%+v\n", anyType)
-```
+
+
 3. crypto
 https://golang.org/pkg/crypto/cipher/#example_NewCFBEncrypter
 
