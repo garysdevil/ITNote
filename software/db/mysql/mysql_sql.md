@@ -12,12 +12,13 @@
 
 ### 简单SQL 
 ```sql
-create database test;
+create database test default character set=utf8mb4;
 use test;
 -- create table
 create table if not exists `gary_user_tb` (`user_id` int unsigned auto_increment , `user_name` varchar(40) not null, primary key ( `user_id` )) comment '表的注释' engine=InnoDB default charset=utf8;
 -- delete table
 drop table gary_user_tb;
+
 
 -- add data
 insert into gary_user_tb (user_name) values('gary');

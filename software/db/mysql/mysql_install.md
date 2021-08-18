@@ -89,8 +89,10 @@ default-character-set=utf8
     show full columns from 表名;
 ```
 
-3. 更改已存在的表的字符集
+3. 更改字符集
 ```sql
+alter database 库名 character set utf8mb4;
+
 alter 表名  convert to character set utf8mb4 collate utf8mb4_bin;
 ```
 

@@ -3,14 +3,14 @@
 
 ## gRPC
 - 参考
-https://grpc.io/docs/
+    - https://grpc.io/docs/
 
 1. 客户端应用可以像调用本地方法一样直接调用另一台机器上服务端应用的方法
 
 2. 数据交换格式 ProtoBuf 
 
 ## 数据包
-### Linux抓包
+### Linux抓包 
 ```bash
 tcpdump -n -i eth0 'port 80' -s0 -w result.pcap
 tcpdump -i eth1 udp # 协议过滤  
@@ -42,23 +42,38 @@ TCP Flags
 
 ## 网络工具
 ### nc 使用TCP或UDP协议跨网络连接读写数据
-    1. 检测端口是否在监听 nc -v -z ip port
-    2. 监听 nc -l -u -k 8080 -e /bin/bash
-    3. 一个简单的静态web页面服务器
-        while true;do  nc -l 88  < somepage.html; done
+```bash
+# 1. 检测端口是否被监听 
+nc -v -z ip port
+# 2. 监听一个端口
+nc -l -u -k 8080 -e /bin/bash
+# 3. 一个简单的静态web页面服务器
+while true;do  nc -l 88  < somepage.html; done
+```
 
+### dig
+```bash
+# 简约模式
+dig +short garys.top
+
+# 指定特定的DNS服务器地址,不使用系统默认的/etc/resolve.conf
+dig @114.114.114.114 garys.top
+```
 ### nmap 网络探索和安全审计的开源工
-rpm -vhU http://nmap.org/dist/nmap-5.21-1.i386.rpm
-rpm -vhU http://nmap.org/dist/zenmap-5.21-1.noarch.rpm
-
 1. 四种基本的扫描方式：
     1. TCP connect()端口扫描（-sT参数）。
     2. TCP同步（SYN）端口扫描（-sS参数）。
     3. UDP端口扫描（-sU参数）。
     4. Ping扫描（-sP参数）。
 
-2. 扫描 默认会扫描1-1024端口和其他一些常用端口
+2. 指令
+    ```bash
+    # 安装
+    rpm -vhU http://nmap.org/dist/nmap-5.21-1.i386.rpm
+    rpm -vhU http://nmap.org/dist/zenmap-5.21-1.noarch.rpm
+    # 扫描 默认会扫描1-1024端口和其他一些常用端口
     nmap -sS -p 0-30000 127.0.0.1
+    ```
 
 3. 扫描结果分析
     Open 端口在监听中
