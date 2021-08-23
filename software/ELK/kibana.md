@@ -85,3 +85,8 @@ GET _settings
 ```
 更改kibana配置 config/kibana.yml
 server.maxPayloadBytes: 10485760
+
+2. kibana中已存在的字段在avaliable中类型显示问号，无法在visualize中使用
+    1. 找到 Kibana 的 Index_patterns（索引模式）
+    2. 找到 索引名称
+    3. 刷新字段列表

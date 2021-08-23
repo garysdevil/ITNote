@@ -87,7 +87,7 @@ filebeat.inputs:
     # multiline.pattern: '^\< | ^[[:space:]] | ^[[:space:]]+(at|\.{3})\b|^Caused by: | ^\[[0-9]{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\]'  # 正则，自定义，“|” 表示可以匹配多种模式
     multiline.pattern: '^{'
     multiline.negate: true # 默认是false，匹配pattern的行合并到上一行；true，不匹配pattern的行合并到上一行
-    multiline.match: after # 合并到上一行的末尾或开头
+    multiline.match: after # 合并到上一行的末尾或开头 # 配置了multiline则一定要有这个字段否则会报错
     max_lines: 500 # default 500;可合并的最大行数
     max_bytes: 10485760 # default 10MB
 

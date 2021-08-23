@@ -46,6 +46,7 @@ cat /etc/crontab
 0 0 * * 0 # 每周执行
 0 0 1 * * # 每月执行
 0 0 1 1 * # 每年执行
+*/5 * * * * # 每5分钟执行 
 10,20 * * * * # 每小时的第10和第20分钟执行
 10,20 8-11 * * * # 上午8点到11点的第10和第20分钟执行
 ```
@@ -393,11 +394,10 @@ apt-get install iputils-ping
 ```bash
 # 遍历获取 Linux 某目录下所有子目录及文件信息
 find . -print0 | xargs -0 stat --printf="%f %N %W %Y %s\n"
-# 删除7天前被修改的文件
+# 删除7天前被修改的文件，不能省略分号   -f指文件 -d指目录   
 find ./ -type f  -mtime +7 -exec rm -rf {} \;
 # 将7天内修改的文件移进新文件夹
 find ./ -type f -mtime -7 | xargs -I file mv file ./new
-
 
 ```
 
