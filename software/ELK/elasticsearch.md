@@ -24,11 +24,14 @@
     - vi config/elasticsearch.yml
     ```conf
     node.name: elasticsearch_master_1 # node名字
-    
+    http.port: 9200
+    transport.tcp.port: 9300 # 节点间相互通信的端口号
+
     # cluster.name: elasticsearch_prod # 集群名字，不设置则为elasticsearch
     cluster.max_shards_per_node: 3000 # 配置每个节点最大的分片数量，默认为1000
-    cluster.initial_master_nodes: ["elasticsearch_master_1"]  # 填写每个节点的node.name
-    
+
+    cluster.initial_master_nodes: ["Master_Name_1","Master_Name_2"]  # 填写集群每个master节点的node.name # 启动全新的集群时需要此参数
+    discovery.seed_hosts: ["Master_IP_1:9300","Master_IP_2:9300","Master_IP_3:9300"] # 填写集群master节点的IP端口号
     network.host: 0.0.0.0 # 默认只有本机才能访问 
     
     http.max_content_length: 100mb # 设置内容的最大容量，默认为100mb
@@ -36,6 +39,8 @@
     - jvm.options
     ```conf
     # 设置堆内存为机器内存的一半 # 6.2.x ES_JAVA_OPTS="-Xms15g -Xmx15g" ./bin/elasticsearch
+    # es内核使用lucene，lucene本身单独占用不少的内存。官方建议设置es内存，大小为物理内存的一半，剩下的一半留给lucene。
+    # es使用堆外缓冲区来实现高效的网络通信
     -Xms15g
     -Xmx15g
     ```
