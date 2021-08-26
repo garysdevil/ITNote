@@ -98,3 +98,14 @@ dig @114.114.114.114 garys.top
     nc -l 9999 >/dev/null
     nc IP 9999 </dev/zero
     dstat
+
+## 相关资料
+* ss-redir+dnsmasq+iptables 透明代理: http://ivo-wang.github.io/2019/04/18/ss-redir+dnsmasq+iptables-%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/
+* WireGuard 配置和上网流量优化: https://blog.mozcp.com/wireguard-usage/
+* 查询到国内的 IPv4 地址段: http://ftp.apnic.net/stats/apnic/delegated-apnic-latest
+* openwrt redsock透明代理: https://gist.github.com/wen-long/8644507
+* CentOS 7 安装 shadowsocks-libev 和 kcptun: https://gist.github.com/chuyik/d4069a170a409a0c4449acc8e85f4de1
+* ipset: https://www.cnblogs.com/faberbeta/p/ipset.html
+* Dnsmasq+ipset+iptables基于域名的流量管理: https://blog.csdn.net/lvshaorong/article/details/52981169
+* 通过日志查看dnsmasq的缓存在内存中的内容：https://unix.stackexchange.com/questions/162973/how-to-measure-dns-cache-efficiency-cached-items
+* iptables与nat: https://www.cnblogs.com/whych/p/9147900.html
