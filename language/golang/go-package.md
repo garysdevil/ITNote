@@ -94,13 +94,15 @@ import F "fmt" // 设置fmt包的别名为F
 
 1. encoding/json  
 ```go
-data, _ := json.Marshal(结构体对象)
+data, _ := json.Marshal(变量)
 fmt.Println(string(data))
+// 
+fmt.Printf("%v", &变量)
 // 结构化输出
-data, _ := json.Marshal(结构体对象)
+data, _ := json.Marshal(变量)
 var out bytes.Buffer
 json.Indent(&out, data, "", "\t")
-fmt.Printf(
+fmt.Println(&out)
     
 ```
 

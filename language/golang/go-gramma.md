@@ -59,14 +59,14 @@
 1. 切片：动态数组
    ```go
    // 声明与初始化切片
-   var var_slice_name []type = make([]var_type, var_length, var_capacity)
-   var_slice_name := []int{1,2,3}
+   var var_slice_name []var_type = make([]var_type, var_length, var_capacity)
+   var_slice_name := []string{"a1","a2","a3"}
    // 获取长度
-   len() 
+   len(var_slice_name) 
    // 获取最长可达
-   cap()
+   cap(var_slice_name)
    // 追加值，当容量不够时，则容量进行翻倍。
-   append(切片, 元素)
+   append(var_slice_name, 元素)
    ```
 
 2. 无序集合map

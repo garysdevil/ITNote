@@ -1,4 +1,10 @@
-参考 https://zhuanlan.zhihu.com/p/49049392
+- 参考 
+    - https://zhuanlan.zhihu.com/p/49049392
+
+# Go
+- 将并发机制纳入Go的关键字
+- 编译为二进制但又带有垃圾回收机制和运行时反射能力
+
 ## 特性1
 1. 自动垃圾回收
 
