@@ -28,7 +28,8 @@
 - 通知系统内核分区表的变化
 partprobe /dev/sdb # install parted  
 ### 非交互式
-``` fdisk.txt
+vi fdisk.txt
+``` 
 n
 p
 1
@@ -43,8 +44,9 @@ wq
 fdisk /dev/sdb < fdisk.txt
 
 ### 情景二 2T以上磁盘：
-	1. parted /dev/sdb
-
+```bash
+parted /dev/sdb
+```
 
 ## LVM
 - 物理卷: pv ; 卷组: vg ; 逻辑卷: lv 
@@ -62,25 +64,26 @@ fdisk /dev/sdb < fdisk.txt
 5. 其它查询操作
 	lvscan，vgscan，pvscan
 ### 进行LVM操作
-0. 如果没有lvm 则 yum -y install lvm2
-1. 创建物理卷pv： pvcreate 磁盘或者分区的位置
-	pvcreate /dev/sdb1
-2. 创建卷组vg：vgcreate  vg名称  pv地址
-	vgcreate  vg_data  /dev/sdb1
-3. 创建逻辑卷lv：lvcreate -n 逻辑卷名称 -L  磁盘大小  卷组名字（假设vg大小为2000g,则磁盘一般最大设置为1999.98G）
-	lvcreate -n lv_data -L  1999.99G  vg_data
-4. 格式化lvm, mkfs.文件系统 /dev/卷组名称/逻辑卷名称
-	mkfs.xfs /dev/vg_data/lv_data
-5. 写入/dev/fstab文件，使机器每次开机自动挂载磁盘：/dev/卷组名称/逻辑卷名称 挂载的磁盘目录 磁盘格式 default 0 0
-	mkdir /data
-	vim /etc/fstab
-	/dev/vg_data/lv_data   /data   xfs    defaults    0  0
-6. 根据配置文件重新执行挂载操作
-	mount -a
+```bash
+# 0. 如果没有lvm 则 
+yum -y install lvm2
+# 1. 创建物理卷pv： pvcreate 磁盘或者分区的位置
+pvcreate /dev/sdb1
+# 2. 创建卷组vg：vgcreate  vg名称  pv地址
+vgcreate  vg_data  /dev/sdb1
+# 3. 创建逻辑卷lv：lvcreate -n 逻辑卷名称 -L  磁盘大小  卷组名字（假设vg大小为2000g,则磁盘一般最大设置为1999.98G）
+lvcreate -n lv_data -L  1999.99G  vg_data
+# 4. 格式化lvm, mkfs.文件系统 /dev/卷组名称/逻辑卷名称
+mkfs.xfs /dev/vg_data/lv_data
+# 5. 写入 /etc/fstab 文件，使机器每次开机自动挂载磁盘：/dev/卷组名称/逻辑卷名称 挂载的磁盘目录 磁盘格式 default 0 0
+mkdir /data
+echo '/dev/vg_data/lv_data   /data   xfs    defaults    0  0'  >> /etc/fstab
+# 6. 根据配置文件重新执行挂载操作
+mount -a
 
-- 单独挂载某个磁盘
-	mount -t xfs /dev/磁盘分区地址  /目录
-
+#  单独挂载某个磁盘
+mount -t xfs /dev/磁盘分区地址  /目录
+```
 ### 添加新pv，扩容现有的lvm逻辑卷
 - 思路：创建新的PV---将新的PV加入到当前VG---扩容现有LV---扩容文件系统
 1. 创建新的pv：pvcreate 磁盘路径

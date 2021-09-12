@@ -48,3 +48,9 @@ gofmt -l -w  test.go
 # 格式化整个工程
 gofmt -l -w ./
 ```
+
+### 其它
+```bash
+# 删除mod下载下来的文件
+go clean -modcache
+```
