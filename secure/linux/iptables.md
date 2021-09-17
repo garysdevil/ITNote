@@ -48,6 +48,9 @@ iptables -t nat -I PREROUTING -p tcp -m multiport --dports 80,443 -m set --match
 
 # 禁止访问某个IP
 iptables -A OUTPUT -d ${IP} -j REJECT
+
+#禁止其他所有流量进入
+iptables -A INPUT -j DROP
 ```
 
 ### ipset

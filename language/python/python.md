@@ -39,7 +39,7 @@ pip install -r requirements.txt
 
 ## 常用的内置包
 1. json格式化
-echo "{"name": "lucy", "age": "18"}" | python -m json.tool
+echo '{"name": "lucy", "age": "18"}' | python -m json.tool
 
 2. 解析文件中的unicode字符
 ```python

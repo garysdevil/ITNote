@@ -39,8 +39,8 @@ pasv_enable=NO
 # 被动模式
 connect_from_port_20=NO
 pasv_enable=YES
-pasv_min_port=1024(default:0(use any port))
-pasv_max_port=65536(default:0(use any port))
+pasv_min_port=1024 # (default:0(use any port))
+pasv_max_port=65536 # (default:0(use any port))
 ```
 
 4. 添加新用户

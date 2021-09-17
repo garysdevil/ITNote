@@ -1,15 +1,32 @@
 ## 安装node版本管理器
 ### Linux安装nvm
-https://github.com/nvm-sh/nvm#installation
+```bash
+# https://github.com/nvm-sh/nvm#installation
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash  或者
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
 
 source ~/.bashrc 或者
 . ~/.bashrc
+```
 
 ### Windows安装nvm-windows/
 https://github.com/coreybutler/nvm-windows/releases
 
+### Mac
+```bash
+wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.38.0/install.sh | bash
+curl -o-
+
+# 手动设置环境变量
+echo 'export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> /Users/gary/.bashrc
+```
+
+### 使用
+```bash 
+nvm install stable ## 安装最新稳定版 node
+```
 
 ## 包管理器 npm
 1. npm install的执行过程
