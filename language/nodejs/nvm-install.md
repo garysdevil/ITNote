@@ -40,6 +40,11 @@ npm set registry http://localhost:4873/
 3. npm 指定源然后安装包  
 npm i --registry=https://registry.npm.taobao.org 
 
+3. 指令
+```bash
+# 查看全局安装过的包
+npm list -g --depth 0
+```
 
 ## 源管理器
 npm install -g nrm

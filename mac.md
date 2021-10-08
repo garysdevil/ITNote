@@ -3,6 +3,8 @@
 ```bash
 # 1. 查看端口、PID映射
 lsof -i -P
+# 查看某端口占用情况
+lsof -i:8080
                 
 # 2. 打开一个服务
 open -a Docker

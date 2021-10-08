@@ -27,7 +27,8 @@ git remote show origin
 6. 源
 origin 为默认源
 添加源：git remote add origin http://git.github.com/username/project.git 
-删除源: git remote rm 源名
+删除源： git remote rm 源名
+给源添加一个push地址：git remote set-url --add origin http://git.github.com/username/project.git 
 
 7. push并且设置此分支默认的远程源和分支
 git push --set-upstream origin main

@@ -1,4 +1,17 @@
-# package
+## 内置包
+```js
+// base64加解密
+var b = new Buffer.from('JavaScript');
+var s = b.toString('base64');
+
+var b = new Buffer.from('编码后的base64字符串', 'base64')
+var s = b.toString();
+
+// 将字符串解析问json对象
+JSON.parse(stringvar))
+```
+
+## 第三方包 package
 1. Dataloader（官方网址）是由facebook推出，能大幅降低数据库的访问频次，经常在Graphql场景中使用。
 主要通过2个机制来降低数据库的访问频次：批处理 和 缓存。
 
