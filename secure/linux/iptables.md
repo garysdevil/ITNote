@@ -69,18 +69,25 @@ yum install ipset
     ipset list blacklist
     ```
 
-3. 
+3. 只允许指定ip连接指定端口
 ```bash
-# 查看所有的集合
-ipset list
-ipset list ${name}
-
-# 规则保存进文件
-ipset save blacklist -f blacklist.txt
-
-# 删除ipset 集合
-ipset destroy blacklist
-
-# 导入ipset 集合
-ipset restore -f blacklist.txt
+iptables -I INPUT -p tcp --dport 8545 -j DROP  # 先禁止所有IP的访问
+iptables -I INPUT -s 127.0.0.1 -p tcp --dport 8545 -j ACCEPT # 允许某些IP进行访问
+iptables -I INPUT -m set --match-set whitelist src -p tcp --dport 8545 -j ACCEPT # 通过whitelist允许某些IP进行访问
 ```
+
+- ipset
+    ```bash
+    # 查看所有的集合
+    ipset list
+    ipset list ${name}
+
+    # 规则保存进文件
+    ipset save blacklist -f blacklist.txt
+
+    # 删除ipset 集合
+    ipset destroy blacklist
+
+    # 导入ipset 集合
+    ipset restore -f blacklist.txt
+    ```
