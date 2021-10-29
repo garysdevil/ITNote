@@ -9,6 +9,10 @@ var s = b.toString();
 
 // 将字符串解析问json对象
 JSON.parse(stringvar))
+
+// 文件操作
+// var fs = require("fs")
+fs.writeFileSync("./1.html", "data")
 ```
 
 ## 第三方包 package
