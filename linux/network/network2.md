@@ -99,6 +99,9 @@ dig @114.114.114.114 garys.top
     nc IP 9999 </dev/zero
     dstat
 
+### 其它监控指令
+1. glances
+2. iftop
 ## 相关资料
 * ss-redir+dnsmasq+iptables 透明代理: http://ivo-wang.github.io/2019/04/18/ss-redir+dnsmasq+iptables-%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86/
 * WireGuard 配置和上网流量优化: https://blog.mozcp.com/wireguard-usage/
