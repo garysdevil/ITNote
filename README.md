@@ -11,3 +11,4 @@
 10. [software 各种软件部署运维相关笔记](/software)
 11. [advanced 理论知识的进一步深入相关笔记](/advanced)
 12. [manage 运维规划管理相关笔记](/manage)
+

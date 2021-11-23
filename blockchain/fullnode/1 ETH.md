@@ -1,11 +1,12 @@
 [TOC]
 #### 部署ETH-主网
 - 使用二进制进行安装部署
+- https://geth.ethereum.org/downloads/
 ```shell
 # 0.创建部署目录
 	mkdir /data && cd /data
 # 1.下载程序压缩包(请自行选择程序版本)
-	curl -O https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.9.7-a718daa6.tar.gz
+	curl -O https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.10.12-6c4dc6c3.tar.gz
 
 # 2.解压缩包
 	tar xzvf geth-linux-amd64-1.8.15-89451f7c.tar.gz geth
