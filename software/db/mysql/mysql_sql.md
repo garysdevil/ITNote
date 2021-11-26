@@ -64,4 +64,31 @@ ROLLBACK TO identifier;
 COMMIT; -- 或 ROLLBACK
 ```
 
+### 多表查询
+- 连表查
+```sql
+-- 1. 交叉连接，生成笛卡尔积 
+select * from table_A, table_B where table_A.字段=table_B.字段;
+
+-- 2. 内连接 
+select * from table_A inner join table_B on table_A.字段=table_B.字段;
+-- 3. 左外连接 
+select * from table_A left join table_B on table_A.字段=table_B.字段;
+-- 4. 全外连接 
+select * from table_A left join table_B on table_A.字段=table_B.字段 union select * from table_A right join table_B on table_A.字段=table_B.字段;
+```
+- 子查询
+```sql
+select name from table_B where id = (select id from table_A where 字段 = '');
+
+select name from table_B where id not in (select id from table_A where 字段 = '' or 字段 = '');
+```
+- 联合查询
+```sql
+-- 可以将不同表中符合条件的数据信息显示在同一列中
+-- 在每个查询表中，对应列的数据结构必须一样
+select * from table_A union select * from table_A;
+```
+
+
 ## 存储过程
