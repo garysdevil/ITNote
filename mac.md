@@ -1,4 +1,7 @@
 
+## 链接
+1. 苹果官网序列号查询 
+  - https://checkcoverage.apple.com/cn/zh
 ## 终端命令
 ```bash
 # 1. 查看端口、PID映射

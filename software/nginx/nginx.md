@@ -72,14 +72,14 @@ apt-get install apache2-utils -y
 ```
 
 2. 创建登入用户
-htpasswd -c -d /etc/nginx/conf.d/pass_file 用户名
+htpasswd -c -d /etc/nginx/conf.d/.auth 用户名
 3. 配置nginx
 ```conf
 server {
   listen    80; 
   server_name garyss.top;
   auth_basic  "登录认证";
-  auth_basic_user_file /etc/nginx/conf.d/pass_file;
+  auth_basic_user_file /etc/nginx/conf.d/.auth;
   # proxy_set_header Authorization '';
 }
 ```

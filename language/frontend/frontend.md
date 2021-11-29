@@ -1,4 +1,4 @@
-## html解决为可视化界面
+## html解析为可视化界面
 - 从顶部往下解析
 1. 解析HTML，生成DOM树；解析CSS，生成CSSOM树
 2. 将 DOM 树和 CSSOM 树结合，生成渲染树(Render Tree)
@@ -37,3 +37,16 @@ https://developers.google.com/web/tools/chrome-devtools/network/reference#timing
 7. Waiting (TTFB) 是浏览器请求发送到服务器的时间+服务器处理请求时间+响应报文的第一字节到达浏览器的时间。 这个指标可以来判断web服务器是否性能不够, 或者说是否需要使用CDN。
 
 8. Content Download 是浏览器用来下载资源所用的时间。这个指标越长, 说明资源越大. 理想情况下, 可以通过控制资源的大小来控制这段时间的长度。
+
+
+## 前端
+1. Jquery
+```js
+$(selector).each(function(index,element))
+```
+2. web交互,通过事件监听
+    1. 将函数写在html的元素里。
+    2. onclick。
+    3. addEventListener(0
+
+3. 事件委托：解决事件监听过多会消耗内存和减慢加载速度速度的问题。
