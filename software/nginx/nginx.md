@@ -33,13 +33,13 @@ proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;   //影响后端能
 proxy_http_version 1.1;
 proxy_set_header Connection "";
 
-#转发模块的超时设置 根据需要调整大小
+# 转发模块的超时设置 根据需要调整大小。ws代理时需要设置，否则连接会会断开
 proxy_connect_timeout 30s;
 proxy_send_timeout 60s;
 proxy_read_timeout 60s;
 
 # 长连接
-keepalive_timeout 75s
+keepalive_timeout 75s;
 
 access_log logs/$host.log main;   //自动根据访问域名生成log
 
