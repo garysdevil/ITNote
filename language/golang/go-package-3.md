@@ -7,6 +7,7 @@
 6. 文档 github.com/swaggo/gin-swagger  github.com/swaggo/files   github.com/swaggo/swag（生成doc）
 7. 日志 github.com/sirupsen/logrus
 8. 命令行程序 https://github.com/spf13/cobra
+9. 热重启（修改完代码后保存，就能自动重启运行） github.com/cosmtrek/air
 
 ## ORM包
 ### gorm

@@ -35,6 +35,12 @@ go build -mod vendor
 # 5. 查看执行 go install 时，二进制被安装的路径。二进制会被安装在 $GOBIN 目录下
 go list -f '{{.Target}}'
 ```
+
+```bash
+# 通过源代码中的注释生成相关文件
+go generate
+```
+
 ### gofmt
 - 官方提供的代码格式化工具
 ```bash

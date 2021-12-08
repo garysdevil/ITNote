@@ -34,11 +34,26 @@
 	2. ws: 8544
 	3. rpc: 8545
 
-2. 获取块高的API
-printf %d `curl -sS -H "Content-Type:application/json" 127.0.0.1:8545 -X POST  --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' |  grep -Po 'result[" :]+\K[^"]+'`
+2. API操作
+	```bash
+	# 获取块高的API
+	printf %d `curl -sS  127.0.0.1:8545 -H "Content-Type:application/json" -X POST -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' |  grep -Po 'result[" :]+\K[^"]+'`
 
-3. 查看交易信息
-curl -sS -H "Content-Type:application/json" 127.0.0.1:8545 -X POST  --data '{"jsonrpc":"2.0","method":"eth_getTransactionByHash","params":["0xe82ada99b9c9ab2daffe208035d6f2fba78fea60df6ea9b41c2e99a3054bbe34"],"id":1}' 
+	# 查看交易信息
+	curl -sS  127.0.0.1:8545 -H "Content-Type:application/json" -X POST  -d '{"jsonrpc":"2.0","method":"eth_getTransactionByHash","params":["0xe82ada99b9c9ab2daffe208035d6f2fba78fea60df6ea9b41c2e99a3054bbe34"],"id":1}' 
+
+	# 查看账户余额
+	curl 127.0.0.1:8545 \
+	-X POST \
+	-H "Content-Type: application/json" \
+	-d '{"jsonrpc":"2.0","method":"eth_getBalance","params": ["以太坊账户地址","latest"],"id":1}'
+
+	# 
+	curl 127.0.0.1:8545 \
+	-X POST \
+	-H "Content-Type: application/json" \
+	-d '{"jsonrpc":"2.0","method":"eth_call","params":[{"from":"钱包地址","to":"智能合约地址","data":"0x70a08231000000000000000000000000不带0x的钱包地址"},"latest"],"id":1}'
+	```
 
 4. 首先进入交互界面-指令操作
 	./geth attach --datadir /data/ethereum

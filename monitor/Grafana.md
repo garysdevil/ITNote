@@ -89,7 +89,7 @@ grafana-cli plugins list-remote
 
 # 安装zabbix和prometheus-alertmanager数据源插件
 cd /opt/grafana/bin/
-./grafana-cli plugins install alexanderzobnin-zabbix-app # zabbix插件需要在Configuration -> Plguins -> zabbix中启用
+./grafana-cli plugins install alexanderzobnin-zabbix-app # 然后 在grafana界面 -> Configuration -> Plguins -> zabbix中启用
 ./grafana-cli plugins install camptocamp-prometheus-alertmanager-datasource
 --pluginsDir= 指定插件安装目录
 
