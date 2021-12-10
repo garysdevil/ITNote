@@ -31,7 +31,7 @@ mysql> quit;
 rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
 yum clean all
 # 安装zabbix-server
-yum install zabbix-server-mysql
+yum install zabbix-server-mysql -y
 # 导入数据库
 zcat /usr/share/doc/zabbix-server-mysql*/create.sql.gz | mysql -uzabbix -p zabbix
 ```
@@ -66,11 +66,11 @@ extension=/opt/remi/php73/root/usr/lib64/php/modules/ldap.so
 ```
 2. 安装Zabbix前端
 ```bash
-yum install centos-release-scl
+yum install centos-release-scl -y
 
 vim /etc/yum.repos.d/zabbix.repo and enable zabbix-frontend repository.
 
-yum install zabbix-web-mysql-scl zabbix-nginx-conf-scl
+yum install zabbix-web-mysql-scl zabbix-nginx-conf-scl -y
 ```
 3. 安装nginx
 

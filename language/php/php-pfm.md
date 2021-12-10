@@ -31,9 +31,9 @@ PHP在 5.3.3 之后已经把php-fpm并入到php的核心代码中了，所以php
 2. 安装重启
 ```bash
 # 安装 EPEL 源
-yum install epel-release
+yum install epel-release -y
 # 安装 REMI 源
-yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm -y
 # 安装php
 yum install -y php73-php-fpm php73-php-cli php73-php-bcmath php73-php-gd php73-php-json php73-php-mbstring php73-php-mcrypt php73-php-mysqlnd php73-php-opcache php73-php-pdo php73-php-pecl-crypto php73-php-pecl-mcrypt php73-php-pecl-geoip php73-php-recode php73-php-snmp php73-php-soap php73-php-xml php73-php-ldap
 # 设置开机自启
