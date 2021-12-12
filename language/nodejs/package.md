@@ -31,3 +31,15 @@ fs.writeFileSync("./1.html", "data")
 
 4. exceljs
     - npm install exceljs
+
+### 区块链相关的
+1. ethers.js
+    - https://github.com/ethers-io/ethers.js
+    - 开发者是 Richard Moore，并由他来创建和维护库。Ethers.js 的目的是建立“一个完整、简单、小巧的库，取代 web3 和 ethereum.js
+
+2. web3.js
+    - https://github.com/ChainSafe/web3.js
+    - 是由以太坊基金会构建的开源 JavaScript 库
+
+3. hardhat.js
+    - https://github.com/nomiclabs/hardhat

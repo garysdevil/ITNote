@@ -53,27 +53,5 @@ fs
 buffer
 管道操作 .pipe()
 
-### nodejs日常使用
-1. new Array()
-push 添加到尾部
-unshift()  添加到头部
-shift 删除并返回头部元素
-pop 删除并返回尾部元素
-indexOf（''） 返回下标
-splice(index,索引) 通过索引删除元素并返回此元素
-
-2. new Map()
-set()
-get()
-delete()
-
-3. 常用函数：
-foreach(), filter(), map(), reduce()
-
-4. 将回调函数处理成像“同步”处理的形式
-promise， async await
-
-3. event.target返回触发事件的元素
-
 ### pm2
 pm2 list
