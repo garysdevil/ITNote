@@ -8,11 +8,14 @@ var b = new Buffer.from('编码后的base64字符串', 'base64')
 var s = b.toString();
 
 // 将字符串解析问json对象
-JSON.parse(stringvar))
+JSON.parse(json_string))
+// 将json对象解析为json字符串
+JSON.stringify(json_obj, null, 4)
 
 // 文件操作
 // var fs = require("fs")
 fs.writeFileSync("./1.html", "data")
+
 ```
 
 ## 第三方包 package

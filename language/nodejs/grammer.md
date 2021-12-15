@@ -69,3 +69,16 @@ try {
   console.log('异常被捕获了，我现在还可以继续执行了');
 }
 ```
+
+
+## 休眠
+```js
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(() => resolve(), ms));
+};
+(async () =>{
+  console.log(1)
+  await wait(2000);
+  console.log(2)
+})()
+```
