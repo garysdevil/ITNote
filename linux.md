@@ -325,12 +325,18 @@ do
 done
 ```
 
+### 传文件
+```bash
+# scp  -i 指定密钥文件 -C 允许压缩 源文件 目的地址
+scp home.tar 192.168.205.34:/home/home.tar
+# rsync可以实现意外中断后，下次继续传
+rsync -P --rsh=ssh home.tar 192.168.205.34:/home/home.tar
+```
+
 ## 未归类
 获取公网IP ： 
 curl cip.cc 
 curl ipinfo.io
-
-scp  -i 指定密钥文件  -C 允许压缩 源文件  目的地址
 
 查看CentOS版本 cat /etc/issue 或者 cat /etc/redhat-release 
 查看Ubunto版本 cat /etc/lsb-release

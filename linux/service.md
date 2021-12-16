@@ -38,12 +38,19 @@ ntsysv
     - Type=notify：与 Type=simple 相同，但约定服务会在就绪后向 systemd 发送一个信号。这一通知的实现由 libsystemd-daemon.so 提供。
     - Type=dbus：若以此方式启动，当指定的 BusName 出现在DBus系统总线上时，systemd认为服务就绪。
 ### 创建服务
+- 参考 
+    - https://www.bbsmax.com/A/lk5aWAmZz1/
+    - https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/working-with-systemd-unit-files_configuring-basic-system-settings
+
 - vim /usr/lib/systemd/system/XXXXX.service
 ```conf
 [Unit]
 Description=XXXXX
 Documentation=https://github.com/garysdevil/ITNote
-After=network.target
+After=network.target # 当前服务（<software-name>.service）需要在这些服务启动后，才启动
+# Before: 和 After 相反，当前服务需要在这些服务启动前，先启动
+# Wants：表示当前服务"弱依赖"于这些服务。即当前服务依赖于它们，但是没有它们，当前服务也能正常运行。
+# Requires: 表示"强依赖"关系，即如果该服务启动失败或异常退出，那么当前服务也必须退出。
 
 [Service]
 User=用户名
@@ -52,11 +59,13 @@ Group=用户组名
 Type=simple
 Environment="变量名=变量值"
 Environment="JVM_OPTIONS=-server -Xms64m -Xmx64m -XX:MetaspaceSize=16m $GC_OPTS $GC_LOG_OPTS $OTHER_OPTS"
+# WorkingDirectory=/xxx/xxx # 工作目录，必须是绝对目录，不能加入单双引号
 ExecStartPre=/bin/sh -c -- 'pwd'
 ExecStart=/bin/sh -c -- "/usr/bin/java -jar /opt/application/XXXXX/XXXXX.jar 1>> /opt/application/XXXXX/logs/XXXXX.out.log 2>> /opt/application/XXXXX/logs/XXXXX.err.log"
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s QUIT $MAINPID
 # ExecStopPost=
+# RuntimeDirectory=xxxx
 Restart=always # always：只要不是通过systemctl stop来停止服务，任何情况下都必须要重启服务；默认值为no
 StartLimitInterval=0 # 默认是10秒内如果重启超过5次则不再重启，设置为0表示不限次数重启
 RestartSec=10 # 重启间隔,默认值0.1s
@@ -80,10 +89,28 @@ WantedBy=multi-user.target
     2. Memory：MemoryMax=取代了MemoryLimit=. MemoryLow= and MemoryHigh=只在cgroup v2上支持。
     3. IO：BlockIO前缀取代了IO前缀。在cgroup v2，Buffered写入也统计在了cgroup写IO里，这是cgroup v1一直存在的问题。
 
+
 ### 常用指令
 ```bash
 # 查看运行失败的单元
 systemctl --failed
+
+# 列出所有加载失败的 Unit
+systemctl list-units --failed
+
+# 列出所有Unit，包括没有找到配置文件的或者启动失败的
+systemctl list-units --all
+
+# 查看启动耗时
+systemd-analyze
+
+# 查看每个服务的启动耗时
+systemd-analyze blame
+
+# 显示指定服务的启动流
+systemd-analyze critical-chain kaspa-miner.service
+
+
 ```
 
 ## supervisorctl
