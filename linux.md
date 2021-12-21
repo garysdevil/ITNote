@@ -198,9 +198,20 @@ authorized_keys   id_rsa  id_rsa.pub  know_hosts
 authorized_keys,并修改 authorized_keys 权限为 600,当前目录权限为 700
 
 
-### 将大文件压缩并拆分成小文件
-tar czf - test | split -b 500m - test.tar.bz2
-cat test.tar.bz2* | tar -jxv
+### 压缩
+```bash
+# 将大文件压缩并拆分成小文件进行打包(用 bzip2 压缩)
+tar cjvf - bigFile | split -b 500m - smallFile.tar.bz2
+# 解压出大文件
+cat smallFile.tar.bz2* | tar -jxv
+
+# 用 bzip2 格式压缩文件
+tar  cjvf FileName.tar.bz2 ./Filename
+# 用 gzip 格式压缩文件
+tar  czvf FileName.tar.bz2 ./Filename
+# 用 bzip2 格式解压文件
+tar  xjvf FileName.tar.bz2 ./Filename
+```
 
 ### ssh-agent
 - 参考 https://wiki.archlinux.org/index.php/SSH_keys_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)
