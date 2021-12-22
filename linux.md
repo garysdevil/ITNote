@@ -339,9 +339,10 @@ done
 ### 传文件
 ```bash
 # scp  -i 指定密钥文件 -C 允许压缩 源文件 目的地址
-scp home.tar 192.168.205.34:/home/home.tar
+scp -P22 home.tar 192.168.205.34:/home/home.tar
 # rsync可以实现意外中断后，下次继续传
 rsync -P --rsh=ssh home.tar 192.168.205.34:/home/home.tar
+rsync -P -e'ssh -p 22' home.tar 192.168.205.34:/home/home.tar
 ```
 
 ## 未归类

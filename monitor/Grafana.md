@@ -81,6 +81,19 @@
     WantedBy=multi-user.target
 
     ```
+
+### 错误
+#### 错误一
+- Garafana 日志
+    ```log
+    12月 23 00:42:01 VM-16-2-centos grafana-server[16806]: t=2021-12-23T00:42:01+0800 lvl=info msg="Request Completed" logger=context userId=1 orgId=1 uname=admin method=GET path=/api/live/ws status=400 remote_addr=127.0.0.1 time_ms=1 size=12 referer=
+    ```
+- web界面，开发者模式 Console
+    ```log
+    633.fab5d6bbd438adca1160.js:sourcemap:2 WebSocket connection to 'ws://grafana.garys.top/api/live/ws' failed: 
+    ```
+- 解决办法 https://grafana.com/docs/grafana/latest/live/configure-grafana-live/#websocket-and-proxies
+
 ## 使用
 ### 插件
 ```bash
