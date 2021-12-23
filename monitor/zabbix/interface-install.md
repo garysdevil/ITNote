@@ -5,7 +5,7 @@
     - https://www.zabbix.com/documentation/3.4/manual/config/items/itemtypes/snmp
     - 关于snmp的知识 https://blog.csdn.net/bbwangj/article/details/80981098
 
-### 二 安装zabbix-agent
+### 二 安装zabbix-agent 3.4
 ```bash
 # https://zabbixonly.com/how-to-install-zabbix-agent-3-4/
 installInUbuntu18(){

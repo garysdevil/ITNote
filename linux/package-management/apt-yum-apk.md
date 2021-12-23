@@ -24,6 +24,7 @@
 6. apt-get clean  清理缓存
     将 /var/cache/apt/archives/ 的 所有 deb 删掉，可以理解为 rm /var/cache/apt/archives/*.deb。
 
+7. apt-get --purge remove zabbix-agent2 -y 根据包名称删除包，连配置文件一起删除
 
 ##### 其它
 - PPA

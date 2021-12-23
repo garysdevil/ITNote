@@ -36,7 +36,8 @@ cargo new greeting # 构建一个项目
 cargo build # 编译一个项目
 # cargo build/run --release 使用 release 编译会比默认的 debug 编译性能提升 10 倍以上，但是 release 缺点是编译速度较慢，而且不会显示 panic backtrace 的具体行号 
 cargo run # 编译运行一个项目
-cargo install # 安装二进制文件（默认位置 $HOME/.cargo/bin）
+cargo install --path . # 安装二进制文件（默认位置 $HOME/.cargo/bin）
+
 cargo clippy # 类似eslint，lint工具检查代码可以优化的地方
 cargo fmt # 类似go fmt，代码格式化
 cargo tree # 查看第三方库的版本和依赖关系

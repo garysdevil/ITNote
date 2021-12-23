@@ -35,7 +35,7 @@ yum makecache
 yum  install ansible
 ```
 
-## 基本
+## 操作
 
 ### 目录结构
 - ansible.cfg  公共配置
@@ -80,7 +80,7 @@ localhost     ansible_connection=local
   changed_when: false
 ```
 
-#### 一个简单的剧本
+### 一个简单的剧本
 ```yaml
 #!/usr/bin/env ansible-playbook
 - name: set_host
@@ -95,8 +95,8 @@ localhost     ansible_connection=local
 ```bash
 ansible-playbook  -i hosts  simple.yaml --key-file  .test_rsa.pem  -e domain_ip=5.5.5.6
 ```
-### 操作 
-- 指令
+### 指令
+- ansible 指令
 ```bash
 # 运行剧本
 ansible-playbook  apply-role.yml -e host=127.0.0.1,127.0.0.2 -e @'vars/DMZ'  -e role=filebeat
@@ -108,20 +108,31 @@ ansible-playbook  apply-role.yml -e host=127.0.0.1,127.0.0.2 -e @'vars/DMZ'  -e 
 
 # 测试ip是否通
 ansible -i ./hosts ${IP_GROUP} -m ping
+
+# 手动获取fact
+ansible 组名 -m setup -a 'filter=ansible_eth'
+
+# 配置文件检查
+ansible-playbook  --syntax-check when_mc.yaml 
 ```
 
-5. 查看模块的文档
-    ansible-doc 模块名 
+- ansible-doc 指令
+    - 查看模块的文档
+    - ansible-doc 模块名
 
-6. 运行时有效的模块
-add_host
-group_by
+- ansible-lint 指令 
+    - 需要安装ansible-lint的软件包
+    - ansible-lint 是一个对playbook的语法进行检查的工具。
 
-7. 其它
-获取fact的参数：register
+### 语法
+1. 运行时有效的模块
+    - add_host
+    - group_by
 
-保存所有主机的facts: hostvars
+2. 获取fact的参数：register
 
-手动获取fact：ansible 组名 -m setup -a 'filter=ansible_eth'
+3. 保存所有主机的facts: hostvars
+
+
 
 

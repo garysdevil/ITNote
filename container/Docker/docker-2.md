@@ -80,22 +80,25 @@ chmod +x /usr/local/bin/docker-compose
 
 ## 常用指令
 ### Docker
-1. Build
+```bash
+# 1. Build
 docker build --build-arg PROJECT=pre --no-cache --network=host -f Dockerfile -t ${url}:${image_tag} .
 
-2. Run
+# 2. Run
 docker run -d -e SW_OAP_ADDRESS=127.0.0.1:11800 -p 9000:9000 -v /etc/nginx/html:/var/www/html skyapm/skywalking-php
--e 参数
--p 主机端口:容器端口
--v 主机路径:容器路径
--d 后台运行
---name 指定容器名字
+# -e 参数
+# -p 主机端口:容器端口
+# -v 主机路径:容器路径
+# -d 后台运行
+# --name 指定容器名字
+# --network=host 设置容器的网络方式
 
-3. 容器资源使用情况
+# 3. 容器资源使用情况
 docker stats --no-stream
 
-4. 查看容器状态的详细信息
+# 4. 查看容器状态的详细信息
 docker inspect ${container_id}
+```
 
 ### Dockerfile
 1. 从编译阶段的中拷贝编译结果到当前镜像中
