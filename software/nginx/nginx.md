@@ -41,14 +41,13 @@ proxy_read_timeout 60s;
 # 长连接
 keepalive_timeout 75s;
 
-access_log logs/$host.log main;   //自动根据访问域名生成log
-
-
 # ws代理，需要在每层反向代理上添加如下信息
 proxy_http_version 1.1;
 proxy_set_header Upgrade $http_upgrade;
 proxy_set_header Connection "upgrade";
 
+# 自动根据访问域名和端口号生成日志文件
+access_log logs/${host}-${server_port}.log main;
 ```
 ## 原理
 - 参考 https://www.cnblogs.com/yblackd/p/12194143.html
@@ -91,15 +90,22 @@ server {
 
 ## 跨域
 ```conf
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: Content-Type');
-header('Access-Control-Allow-Methods: POST GET');
-header('Access-Control-Max-Age: 1000');
-
-if ($_SERVER['REQUEST_METHOD'] = 'OPTIONS') {
-  return;
+add_header Access-Control-Allow-Origin *;
+add_header Access-Control-Allow-Methods 'GET,POST,PUT,DELETE,PATCH,OPTIONS';
+add_header Access-Control-Allow-Headers 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
+if ($request_method = 'OPTIONS') {
+    return 204;
 }
+location / {  
+    # proxy_hide_header Access-Control-Allow-Origin; # 当响应请求时，过滤掉某个header的字段
+    proxy_pass http://127.0.0.1:8545;
+} 
 ```
+- 当Nginx和服务端同时设置了跨域的时候，游览器会报如下错。
+    - 意思是设置了2次跨域，但是只有一个是允许的，移除其中的任意一个或者在在nginx里进行相关的配置 proxy_hide_header Access-Control-Allow-Origin;
+    ```log
+    The 'Access-Control-Allow-Origin' header contains multiple values '*, *', but only one is allowed. Have the server send the header with a valid value, or, if an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
+    ```
 
 ## 请求头
 ```conf
@@ -130,6 +136,7 @@ set $var prod
 2. 方式二
 ```conf
   # map 必须写在 server{} 的外部
+  # 设置变量domain，根据内置变量$server_name的匹配情况，设置domain为不同的值
   map $server_name $domain {
     default xxx;
     *.yyy yyy;

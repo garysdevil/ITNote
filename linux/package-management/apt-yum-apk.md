@@ -113,12 +113,15 @@ gpgcheck=0
     - 安装阿里云源
     ```bash
     curl -o /etc/yum.repos.d/Aliyun-Base.repo  http://mirrors.aliyun.com/repo/Centos-7.repo
+
     ```
-    -  安装epel源
+3. 安装epel源
     ```bash
     # 方式一
     # 大陆
     curl -o /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
+    # wget http://mirrors.aliyun.com/repo/epel-7.repo -P /etc/yum.repos.d/
+
     # 非大陆
     wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
     yum install epel-release-latest-7.noarch.rpm
@@ -127,7 +130,7 @@ gpgcheck=0
     yum install epel-release
     ```
 
-3. yum仓库管理工具
+4. yum仓库管理工具
 yum-config-manager
 yum-config-manager --add-repo repository_url
 

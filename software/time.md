@@ -33,17 +33,36 @@ time.nist.gov 美国标准技术研究院 NTP 服务器
     ntpstat
 
 ## 时区
-1. 查看每个time zone当前的时间
-    zdump Hongkong
+- 时区
+    - 整个地球分为二十四时区，每个时区都有自己的本地时间。
+    - 通用协调时(UTC, Universal Time Coordinated)
+    1. UTC/GMT 世界标准时间 +0
+    2. PST 太平洋标准时间 -8
+    3. GMT 北京时间 +8
 
-2. 设置时区
-    ln -sf /usr/share/zoneinfo/posix/Asia/Shanghai /etc/localtime
-    或者 tzselect
+```bash
+# 1. 查看每个time zone当前的时间
+zdump Hongkong
+
+# 2. 设置时区
+ln -sf /usr/share/zoneinfo/posix/Asia/Shanghai /etc/localtime
+# 或者 tzselect
 
 timedatectl list-timezones |grep Shanghai    # 查找中国时区的完整名称
 timedatectl set-timezone Asia/Shanghai # 临时设置，重启后失效
 ln -sf /usr/share/zoneinfo/Asia/Hong_Kong /etc/localtime
+```
 
-## 其它
+
+## 时间
 1. 查看机器上的硬件时间(always in local time zone)
-    hwclock --show
+```bash
+hwclock --show
+```
+
+2. 查看操作系统的时间
+```bash
+date -d "yesterday" +%Y-%m-%d
+date -d '2 days ago' +%Y-%m-%d # 显示2天前的时间
+date '+%Y-%m-%d %H:%M:%S'
+```

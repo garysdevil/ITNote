@@ -129,3 +129,6 @@ vscode -d ${filename1} ${filename2}
 1. Better Jinja
 
 2. GitLens — Git supercharged
+
+3. Live Server
+    - 静态页面服务器，解决访问第三方js包时的跨域问题

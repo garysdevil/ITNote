@@ -249,7 +249,8 @@ cat /var/log/messages
 ### ps & top & lsof 
 - ps指令的安装 
     - apt-get install procps
-- 
+    
+- 列出所有线程的pid、启动时间、运行时间
 ps -eo pid,lstart,etime,cmd |grep nginx
 
 - 列出所有线程的cpu、内存消耗
@@ -429,12 +430,6 @@ sed -i "/^name/c\name=$var" 文件名
 - 删除Evicted状态的Pod
 kubectl get pods | grep Evicted | awk '{print $1}' | xargs kubectl delete pod
 
-- 日期
-```bash
-date -d "yesterday" +%Y-%m-%d
-date -d '2 days ago' +%Y-%m-%d # 显示2天前的时间
-date '+%Y-%m-%d %H:%M:%S'
-```
 
 - 查看网络连接
 netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'

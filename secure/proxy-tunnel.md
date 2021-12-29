@@ -35,11 +35,13 @@ proxy socks -t tcp -p "0.0.0.0:38080"
 --daemon
 --forever # 防止进程意外退出
 ```
-# shadowsocks
+## shadowsocks
 - 参考 
     - http://ivo-wang.github.io/2018/02/24/ss-redir/
 
 
+## Proxy SwitchyOmega
+- Google游览器代理管理工具插件
 
 # 隧道
 - 参考文件

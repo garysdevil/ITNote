@@ -126,20 +126,25 @@ cp ~/.docker/config.json /var/lib/kubelet/
 
 ### 更改docker存储目录与镜像仓库地址
 - 参考文档 https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file
-vi /etc/docker/daemon.json 
-1. 更改镜像仓库地址
-```bash
+
+- vi /etc/docker/daemon.json 
+```conf
 {
+  # 1. 更改镜像仓库地址
   "registry-mirrors": ["http://hub-mirror.c.163.com"],
-  "data-root": "/www/docker"
-}
-2. 更改docker存储目录
-ExecStart=/usr/bin/dockerd --graph /home/docker
-# 或者
-{
-    "graph":"/data/docker"
+;   "registry-mirrors":["https://mirror.ccs.tencentyun.com/"], ;腾讯云专用
+
+  # 更改docker存储目录 方式一
+  "data-root": "/www/docker",
+
+  # 更改docker存储目录 方式二
+  "graph":"/data/docker" # 默认位置 /var/lib/docker
 }
 ```
+
+- 更改docker存储目录 方式三
+    - 更改service里的启动方式 ExecStart=/usr/bin/dockerd --graph /home/docker
+
 
 ##  其它
 1. 使普通用户也可以操作docker

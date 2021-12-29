@@ -84,14 +84,17 @@ git config  --global pull.ff only       # fast-forward only
 
 2. log
   - git log 输出日志信息
-  -p  用来显示每次提交的内容差异。  
-  -${NUM} 来仅显示最近两次提交。例如： git log -2  
-  --pretty=oneline / short 用来精简显示日志。  
-  --author="gary" 通过提交者来过滤
-  - 具体例子：  
-  git log -p + 文件名 （可查看该文件以前每一次push的修改内容）  
-  git log -p -1 + 文件名 （只查看该文件当前这一次的push内容）  
+    ```bash
+    # -p  用来显示每次提交的内容差异。  
+    # -${NUM} 来仅显示最近两次提交。例如： git log -2  
+    # --pretty=oneline / short 用来精简显示日志。  
+    # --author="gary" 通过提交者来过滤
+    # --reverse 倒序
 
+    # 具体例子：  
+    git log -p + 文件名 #（可查看该文件以前每一次push的修改内容）  
+    git log -p -1 + 文件名 #（只查看该文件当前这一次的push内容）  
+    ```
   - 查看节点树 git log --oneline --graph --decorate --all
   - 指定时间
     - --since="2019-11-21"
