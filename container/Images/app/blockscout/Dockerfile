@@ -1,18 +1,20 @@
 FROM centos:7
-export LC_ALL=en_US.UTF-8
-echo 'LANG="en_US.UTF-8"' > /etc/locale.conf
+
+echo 'export LANG=en_US.UTF-8' >> /etc/profile
+echo 'export LANG=en_US.UTF-8' >> /etc/bashrc
+# locale 验证是否设置成功
+
 # wget http://mirrors.aliyun.com/repo/epel-7.repo -P /etc/yum.repos.d/
 # yum upgrade -y --enablerepo=epel
-
-yum -y install epel-release 
-yum update -y
+yum install -y epel-release
+yum update -y --enablerepo=epel
 
 # yum install which
 
-yum install -y unzip
-yum install wget -y
-yum install -y ruby
-yum install git -y
+yum --enablerepo=epel install -y unzip
+yum --enablerepo=epel install -y wget
+yum --enablerepo=epel install -y ruby
+yum --enablerepo=epel install -y git
 
 yum --enablerepo=epel install -y libtool
 yum --enablerepo=epel install -y gmp-devel
@@ -21,7 +23,7 @@ yum --enablerepo=epel install -y gmp-devel
 
 # nodejs14
 wget https://rpm.nodesource.com/setup_14.x | bash setup_14.x
-yum install nodejs-14* -y
+yum install -y nodejs-14*
 # node -v
 
 # rust
@@ -32,7 +34,7 @@ source $HOME/.cargo/env
 # erlang
 wget https://packages.erlang-solutions.com/erlang-solutions-2.0-1.noarch.rpm
 rpm -Uvh erlang-solutions-2.0-1.noarch.rpm
-yum install erlang -y
+yum install -y erlang
 # erl -version
 
 # wget https://packages.erlang-solutions.com/erlang/rpm/centos/7/x86_64/esl-erlang_21.0.5-1~centos~7_amd64.rpm
@@ -49,11 +51,8 @@ unzip Precompiled.zip
 git clone https://github.com/poanetwork/blockscout
 cd blockscout
 
-# 需要手动确认
-mix local.hex 
-
-# 生成 secret_key_base
-mix deps.get
+# 生成 secret_key_base # 需要手动确认
+mix deps.get 
 mix phx.gen.secret
 
 # 安装Mix依赖和编译应用程序
@@ -62,6 +61,20 @@ mix do local.rebar --force
 mix do deps.compile
 mix do compile
 
+
+# 安装Node.js依赖
+cd apps/block_scout_web/assets
+npm install
+# 进行打包操作
+node_modules/webpack/bin/webpack.js --mode production
+
+# 构建静态资产
+cd apps/block_scout_web/
+mix phx.digest
+
+# 启用HTTPS
+cd apps/block_scout_web/
+mix phx.gen.cert blockscout blockscout.local
 
 # 添加环境变量
 ```
