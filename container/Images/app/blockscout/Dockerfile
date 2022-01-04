@@ -2,6 +2,7 @@ FROM centos:7
 
 echo 'export LANG=en_US.UTF-8' >> /etc/profile
 echo 'export LANG=en_US.UTF-8' >> /etc/bashrc
+echo 'source /etc/profile.d/blockscount.sh' >> /etc/bashrc
 # locale 验证是否设置成功
 
 # wget http://mirrors.aliyun.com/repo/epel-7.repo -P /etc/yum.repos.d/
@@ -48,6 +49,7 @@ unzip Precompiled.zip
 
 
 # blockscout
+cd /
 git clone https://github.com/poanetwork/blockscout
 cd blockscout
 
@@ -63,29 +65,29 @@ mix do compile
 
 
 # 安装Node.js依赖
-cd apps/block_scout_web/assets
+cd /blockscout/apps/block_scout_web/assets
 npm install
 # 进行打包操作
 node_modules/webpack/bin/webpack.js --mode production
 
 # 构建静态资产
-cd apps/block_scout_web/
+cd /blockscout/apps/block_scout_web/
 mix phx.digest
 
 # 启用HTTPS
+cd /blockscout/apps/block_scout_web/
 cd apps/block_scout_web/
 mix phx.gen.cert blockscout blockscout.local
 
 # 添加环境变量
-```
-export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/blockscout"
- 
+echo 'export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/blockscout"
+
 export DB_HOST=localhost
 export DB_PASSWORD=postgres
 export DB_PORT=5432
 export DB_USERNAME=postgres
 
-export SECRET_KEY_BASE="your key"
+export SECRET_KEY_BASE="PD6oNh2ag3dASlKh9aTu/xKSGP97i+yRHOD3BxBNHKFONQkG+GH+6E2M7M5hJEFs"
 
 export ETHEREUM_JSONRPC_VARIANT=geth
 export ETHEREUM_JSONRPC_HTTP_URL="http://localhost:8545"
@@ -94,8 +96,11 @@ export ETHEREUM_JSONRPC_WS_URL="ws://localhost:8545"
 export SUBNETWORK= MAINNET
 
 export PORT=4000
-export COIN="Test Coin"
-```
+export COIN="Test Coin"' > /etc/profile.d/blockscount.sh
 
 # 删除、创建和迁移数据库
 mix do ecto.drop, ecto.create, ecto.migrate
+
+
+# 启动
+mix phx.server

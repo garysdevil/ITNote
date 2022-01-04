@@ -98,6 +98,19 @@ docker stats --no-stream
 
 # 4. 查看容器状态的详细信息
 docker inspect ${container_id}
+
+# 5. 将当前容器打包成镜像
+docker commit  ${容器名称或id} ${打包的镜像名称}:${标签}
+docker commit  centos7 garysdevil/blockscout:latest
+# 可选项说明：
+# -a :提交的镜像作者；
+# -c :使用Dockerfile指令来创建镜像；
+# -m :提交时的说明文字；
+# -p :在commit时，将容器暂停，默认 -p。
+
+# 6. 推送镜像进远程仓库
+# docker image tag hub.docker.com/repository/docker/garysdevil/blockscout:test garysdevil/blockscout:latest
+docker image push garysdevil/blockscout:latest
 ```
 
 ### Dockerfile

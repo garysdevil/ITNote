@@ -92,3 +92,10 @@ select * from table_A union select * from table_A;
 
 
 ## 存储过程
+
+
+## 注意事项
+- timestamp
+    - CURRENT_TIMESTAMP 当要向数据库执行insert操作时，无论这个字段有没有set值，都插入当前系统时间
+    - ON UPDATE CURRENT_TIMESTAMP   当执行update操作时，无论这个字段值有没有变化，它的值都会更新为当前UPDATE操作时的时间。
+    - NULL

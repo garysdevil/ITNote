@@ -36,10 +36,13 @@
 # 列出当前的iptables配置
 iptables -L
 iptables -t nat -L --line-number
+iptables -t filter -L --line-number
 
 # 根据编号删除规则
 iptables -t nat -L --line-number
+iptables -t ${tabletype}  -D ${direction} 1
 iptables -t nat  -D PREROUTING 1
+iptables -t filter -D INPUT 1
 
 # 端口转发
 iptables -t nat -I PREROUTING -p tcp --dport 80 -m set --match-set kujiutest dst -j REDIRECT  --to-port 1080
