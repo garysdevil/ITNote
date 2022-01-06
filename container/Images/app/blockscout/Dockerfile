@@ -1,21 +1,23 @@
 FROM centos:7
 
+MAINTAINER garysdevil
+ARG blockscout_commit master
+
 WORKDIR /tmp
+ENV LANG=en_US.utf8 \
+SECRET_KEY_BASE=PD6oNh2ag3dASlKh9aTu/xKSGP97i+yRHOD3BxBNHKFONQkG+GH+6E2M7M5hJEFs
 
-ENV LANG en_US.utf8
-ENV SECRET_KEY_BASE PD6oNh2ag3dASlKh9aTu/xKSGP97i+yRHOD3BxBNHKFONQkG+GH+6E2M7M5hJEFs
-
-# wget http://mirrors.aliyun.com/repo/epel-7.repo -P /etc/yum.repos.d/
+# 安装依赖
 RUN yum install -y epel-release \ 
     && yum upgrade -y --enablerepo=epel \
-    && yum update -y --enablerepo=epel
-
-RUN yum --enablerepo=epel install -y unzip \
+    && yum update -y --enablerepo=epel \
+    \
+    && yum --enablerepo=epel install -y unzip \
     && yum --enablerepo=epel install -y wget \
     && yum --enablerepo=epel install -y ruby \
-    && yum --enablerepo=epel install -y git
-
-RUN yum --enablerepo=epel install -y libtool \
+    && yum --enablerepo=epel install -y git \
+    \
+    && yum --enablerepo=epel install -y libtool \
     && yum --enablerepo=epel install -y gmp-devel \
     && yum --enablerepo=epel group install -y "Development Tools" \
     && yum --enablerepo=epel install -y gmp-devel
@@ -40,14 +42,17 @@ RUN wget https://github.com/elixir-lang/elixir/releases/download/v1.12.3/Precomp
     && unzip Precompiled.zip -d /
 
 # blockscout
-RUN cd /opt/ && git clone https://github.com/poanetwork/blockscout
+RUN cd /opt/ \
+    && git clone https://github.com/poanetwork/blockscout \
+    && cd blockscout \
+    && git checkout ${blockscout_commit}
 
 # 安装Mix依赖和编译应用程序
 RUN cd /opt/blockscout \
     && mix local.hex --force \
     && mix do local.rebar --force \
-    && mix do deps.get
-RUN cd /opt/blockscout \
+    && mix do deps.get \
+    \
     && source $HOME/.cargo/env \
     && mix do deps.compile \
     && mix do compile
@@ -71,16 +76,16 @@ RUN cd /opt/blockscout/apps/block_scout_web/ \
     && mix phx.gen.cert blockscout blockscout.local
 
 # 添加环境变量
-ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/blockscout"
-ENV DB_HOST=localhost
-ENV DB_PASSWORD=postgres
-ENV DB_PORT=5432
-ENV DB_USERNAME=postgres
-ENV ETHEREUM_JSONRPC_VARIANT=geth
-ENV ETHEREUM_JSONRPC_HTTP_URL="http://localhost:8545"
-ENV ETHEREUM_JSONRPC_WS_URL="ws://localhost:8544"
-ENV SUBNETWORK=PRIVATE
-ENV PORT=4000
+ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/blockscout" \
+DB_HOST=localhost \
+DB_PASSWORD=postgres \
+DB_PORT=5432 \
+DB_USERNAME=postgres \
+ETHEREUM_JSONRPC_VARIANT=geth \
+ETHEREUM_JSONRPC_HTTP_URL="http://localhost:8545" \
+ETHEREUM_JSONRPC_WS_URL="ws://localhost:8544" \
+SUBNETWORK=PRIVATE \
+PORT=4000
 
 # 清理
 RUN yum install which nc -y \

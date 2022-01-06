@@ -74,7 +74,8 @@ yum install ipset
 
 3. 只允许指定ip连接指定端口
 ```bash
-iptables -I INPUT -p tcp --dport 8545 -j DROP  # 先禁止所有IP的访问
+iptables -I INPUT -d 192.169.1.1 -p tcp --dport 8545 -j DROP  # 先禁止所有IP的访问特定端口
+iptables -I INPUT -p tcp --dport 8545 -j DROP  # 先禁止所有IP的访问特定的IP端口
 iptables -I INPUT -s 127.0.0.1 -p tcp --dport 8545 -j ACCEPT # 允许某些IP进行访问
 iptables -I INPUT -m set --match-set whitelist src -p tcp --dport 8545 -j ACCEPT # 通过whitelist允许某些IP进行访问
 ```

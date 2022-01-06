@@ -127,14 +127,16 @@ COPY --from=quay.io/coreos/etcd:v3.3.9 /usr/local/bin/etcd /usr/local/bin/
 - 基本语法
 ```dockerfile
 FROM 基础镜像
+ARG 输入参数健=输入参数值
 MAINTAINER 作者
 RUN 执行命令
 ADD 添加文件
-WORKDIR 指定路径
-ENV 环境变量
+WORKDIR 指定默认路径
+ENV 环境变量键1=环境变量值 环境变量键2=环境变量值
+ENV 环境变量键 环境变量值
 USER 指定用户
 VOLUME 挂载点
-EXPOSE 暴露端口
+EXPOSE 暴露端口1,暴露端口
 ENTRYPOINT 容器入口，不会被docker启动指令覆盖掉
 CMD 容器入口指令，可以被docker启动指令覆盖掉
 ```

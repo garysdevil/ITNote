@@ -1,13 +1,19 @@
 # 以太坊区块链游览器 Blockscout
+
+- 官方链接
+    - https://github.com/blockscout/blockscout
+    - https://docs.blockscout.com/for-developers/information-and-settings/requirements
+- 第三方参考
+    - https://www.jianshu.com/p/40bbc588058f
 - 相关链接
     - https://github.com/syscoin/blockscout/blob/master/Dockerfile
     - https://github.com/asdf-vm/asdf-elixir
-- 参考
-    - https://www.jianshu.com/p/40bbc588058f
-    - https://docs.blockscout.com/for-developers/information-and-settings/requirements
 
 ## 构建
-```
+```bash
+# 方式一
+docker build --build-arg blockscout_commit=v4.1.0-beta --no-cache --network=host -f Dockerfile -t garysdevil/blockscout:v4.1.0-beta .
+# 方式二
 docker build --no-cache --network=host -f Dockerfile -t garysdevil/blockscout:latest .
 ```
 
