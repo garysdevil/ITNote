@@ -81,10 +81,10 @@ chmod +x /usr/local/bin/docker-compose
 ## 常用指令
 ### Docker
 ```bash
-# 1. Build
+# 1. Build 构建镜像
 docker build --build-arg PROJECT=pre --no-cache --network=host -f Dockerfile -t ${url}:${image_tag} .
 
-# 2. Run
+# 2. Run 运行镜像
 docker run -d -e SW_OAP_ADDRESS=127.0.0.1:11800 -p 9000:9000 -v /etc/nginx/html:/var/www/html skyapm/skywalking-php
 # -e 参数
 # -p 主机端口:容器端口
@@ -92,6 +92,7 @@ docker run -d -e SW_OAP_ADDRESS=127.0.0.1:11800 -p 9000:9000 -v /etc/nginx/html:
 # -d 后台运行
 # --name 指定容器名字
 # --network=host 设置容器的网络方式
+# --rm 当容器停止时删除镜像
 
 # 3. 容器资源使用情况
 docker stats --no-stream
@@ -123,6 +124,20 @@ COPY --from=builder /build/server /
 COPY --from=quay.io/coreos/etcd:v3.3.9 /usr/local/bin/etcd /usr/local/bin/
 ```
 
+- 基本语法
+```dockerfile
+FROM 基础镜像
+MAINTAINER 作者
+RUN 执行命令
+ADD 添加文件
+WORKDIR 指定路径
+ENV 环境变量
+USER 指定用户
+VOLUME 挂载点
+EXPOSE 暴露端口
+ENTRYPOINT 容器入口，不会被docker启动指令覆盖掉
+CMD 容器入口指令，可以被docker启动指令覆盖掉
+```
 
 ## docker配置更改
 ### 登陆docker仓库Harbor
