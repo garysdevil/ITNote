@@ -112,6 +112,13 @@ docker commit  centos7 garysdevil/blockscout:latest
 # 6. 推送镜像进远程仓库
 # docker image tag hub.docker.com/repository/docker/garysdevil/blockscout:test garysdevil/blockscout:latest
 docker image push garysdevil/blockscout:latest
+
+# 创建卷、bridge网络
+docker network create --driver bridge my-network
+docker volume create my-volume
+# 使用方式 -v my-volume:/var/lib/postgresql/data
+# 使用方式 --network my-network
+
 ```
 
 ### Dockerfile

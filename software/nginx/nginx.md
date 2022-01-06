@@ -29,25 +29,25 @@ client_max_body_size 10m;         //请求体大小，一般上传文件比较�
 proxy_set_header Host $http_host;   //后端代理ingress时必填
 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;   //影响后端能否获取真实客户端ip
 
+# 自动根据访问域名和端口号生成日志文件
+access_log logs/${host}-${server_port}.log main;
+
 #是否开启http1.1
 proxy_http_version 1.1;
 proxy_set_header Connection "";
+
+# 长连接 指定每个 TCP 连接最多可以保持多长时间 # Nginx 的默认值是 75 秒 # ws代理时需要设置，否则连接会会断开
+keepalive_timeout 75s;
 
 # 转发模块的超时设置 根据需要调整大小。ws代理时需要设置，否则连接会会断开
 proxy_connect_timeout 30s;
 proxy_send_timeout 60s;
 proxy_read_timeout 60s;
 
-# 长连接
-keepalive_timeout 75s;
-
 # ws代理，需要在每层反向代理上添加如下信息
 proxy_http_version 1.1;
 proxy_set_header Upgrade $http_upgrade;
 proxy_set_header Connection "upgrade";
-
-# 自动根据访问域名和端口号生成日志文件
-access_log logs/${host}-${server_port}.log main;
 ```
 ## 原理
 - 参考 https://www.cnblogs.com/yblackd/p/12194143.html
@@ -97,7 +97,7 @@ if ($request_method = 'OPTIONS') {
     return 204;
 }
 location / {  
-    # proxy_hide_header Access-Control-Allow-Origin; # 当响应请求时，过滤掉某个header的字段
+    # proxy_hide_header Access-Control-Allow-Origin; # 当后端服务已经配置跨域的时候，nginx需要过滤掉此header信息
     proxy_pass http://127.0.0.1:8545;
 } 
 ```
@@ -107,7 +107,7 @@ location / {
     The 'Access-Control-Allow-Origin' header contains multiple values '*, *', but only one is allowed. Have the server send the header with a valid value, or, if an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
     ```
 
-## 请求头
+## 添加请求头
 ```conf
 location dist/ {
 	add_header Cache-Control 'public, max-age=3600';

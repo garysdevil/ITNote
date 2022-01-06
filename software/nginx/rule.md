@@ -81,27 +81,27 @@ Nginx中的server_name指令主要用于配置基于名称的虚拟主机，serv
 ```conf
 # 1 准确的server_name匹配，例如：
 server {
-listen 80;
-server_name domain.com www.domain.com;
-...
+    listen 80;
+    server_name domain.com www.domain.com;
+    ...
 }
 # 2 以通配符开始的字符串：
 server {
-listen 80;
-server_name .domain.com;
-...
+    listen 80;
+    server_name .domain.com;
+    ...
 }
 # 3 以通配符结束的字符串：
 server {
-listen 80;
-server_name www.;
-...
+    listen 80;
+    server_name www.;
+    ...
 }
 # 4 匹配正则表达式：
 server {
-listen 80;
-server_name ~^(?.+).domain.com$;
-...
+    listen 80;
+    server_name ~^(?.+).domain.com$;
+    ...
 }
 ```
 
