@@ -493,7 +493,7 @@ fn main() {
 - 内置的标准模块（标准库） https://doc.rust-lang.org/stable/std/all.html
 
 ```rust
-// vi person_module.rs
+// vi phone_module.rs
 pub fn message() -> String {
     String::from("执行发送信息的功能")
 }

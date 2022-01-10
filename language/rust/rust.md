@@ -8,19 +8,26 @@
 ## 安装
 - 参考 https://www.rust-lang.org/tools/install
 
-- 指令
+```rust
+# 下载安装rust以及相关工具
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source $HOME/.cargo/env
+```
+
+- 二进制工具
     - rustup
         - Rust 的工具管理器。
     - cargo
         - Rust 内置的构建系统和包管理器。
         - 可以使用 cargo 指令进行 工程构建、编译、运行、打包、获取包等功能。
 
+## 术语
+- 宝箱crate
+    - a library
+    - an executable program
+## 指令
+
 ```bash
-# 下载安装rust以及相关工具
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source $HOME/.cargo/env
-
-
 # rustup 相关操作
 rustup update # 升级rust
 rustup self uninstall # 卸载rust相关的工具
@@ -33,7 +40,7 @@ rustc ${filepath} # 编译生成二进制文件
 
 # cargo 相关操作
 cargo --version
-cargo new greeting # 构建一个项目
+cargo new greeting # 构建一个项目 默认参数--bin
 cargo build # 编译一个项目
 # cargo build/run --release 使用 release 编译会比默认的 debug 编译性能提升 10 倍以上，但是 release 缺点是编译速度较慢，而且不会显示 panic backtrace 的具体行号 
 cargo run # 编译运行一个项目
@@ -42,28 +49,60 @@ cargo install --path . # 安装二进制文件（默认位置 $HOME/.cargo/bin�
 cargo clippy # 类似eslint，lint工具检查代码可以优化的地方
 cargo fmt # 类似go fmt，代码格式化
 cargo tree # 查看第三方库的版本和依赖关系
-cargo bench # 运行benchmark(基准测试,性能测试)
 cargo udeps # 检查项目中未使用的依赖 (第三方工具，需要单独下载)
+
+# 创建与运行基准测试
+cargo new benches
+cargo bench # 运行benchmark(基准测试,性能测试)
+
 ```
 
-### Cargo.toml
+## Cargo.toml
+- https://doc.rust-lang.org/cargo/reference/manifest.html
+
 ```conf
 [package]
-name = "greeting" # 构建后的二进制名称
-version = "0.1.0" 
-edition = "2021"
+name = "greeting" # cargo new greeting操作后默认生成；构建后的二进制名称。
+version = "0.1.0" # cargo new greeting操作后默认生成。
+edition = "2021" # cargo new greeting操作后默认生成。
 
+categories = [] # categories字段是此包所属类别的字符串数组。 # 所有的类别 https://crates.io/category_slugs
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[dependencies]
+[features] # 条件编译
+default = ["feature1"] # 定义一个默认选项，默认满足这个条件。
+feature1 = []
+feature2 = []
+ssl = ["openssl"] # 定义一个条件，满足这个条件则获取 openssl 依赖。
+nativetls = ["native-tls"] # 定义一个条件，满足这个条件则获取 native-tls 依赖。
 
+[dependencies] # cargo new greeting操作后默认生成；crate的库依赖。
+aaa = "../aaa" # 来自本地的crate
+futures-preview = "0.3.0-alpha.13" # 来自 crates.io 的crate
+romio = { git = "https://github.com/withoutboats/romio", branch = "master" } # 来自github的crate
+[dependencies.openssl] # 可选依赖，满足条件才拉取进行编译
+optional = true
+version = "0.10"
+[dependencies.native-tls] # 可选依赖，满足条件才拉取进行编译
+optional = true
+version = "0.2"
+
+[dev-dependencies] # 开发时的库依赖, 例如examples, tests, and benchmarks的库依赖。
+[build-dependencies] # build scripts的库依赖。
+
+[workspace] # 
+members = [] # 相当于你自己可以在src中添加其它的二进制package，然后可以引用这些二进制package里的东西。
+
+[lib] # 当使用 --lib 参数生成crate时，才可以使用这个配置
+name = "library_name" # 生成库的名字
 ```
 
 
-### 条件编译
-- Rust有一个特殊的属性, #[cfg], 它可以传递标识给编译器，然后选择性编译代码
-```rust
+## 条件编译
+- Rust代码里有一个特殊的属性, #[cfg], 它可以传递标识给编译器，然后选择性编译代码。
 
+### 条件编译一
+```rust
 #[cfg(target_os = "linux")]
 fn fun_condition_1() {
     println!("1. You are running in linux!")
@@ -94,5 +133,19 @@ fn main() {
     } else {
         println!("2. You are runing in other system!")
     }
+}
+```
+
+### 条件编译二 可以在Cargo.toml里进行配置编译条件
+```conf
+[features]
+default = ["feature1"] # 默认使用feature1条件
+feature1 = []
+feature2 = []
+```
+```rust
+#[cfg(feature="feature1")]
+pub fn test1() {
+    // ...
 }
 ```
