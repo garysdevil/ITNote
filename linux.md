@@ -346,6 +346,26 @@ rsync -P --rsh=ssh home.tar 192.168.205.34:/home/home.tar
 rsync -P -e'ssh -p 22' home.tar 192.168.205.34:/home/home.tar
 ```
 
+### GPU
+```bash
+# 查看显卡信息
+lspci | grep -i vga
+# 查看指定显卡的详细信息
+lspci -v -s ${62:00.0}
+
+# CUDA toolkit
+apt update
+apt install nvidia-cuda-toolkit
+nvcc --version
+```
+
+### 数学计算
+```bash
+echo "2/3" | bc -l
+# scale=3 保留几位小数
+echo "scale=3; ${num}*5/60/60" | bc -l
+```
+
 ## 未归类
 获取公网IP ： 
 curl cip.cc 

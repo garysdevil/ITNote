@@ -21,10 +21,52 @@ source $HOME/.cargo/env
         - Rust 内置的构建系统和包管理器。
         - 可以使用 cargo 指令进行 工程构建、编译、运行、打包、获取包等功能。
 
+### cargo镜像源设置
+- 参考 https://cargo.budshome.com/reference/source-replacement.html
+
+vi $HOME/.cargo/config
+```conf
+[source.crates-io]
+registry = "https://github.com/rust-lang/crates.io-index"
+# 指定镜像
+replace-with = '镜像源名' # 如：tuna、sjtu、ustc，或者 rustcc
+
+# 注：以下源配置一个即可，无需全部
+
+# 中国科学技术大学
+[source.ustc]
+registry = "https://mirrors.ustc.edu.cn/crates.io-index"
+# >>> 或者 <<<
+registry = "git://mirrors.ustc.edu.cn/crates.io-index"
+
+# 上海交通大学
+[source.sjtu]
+registry = "https://mirrors.sjtug.sjtu.edu.cn/git/crates.io-index/"
+
+# 清华大学
+[source.tuna]
+registry = "https://mirrors.tuna.tsinghua.edu.cn/git/crates.io-index.git"
+
+# rustcc社区
+[source.rustcc]
+registry = "https://code.aliyun.com/rustcc/crates.io-index.git"
+
+```
 ## 术语
-- 宝箱crate
-    - a library
-    - an executable program
+- 宝箱(crate)
+    - 一个库(a library crate)。
+    - 一个二进制文件(a binary crate)。
+- 包(package)
+    - 包含任意多个二进制文件 crate(binary crate)。
+    - 至多 只能 包含一个库 crate(library crate)。
+    - 至少包含一个 crate，无论是库的还是二进制的。
+
+- crate root 是一个源文件，Rust 编译器以它为起始点，并构成你的 crate 的根模块。
+    - 二进制根 src/main.rs ，入口点 src/main.rs::main。
+    - 一个库根 src/lib.rs ，共享代码。
+
+- 每个 src/bin 下的文件都会被编译成一个独立的二进制 crate。
+
 ## 指令
 
 ```bash

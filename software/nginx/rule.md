@@ -1,3 +1,37 @@
+### 七层反向代理
+```conf
+http {
+    upstream backend_service {
+        server 10.0.0.83:7080 backup; 
+        server 10.0.0.84:7080 backup;  backup 表示其它所有的非backup Server down或者忙的时候，请求backup机器；所以这台机器压力会最轻。
+        server 10.0.0.85:8980 weight=2;  # weight  默认为1.weight越大，负载的权重就越大。
+        server 10.0.0.86:8980 down;  # down 表示当前的Web Server暂时不参与负载。
+    }
+    server{
+        listen 80 default_server;
+        server_name _;
+        location / { 
+            proxy_pass http://backend_service; 
+        }
+    }
+    include /etc/nginx/http.d/*.conf;
+}
+```
+### 四层反向代理
+```conf
+stream {
+    upstream backend_instance {
+        server 127.0.0.2:12345 weight=5;
+        server 127.0.0.1:12345 max_fails=3 fail_timeout=30s;
+    }
+    server {
+        listen 12345;
+        proxy_pass backend_instance;
+    }
+    include /etc/nginx/tcp.d/*.conf;
+}
+```
+
 ### url访问路径规则
 ```
 空	location后没有参数直接跟着URI，表示前缀匹配，代表跟请求中的URI从头开始匹配。

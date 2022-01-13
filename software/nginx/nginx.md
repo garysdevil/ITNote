@@ -40,9 +40,9 @@ proxy_set_header Connection "";
 keepalive_timeout 75s;
 
 # 转发模块的超时设置 根据需要调整大小。ws代理时需要设置，否则连接会会断开
-proxy_connect_timeout 30s;
-proxy_send_timeout 60s;
-proxy_read_timeout 60s;
+proxy_connect_timeout 30s; # 后端服务器连接的超时时间_发起握手等候响应超时时间
+proxy_send_timeout 60s; # 后端服务器数据回传时间_就是在规定时间之内后端服务器必须传完所有的数据.
+proxy_read_timeout 60s; # 连接成功后_等候后端服务器响应时间_其实已经进入后端的排队之中等候处理（也可以说是后端服务器处理请求的时间）.
 
 # ws代理，需要在每层反向代理上添加如下信息
 proxy_http_version 1.1;
