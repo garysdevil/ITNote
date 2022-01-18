@@ -101,6 +101,9 @@ vscode -r ${filename}
 
 # 2. 比较两个文件的区别
 vscode -d ${filename1} ${filename2}
+
+# 下载插件
+vscode --install-extension (<extension-id> | <extension-vsix-path>)
 ```
 
 ## 配置
@@ -132,3 +135,10 @@ vscode -d ${filename1} ${filename2}
 
 3. Live Server
     - 静态页面服务器，解决访问第三方js包时的跨域问题
+
+4. Rust相关的插件
+    - Rust
+    - Debug
+        - C++ (Windows)
+        - CodeLLDB（Mac或Linux） ~/.vscode/launch.json
+5. Bookmarks

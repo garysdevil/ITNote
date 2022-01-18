@@ -1,5 +1,6 @@
 # Rust
-- Rust 语言由 Mozilla 开发，最早发布于 2014 年 9 月。
+- Rust 语言最初是由Mozilla研究院的Graydon Hoare设计创造，然后在Dave Herman, Brendan Eich以及很多其他人的贡献下逐步完善的。
+- 正式版本 最早发布于 2014 年 9 月。
 - Rust 的编译器是在 MIT License 和 Apache License 2.0 双重协议声明下的免费开源软件。
 - 在线编译器 https://play.rust-lang.org/
 - 官网  https://www.rust-lang.org/
@@ -54,18 +55,31 @@ registry = "https://code.aliyun.com/rustcc/crates.io-index.git"
 ```
 ## 术语
 - 宝箱(crate)
-    - 一个库(a library crate)。
-    - 一个二进制文件(a binary crate)。
+    - 可以是 a library crate。
+    - 可以是 a binary crate。
+
 - 包(package)
-    - 包含任意多个二进制文件 crate(binary crate)。
-    - 至多 只能 包含一个库 crate(library crate)。
-    - 至少包含一个 crate，无论是库的还是二进制的。
+    - 包含任意多个 binary crate。
+    - 至多只能包含一个 library crate。
+    - 至少包含一个 crate。
 
-- crate root 是一个源文件，Rust 编译器以它为起始点，并构成你的 crate 的根模块。
-    - 二进制根 src/main.rs ，入口点 src/main.rs::main。
-    - 一个库根 src/lib.rs ，共享代码。
+- crate root 是一个源文件，Rust 编译器以它为起始点，并构成 crate 的根模块。
+    - 二进制根 
+        - src/main.rs 是一个 binary crate 的根；入口点 src/main.rs::main。
+        - 通过将文件放在 src/bin 目录下，一个包可以拥有多个二进制 crate，每个 src/bin 下的文件都会被编译成一个独立的二进制 crate。
+    - 库根 
+        - src/lib.rs 是一个 library crate 的根。
 
-- 每个 src/bin 下的文件都会被编译成一个独立的二进制 crate。
+- 模块(mod)
+    - 模块的声明
+        - 可以使用 ``` mod 模块名{} ``` 来声明一个模块。
+        - 一个文件，其本身就代表声明了一个模块，文件名为模块名。
+        - 一个文件夹，需要在文件夹内创建 mod.rs 文件来表示声明了一个模块。文件夹内的模块需要通过 mod.rs 文件进行对外暴露。
+    - 编译器只能看到 crate root 的根文件，如果需要使用模块，则需要在根文件下使用mod关键字进行引用，例如 ``` mod 模块名; ```。
+    - 当前模块需要使用其它的模块，也需要使用mod关键字进行引用，例如``` mod 模块名; ```。
+    - 当模块被引入后，调用模块内函数的方式 
+        - 方式一 ``` 模块名::模块名::方法名() ``` 
+        - 方式二 使用use关键字将某个模块下的函数都引入到当前的模块下，再直接通过函数名进行调用 ``` use 模块名::模块名::*; 方法名() ```。
 
 ## 指令
 

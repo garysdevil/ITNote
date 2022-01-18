@@ -725,12 +725,13 @@ fn main() {
     ```
  
  ## 生命周期
- ````rust
-// &i32        // 常规引用
-// &'a i32     // 含有生命周期注释的引用
-// &'a mut i32 // 可变型含有生命周期注释的引用
+- 生命周期注释是描述引用生命周期的办法。
+- 生命周期注释用单引号开头，跟着一个小写字母单词：
+    - &i32        // 常规引用
+    - &'a i32     // 含有生命周期注释的引用
+    - &'a mut i32 // 可变型含有生命周期注释的引用
 
-
+````rust
 // fun_longer函数在在编译期间将报错，因为返回值引用可能会返回过期的引用，rust机制不允许任何可能的意外发生
 // fn fun_longer(var_string_1: &str, var_string_2: &str) -> &str {
 //     if var_string_2.len() > var_string_1.len() {
@@ -756,6 +757,26 @@ fn main() {
         result = fun_longer_life(var_string_1, var_string_2);
     }
     println!("{} is longer", result);
+}
+````
+
+```rust
+// 出自于 Rust 圣经 的一段程序
+// 同时使用了泛型、特性、生命周期机制
+// T 范型
+// 'a 生命周期
+// T 数据类型必须实现了 Display特性
+use std::fmt::Display;
+
+fn longest_with_an_announcement<'a, T>(x: &'a str, y: &'a str, ann: T) -> &'a str
+    where T: Display
+{
+    println!("Announcement! {}", ann);
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
 }
 ```
 

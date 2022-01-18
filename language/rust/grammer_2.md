@@ -25,3 +25,16 @@
     - 宏由三部分组成，分别是 ()、 ($fmt:expr)、 ($fmt: expr, $($args:tt)*)
     - $fmt 是对宏参数的捕获，类似于函数的参数； expr 表示这个捕获的类型是表达式。
     
+
+### 异步
+- std::future::Future
+    - future 对象不会轮询（poll）自己
+- tokio 
+    - 异步运行时（async runtime）
+```rust
+// 修改 main 函数使用 tokio 默认执行器（executor）
+#[tokio::main]
+async fn main() {
+    println!("Hello from a (so far completely unnecessary) async runtime");
+}
+```

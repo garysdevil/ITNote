@@ -24,6 +24,8 @@ cat /proc/cpuinfo| grep "processor"| wc -l
 -e (or --referer): 设置 "Referer" 字段.
 -s 静默模式
 -k (or --insecure)不验证证书进行https请求
+--connect-timeout 建立连接超时时间
+-m 数据传输超时时间
 
 ### crontab
 1. 配置crontab
