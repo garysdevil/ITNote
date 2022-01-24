@@ -134,6 +134,10 @@ ifconfig en0
   end
   ```
 
+### 第三方
+1. 多屏屏幕，鼠标快速移动
+    - https://github.com/round/CatchMouse
+
 ## 服务
 ### launchctl
 1. 位置

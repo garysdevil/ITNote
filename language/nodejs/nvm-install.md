@@ -26,6 +26,8 @@ echo 'export NVM_DIR="$HOME/.nvm"
 ### 使用
 ```bash 
 nvm install stable ## 安装最新稳定版 node
+
+nvm alias default lts/gallium # 指定node的默认版本
 ```
 
 ## 包管理器 npm
@@ -44,6 +46,12 @@ npm i --registry=https://registry.npm.taobao.org
 ```bash
 # 查看全局安装过的包
 npm list -g --depth 0
+```
+
+## 包管理器 yarn
+```bash
+# 安装yarn
+npm install yarn -g
 ```
 
 ## 源管理器

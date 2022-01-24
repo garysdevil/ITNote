@@ -28,7 +28,7 @@
 
 ### 异步
 - std::future::Future
-    - future 对象不会轮询（poll）自己
+    - future 实例不会轮询（poll）自己
 - tokio 
     - 异步运行时（async runtime）
 ```rust
@@ -36,5 +36,17 @@
 #[tokio::main]
 async fn main() {
     println!("Hello from a (so far completely unnecessary) async runtime");
+}
+```
+
+
+```rust
+fn main() {
+    use std::future;
+    async fn run() {
+        let a = future::ready(1);
+        println!("{}", a.await);
+        // assert_eq!(a.await, 1);
+    }
 }
 ```

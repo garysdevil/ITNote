@@ -249,25 +249,29 @@ cat /var/log/messages
 ```
 
 ### ps & top & lsof 
-- ps指令的安装 
-    - apt-get install procps
-    
-- 列出所有线程的pid、启动时间、运行时间
+```bash
+# - ps指令的安装 
+apt-get install procps
+
+# 查看进程对应的所有线程
+ps -T -p ${pid}
+
+# 列出所有线程的pid、启动时间、运行时间
 ps -eo pid,lstart,etime,cmd |grep nginx
 
-- 列出所有线程的cpu、内存消耗
+# 列出所有线程的cpu、内存消耗
 ps -A  -o comm,pmem,pcpu | sort | uniq -c | head -15
 
-- 内存消耗从大到小
-    - ps -eo pid,ppid,%mem,%cpu,cmd --sort=-%mem | head
-    - ps -eo pid,ppid,%mem,%cpu,comm --sort=-%mem | head
+# 内存消耗从大到小
+ps -eo pid,ppid,%mem,%cpu,cmd --sort=-%mem | head
+ps -eo pid,ppid,%mem,%cpu,comm --sort=-%mem | head
 
-    - top -c -b -o +%MEM | head -n 20 | tail -15
-    - top -b -o +%MEM | head -n 20 | tail -15
+top -c -b -o +%MEM | head -n 20 | tail -15
+top -b -o +%MEM | head -n 20 | tail -15
 
-- lsof（list open files）是一个列出当前系统打开文件的工具
-
-    - lsof  -i @fw.google.com:2150=2180
+# lsof（list open files）是一个列出当前系统打开文件的工具
+lsof  -i @fw.google.com:2150=2180
+```
 
 ### sysstat
 - 分析服务器的性能和资源的使用效率。可以监控CPU、硬盘、网络等数据.
@@ -349,6 +353,9 @@ rsync -P -e'ssh -p 22' home.tar 192.168.205.34:/home/home.tar
 ```
 
 ### GPU
+- GPU分类
+    - AMD
+    - CUDA
 ```bash
 # 查看显卡信息
 lspci | grep -i vga

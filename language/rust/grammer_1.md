@@ -996,7 +996,7 @@ fn main() {
         thread::sleep(Duration::from_millis(1));
     }
 
-    // 使用 move 关键字来取消禁止
+    // 关键字move的作用是将所引用的变量的所有权转移至闭包内，通常用于使闭包的生命周期大于所捕获的变量的原生命周期
     let var_string = "hello";
     let handle = thread::spawn(move || {
         println!("{}", var_string);
