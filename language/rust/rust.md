@@ -22,7 +22,7 @@ source $HOME/.cargo/env
         - Rust 内置的构建系统和包管理器。
         - 可以使用 cargo 指令进行 工程构建、编译、运行、打包、获取包等功能。
 
-### cargo镜像源设置
+## Cargo镜像源设置
 - 参考 https://cargo.budshome.com/reference/source-replacement.html
 
 vi $HOME/.cargo/config

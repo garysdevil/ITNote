@@ -355,18 +355,37 @@ rsync -P -e'ssh -p 22' home.tar 192.168.205.34:/home/home.tar
 ### GPU
 - GPU分类
     - AMD
-    - CUDA
+    - CUDA  
+        - 由NVIDIA推出的通用并行计算架构
+        - https://forums.developer.nvidia.com/
 ```bash
+# PCI Peripheral Component Interconnect(外设部件互连标准)
+
 # 查看显卡信息
 lspci | grep -i vga
 # 查看指定显卡的详细信息
 lspci -v -s ${62:00.0}
 
-# CUDA toolkit
+# CUDA toolkit # https://developer.nvidia.com/cuda-downloads
 apt update
 apt install nvidia-cuda-toolkit
 nvcc --version
+
+
+# 安装CUDA驱动
+# add-apt-repository ppa:graphics-drivers/ppa --yes
+# apt update
+# apt install nvidia-driver-470 
+# apt install nvidia-driver-* # 选择一个驱动器
+# 查看GPU使用率
+nvidia-smi -l 1 # 每秒刷新一次
 ```
+- CUDA编程
+    - 在GPU上执行的函数通常称为核函数。
+    - 以线程格（Grid）的形式组织，每个线程格由若干个线程块（block）组成，而每个线程块又由若干个线程（thread）组成。
+    - 以block为单位执行的。
+    - 
+
 
 ### 数学计算
 ```bash
