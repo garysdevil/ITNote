@@ -1,4 +1,11 @@
 ## 包管理工具
+
+### Ubuntu20
+```bash
+# 在线或者离线安装deb包，可以自动修复依赖问题
+apt install ./deb安装包
+```
+
 ### Ubuntu18
 #### Ubuntu16
 ##### 概览
