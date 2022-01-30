@@ -49,6 +49,11 @@ nc -v -z ip port
 nc -l -u -k 8080 -e /bin/bash
 # 3. 一个简单的静态web页面服务器
 while true;do  nc -l 88  < somepage.html; done
+
+# -w 设置无数据传输超时时间
+# -G 设置连接超时时间
+# -v 显示详细信息
+# -z
 ```
 
 ### dig

@@ -70,6 +70,28 @@ ${var%/*}
 ${var%/*}
 for name in `ls *.Linux`;do mv $name ${name%.*};done
 ```
+
+- 变量字符串分割
+```bash
+    # 分割ip和端口号
+    ipport="127.0.0.1:8080"
+    ip=${ipport%:*}
+    port=${ipport#*:}
+    echo "${ip} ${port}"
+```
+
+- 去掉字符串两边的双引号
+```bash
+    echo '"127.0.0.1:8080"' > ipport.txt
+    
+    ipport_raw=$(cat ipport.txt)
+    # 去掉两边的双引号
+    len_temp_1=${#ipport_raw}
+    len_temp_2=$(echo "${len_temp_1}-2" | bc -l)
+    ipport=${ipport_raw:1:${len_temp_2}}
+    echo $ipport
+```
+
 - 判断/比较符号
 ```
 -e filename 如果 filename存在，则为真

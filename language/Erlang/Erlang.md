@@ -1,24 +1,37 @@
 
+
+## 相关链接
+- OTP框架 https://github.com/erlang/otp
+- Erlang编译工具安装 https://www.erlang-solutions.com/downloads/
+- Rebar3 https://github.com/erlang/rebar3
+
+
 ## Erlang（Ericsson Language）
 - 定义：是一种通用的面向并发的动态类型编程语言，它由瑞典电信设备制造商爱立信所辖的CS-Lab开发，目的是创造一种可以应对大规模并发活动的编程语言和运行环境。
 - 诞生：问世于1987年，于1998年发布开源版本。
 - 运行时环境：一个名字为BEAM的虚拟机。
 - 特性：并发性、分布式、脚本语言...
 
-## Erlang 生态
-- Elixir 是一个基于 Erlang 虚拟机的函数式、面向并行的通用编程语言。Elixir 以 Erlang 为基础，支持分布式、高容错、实时应用程序的开发，同时亦对其进行扩展使之借助宏实现元编程，并通过协议支持多态。
-
 - OTP（Open Telecom Platform）
     - 是一组Erlang库，包含：Erlang运行时系统、主要由Erlang编写的组件、一组Erlang程序设计原则。
     - 是爱立信公司开发的开放电信应用平台，这是一个很强大并且很通用的框架，可以帮助开发者编写大型的、容错的，分布式的系统。
 
-- Mix 是Elixir装载的一个构建工具，提供了创建、编译、测试应用、管理依赖等等。
+- Rebar3 是一个Erlang工具，可以轻松地创建、开发和发布Erlang库、应用程序和系统。
 
-- ExUnit 是Elixir装载的一个基本单元测试框架。
+## Elixir
+- Elixir 
+    - 是一个基于 Erlang 虚拟机的函数式、面向并行的通用编程语言。
+    - 以 Erlang 为基础，支持分布式、高容错、实时应用程序的开发，同时亦对其进行扩展使之借助宏实现元编程，并通过协议支持多态。
+
+- Mix
+    - 是Elixir工程的构建工具。
+
+- ExUnit 是Elixir的一个基本单元测试框架。
+
+
+
 
 ## 安装相关工具
-- 参考 
-    - https://www.erlang-solutions.com/downloads/
 
 - 安装erlang
     ```bash
@@ -45,7 +58,39 @@
     unzip Precompiled.zip -d
     ```
 
-## 基本语法
+## 指令
 ```Elixir
 mix new kv --module KV
 ```
+
+
+## 语法
+### hello world
+- 参考 https://riptutorial.com/erlang/example/3599/hello-world
+
+- hello脚本 vi hello.erl
+    ```erl
+    -module(hello). % 定义模块名为hello
+    -export([hello_world/0]). % 暴露hello_world，函数需要传递0个参数进来
+
+    hello_world() ->
+    io:format("Hello, World!~n", []).
+    ```
+- erl 进入erl shell会话框编译运行脚本
+    ```erl shell
+    1> c(hello). % 加载hello.erl文件并进行编译生成字节码文件hello.beam
+    {ok,hello}
+    2> hello:hello_world(). % 执行模块内的函数
+    Hello, World!
+    ok
+    ```
+
+- erlc 使用erlc编译脚本
+    ```bash
+    erlc hello.erl -o hello.beam
+    ```
+
+- 语法
+    1. Erlang注释符是百分号 %
+    2. 使用点作为语句结束的标识
+    3. 函数内，最后一个计算结果将被返回
