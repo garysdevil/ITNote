@@ -40,13 +40,35 @@ https://developers.google.com/web/tools/chrome-devtools/network/reference#timing
 
 
 ## 前端
-1. Jquery
+### Javascript
+```html
+<!-- 引入javascritp的第一种方式，直接引用javascript文件-->
+<script type="text/javascript" src="../js/jquery-1.8.3.js"></script>
+<script src="https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js"></script>
+
+<script type="module">
+    import "https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js";
+    (async _ =>{ 
+        alert("test")
+    })()
+</script>
+
+<!-- 引入javascritp的第二种方式 -->
+<script type="text/javascript">
+    alert("aaa")
+</script>
+```
+
+
+### Jquery
 ```js
 $(selector).each(function(index,element))
 ```
-2. web交互,通过事件监听
+
+### 事件驱动
+1. web交互,通过事件监听
     1. 将函数写在html的元素里。
     2. onclick。
     3. addEventListener(0
 
-3. 事件委托：解决事件监听过多会消耗内存和减慢加载速度速度的问题。
+2. 事件委托：解决事件监听过多会消耗内存和减慢加载速度速度的问题。
