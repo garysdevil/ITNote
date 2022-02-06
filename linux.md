@@ -235,6 +235,15 @@ tar  cjvf FileName.tar.bz2 ./Filename
 tar  czvf FileName.tar.bz2 ./Filename
 # 用 bzip2 格式解压文件
 tar  xjvf FileName.tar.bz2 ./Filename
+
+
+# xz压缩工具，比gzip格式压缩比更大
+# 对于文件夹，先使用tar cvf ${文件名}.tar ./${文件名} 创建${文件名}.tar文件，然后使用xz -zk将tar文件压缩成为.tar.xz文件。
+# 先用xz -dk将tar.xz文件解压成tar文件，再用tar文件来解包。
+xz -z ${文件名} # 不保留原文件压缩
+xz -zk ${文件名} # 保留原文件压缩
+xz -d ${文件名} # 不保留原文件解压
+xz -dk ${文件名} # 保留原文件解压
 ```
 
 ### ssh-agent
