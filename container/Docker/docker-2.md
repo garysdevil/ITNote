@@ -93,6 +93,7 @@ docker run -d -e SW_OAP_ADDRESS=127.0.0.1:11800 -p 9000:9000 -v /etc/nginx/html:
 # --name 指定容器名字
 # --network=host 设置容器的网络方式
 # --rm 当容器停止时删除镜像
+# --tty --interactive 启动容器后进行交互操作
 
 # 3. 容器资源使用情况
 docker stats --no-stream

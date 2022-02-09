@@ -244,6 +244,7 @@ xz -z ${文件名} # 不保留原文件压缩
 xz -zk ${文件名} # 保留原文件压缩
 xz -d ${文件名} # 不保留原文件解压
 xz -dk ${文件名} # 保留原文件解压
+# --threads 1 # 指定使用的线程数量 
 ```
 
 ### ssh-agent
@@ -347,7 +348,7 @@ awk '{a[$1]++}END{for(i in a) print i,a[i] }' ip.list | sort -n -r -k 2n
 
 # 统计每日es的数据量(初略) /_cat/indices?v&s
 awk '/20210708|2021.07.08/&&$10~/gb/ {print; sub(/gb/,"",$10); total=total+$10; i++;print} END{printf"num=%d size=%dgb\n",i,total}'
-# 统计每日es的数据量(详细)
+# 统计每日es的数据量(详细)2
 cat data.txt | awk '/20210703|2021.07.03/&&$10~/mb|gb/&&$3!~/es_/  \
 {i++; \
 if($10~/gb$/){print $0;sub(/gb/,"",$10);total=total+$10*1024}  \
@@ -423,6 +424,25 @@ nvidia-smi -l 1 # 每秒刷新一次
 echo "2/3" | bc -l
 # scale=3 保留几位小数
 echo "scale=3; ${num}*5/60/60" | bc -l
+```
+
+### taskset
+```bash
+# 查看线程和CPU间的亲和性
+taskset -p ${PID}
+# ffffffffffffffffff 表示可以使用任意的CPU逻辑核
+
+# 查看线程可以使用的CPU范围
+taskset -cp ${PID}
+
+# 设置线程的CPU亲和性为指导的CPU逻辑核
+start=0
+end=3
+taskset -cp ${start}-${end}  ${PID} # start到end
+taskset -cp ${start},${end}  ${PID} # start核end
+
+# -p 通过${PID}查看指定的线程
+# -c 查看线程可以使用的CPU范围
 ```
 
 ## 未归类
