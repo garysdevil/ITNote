@@ -9,7 +9,7 @@
 ## 安装
 - 参考 https://www.rust-lang.org/tools/install
 
-```rust
+```bash
 # 下载安装rust以及相关工具
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source $HOME/.cargo/env
