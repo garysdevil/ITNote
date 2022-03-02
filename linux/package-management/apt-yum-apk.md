@@ -143,16 +143,24 @@ yum-config-manager --add-repo repository_url
 
 ### apk
 - 参考 http://www.mamicode.com/info-detail-2685312.html
-1. 列出所有包：
+```bash
+# 1. 列出所有包：
 apk search -v
-2. 用通配符搜索包
+# 2. 用通配符搜索包
 apk search -v 'php7*'
-3. 用包名安装包：
+# 3. 用包名安装包：
 apk add pkgName1 pkgName2
-4. 安装本地.apk 文件包
+# 4. 安装本地.apk 文件包
 apk add --allow-untrusted /path/to/foo.apk
-5. 通过名字删除包
+# 5. 通过名字删除包
 apk del pkgName1 pkgName2   
-6. 升级选中包
+# 6. 升级选中包
 apk update
 apk add -u htop
+```
+
+## 新的包管理工具
+- appimage，snapd和flatpack都是把所有依赖都放包里的应用打包方式。
+### appimage
+### snapd
+### flatpack
