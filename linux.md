@@ -343,8 +343,8 @@ awk '{sub(/one/,"two");print}'
 awk '(/one|two/)'
 
 # 统计各个IP的访问量，并排序
-awk '{a[$1]++}END{for(i in a) print i,a[i] }' ip.list | sort -n -r -k 2n
-
+awk '{list[$1]++}END{for(i in list) print i,list[i] }' ip.list | sort -n -r -k 2n
+awk '{list[$1]++}END{for(i in list) print list[i],i }' ip.list | sort -n -r -k 2n
 
 # 统计每日es的数据量(初略) /_cat/indices?v&s
 awk '/20210708|2021.07.08/&&$10~/gb/ {print; sub(/gb/,"",$10); total=total+$10; i++;print} END{printf"num=%d size=%dgb\n",i,total}'
