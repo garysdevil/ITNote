@@ -445,6 +445,18 @@ taskset -cp ${start},${end}  ${PID} # start核end
 # -c 查看线程可以使用的CPU范围
 ```
 
+### ssh 
+- 问题：用SSH客户端连接linux服务器时，经常会话连接中断。
+- 解决方案：设置服务器向SSH客户端连接会话时发送的频率和时间。
+```bash
+#vi /etc/ssh/sshd_config
+ClientAliveInterval 60 # 定义了每隔多少秒给SSH客户端发送一次信号
+ClientAliveCountMax 86400 # 定义了超过多少秒后断开与ssh客户端连接
+
+# 重启SSH服务
+#service sshd restart
+```
+
 ## 未归类
 获取公网IP ： 
 curl cip.cc 

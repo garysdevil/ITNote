@@ -18,8 +18,10 @@ server 127.127.1.0
 fudge 127.127.1.0 stratum 0
 ```
 3. 时钟服务器地址
-ntp.sjtu.edu.cn 上海交通大学网络中心NTP服务器地址
-time.nist.gov 美国标准技术研究院 NTP 服务器
+```conf
+pool ntp.sjtu.edu.cn iburst # 上海交通大学网络中心NTP服务器地址
+pool time.nist.gov iburst # 美国标准技术研究院 NTP 服务器
+```
 
 4. 手动调整时钟
     - 需要先关闭ntp服务
