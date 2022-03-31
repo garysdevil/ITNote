@@ -35,6 +35,9 @@ fs.writeFileSync("./1.html", "data")
 4. exceljs
     - npm install exceljs
 
+5. ini 读取ini格式的配置
+    - npm install ini
+
 ### 区块链相关的
 1. ethers.js
     - https://github.com/ethers-io/ethers.js

@@ -77,7 +77,8 @@ dig @114.114.114.114 garys.top
     rpm -vhU http://nmap.org/dist/nmap-5.21-1.i386.rpm
     rpm -vhU http://nmap.org/dist/zenmap-5.21-1.noarch.rpm
     # 扫描 默认会扫描1-1024端口和其他一些常用端口
-    nmap -sS -p 0-30000 127.0.0.1
+    nmap -sS -p 0-65535 127.0.0.1
+    # -sS 使用SYN连接，快速扫描
     ```
 
 3. 扫描结果分析
@@ -103,6 +104,21 @@ dig @114.114.114.114 garys.top
     nc -l 9999 >/dev/null
     nc IP 9999 </dev/zero
     dstat
+
+### mtr
+- 一般在windows 来判断网络连通性用ping和tracert，ping的话可以来判断丢包率，tracert可以用来跟踪路由.
+- mtr 全称 my traceroute，是一个把 ping 和 traceroute 合并到一个程序的网络诊断工具。
+- traceroute 默认使用 UDP 数据包探测，而 mtr 默认使用ICMP报文探测，ICMP在某些路由节点的优先级要比其他数据包低，所以测试得到的数据可能低于实际情况。
+```bash
+yum install mtr
+
+mtr ${hostname}
+# -s 指定ping数据包的大小
+# -c 指导总共发送多少个数据包,默认为10个
+# -n 设置不用解析域名
+# -r --report 结果显示，并不动态显示
+```
+
 
 ### 其它监控指令
 1. glances

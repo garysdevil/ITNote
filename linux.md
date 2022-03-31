@@ -298,6 +298,9 @@ ps -A  -o comm,pmem,pcpu | sort | uniq -c | head -15
 ps -eo pid,ppid,%mem,%cpu,cmd --sort=-%mem | head
 ps -eo pid,ppid,%mem,%cpu,comm --sort=-%mem | head
 
+# top 只显示一次CPU资源使用信息
+top -n 1
+# 
 top -c -b -o +%MEM | head -n 20 | tail -15
 top -b -o +%MEM | head -n 20 | tail -15
 
@@ -524,7 +527,7 @@ apt-get install iputils-ping
 ```bash
 # 遍历获取 Linux 某目录下所有子目录及文件信息
 find . -print0 | xargs -0 stat --printf="%f %N %W %Y %s\n"
-# 删除7天前被修改的文件，不能省略分号   -f指文件 -d指目录   
+# 删除7天前被修改的文件，不能省略分号   -f指文件 -d指目录   
 find ./ -type f  -mtime +7 -exec rm -rf {} \;
 # 将7天内修改的文件移进新文件夹
 find ./ -type f -mtime -7 | xargs -I file mv file ./new
