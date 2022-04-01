@@ -7,7 +7,8 @@ http://www.squid-cache.org/
     3. 反向代理
     - 正向代理和透明代理代理服务的对象是客户端，反向代理代理服务的对象是服务端
 
-## squid 正向代理软件
+## 代理服务
+### squid 正向代理软件
 1. 安装
 yum install squid
 2. squid服务端配置 
@@ -24,10 +25,10 @@ export http_proxy=192.168.221.139:3128 # http协议访问时使用代理，也�
 export no_proxy='localhost,127.0.0.1'
 ```
 
-## goproxy
+### goproxy
 - https://github.com/snail007/goproxy
 
-### 安装使用
+#### 安装使用
 ```bash
 curl -L https://raw.githubusercontent.com/snail007/goproxy/master/install_auto.sh | bash
 proxy socks -t tcp -p "0.0.0.0:38080"
@@ -35,13 +36,28 @@ proxy socks -t tcp -p "0.0.0.0:38080"
 --daemon
 --forever # 防止进程意外退出
 ```
-## shadowsocks
+### shadowsocks
 - 参考 
     - http://ivo-wang.github.io/2018/02/24/ss-redir/
 
-
-## Proxy SwitchyOmega
+## 前置代理工具
+### Proxy SwitchyOmega
 - Google游览器代理管理工具插件
+
+### tsocks
+- 通过SOCKS4或SOCKS5代理提供透明的网络访问。
+```bash
+apt install tsocks
+```
+- vi /etc/tsocks.conf  
+```conf
+local = 192.168.1.0/255.255.255.0  #不使用socks代理的网络
+local = 127.0.0.0/255.0.0.0  #不使用socks代理的网络
+server = 127.0.0.1   #socks服务器的IP  
+server_type = 5  #socks服务版本  
+server_port = 1080 #socks服务使用的端口 
+```
+
 
 # 隧道
 - 参考文件

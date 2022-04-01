@@ -33,3 +33,11 @@ import getpass
 if __name__ == '__main__':
     passphrase = getpass.getpass("请输入密码")
 ```
+
+4. 操作系统相关的操作
+```python
+import os
+# 设置环境变量，设置代理 export http_proxy="http://127.0.0.1:1081"
+os.environ["http_proxy"] = "http://127.0.0.1:1081"
+os.environ["https_proxy"] = "http://127.0.0.1:1081"
+```

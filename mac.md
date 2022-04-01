@@ -55,6 +55,26 @@ ifconfig en0
     - formulae 意思是一些软件包，一般是命令行工具、开发库、一些字体、插件，共性是不提供界面，提供给终端或者是开发者使用。
     - casks 是用户软件，比如 chrome、mvim、wechat、wechatwork 这些提供用户交互界面的软件。
 
+3. brew tap 
+    - brew tap可以为brew的软件的 跟踪,更新,安装添加更多的的tap formulae
+    ```bash
+    brew tap $user/$repo
+    # user/repo 对应 https://github.com/user/homebrew-repo 
+    # brew untap $user/$repo
+
+    # 示范
+    brew install vim  # installs from homebrew/core
+    brew install username/repo/vim  # installs from your custom repo
+    ```
+    - 常用的tap
+        1. homebrew/php:和php关联的formulae
+        2. denji/nginx: nginx modules 的tap
+        3. InstantClientTap/instantclient: Oracle客户端实例的tap
+        4. petere/postgresql: 允许同时安装多个PostgreSQL版本的tap
+        5. dunn/emacs: Emacs package的tap
+        6. sidaf/pentest: 渗透测试工具的tap
+        7. osrf/simulation: 机器仿真的tap
+
 #### brew下载软件
 
 1. 安装mysql-shell
