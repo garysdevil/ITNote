@@ -1,9 +1,10 @@
 ## Django
+```bash
 python manage.py runserver 127.0.0.1:8000
 startapp
 
 python manage.py inspectdb t_cmdb_app_info > acd/models.py
-
+```
 
 ## 依赖包
 ```bash
@@ -21,4 +22,22 @@ pipreqs ./
 # 3. 新环境下安装依赖包的模块
 pip3 install -r requirements.txt
 
+```
+
+## Python
+- 目录结构
+    - Lib
+        - site-packages
+        - Standard packages
+    - Scripts
+        - pip.exe
+    - python.exe
+
+- 虚拟环境
+    - 虚拟环境可以看作是原生Python的副本。
+
+```bash
+venv_name="python_1_venv"
+python3 -m venv ~/devenv/${venv_name}
+source ~/devenv/${venv_name}/bin/activate
 ```
