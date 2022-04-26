@@ -46,6 +46,10 @@ npm i --registry=https://registry.npm.taobao.org
 ```bash
 # 查看全局安装过的包
 npm list -g --depth 0
+
+# npm 从5.2版开始，增加了 npx 命令
+# npx 执行npm依赖包的二进制文件。
+npx
 ```
 
 ## 包管理器 yarn

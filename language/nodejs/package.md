@@ -38,6 +38,8 @@ fs.writeFileSync("./1.html", "data")
 5. ini 读取ini格式的配置
     - npm install ini
 
+6. nx 是一套功能强大、可扩展的开发工具，可帮助我们开发、测试、构建和扩展 Angular 应用程序，并完全集成支持 Jest、Cypress、ESLint、NgRx 等现代库。
+
 ### 区块链相关的
 1. ethers.js
     - https://github.com/ethers-io/ethers.js
