@@ -161,44 +161,12 @@ ifconfig en0
 ## 服务
 ### launchctl
 1. 位置
-  - 如果需要 root，并且是需要用户登陆后才能运行，把 plist 放在 /Library/LaunchAgents/下
-  - 如果需要 root，并且不需要用户登陆后都能运行，把 plist 放在 /Library/LaunchDaemons/下
+    - 如果需要 root，并且是需要用户登陆后才能运行，把 plist 放在 /Library/LaunchAgents/下
+    - 如果需要 root，并且不需要用户登陆后都能运行，把 plist 放在 /Library/LaunchDaemons/下
+    - 如果只当特定用户启动时，程序才自动运行，例如当用户名称为gary时 /Users/gary/Library/LaunchAgents/
 
-1. 查看所有的服务
-  - launchctl list
-
-2. 设置服务开机启动
-  - sudo vim /Library/LaunchDaemons/gary.test.plist
-  ```xml
-  <?xml version="1.0" encoding="UTF-8"?>
-  <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-  <plist version="1.0">
-  <dict>
-          <key>Label</key>
-          <string>gary.test.plist</string> <!-- 唯一标识 -->
-
-          <key>UserName</key>
-          <string>gary</string> <!-- 运行的用户，只有Launchd作为root运行时生效 -->
-
-          <key>ProgramArguments</key> <!-- 可执行文件位置 -->
-          <array>
-                  <string>/Users/admin/devops/jenkins_agent/start.sh</string>
-          </array>
-
-          <key>KeepAlive</key>
-          <false/>
-
-          <key>RunAtLoad</key> <!-- 表示launchd在加载完该项服务之后立即启动路径指定的可执行文件 -->
-          <true/> 
-
-          <key>StandardErrorPath</key>
-          <string>/tmp/jenkins_agent.err</string>
-          <key>StandardOutPath</key>
-          <string>/tmp/jenkins_agent.out</string>
-  </dict>
-  </plist>
-  ```
-  sudo launchctl load -w /Library/LaunchDaemons/gary.test.plist
+2. 查看所有的自启动服务
+    - launchctl list
 
 3. 设置服务开机不启动
   - sudo launchctl unload -w /Library/LaunchDaemons/gary.test.plist
@@ -208,6 +176,49 @@ ifconfig en0
 
 5. plutil命令验证plist的格式是否正确
   - plutil -lint gary.test.plist
+
+### 设置服务开机启动
+- sudo vim /Library/LaunchDaemons/gary.test.plist
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+        <key>Label</key>
+        <string>gary.test.plist</string> <!-- 唯一标识 -->
+
+        <key>UserName</key>
+        <string>gary</string> <!-- 运行的用户，只有Launchd作为root运行时生效 -->
+
+        <key>ProgramArguments</key> <!-- 可执行文件位置 -->
+        <array>
+                <string>/Users/admin/devops/jenkins_agent/start.sh</string>
+        </array>
+
+        <key>KeepAlive</key>
+        <false/>
+
+        <key>RunAtLoad</key> 
+        <true/>  <!-- 表示launchd在加载完该项服务之后立即启动路径指定的可执行文件 -->
+        <key>StandardErrorPath</key>
+        <string>/tmp/jenkins_agent.err</string>
+        <key>StandardOutPath</key>
+        <string>/tmp/jenkins_agent.out</string>
+</dict>
+</plist>
+```
+sudo launchctl load -w /Library/LaunchDaemons/gary.test.plist
+
+- 每个.plist文件中，有3个属性控制着是否会开机自启动。
+    1. KeepAlive: 决定程序是否需要一直运行，如果是false则需要才启动，默认false；
+    2. RunAtLoad: 开机时是否运行，默认为false；
+    3. SuccessfulExit: 此项为true时，程序正常退出时重启（即退出码为0）；为false时，程序非正常退出时重启。此项设置时会隐含默认RunAtLoad = true，因为程序需要至少运行一次才能获得退出状态
+- 如果KeepAlive = false：
+    - 当RunAtLoad = false时，程序只有在有需要的时候运行。
+    - 当RunAtLoad = true时，程序在启动时会运行一次，然后等待在有需要的时候运行。
+    - 当SuccessfulExit = true / false时，不论RunAtLoad值是什么，都会在启动时运行一次。气候根据SuccessfulExit值来决定是否重启。
+- 如果KeepAlive = true：
+    - 不论RunAtLoad/SuccessfulExit值是什么，都会启动时运行且一直保持运行状态。
 
 
 ## 环境变量
