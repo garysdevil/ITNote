@@ -1,4 +1,4 @@
-## 
+## Python求数学题
 - C(n,m)
 - C上标是m下标是n，表示从n个不同元素中任取m个元素的不同取法的种数，称为组合数。
 - C上标是m下标是n，等于 (n!) / (m!*(n-m)!)
@@ -34,3 +34,6 @@ hitProbability=0.1
 combination=math.factorial(total)/(math.factorial(hitTotal)*math.factorial(total-hitTotal))
 combination * pow(hitProbability,hitTotal) * pow((1-hitProbability),(total-hitTotal))
 ```
+
+## 数学
+- NP完全问题(NP-C问题)，是世界七大数学难题之一。
