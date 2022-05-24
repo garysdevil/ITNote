@@ -167,6 +167,10 @@ brew install vim
   end
   ```
 
+6. 安装v2ray
+  - brew install v2ray
+  - 配置/opt/homebrew/etc/v2ray/config.json 启动 brew services start v2ray
+
 ### 第三方软件
 1. 多屏屏幕，鼠标快速移动
     - https://github.com/round/CatchMouse
@@ -180,7 +184,7 @@ brew install vim
     - 如果需要 root，并且不需要用户登陆后都能运行，放在 /Library/LaunchDaemons/
     - 如果只当特定用户登入时，程序才自动启动，例如当用户名称为gary时，放在 /Users/gary/Library/LaunchAgents/
         - 程序没法被kill或者stop掉，只有通过这种方式停止 launchctl unload ~/Library/LaunchAgents/${name}
-    - 由Mac OS X为用户定义的任务项，被放在 /System/Library/LaunchAgents
+    - 由操作系统为用户定义的任务项，则被放在 /System/Library/LaunchAgents
 
 3. 通常brew在安装软件时brew为我们自动生成与加载plist。 
 
