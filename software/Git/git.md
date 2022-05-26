@@ -143,10 +143,10 @@ git stash list
     - 未被跟踪的文件不会受到影响  
     - 重置回工作区状态  git reset --mix origin/master  
     1. --hard 重置到上一次commit状态
-    1. --mix 重置到上一次工作区状态  
+    1. --mix 重置到上一次工作区状态  ``` git reset head~ --mix```
     2. --soft 重置到上一次缓冲区状态  
     3. head~ 指定上一次commit状态  
-    - 重置回上一次commit状态 git checkout .   
+    - 重置回上一次commit状态 git checkout .
 
 ## Git免密登陆
 ### https方式-明文

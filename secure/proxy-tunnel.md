@@ -23,7 +23,7 @@
 
 3. 客户端连接代理配置 linux系统配置 /etc/profile
     ```conf
-    export http_proxy=192.168.221.139:3128 # http协议访问时使用代理，也可以设置https，ftp等协议
+    export http_proxy=squid服务端IP地址:3128 # http协议访问时使用代理，也可以设置https，ftp等协议
     export no_proxy='localhost,127.0.0.1'
     ```
 

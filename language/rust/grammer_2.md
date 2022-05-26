@@ -100,3 +100,55 @@ fn main() {
 }
 ```
 
+
+## 条件编译
+- Rust代码里有一个特殊的属性, #[cfg], 它可以传递标识给编译器，然后选择性编译代码。
+
+### 条件编译一
+```rust
+#[cfg(target_os = "linux")]
+fn fun_condition_1() {
+    println!("1. You are running in linux!")
+}
+
+#[cfg(not(target_os = "linux"))]
+fn fun_condition_1() {
+    println!("1. You are not running in linux!")
+}
+
+#[cfg(some_condition)]
+fn fun_condition_2() {
+    println!("condition met!")
+}
+#[cfg()]
+fn fun_condition_2() {
+    println!("condition met!")
+}
+
+fn main() {
+    fun_condition_1()
+    fun_condition_2() // rustc --cfg some_condition  main.rs // 如果这个函数不满足条件但又被调用则编译时会报错
+
+    if cfg!(target_os = "windows") {
+        println!("2. You are running in windows!")
+    } else if cfg!(target_os = "linux") {
+        println!("2. You are running in linux!")
+    } else {
+        println!("2. You are runing in other system!")
+    }
+}
+```
+
+### 条件编译二 可以在Cargo.toml里进行配置编译条件
+```conf
+[features]
+default = ["feature1"] # 默认使用feature1条件
+feature1 = []
+feature2 = []
+```
+```rust
+#[cfg(feature="feature1")]
+pub fn test1() {
+    // ...
+}
+```
