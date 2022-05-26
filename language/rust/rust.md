@@ -9,6 +9,7 @@
 
 ## 相关链接
 - 官网  https://www.rust-lang.org/
+- 学习 https://doc.rust-lang.org/book/
 - Rust安装教程 https://www.rust-lang.org/tools/install
 - 在线编译器 https://play.rust-lang.org/
 

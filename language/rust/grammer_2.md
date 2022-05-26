@@ -116,7 +116,7 @@ fn fun_condition_1() {
     println!("1. You are not running in linux!")
 }
 
-#[cfg(some_condition)]
+#[cfg(feature = "some_condition")]
 fn fun_condition_2() {
     println!("condition met!")
 }
