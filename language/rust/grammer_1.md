@@ -209,6 +209,8 @@ fn add(x: i32, y: i32) -> i32 {
     - 在Rust语言机制中，当变量有效范围结束的时候，Rust 编译器自动添加调用释放资源函数的步骤。
 
 ### 堆数据的移动
+- 基数数据类型都是存储在栈中，变量间都是通过复制进行相互赋值的。
+
 - 堆变量间的相互赋值，将导致数据的移动
     ```rust
     // 基本数据类型，数据值可以被直接复制
@@ -730,12 +732,20 @@ fn main() {
     }
     ```
  
- ## 生命周期
-- 生命周期注释是描述引用生命周期的办法。
+## 生命周期
+1. 程序中每个变量都有一个固定的作用域，当超出变量的作用域以后，变量就会被销毁。变量在作用域中从初始化到销毁的整个过程称之为生命周期。
+2. rust 中的借用是指对一块内存空间的引用。rust 有一条借用规则是借用方的生命周期不能比出借方的生命周期还要长。
+3. 对于一个参数和返回值都包含引用的函数而言，该函数的参数是出借方，函数返回值所绑定到的那个变量就是借用方。
+4. 生命周期注释是描述引用生命周期的办法。对函数的参数和返回值都进行生命周期注释，是告知编译器借用方和出借方的生命周期一样。
+
 - 生命周期注释用单引号开头，跟着一个小写字母单词：
     - &i32        // 常规引用
     - &'a i32     // 含有生命周期注释的引用
     - &'a mut i32 // 可变型含有生命周期注释的引用
+
+- 特殊的生命周期注释
+    - &i32          // 常规引用
+    - &'static str  // 含有'static生命周期注释的引用，则该引用的存活时间和该运行程序一样长。
 
 ````rust
 // fun_longer函数在在编译期间将报错，因为返回值引用可能会返回过期的引用，rust机制不允许任何可能的意外发生
@@ -765,6 +775,20 @@ fn main() {
     println!("{} is longer", result);
 }
 ````
+
+
+```rust
+// 符串字面面具有 'static 生命周期
+fn fn_main(){
+    // let mark_twain: &str = "Samuel Clemens";
+    let mark_twain = "Samuel Clemens";
+    print_author(mark_twain);
+}
+// fn print_author(author: &'static str) {
+fn print_author(author: &str) {
+    println!("{}", author);
+}
+```
 
 ```rust
 // 出自于 Rust 圣经 的一段程序
@@ -847,7 +871,7 @@ fn longest_with_an_announcement<'a, T>(x: &'a str, y: &'a str, ann: T) -> &'a st
 ## 集合与字符串
 ### 向量
 - 向量（Vector）是一个存放多值的单数据结构，该结构将相同类型的值线性的存放在内存中。
-- 向量是线性表，在 Rust 中的表示是 Vec<T>。
+- 向量的数据逻辑结构是线性表，在 Rust 中的表示是 Vec<T>。
 ```rust
 fn main(){
     let mut var_vector_1: Vec<i32> = Vec::new(); // 创建类型为 i32 的空向量
@@ -868,7 +892,7 @@ fn main(){
 ```
 
 ### 映射表
-- 映射表实例化后，数据类型将被固定下来
+- 映射表实例化后，数据类型将被固定下来。
 ```rust
 use std::collections::HashMap;
 
@@ -981,7 +1005,7 @@ fn func_spawn() {
 }
 
 fn main() {
-    // 必包函数
+    // 必包函数/匿名函数
     let inc = |num: i32| -> i32 {
         num + 1
     };
@@ -990,7 +1014,7 @@ fn main() {
     // 运行一个线程 
     thread::spawn(func_spawn);
 
-    thread::spawn(|| { // 必包函数
+    thread::spawn(|| { // 必包函数/匿名函数
         for i in 0..5 {
             println!("closures: spawned thread print {}", i);
             thread::sleep(Duration::from_millis(1));

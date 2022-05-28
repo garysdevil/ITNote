@@ -1,3 +1,4 @@
+[TOC]
 ## Rust介绍
 - 2006年，Mozilla研究院的 Graydon Hoare 开始设计创造自己的私人项目 Rust 语言。
 - 2009年，Mozilla开始赞助这个项目，后来在Dave Herman, Brendan Eich以及很多其他人的贡献下逐步完善的。
@@ -10,6 +11,7 @@
 ## 相关链接
 - 官网  https://www.rust-lang.org/
 - 学习 https://doc.rust-lang.org/book/
+- 学习 https://course.rs/about-book.html  https://github.com/sunface/rust-course  Rust语言圣经
 - Rust安装教程 https://www.rust-lang.org/tools/install
 - 在线编译器 https://play.rust-lang.org/
 
@@ -50,9 +52,9 @@ source $HOME/.cargo/env
         - 可以使用 ``` mod 模块名{} ``` 来声明一个模块。
         - 一个文件，其本身就代表声明了一个模块，文件名为模块名。
         - 一个文件夹，需要在文件夹内创建 mod.rs 文件来表示声明了一个模块。文件夹内的模块需要通过 mod.rs 文件进行对外暴露。
-    - 编译器只能看到 crate root 的根文件，如果需要使用模块，则需要在根文件下使用mod关键字进行引用，例如 ``` mod 模块名; ```。
-    - 当前模块需要使用其它的模块，也需要使用mod关键字进行引用，例如``` mod 模块名; ```。
-    - 当模块被引入后，调用模块内函数的方式 
+    - 模块的引用
+        - 编译器只能看到 crate root 的根文件，如果需要使用模块，则需要在根文件下使用mod关键字进行引用，例如 ``` mod 模块名; ```。
+    - 模块被引入后，调用模块内函数的方式 
         - 方式一 ``` 模块名::模块名::方法名() ``` 
         - 方式二 使用use关键字将某个模块下的函数都引入到当前的模块下，再直接通过函数名进行调用 ``` use 模块名::模块名::*; 方法名() ```。
 
@@ -63,6 +65,7 @@ source $HOME/.cargo/env
 rustup update # 升级rust
 rustup self uninstall # 卸载rust相关的工具
 rustup install nightly # 安装nightly版本
+rustup install 1.57 # 安装历史版本1.57
 rustup toolchain list # 查看rust工具包版本
 rustup override set nightly # 设置使用nightly版本
 
@@ -93,3 +96,15 @@ cargo new benches
 cargo bench # 运行benchmark(基准测试,性能测试)
 
 ```
+
+## 编译器
+- 编译过程
+    1. 源代码（Rust Code）
+    2. 通过分词变为词条流（Tokens）
+    3. 通过解析变为抽象语法树（AST）
+    4. 通过降级简化为高级中间语言HIR，生成*.hir文件（HIR）
+    5. 编译器对高级中间语言HIR进行类型检查、方法查找等。（HIR）
+    6. 通过降级简化为中级中间语言MIL（MIL）
+    7. 编译器对中级中间语言MIL进行借用检查、优化、宏的代码生成、范型、单态化等。（MIL）
+    8. 转译为LLVM的中间语言LLVMIR（LLVMIR）
+    9. 通过LLVM后端，优化，生成机器码。

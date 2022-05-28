@@ -1,3 +1,4 @@
+[TOC]
 ## 宏
 - 宏按照来源分类
     - 声明宏（Declarative Macro）
@@ -150,5 +151,44 @@ feature2 = []
 #[cfg(feature="feature1")]
 pub fn test1() {
     // ...
+}
+```
+
+## 其它
+```rust
+struct S;
+impl S{
+    fn f(){ println!("S f()"); }
+}
+trait T1{
+    fn f() { println!("T1 f()"); }
+}
+trait T2{
+    fn f() { println!("T2 f()"); }
+}
+impl T1 for S{}
+impl T2 for S{}
+
+// 1. 当结构体实现了两个特性，并且这两个特别拥有相同名字的函数时，可以通过如下方式进行区分。
+fn test(){
+    S::f(); // 默认先调用结构体方法
+    // 完全限定无歧义调用
+    <S as T1>::f();
+    <S as T2>::f();
+}
+```
+
+```rust
+use std::any::type_name;
+fn type_name_of<T>(_: T) {
+    println!("{:?}", { type_name::<T>() });
+}
+fn test(){
+    // 2. 泛型函数-turbofish操作符
+    let vec1 = (0..10).collect::<Vec<u8>>(); // 将迭代转化为8bit无符号整型数据类型的Vec集合
+    let vec2 = (0..10).collect::<Vec<_>>(); // 使用一个通配符，自动推断数据类型，将迭代转化为Vec集合
+    println!("{:?}", type_name_of(vec1));
+    println!("{:?}", type_name_of(vec2));
+    Vec::<u8>::with_capacity(1024); // 生成拥有1024容量的8bit无符号整型数据类型的Vec集合
 }
 ```
