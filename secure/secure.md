@@ -60,6 +60,8 @@
 15. HawkEye鹰眼系统
     - hackingglab.cn/index.php
     - 网络信息安全攻防学习平台。提供基础知识考查、漏洞实战演练、教程等资料。实战演练以Web题为主。
+### 其它
+- 网站克隆工具httrack http://httrack.kauler.com/help/Form-based_authentication
 
 ## 常见的攻击方法
 1. KeyLogger 键盘监听

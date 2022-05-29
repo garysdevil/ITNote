@@ -169,11 +169,25 @@ brew install vim
 
 6. 安装v2ray
   - brew install v2ray
-  - 配置/opt/homebrew/etc/v2ray/config.json 启动 brew services start v2ray
+  - 配置/opt/homebrew/etc/v2ray/config.json 
+  - 启动 brew services start v2ray
+  - 进程 /opt/homebrew/opt/v2ray/bin/v2ray -config /opt/homebrew/etc/v2ray/config.json
 
 ### 第三方软件
 1. 多屏屏幕，鼠标快速移动
     - https://github.com/round/CatchMouse
+2. chrome  
+	- https://www.google.com/chrome/thank-you.html?statcb=0&installdataindex=empty&defaultbrowser=0 
+3.  openvpn
+    - https://openvpn.net/downloads/openvpn-connect-v3-macos.dmg
+4.  vscode
+    - https://code.visualstudio.com/Download
+5.  雅思哥
+    - https://ieltsbro.com/
+6.  Mysql官方可视化工具
+    - https://dev.mysql.com/downloads/workbench/
+    - Mac M1上 8.0.23 闪退，8.0.22 正常使用
+
 
 ## 服务管理launchctl
 ### launchctl
