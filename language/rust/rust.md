@@ -14,6 +14,7 @@
 - 学习 https://course.rs/about-book.html  https://github.com/sunface/rust-course  Rust语言圣经
 - Rust安装教程 https://www.rust-lang.org/tools/install
 - 在线编译器 https://play.rust-lang.org/
+- 宝箱文档 https://docs.rs/
 
 ## 安装Rust工具包
 ```bash

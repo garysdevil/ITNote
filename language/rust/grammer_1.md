@@ -49,9 +49,9 @@ const const_name1: i32 = 123;
 1. 整数型
     ```rust
     // - 有符号8 bit整形 i8
-    let var_name1: i8 = "aa";
+    let var_name1: i8 = 11;
     // - 无符号8 bit整形 u8
-    let var_name1: u8 = "aa";
+    let var_name2: u8 = 22;
     // ...
     ```
 
@@ -78,7 +78,7 @@ const const_name1: i32 = 123;
     - 一个变量可以包含不同类型的数据
     ```rust
     let tuples_name: (i32, f64, u8) = (500, 6.4, 1);
-    let (x, y, z) = tuples;
+    let (x, y, z) = tuples_name;
     ```
 
 6. 数组
@@ -96,7 +96,8 @@ const const_name1: i32 = 123;
 
 8. 切片
     - 切片（Slice）是对数据值的部分引用。
-    - 切片的结果是 &str 类型的数据，&str也称为字符串字面量或字符串切片。&str是静态的，因此变量值不能被更改。
+    - 切片的结果是 &str 类型的数据，&str也称为字符串字面量或字符串切片。
+    - &str是一种不可变引用，因此变量值不能被更改。
     ```rust
     fn main() {
         // 声明一个 &str 类型的数据
@@ -115,28 +116,67 @@ const const_name1: i32 = 123;
     }
     ```
 
-### 条件
+## 流程控制语句
+### 条件 if else
 ```rust
 fn main() {
-    let number1 = 3;
-    if number1 < 5 {
+    let var_number1 = 3;
+    if var_number1 < 5 {
         println!("条件为 true");
     } else {
         println!("条件为 false");
     }
     // 三元表达式
-    let number2 = if number1 > 0 { 1 } else { -1 };
-    println!("number 为 {}", number2);
+    let var_number2 = if var_number1 > 0 { 1 } else { -1 };
+    println!("var_number 为 {}", var_number2);
 }
 ```
+### 分支选择 match
+- match 能够对枚举类、整数、浮点数、字符、字符串切片引用（&str）类型的数据进行分支选择
+- 关键字 match 实现分支结构，类似于Java的switch
+- if let 语法， 是只区分两种情况的 match 语句的"语法糖"
+
+```rust
+fn main() {
+    // 例子一
+    let var_str = "abc";
+    match var_str {
+        "abc" => println!("Yes"),
+        _ => {},
+    }
+
+    // 例子二 let if 语法 
+    let var_name = 0;
+    match var_name {
+        0 => println!("var_name=zero"),
+        _ => {},
+    }
+    if let 0 = var_name {
+        println!("var_name=zero");
+    }
+
+    // 例子三 let if 语法
+    enum Book {
+        Number(u32),
+        Electronic(String)
+    }
+    let book = Book::Number(1001);
+    if let Book::Number(index) = book {
+        println!("Number {}", index);
+    } else {
+        println!("Can't find number");
+    }
+}
+```
+
 ### 循环
 ```rust
 // while 循环
 fn fun_while() {
-    let mut number = 1;
-    while number != 4 {
-        println!("{}", number);
-        number += 1;
+    let mut var_number = 1;
+    while var_number != 4 {
+        println!("{}", var_number);
+        var_number += 1;
     }
     println!("EXIT");
 }
@@ -173,19 +213,22 @@ fn fun_loop() {
 ## 函数
 ```rust
 // 如果要声明函数，必须使用 fn 关键字。
-// 如果需要输入参数，必须声明参数名称和类型。
-fn function_name1(x: i32, y: i32) {
+// 如果函数需要输入参数，必须填写参数名称和类型。
+fn function_name(x: i32, y: i32) {
     println!("x 的值为 : {}", x);
     println!("y 的值为 : {}", y);
 }
 
-// 如果需要返回数据，必须使用 -> 关键字，并且声明返回的数据类型
+// 如果需要返回数据，必须使用 -> 关键字，并且声明返回的数据类型。
 fn add(x: i32, y: i32) -> i32 {
     return x + y;
 }
+fn main(){
+    function_name(1,2);
+}
 ```
 
-## 所有权
+## 所有权&引用
 - 基于以下三条规则形成所有权
     - 每个值都有一个变量，称为其所有者。
     - 一次只能有一个所有者。
@@ -196,132 +239,121 @@ fn add(x: i32, y: i32) -> i32 {
 {
     // 在声明以前，变量 var_name 无效
     let var_name = "garysdevil";
-    // 这里是变量 var_name 的可用范围
+    // 这里是变量 var_name 的有效范围
 }
-// 变量范围已经结束，变量 var_name 无效
+// 变量有效范围结束，变量 var_name 被释放
 ```
 
 ### 内存分配/内存释放
 - 如果我们需要储存的数据长度不确定（比如用户输入的一串字符串），我们就无法在定义时明确数据长度，也就无法在编译阶段让程序分配固定长度的内存空间供数据储存使用。因此编程语言会提供一种在程序运行时程序自己申请使用内存的机制，堆。
 - 内存的释放
-    - 在C语言机制中，可以调用free(变量名);来释放内存。
+    - 在C语言机制中，可以调用free(变量名)，来释放内存。
     - 在java语言机制中，通过运行时垃圾回收机制释放，对性能产生一定的影响。
-    - 在Rust语言机制中，当变量有效范围结束的时候，Rust 编译器自动添加调用释放资源函数的步骤。
+    - 在Rust语言机制中，当变量有效范围结束时，Rust 编译器自动添加调用释放资源函数的步骤。
 
 ### 堆数据的移动
-- 基数数据类型都是存储在栈中，变量间都是通过复制进行相互赋值的。
 
 - 堆变量间的相互赋值，将导致数据的移动
     ```rust
-    // 基本数据类型，数据值可以被直接复制
+    // 基本数据类型都存储在栈中，变量值被复制给var_name2
     let var_name1 = 5;
     let var_name2 = var_name1;
 
-    // 非基本数据类型，即存储在堆中的数据，数据值的指向将被改改变
+    // 非基本数据类型的数据，存储在堆中。var_stack_name2指向var_stack_name1的数据值，var_stack_name1被释放。
     let var_stack_name1 = String::from("hello");
-    let var_stack_name2 = var_stack_name1; // var_stack_name1 的变量值被移除了
+    let var_stack_name2 = var_stack_name1; // var_stack_name1 被内存释放
     println!("{}, world!", var_stack_name1); // 错误！var_stack_name1 已经失效
     ```
 
-- 函数传递的输入参数/输出参数存储堆里时，将导致数据的移动
+- 函数传递的输入参数/输出参数存储在堆里时，将导致数据的移动
     ```rust
     fn main() {
-        let var_stack_name1 = String::from("hello"); // var_stack_name1 被声明并且被赋值
-        
-        // var_stack_name1 的值被当作参数传入函数
-        // var_stack_name1 的值被移除了
+        let var_stack_name1 = String::from("hello");
+        // var_stack_name1 是非基本数据类型，作为参数传入函数，var_stack_name1 被内存释放。
         func_name1(var_stack_name1);
 
+        // var_name1 是基本数据类型，作为参数传入函数，var_name1 数据被复制了一份传入，var_name1不被释放。
         let var_name1 = 5;
-        // var_name1 的值被当作参数传入函数
-        // var_name1 是基本数据类型，值不会被移除
         func_name2(var_name1);
     }
 
     fn func_name1(some_string: String) {
         // 一个 String 参数 some_string 传入，有效
         println!("{}", some_string);
-    } // 函数结束, 参数 some_string 在这里释放
+    } // 函数结束, some_string 在这里被释放
 
-    fn func_name2(some_integer: i32) -> i32{
+    fn func_name2(some_integer: i32) -> i32 {
         // 一个 i32 参数 some_integer 传入，有效
         println!("{}", some_integer);
-    } // 函数结束, 参数 some_integer 是基本类型, 无需释放
+    } // 函数结束, 参数 some_integer 是基本类型, 无需释放 ???疑惑
     ```
 
 ### 堆数据的克隆
-- 通过数据克隆，堆变量值不会被移除
 ```rust
+// 通过数据克隆，堆变量值不会被移除
 let var_stack_name1 = String::from("hello");
-let var_name2 = var_stack_name1.clone();
-println!("var_stack_name1 = {}, s2 = {}", var_stack_name1, var_name2);
+let var_stack_name2 = var_stack_name1.clone();
+// let var_name2 = var_stack_name1; 如果直接通过这种方式赋值，将导致对数据的移动，var_stack_name1将被释放，下面的语句将会报错。
+println!("var_stack_name1 = {}, s2 = {}", var_stack_name1, var_stack_name2);
 ```
 
-### 堆数据的引用与租借
+### 堆数据的引用
 - 引用符号：&
-- 如果A引用了B，则A的地址会指向B的地址
+- 如果A引用了B，则A的地址会指向B的地址。
+- 引用、借用、租借 是相同的概念。
 - 引用的所有权
-    - 引用不会获得值的所有权。
-    - 引用只能租借值的所有权。
-- 引用的特点
-    - 可变引用不允许多重引用。
-    - 当值被所有权者改变后，相关引用将全部失效。
-    - 引用指向的地址背后的堆数据为空，则编译时报错。（避免空指针问题）
+    - 引用不会获取值的所有权。
+    - 引用只是租借值的所有权。
+
+- 可变引用不允许多重引用。意味着当可变引用未被释放时，所有者不能更改值或者对值进行其它操作。
+
 - 所有权机制的优点
-    - 解决数据共享冲突问题。
+    - 解决数据共享冲突问题，垂悬指针问题。
+    - 引用指向的地址背后的堆数据为空，则编译时报错。（避免空指针问题）
 
 ```rust
 fn func_immutable_reference(){
     let var_stack_name1 = String::from("adam");
     let var_stack_name2 = &var_stack_name1; // var_stack_name2可以理解为var_stack_name1的软链接
     println!("var_stack_name1 is {}, var_stack_name2 is {}", var_stack_name1, var_stack_name2);
-    let var_stack_name3 = var_stack_name1; // var_stack_name1的数据所有权被赋值给了var_stack_name3，之前的var_stack_name1相关的所有权租借失效。
-    let var_stack_name2 = &var_stack_name3; // var_stack_name2是immutable的，所以必须重新声明；从 var_stack_name3 租借所有权
+    let var_stack_name3 = var_stack_name1; // var_stack_name1的数据所有权被转移了， 之前的var_stack_name1相关的引用失效。
+    let var_stack_name2 = &var_stack_name3; // var_stack_name1 租借 var_stack_name3 的所有权
 }
+
 fn func_mutable_reference(){
     let mut var_stack_name1 = String::from("AA-");
     let mut var_stack_name2 = &mut var_stack_name1; // var_stack_name2 是可变的引用
 
     var_stack_name2.push_str("BB-");
     println!("var_stack_name2 is {}", var_stack_name2);
-
+    // 当 var_stack_name2 在函数内不在被使用，则 租借所有权结束
     
-    var_stack_name1.push_str("CC-"); // var_stack_name1 修改了值，相关的引用失效
-    println!("var_stack_name1 is {}", var_stack_name1); // var_stack_name1 读取了值，相关的可变引用失效
-
-    var_stack_name2 = &mut var_stack_name1; // var_stack_name2 重新引用 var_stack_name1
-    var_stack_name2.push_str("DD-");
-    println!("var_stack_name2 is {}", var_stack_name2);
 }
 ```
 
 ## 结构体
-- 结构体方法： 定义结构体方法时，输入参数需要包含&self，并且结构体方法需要结构体实例来调用。
-- 结构体关联函数： 定义结构体关联函数时，返回数据必须是结构体。String::from() 就是一个结构体关联函数
 
 ### 结构体
 - 关键字 struct
 ```rust
+// 结构体定义
 #[derive(Debug)]
-
 struct Person {
     name: String,
     nickname: String,
     age: u32
 }
 fn func_strcut() {
-    // 结构体定义
-
     // 创建结构体实例
     let gary = Person {
         name: String::from("gary"),
         nickname: String::from("garysdevil"),
         age: 18
     };
-    // 创建结构体实例，将另一个结构体里属性值移动到当前结构体实例内
+    // 创建结构体实例，更改个别属性值，其它属性值从一个结构体实例里移植过来
     let newgary = Person {
         age: 19,
-        ..gary
+        ..gary // 进行移植操作
     };
     println!("gary is {}", gary.age);
     println!("newgary is {:?}", newgary); // 通过调试库 #[derive(Debug)]，输出一整个结构体
@@ -332,6 +364,7 @@ fn func_strcut() {
     println!("black = ({}, {}, {})", struct_black.0, struct_black.1, struct_black.2);
 }
 ```
+
 ### 结构体方法
 - 关键字 impl
 ```rust
@@ -340,8 +373,9 @@ struct Rectangle {
     height: u32,
 }
 
-// 定义结构体方法，struct关键字定义的名字 和 impl关键字定义的名字相同
-// 结构体方法的第一个参数必须是 &self，代表调用者
+// 定义结构体方法时，struct关键字定义的名字 和 impl关键字定义的名字必须相同
+// 注意： 结构体方法的第一个参数必须是 &self，代表调用者
+// 调用： 结构体方法需要结构体实例来调用。
 impl Rectangle {
     fn area(&self) -> u32 {
         self.width * self.height
@@ -367,6 +401,9 @@ struct Rectangle {
     height: u32,
 }
 
+// 定义结构体关联函数时，struct关键字定义的名字 和 impl关键字定义的名字必须相同.
+// 注意： 结构体关联函数的返回数据必须是结构体。String::from() 就是一个结构体关联函数
+// 调用： 使用结构体名称进行调用。
 impl Rectangle {
     fn create(width: u32, height: u32) -> Rectangle {
         Rectangle { width, height }
@@ -380,28 +417,23 @@ fn main() {
 }
 ```
 
-## 枚举&分支选择
-- 关键字 enum 定义枚举类型
-- 关键字 match 实现分支结构，类似于Java的switch
-- if let 语法， 是只区分两种情况的 match 语句的"语法糖"
-- 一种特殊的枚举类: Option
-
+## 枚举
 
 ### 枚举的定义 enum
 ```rust
-#[derive(Debug)]
 
 // 定义一个枚举类型
+#[derive(Debug)]
 enum Book {
-    NewBook,
-    Papery(u32), // 枚举类成员添加元组属性
+    Papery,
+    Number(u32), // 枚举类成员添加元组属性
     Electronic { url: String }, // 枚举类成员添加结构体属性；如果要为属性命名，则需要使用结构体语法
 }
 
 fn main() {
 
-    let book1 = Book::NewBook; // 实例化枚举
-    let book2 = Book::Papery(1001); // 实例化枚举
+    let book1 = Book::Papery; // 实例化枚举
+    let book2 = Book::Number(1001); // 实例化枚举
     let book3 = Book::Electronic{url: String::from("garys.top")}; // 实例化枚举
 
     
@@ -410,11 +442,11 @@ fn main() {
     println!("{:?}", book3);
 
     match book1 { // match 语句实现分支结构，类似于Java的switch
-        Book::NewBook => {
-            println!("Papery book NewBook");
+        Book::Papery => {
+            println!("This book is papery");
         },
-        Book::Papery( index ) => { // 如果枚举类成员拥有元组属性，则临时指定一个参数名字
-            println!("Papery book {}", index);
+        Book::Number( index ) => { // 如果枚举类成员拥有元组属性，则临时指定一个参数名字
+            println!("Number book {}", index);
         },
         Book::Electronic { url } => {
             println!("E-book {}", url);
@@ -424,51 +456,18 @@ fn main() {
 
 ```
 
-
-### 分支选择 match 
-- match 能够对枚举类、整数、浮点数、字符、字符串切片引用（&str）类型的数据进行分支选择
-- 
-```rust
-fn main() {
-    let var_str = "abc";
-    match var_str {
-        "abc" => println!("Yes"),
-        _ => {},
-    }
-
-    // let if 语法 例子一
-    let var_name = 0;
-    match var_name {
-        0 => println!("var_name=zero"),
-        _ => {},
-    }
-    if let 0 = var_name {
-        println!("var_name=zero");
-    }
-
-    // let if 语法 例子二
-    enum Book {
-        Papery(u32),
-        Electronic(String)
-    }
-    // let book = Book::Electronic(String::from("url"));
-    let book = Book::Papery(1001);
-    if let Book::Papery(index) = book {
-        println!("Papery {}", index);
-    } else {
-        println!("Not papery book");
-    }
-}
-```
-
-
-### 特殊的枚举类 Option
+### 特殊的枚举 Option
 - Option 是 Rust 标准库中的枚举类，这个类用于填补 Rust 不支持 null 引用的空白。
+- 一般当值可能有也可能无时，使用 Option。
+- Option要么是一个Some中包含一个值，要么是一个None；对应Option::Some(value)和Option::None。
+
 ```rust
 fn main() {
     let var_enum_name1 = Option::Some("Hello"); // 定义一个Option枚举
 
+    // 如果使用None而不是Some时，需要告诉编译器Option<T>的类型。
     let var_enum_name2: Option<&str> = Option::None; // 定义一个Option空枚举
+
     match var_enum_name2 {
         Option::Some(something) => {
             println!("{}", something);
@@ -477,6 +476,11 @@ fn main() {
             println!("var_enum_name2 is nothing");
         }
     }
+
+    // 通过 unwarp 方法获取 Some(x) 中 的 x 值。当值是None是则会报错。
+    println!("{}", var_enum_name2.unwrap());
+
+
 }
 ```
 
@@ -593,7 +597,7 @@ fn main() {
     ```rust
     // 复杂的实现关系可以使用 where 关键字简化
     // 例如：T数据类型必须实现了Display和Clone特性，U数据类型必须实现了Clone和Debug特性
-    fn some_function<T: Display + Clone, U: Clone + Debug>(t: T, u: U)
+    fn some_function<T: Display + Clone, U: Clone + Debug>(t: T, u: U) -> i32
     // 另一种表达方式
     fn some_function<T, U>(t: T, u: U) -> i32
         where T: Display + Clone,
@@ -602,14 +606,15 @@ fn main() {
 
 ### 特性
 - 特性（trait）概念接近于 Java 中的接口（Interface），但两者不完全相同。
-- 特性与接口相同的地方在于它们都是一种行为规范，可以用于标识哪些类有哪些方法。
-- 特性可以定义默认的方法。
+- 特性与接口相同的地方在于它们都是一种行为规范，可以用于标识哪些类/结构体有哪些方法。
+- 特性里既可以定义接口（没有方法体的方法），也可以定义方法。
 ```rust
 // 定义特性
-trait Descriptive {
+trait Behaviour {
     fn describe(&self) -> String {
         String::from("[Object]")
     }
+    fn say(&self);
 }
 
 struct Person {
@@ -618,13 +623,16 @@ struct Person {
 }
 
 // 结构体Person重写特性定义的方法describe
-impl Descriptive for Person {
+impl Behaviour for Person {
     fn describe(&self) -> String {
         format!("{} {}", self.name, self.age)
     }
+    fn say(&self) {
+        println!("iloveyou");
+    }
 }
 
-fn main() {
+pub fn local_fn() {
     let cali = Person {
         name: String::from("Cali"),
         age: 24
@@ -640,7 +648,7 @@ trait Comparable {
     fn compare(&self, object: &Self) -> i8;
 }
 
-// 定义一个方法；输入参数 为 范型数据类型，范型数据类型必须是实现了Comparable特性的
+// 定义一个方法；输入参数 为 范型数据类型，并且该范型数据类型必须实现了Comparable特性
 fn max<T: Comparable>(array: &[T]) -> &T {
     let mut max_index = 0;
     let mut i = 1;
@@ -653,7 +661,7 @@ fn max<T: Comparable>(array: &[T]) -> &T {
     &array[max_index]
 }
 
-// f64的数据类型重新特性的方法
+// f64的数据类型实现Comparable特性
 impl Comparable for f64 {
     fn compare(&self, object: &f64) -> i8 {
         if &self > &object { 1 }
@@ -668,9 +676,10 @@ fn main() {
 }
 ```
 
-## 错误处理
+## 错误处理/特殊的枚举 Result
 - 在 Rust 中通过 Result<T, E> 枚举类作返回值来进行异常表达。
 - 在 Rust 标准库中可能产生异常的函数的返回值都是 Result 枚举类型的。
+
 
 - 异常
     ```rust
@@ -696,10 +705,11 @@ fn main() {
         // 抛出异常，程序终止
         // panic!("error occured");
 
-        // 可恢复错误按不可恢复错误处理
-        let f1 = File::open("hello.txt").unwrap();
-        let f2 = File::open("hello.txt").expect("Failed to open.");
-    }
+        // 可恢复错误按不可恢复错误处理，直接抛出异常程序终止
+        File::open("hello.txt").unwrap(); // 方式一
+        File::open("hello.txt").expect("Failed to open."); // 方式二
+        assert!(File::open("hello.txt").is_ok()); // 方式三
+        }
     ```
 
 - 错误的传递
