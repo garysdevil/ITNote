@@ -20,7 +20,7 @@ fn main() {
 ```rust
 // 如果要声明变量，必须使用 let 关键字。
 // let 关键字声明的变量，默认是不可以被改变的。
-// 如果在代码里未指定变量的数据类型，则编译时编译器会根据变量的值指定变量的数据类型。
+// 如果在代码里未指定变量的数据类型，则编译时编译器会根据变量的值推断出变量的数据类型。
 let var_name1 = 123; 
 
 // 重影：变量的名称可以被重新使用的机制，即变量的值可以被重新绑定。
@@ -116,7 +116,9 @@ const const_name1: i32 = 123;
     }
     ```
 
-## 流程控制语句
+## 流程控制
+- if else 是基于 true和false
+- match 是基于模式匹配
 ### 条件 if else
 ```rust
 fn main() {
@@ -142,20 +144,27 @@ fn main() {
     let var_str = "abc";
     match var_str {
         "abc" => println!("Yes"),
-        _ => {},
+        _ => { println!("No") },
+    }
+    if let "abc" = var_str {
+        println!("Yes");
+    }else{
+        println!("No")
     }
 
-    // 例子二 let if 语法 
-    let var_name = 0;
-    match var_name {
-        0 => println!("var_name=zero"),
-        _ => {},
+    // 例子二 
+    let var_name = Some(9);   
+    if let Some(temp) = var_name {  // 如果 var_name模式匹配成功，则会被赋值给temp变量
+        println!("{}", temp);  
     }
-    if let 0 = var_name {
-        println!("var_name=zero");
+    if let Some(9) = var_name {
+        println!("{}", temp);  
+    }
+    if let Some(3) = var_name {
+        println!("{}", temp);  
     }
 
-    // 例子三 let if 语法
+    // 例子三
     enum Book {
         Number(u32),
         Electronic(String)
@@ -418,6 +427,7 @@ fn main() {
 ```
 
 ## 枚举
+- Rust世界里，Null 和 异常 都使用特殊的枚举类来处理。
 
 ### 枚举的定义 enum
 ```rust
@@ -462,6 +472,14 @@ fn main() {
 - Option要么是一个Some中包含一个值，要么是一个None；对应Option::Some(value)和Option::None。
 
 ```rust
+// Option枚举的基本形式
+pub enum Option<T> {
+    None,
+    Some(T),
+}
+```
+
+```rust
 fn main() {
     let var_enum_name1 = Option::Some("Hello"); // 定义一个Option枚举
 
@@ -483,6 +501,75 @@ fn main() {
 
 }
 ```
+
+### 特殊的枚举 Result
+- 在 Rust 中通过 Result<T, E> 枚举类作返回值来进行异常处理。
+- 在 Rust 标准库中可能产生异常的函数的返回值都是 Result 枚举类型的，最常见的使用是在IO操作中。
+- 一般可能产生可以恢复的错误时，都使用Result作为返回值。
+
+
+- 异常
+    ```rust
+    enum Result<T, E> {
+        Ok(T),
+        Err(E),
+    }
+    ```
+
+- 错误处理
+    ```rust
+    use std::fs::File;
+
+    fn main() {
+        // 可恢复错误
+        let f = File::open("./hello.txt");
+        if let Ok(file) = f {
+            println!("File opened successfully.");
+        } else {
+            println!("Failed to open the file.");
+        }
+
+        // 抛出异常，程序终止
+        // panic!("error occured");
+
+        // 可恢复错误按不可恢复错误处理，直接抛出异常程序终止
+        File::open("hello.txt").unwrap(); // 方式一
+        File::open("hello.txt").expect("Failed to open."); // 方式二
+        assert!(File::open("hello.txt").is_ok()); // 方式三
+        }
+    ```
+
+- 错误的传递
+    ```rust
+    // 可恢复错误的传递
+    fn func_judge(i: i32) -> Result<i32, bool> { // 判断一个数字是否大于0
+        if i >= 0 { Ok(i) }
+        else { Err(false) }
+    }
+
+    fn func_name(i: i32) -> Result<i32, bool> {
+        // 传递错误 方式一
+        // let result = func_judge(i);
+        // return match result {
+        //     Ok(i) => Ok(i),
+        //     Err(b) => Err(b)
+        // };
+        
+        // 传递错误 方式二
+        // Rust 中可以在 Result 对象后添加 ? 操作符将同类的 Err 直接传递出去
+        let result = func_judge(i)?;
+        Ok(result) // 因为确定 t 不是 Err, t 在这里已经是 i32 类型
+    }
+
+    fn main() {
+        let result = func_name(10000);
+        if let Ok(v) = result {
+            println!("Ok: g(10000) = {}", v);
+        } else {
+            println!("Err");
+        }
+    }
+    ```
 
 ## 组织管理
 - 包 Package
@@ -675,72 +762,6 @@ fn main() {
     println!("maximum of arr is {}", max(&arr));
 }
 ```
-
-## 错误处理/特殊的枚举 Result
-- 在 Rust 中通过 Result<T, E> 枚举类作返回值来进行异常表达。
-- 在 Rust 标准库中可能产生异常的函数的返回值都是 Result 枚举类型的。
-
-
-- 异常
-    ```rust
-    enum Result<T, E> {
-        Ok(T),
-        Err(E),
-    }
-    ```
-
-- 错误处理
-    ```rust
-    use std::fs::File;
-
-    fn main() {
-        // 可恢复错误
-        let f = File::open("./hello.txt");
-        if let Ok(file) = f {
-            println!("File opened successfully.");
-        } else {
-            println!("Failed to open the file.");
-        }
-
-        // 抛出异常，程序终止
-        // panic!("error occured");
-
-        // 可恢复错误按不可恢复错误处理，直接抛出异常程序终止
-        File::open("hello.txt").unwrap(); // 方式一
-        File::open("hello.txt").expect("Failed to open."); // 方式二
-        assert!(File::open("hello.txt").is_ok()); // 方式三
-        }
-    ```
-
-- 错误的传递
-    ```rust
-    // 可恢复错误的传递
-    fn func_judge(i: i32) -> Result<i32, bool> {
-        if i >= 0 { Ok(i) }
-        else { Err(false) }
-    }
-
-    fn func_name(i: i32) -> Result<i32, bool> {
-        // let result = func_judge(i);
-        // return match result {
-        //     Ok(i) => Ok(i),
-        //     Err(b) => Err(b)
-        // };
-        
-        // Rust 中可以在 Result 对象后添加 ? 操作符将同类的 Err 直接传递出去
-        let result = func_judge(i)?;
-        Ok(result) // 因为确定 t 不是 Err, t 在这里已经是 i32 类型
-    }
-
-    fn main() {
-        let result = func_name(10000);
-        if let Ok(v) = result {
-            println!("Ok: g(10000) = {}", v);
-        } else {
-            println!("Err");
-        }
-    }
-    ```
  
 ## 生命周期
 1. 程序中每个变量都有一个固定的作用域，当超出变量的作用域以后，变量就会被销毁。变量在作用域中从初始化到销毁的整个过程称之为生命周期。
@@ -878,7 +899,7 @@ fn longest_with_an_announcement<'a, T>(x: &'a str, y: &'a str, ann: T) -> &'a st
     }
     ```
 
-## 集合与字符串
+## 集合&字符串
 ### 向量
 - 向量（Vector）是一个存放多值的单数据结构，该结构将相同类型的值线性的存放在内存中。
 - 向量的数据逻辑结构是线性表，在 Rust 中的表示是 Vec<T>。
@@ -1068,8 +1089,32 @@ fn main() {
 }
 ```
 
+## 标准库
+```rust
+// Rust 的标准库，有一个 prelude 子模块。
+// prelude 子模块里的模块默认导入程序的整个作作用域，也就是说不再需要使用use进行引用。 
 
-## 和其它语言的异同
+std::marker::{Copy, Send, Sized, Sync}
+std::ops::{Drop, Fn, FnMut, FnOnce}
+std::mem::drop
+std::boxed::Box
+std::borrow::ToOwned
+std::clone::Clone
+std::cmp::{PartialEq, PartialOrd, Eq, Ord}
+std::convert::{AsRef, AsMut, Into, From}
+std::default::Default
+std::iter::{Iterator, Extend, IntoIterator, DoubleEndedIterator, ExactSizeIterator}
+std::option::Option::{self, Some, None}
+std::result::Result::{self, Ok, Err}
+std::slice::SliceConcatExt
+std::string::{String, ToString}
+std::vec::Vec
+```
+
+## Rust的异同
 - rust编程语言里 不支持 ++ 和 -- 的数学运算符号。
 
 - rust编程语言里 没有 for 的三元语句控制循环，例如 for (i = 0; i < 10; i++)
+
+- () 是一种特殊的类型，值只有一个就是() 
+    - https://doc.rust-lang.org/std/primitive.unit.html

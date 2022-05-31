@@ -16,20 +16,32 @@
 - 在线编译器 https://play.rust-lang.org/
 - 宝箱文档 https://docs.rs/
 
-## 安装Rust工具包
+## Rust工具包
 ```bash
 # 下载安装rust工具包
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source $HOME/.cargo/env
 ```
 
-- rustup
-    - Rust 的工具管理器。
+- Rust工具链管理器： rustup
 
+-  Rust编译器： rustc
+    
 - cargo
     - Rust 内置的构建系统和包管理器。
     - 可以使用 cargo 指令进行 工程构建、编译、运行、打包、获取包等功能。
 
+- 源代码格式化工具
+    - cargo-fmt
+    - rustfmt
+
+- 调试器: rust-gdb
+
+- 文档生成器 rustdoc
+
+- 代码提示工具
+    - rls
+    - racer
 
 ## 术语
 - 宝箱(crate)
