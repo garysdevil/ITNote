@@ -154,7 +154,7 @@ pub fn test1() {
 }
 ```
 
-## 其它
+## 范性深入
 ```rust
 struct S;
 impl S{

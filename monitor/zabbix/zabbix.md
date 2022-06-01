@@ -1,7 +1,7 @@
-1. 宏
-https://www.zabbix.com/documentation/3.4/zh/manual/config/macros
-https://www.zabbix.com/documentation/3.4/manual/appendix/macros/supported_by_location
-https://www.cnblogs.com/skyflask/p/7523535.html
+## 宏
+- https://www.zabbix.com/documentation/3.4/zh/manual/config/macros
+- https://www.zabbix.com/documentation/3.4/manual/appendix/macros/supported_by_location
+- https://www.cnblogs.com/skyflask/p/7523535.html
 
 
 
@@ -23,7 +23,14 @@ https://www.cnblogs.com/skyflask/p/7523535.html
     ```conf
     php_value memory_limit 256M  # PHP 单个脚本单次执行最大可用内存限制。默认限制为 256MB。
     ```
-    systemctl restart httpd
+    - systemctl restart httpd
+
+3. zabbix-agent2的异常日志
+    - /var/log/zabbix/zabbix_agent2.log里的异常日志。不影响软件正常使用。
+    ```log
+    2022/06/01 16:57:48.542067 [101] active check configuration update from [101.43.98.179:10051] started to fail (Cannot read message: 'read tcp 117.148.141.247:57509->101.43.98.179:10051: i/o timeout')
+    ```
+    - 注释掉/etc/zabbix/zabbix_agent2.conf里的ServerActive=
 
 ## Discovery rule
 1. 写脚本返回json格式的数据

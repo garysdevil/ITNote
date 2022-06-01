@@ -28,11 +28,16 @@ https://c.isme.pub/2019/02/18/linux-proc/
     15. inired:临时目录，初始化引导时候用
     16. proc: 虚拟文件系统。该目录中的数据并不保存在硬盘上，而是保存到内存中。主要保存系统的内核、进程、外部设备状态和网络状态等
     17. sys: 虚拟文件系统。和 /proc/ 目录相似，该目录中的数据都保存在内存中，主要保存与内核相关的信息。
+
 ## 各个系统版本
 - 都是基于Linux Kernel开发而成
 - 主要差异
     1. UI
     2. 软件源
+- Ubuntu 版本
+    - Focal Fossa Ubuntu20
+    - Bionic Beaver Ubuntu18
+    - Xenial Xerus Ubuntu16
 
 ## /proc
 ### 概要

@@ -16,23 +16,33 @@ apt install ./deb安装包
 5. 软件源配置文件与文件夹 /etc/apt/sources.list  /etc/apt/sources.list.d
 6. apt的底层包是dpkg, 而dpkg 安装Package时, 会将 *.deb 放在 /var/cache/apt/archives/ 中。
 ##### 基本操作
-1. apt update  
-    从软件源（也就是服务器）下载最新的软件包列表文件，更新本地软件源的软件包的索引记录（包含软件名，版本，校验值，依赖关系等）。
-    同步 /etc/apt/sources.list 和 /etc/apt/sources.list.d 中列出的源的索引。
+```bash
+# 1. 从软件源（也就是服务器）下载最新的软件包列表文件，更新本地软件源的软件包的索引记录（包含软件名，版本，校验值，依赖关系等）。
+# 同步 /etc/apt/sources.list 和 /etc/apt/sources.list.d 中列出的源的索引。
+apt update  
     
-2. apt upgrade 根据update更新的索引记录来下载并更新软件包.
+# 2. 根据update更新的索引记录来下载并更新软件包.
+apt upgrade 
 
-3. apt dist-upgrade 除了拥有upgrade的全部功能外，dist-upgrade会比upgrade更智能地处理需要更新的软件包的依赖关系。
+# 3. 除了拥有upgrade的全部功能外，dist-upgrade会比upgrade更智能地处理需要更新的软件包的依赖关系。
+apt dist-upgrade 
 
-3. apt-get purge :删除已安装包和依赖包（不保留配置文件)。 
-4. apt-get autoremove 删除为了满足依赖而安装的，但现在不再需要的软件包（包括已安装包），保留配置文件。
-5. apt-get autoclean
-    将 /var/cache/apt/archives/ 的 所有 已经过期的deb 删掉。
-6. apt-get clean  清理缓存
-    将 /var/cache/apt/archives/ 的 所有 deb 删掉，可以理解为 rm /var/cache/apt/archives/*.deb。
+# 4. 删除已安装包和依赖包（不保留配置文件)。 
+apt-get purge ${package_name}
 
-7. apt-get --purge remove zabbix-agent2 -y 根据包名称删除包，连配置文件一起删除
+# 5. 删除已安装包，连配置文件一起删除
+apt-get --purge remove ${package_name} 
 
+# 6. 删除为了满足依赖而安装的，但现在不再需要的软件包（包括已安装包），保留配置文件。
+apt-get autoremove ${package_name}
+
+# 7. 清理过期的缓存。将 /var/cache/apt/archives/ 的 所有 已经过期的deb 删掉。
+apt-get autoclean
+    
+# 8. 清理缓存。将 /var/cache/apt/archives/ 的 所有 deb 删掉，可以理解为 rm /var/cache/apt/archives/*.deb
+apt-get clean  
+    
+```
 ##### 其它
 - PPA
     https://www.cnblogs.com/cute/archive/2012/05/21/2511571.html
