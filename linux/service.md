@@ -1,6 +1,6 @@
-# service
-- 开机启动service配置文件存放位置
-ls /etc/init.d/
+[TOC]
+## service
+- 开机启动service配置文件存放位置 ls /etc/init.d/
 
 - 常用指令
 ```bash
@@ -21,13 +21,13 @@ ntsysv
 - 参考
     - http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html
     - https://www.cnblogs.com/jimbo17/p/9107052.html 资源管理
-- 兼容service指令
+
+- systemctl兼容service指令
 
 - 所有可用的单元文件存放在 /usr/lib/systemd/system/ 和 /etc/systemd/system/ 目录（后者优先级更高）
 
-- 开机执行脚本
-/etc/rc.d/rc.local
-查看rc-local.service是否启动 systemctl | grep rc-local.service
+- 开机执行脚本 /etc/rc.d/rc.local
+- 查看rc-local.service是否启动 systemctl | grep rc-local.service
 
 - systemd有自己的资源控制机制
 

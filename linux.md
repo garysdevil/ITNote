@@ -624,3 +624,9 @@ CPU平均负载 = 特定时间内运行队列中的平均进程数量（可运�
 ```log
 SYN flooding on port 80. Sending cookies.  Check SNMP counters.
 ```
+
+### 休眠问题
+```bash
+# 关掉所有的休眠服务
+systemctl mask sleep.target suspend.target hibernate.target hybridsleep.target
+```

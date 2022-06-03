@@ -21,9 +21,10 @@
     http_access allow all  # 允许的 访问控制规则，all是允许所有IP访问
     ```
 
-3. 客户端连接代理配置 linux系统配置 /etc/profile
+3. 客户端HTTP方式连接代理配置 linux系统配置 /etc/profile
     ```conf
     export http_proxy=squid服务端IP地址:3128 # http协议访问时使用代理，也可以设置https，ftp等协议
+    export https_proxy=squid服务端IP地址:3128
     export no_proxy='localhost,127.0.0.1'
     ```
 

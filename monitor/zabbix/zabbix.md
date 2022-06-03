@@ -30,7 +30,9 @@
     ```log
     2022/06/01 16:57:48.542067 [101] active check configuration update from [101.43.98.179:10051] started to fail (Cannot read message: 'read tcp 117.148.141.247:57509->101.43.98.179:10051: i/o timeout')
     ```
-    - 注释掉/etc/zabbix/zabbix_agent2.conf里的ServerActive=
+    - 无可奈何的解决方案： 注释掉/etc/zabbix/zabbix_agent2.conf里的ServerActive=，关闭主动模式.
+    - 方案： 更改配置，增加超时的时间 Timeout
+    - https://www.zabbix.com/forum/zabbix-troubleshooting-and-problems/417103-refreshactivechecks-i-o-timeout?view=stream
 
 ## Discovery rule
 1. 写脚本返回json格式的数据
