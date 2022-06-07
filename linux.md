@@ -388,32 +388,55 @@ rsync -P -e'ssh -p 22' home.tar 192.168.205.34:/home/home.tar
 ```
 
 ### GPU
-- GPU分类
-    - AMD
-    - CUDA  
-        - 由NVIDIA推出的通用并行计算架构
-        - https://forums.developer.nvidia.com/
+- CUDA  
+    - 由NVIDIA推出的通用并行计算架构
+    - https://forums.developer.nvidia.com/
+
+- PCI Peripheral Component Interconnect(外设部件互连标准)
+
 ```bash
-# PCI Peripheral Component Interconnect(外设部件互连标准)
+# lspci指令
 
-# 查看显卡信息
-lspci | grep -i vga
-# 查看指定显卡的详细信息
-lspci -v -s ${62:00.0}
+lspci | grep -i vga -A 12 # 查看显卡信息
 
+lspci -v -s ${62:00.0} # 查看指定显卡的详细信息
+
+lspci -vnn | grep VGA -A 12 # 查看显卡信息
+
+lspci -vnn | grep VGA -A 12 | grep 'Family' # 查看显卡信息信息 
+# Subsystem: Gigabyte Technology Co., Ltd ASPEED Graphics Family [1458:1000] 
+# 1458 代表厂商 ID
+# 1000 代表 PCI
+
+lspci | grep -i nvidia # 查看nvidia GPU信息
+```
+
+```bash
+# lshw指令  就是读取 /proc 里面的一些文件来显示相关的信息
+
+lshw -C display
+lshw -C display -short
+
+lshw -c video | grep configuration # 查看所有的显卡驱动名称
+modinfo ${driver} # 通过显卡驱动名称查看显卡驱动的详情
+```
+
+```bash
 # CUDA toolkit # https://developer.nvidia.com/cuda-downloads
 apt update
 apt install nvidia-cuda-toolkit
 nvcc --version
 
 
-# 安装CUDA驱动
+# 安装NVIDIA CUDA驱动
 # add-apt-repository ppa:graphics-drivers/ppa --yes
 # apt update
 # apt install nvidia-driver-470 
 # apt install nvidia-driver-* # 选择一个驱动器
-# 查看GPU使用率
-nvidia-smi -l 1 # 每秒刷新一次
+nvidia-smi -L # 查看NVIDIA显卡型号
+nvidia-smi -l 1 # # 查看NVIDIA GPU使用率，每秒刷新一次
+
+
 ```
 - CUDA编程
     - 在GPU上执行的函数通常称为核函数。
