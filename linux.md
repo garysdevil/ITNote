@@ -11,21 +11,21 @@ cat /proc/cpuinfo| grep "processor"| wc -l
 ```
 
 ### curl 
--o 保存结果进自定义名字文件里面
--x 设置代理
--l 只返回head信息
--O 保存结果进文件里面
--C 断点续传
--L 请求时跟随链接跳转
--T 上传文件 curl -T picture.jpg -u 用户名:密码 ftp://www.linux.com/img/
--H 自定义头信息，例如指定host  -H 'Host: baidu.com'
--A (or --user-agent): 设置 "User-Agent" 字段.
--b (or --cookie): 设置 "Cookie" 字段.
--e (or --referer): 设置 "Referer" 字段.
--s 静默模式
--k (or --insecure)不验证证书进行https请求
---connect-timeout 建立连接超时时间
--m 数据传输超时时间
+- -o 保存结果进自定义名字文件里面
+- -x 设置代理
+- -l 只返回head信息
+- -O 保存结果进文件里面
+- -C 断点续传
+- -L 请求时跟随链接跳转
+- -T 上传文件 curl -T picture.jpg -u 用户名:密码 ftp://www.linux.com/img/
+- -H 自定义头信息，例如指定host  -H 'Host: baidu.com'
+- -A (or --user-agent): 设置 "User-Agent" 字段.
+- -b (or --cookie): 设置 "Cookie" 字段.
+- -e (or --referer): 设置 "Referer" 字段.
+- -s 静默模式
+- -k (or --insecure)不验证证书进行https请求
+- --connect-timeout 建立连接超时时间
+- -m 数据传输超时时间
 
 ### crontab
 1. 配置crontab
@@ -388,9 +388,15 @@ rsync -P -e'ssh -p 22' home.tar 192.168.205.34:/home/home.tar
 ```
 
 ### GPU
-- CUDA  
-    - 由NVIDIA推出的通用并行计算架构
+- 参考
+    - nvcc https://blog.csdn.net/hxxjxw/article/details/119838078
+
+- CUDA（Compute Unified Device Architecture）
+    - 由NVIDIA推出的通用并行计算架构。提供了一套应用软件接口（API）。其主要应用于英伟达GPU显卡的调用。
     - https://forums.developer.nvidia.com/
+
+- ROCM
+    - 由AMD推出的通用并行计算架构。提供了一套应用软件接口（API）。其主要应用于AMD GPU显卡的调用。
 
 - PCI Peripheral Component Interconnect(外设部件互连标准)
 
@@ -399,11 +405,11 @@ rsync -P -e'ssh -p 22' home.tar 192.168.205.34:/home/home.tar
 
 lspci | grep -i vga -A 12 # 查看显卡信息
 
-lspci -v -s ${62:00.0} # 查看指定显卡的详细信息
-
 lspci -vnn | grep VGA -A 12 # 查看显卡信息
 
-lspci -vnn | grep VGA -A 12 | grep 'Family' # 查看显卡信息信息 
+lspci -v -s ${62:00.0} # 查看指定显卡的详细信息
+
+lspci -vnn | grep VGA -A 12 | grep 'Family' # 查看显卡信息
 # Subsystem: Gigabyte Technology Co., Ltd ASPEED Graphics Family [1458:1000] 
 # 1458 代表厂商 ID
 # 1000 代表 PCI
@@ -422,20 +428,34 @@ modinfo ${driver} # 通过显卡驱动名称查看显卡驱动的详情
 ```
 
 ```bash
-# CUDA toolkit # https://developer.nvidia.com/cuda-downloads
+# CUDA toolkit 
+# https://developer.nvidia.com/cuda-downloads
+# https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#environment-setup # 安装完设置环境变量
+# CUDA的编译器
 apt update
 apt install nvidia-cuda-toolkit
-nvcc --version
+nvcc --version # 查看cuda编译器版本
+```
 
-
+```bash
 # 安装NVIDIA CUDA驱动
 # add-apt-repository ppa:graphics-drivers/ppa --yes
 # apt update
-# apt install nvidia-driver-470 
+# apt install nvidia-driver-510
 # apt install nvidia-driver-* # 选择一个驱动器
 nvidia-smi -L # 查看NVIDIA显卡型号
 nvidia-smi -l 1 # # 查看NVIDIA GPU使用率，每秒刷新一次
 
+nvidia-smi dmon # 设备状态持续显示输出
+nvidia-smi pmon # 进程状态持续显示输出
+
+ls /usr/src | grep nvidia  # 查看服务器安装的驱动版本信息
+cat /proc/driver/nvidia/version  # 查看运行中的驱动版本信息
+
+# 执行nvidia-smi指令时报错 NVIDIA-SMI has failed because it couldn't communicate with the NVIDIA driver. Make sure that the latest NVIDIA driver is installed and running. 解决办法
+apt-get install dkms
+dkms install -m nvidia -v $(ls /usr/src | grep nvidia | awk -v FS='-' '{print $2}')
+# 如果还是报错，则重启
 
 ```
 - CUDA编程
@@ -617,30 +637,38 @@ kill -15 ${PID}
 ```
 
 
-linux系统中英文切换
-vim /etc/locale.conf 或者 vim /etc/sysconfig/i18n
-```conf
-LANG=en_US.UTF-8
-LANG=zh_CN.UTF-8
-```
-source /etc/locale.conf
+- linux系统语言中英文切换
+    ```bash
+    # 永久切换
+    vim /etc/locale.conf # 或者 vim /etc/sysconfig/i18n
+    # 然后更改配置 LANG=en_US.UTF-8 或者 LANG=zh_CN.UTF-8
+    source /etc/locale.conf
 
+    # 临时切换
+    export LANG="zh_CN.UTF-8" # 中文
+    export LANG="en_US.UTF-8" # 英文
+    ```
 
 - cpu负载，cpu使用率
-```bash
-ps -aux
-# 系统中可运行（R）和不可中断（D）进程
-# R：正在CPU上运行或者正在等待CPU的进程状态
-# D：不可中断是指一些正在处于内核关键流程的进程，如果盲目打断，会造成不可预知的后果，比如正在写磁盘的进程，盲目被打断，可能会造成读写不一致的问题。
-CPU的使用率 = 单位时间内CPU执行任务的时间 / 单位时间
-CPU平均负载 = 特定时间内运行队列中的平均进程数量（可运行状态和不可中断状态的进程）
-```
+    ```bash
+    ps -aux
+    # 系统中可运行（R）和不可中断（D）进程
+    # R：正在CPU上运行或者正在等待CPU的进程状态
+    # D：不可中断是指一些正在处于内核关键流程的进程，如果盲目打断，会造成不可预知的后果，比如正在写磁盘的进程，盲目被打断，可能会造成读写不一致的问题。
+    CPU的使用率 = 单位时间内CPU执行任务的时间 / 单位时间
+    CPU平均负载 = 特定时间内运行队列中的平均进程数量（可运行状态和不可中断状态的进程）
+    ```
 
 - 查看磁盘是否是SSD
     ```bash
     # ROTA为0表示不可以旋转，就是SSD
     lsblk -d -o name,rota
     ```
+
+- 软链接
+```bash
+ln -s 源文件 目标文件
+```
 
 ### 排查问题
 - dmesg 并发量太大导致三次握手时超过资源限制，需要调整内核参数

@@ -50,21 +50,23 @@
 - 安装 https://www.v2fly.org/guide/install.html
 
 - 脚本安装 bash <(curl -L https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh)
-```
-启动 systemctl start v2ray
-安装好的官方v2ray-core文件路径如下
-installed: /usr/local/bin/v2ray
-installed: /usr/local/bin/v2ctl
-installed: /usr/local/share/v2ray/geoip.dat
-installed: /usr/local/share/v2ray/geosite.dat
-installed: /usr/local/etc/v2ray/config.json
-installed: /var/log/v2ray/
-installed: /var/log/v2ray/access.log
-installed: /var/log/v2ray/error.log
-installed: /etc/systemd/system/v2ray.service
-installed: /etc/systemd/system/v2ray@.service
+    - 启动 systemctl start v2ray
+    - 安装好的官方v2ray-core文件路径如下
+        ```
+        installed: /usr/local/bin/v2ray
+        installed: /usr/local/bin/v2ctl
+        installed: /usr/local/share/v2ray/geoip.dat
+        installed: /usr/local/share/v2ray/geosite.dat
+        installed: /usr/local/etc/v2ray/config.json
+        installed: /var/log/v2ray/
+        installed: /var/log/v2ray/access.log
+        installed: /var/log/v2ray/error.log
+        installed: /etc/systemd/system/v2ray.service
+        installed: /etc/systemd/system/v2ray@.service
+        ```
 
-```
+- 验证配置文件的正确性 /usr/local/bin/v2ray -test -config /usr/local/etc/v2ray/config.json
+
 ## 前置代理工具
 ### Proxy SwitchyOmega
 - Google游览器代理管理工具插件

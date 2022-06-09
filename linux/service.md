@@ -82,7 +82,9 @@ CPUShares=1024
 # /sys/fs/cgroup/memory/system.slice/XXXXX
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=network-online.target # 
+WantedBy=multi-user.target # 多用户环境下启用
+Alias=XXXXXd.service # 服务的别名
 ```
 - 在systemd配置选项上，cgroup v2相比cgroup v1有如下不一样的地方：
     1. CPU： CPUWeight=和StartupCPUWeight=取代了CPUShares=和StartupCPUShares=。cgroup v2没有"cpuacct"控制器。

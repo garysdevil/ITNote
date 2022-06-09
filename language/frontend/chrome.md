@@ -1,5 +1,7 @@
 
 ## Chrome
+- chrome内部所有链接 chrome://chrome-urls/
+
 - 调试 chrome://net-internals/
     - 清除游览器dns
     - ...

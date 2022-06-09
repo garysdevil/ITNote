@@ -7,16 +7,15 @@ vi $HOME/.cargo/config
 ```conf
 [source.crates-io]
 registry = "https://github.com/rust-lang/crates.io-index"
-# 指定镜像
-replace-with = '镜像源名' # 如：tuna、sjtu、ustc，或者 rustcc
+# 指定镜像源
+replace-with = 'ustc' # 如：tuna、sjtu、ustc，或者 rustcc
 
 # 注：以下源配置一个即可，无需全部
 
 # 中国科学技术大学
 [source.ustc]
 registry = "https://mirrors.ustc.edu.cn/crates.io-index"
-# >>> 或者 <<<
-registry = "git://mirrors.ustc.edu.cn/crates.io-index"
+# 或者 registry = "git://mirrors.ustc.edu.cn/crates.io-index"
 
 # 上海交通大学
 [source.sjtu]
