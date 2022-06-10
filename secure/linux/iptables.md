@@ -33,10 +33,14 @@
     4. REDIRECT 重定向，主要用于实现端口重定向
 
 ```bash
+# -p 指定协议 -p all 代表所有协议
+
 # 列出当前的iptables配置
 iptables -L
+iptables -t filter -L --line-number # --line-number 显示编号
+iptables -t filter -L INPUT --line-number
 iptables -t nat -L --line-number
-iptables -t filter -L --line-number
+
 
 # 根据编号删除规则
 iptables -t nat -L --line-number
@@ -52,32 +56,35 @@ iptables -t nat -I PREROUTING -p tcp -m multiport --dports 80,443 -m set --match
 # 禁止访问某个IP
 iptables -A OUTPUT -d ${IP} -j REJECT
 
-#禁止其他所有流量进入
-iptables -A INPUT -j DROP
+# 允许/禁止某个IP被访问
+# IP=127.0.0.1 或 IP=192.168.0.1/16
+iptables -I INPUT -j DROP #禁止其他所有流量进入
+iptables -I INPUT -s ${IP} -j DROP # 禁止${IP}访问
+iptables -I INPUT -p tcp --dport 8545 -j DROP  # 禁止所有IP的访问8545端口
+iptables -I INPUT -d 192.169.1.1 -p tcp --dport 8545 -j DROP  # 禁止所有IP通过TCP协议访问特定的IP:端口
+iptables -I INPUT -s ${IP} -p tcp --dport 8545 -j ACCEPT # 允许${IP}访问本地的8545端口
+
 ```
 
 ### ipset
 1. 安装
-yum install ipset
+    ```bash
+    yum install ipset
+    ```
 
-2. 禁止IP访问
+1. 禁止IP访问
     ```bash
     ipset create blacklist hash:ip # 创建名为 blacklist 的集合，以 hash 方式存储，存储内容是 IP 地址
     # ipset -N blacklist iphash
-    iptables -I INPUT -m set --match-set blacklist src -j DROP # 在集合 blacklist 里的IP将被过滤掉
-    iptables -I INPUT -s ${IP} -j DROP
+    iptables -A INPUT -m set --match-set blacklist src -j DROP # 在集合 blacklist 里的IP将被过滤掉
     ipset add blacklist ${IP1}
     ipset add blacklist ${IP2}
-    # ipset add blacklist ...
     ipset list blacklist
     ```
 
-3. 只允许指定ip连接指定端口
+2. 只允许指定ip连接指定端口
     ```bash
-    iptables -I INPUT -p tcp --dport 8545 -j DROP  # 禁止所有IP的访问特定端口
-    iptables -I INPUT -d 192.169.1.1 -p tcp --dport 8545 -j DROP  # 禁止所有IP的访问特定的IP端口
-    iptables -I INPUT -s 127.0.0.1 -p tcp --dport 8545 -j ACCEPT # 允许某些IP进行访问
-    iptables -I INPUT -m set --match-set whitelist src -p tcp --dport 8545 -j ACCEPT # 通过whitelist允许某些IP进行访问
+    iptables -A INPUT -m set --match-set whitelist src -d ${IP} -p tcp --dport ${PORT} -j ACCEPT # 通过whitelist的IP通过tcp协议访问${IP}:${PORT}
     ```
 
 - ipset

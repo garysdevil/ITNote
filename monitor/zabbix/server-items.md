@@ -4,31 +4,30 @@
     https://www.zabbix.com/documentation/3.4/manual/config/items/itemtypes/zabbix_agent
     https://www.zabbix.com/documentation/3.4/manual/appendix/items
 
-### 监控项
+## 监控项
 1. 监控项接口
-    agent、jmx、impi、snmp
+    - agent、jmx、impi、snmp
 
 2. 监控项类型
-    Zabbix agent, Zabbix trapper, Simple checks, SNMP, Zabbix internal, IPMI, JMX monitoring...
+    - Zabbix agent, Zabbix trapper, Simple checks, SNMP, Zabbix internal, IPMI, JMX monitoring ...
 
-3. Item 属性详解
-监控项item名称可以使用如下宏变量：
-$1, $2…$9，这9个参数对应item key的参数位置。
-
-例如： Free disk space on $1
-如果item key为“vfs.fs.size[/,free]”,那么对应的名称会变成”Free disk space on /“，$1对应了第一个参数”/“,你明白了吗？
+3. 监控项item名称
+    - 监控项item名称可以使用宏变量：$1, $2…$9，这9个参数对应item key的参数位置。
+    - 例如： Free disk space on $1
+    - 如果item key为“vfs.fs.size[/,free]”,那么对应的名称会变成”Free disk space on /“，$1对应了第一个参数”/“
 
 4. 主动模式下一个正常的监控项获取数据的过程
-```
+    ```
     Server opens a TCP connection
     Server sends agent.ping\n
     Agent reads the request and responds with <HEADER><DATALEN>1
     Server processes data to get the value, '1' in our case
     TCP connection is closed
-```
+    ```
 
-### Zabbix agent监控项
-- 只列出一些常用的监控项
+## Zabbix agent监控项
+- 一些常用的监控项
+  
 1. Agent
     1. agent可达性：agent.ping 
 2. 操作系统 system
@@ -66,3 +65,10 @@ $1, $2…$9，这9个参数对应item key的参数位置。
     1. 获取web界面的加载时间    web.page.perf[host,<path>,<port>] 
 9. 安全信息
     1. 获取文件校验值 vfs.file.cksum[/etc/passwd]
+
+## 自定义监控项
+```bash
+UserParameter=device.tps[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{print $3}'
+UserParameter=device.kB_read[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{print $3}'
+UserParameter=device.kB_write[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{print $3}'
+```

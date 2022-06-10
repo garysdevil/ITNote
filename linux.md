@@ -317,6 +317,7 @@ yum -y install sysstat
 sar -V
 
 # iostat 工具提供CPU使用率及硬盘吞吐效率的数据；  #比较核心的工具
+iostat -d -k ${Device}
 # pidstat: 关于运行中的进程/任务、CPU、内存等的统计信息
 # ...
 ```
