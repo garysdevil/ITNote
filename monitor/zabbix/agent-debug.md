@@ -1,6 +1,9 @@
 
-### 一 zabbix调试测试工具
-1. zabbix-get
+[TOC]
+
+- zabbix调试测试工具
+
+## zabbix-get
 - 实现从zabbix-agent端获取数据
 ```bash
 # 安装
@@ -10,7 +13,8 @@ zabbix_get -s ${IP} -p 10050 -k agent.ping
 # 批量向zabbix-agent发送数据
 zabbix_get -s ${IP} -i data.txt
 ```
-2. zabbix_sender
+
+## zabbix_sender
 - 实现向zabbix-server主动推送数据
 ```bash
 # 安装
@@ -26,7 +30,8 @@ zabbix_sender -z ${IP} -i 文件路径
 # -o 表示要主动推送的数据
 # -i 从文件里面读取hostname key value
 ```
-3. snmp检测工具
+
+## snmp检测工具
 ```bash
 snmpwalk -v 2c -c public ${IP} 
 #   -v 指定版本（必填项）

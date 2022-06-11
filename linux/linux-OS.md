@@ -1,7 +1,11 @@
+[TOC]
+- Linux系统讲解
+- 
 - 参考
-https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard
-https://c.isme.pub/2019/02/18/linux-proc/
-## linux四个主要部分
+    - https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard
+    - https://c.isme.pub/2019/02/18/linux-proc/
+
+## 系统四个主要部分
 1. Linux Shell
 2. 文件系统
 3. Linux实用工具：编辑器，过滤器，交互程序
@@ -31,40 +35,46 @@ https://c.isme.pub/2019/02/18/linux-proc/
 
 ## 各个系统版本
 - 都是基于Linux Kernel开发而成
+- 
 - 主要差异
     1. UI
-    2. 软件源
+    2. 包管理系统/软件源
+
 - Ubuntu 版本
     - Focal Fossa Ubuntu20
     - Bionic Beaver Ubuntu18
     - Xenial Xerus Ubuntu16
 
-## /proc
+## /proc目录
 ### 概要
 1. /proc 是Linux 虚拟文件系统文件夹；是Linux内核信息的抽象文件接口；内核运行时参数保存在/proc里面。
 2. 在运行时可以通过访问/proc文件夹 来获取Linux内核内部数据结构、改变Linux内核设置。
 3. proc文件系统是一个伪文件系统，它只存在内存当中，而不占用磁盘空间。
 ### 主要组成
 1. 进程相关部分
-    - /proc下以数字为名的子目录，这个数字就是相关进程的进程ID。
+    - /proc目录下以数字为名的子目录，这个数字就是相关进程的进程ID。
     1. statm 显示进程所占用内存大小的统计信息
     2. stat 包含了所有CPU活跃的信息，该文件中的所有值都是从系统启动开始累计到当前时刻
-    3. cgroup 
+    3. cgroup
 
 2. 内核信息部分
-    - /proc下的只读文本文件
+    - /proc目录下的只读文本文件
     1. cgroups 资源隔离
     2. cpuinfo cpu相关信息
     3. stat 包含CPU利用率，磁盘，内存页，内存对换，全部中断，接触开关以及赏赐自举时间（自1970年1月1日起的秒数）。
     4. net/ -> self/net/  此目录下的文件描述或修改了联网代码的行为。可以通过arp,netstat,route和ipfwadm命令设置或查询这些特殊文件中的许多文件。
 
 3. 内核各子系统相关部分 (部分可调) 
-    /proc下一些并非以数字命名的特殊目录
+    - /proc目录下一些并非以数字命名的特殊目录
     1. 内核参数 etc
 
 ## 机制
-1. Linux将内核的功能接口制作成系统调用(system call),系统调用是操作系统的最小功能单位,一个系统调用函数就像是汉字的一个笔画。
-2. Linux定义一些库函数(library routine)来将系统调用组合成某些常用的功能，库函数就像是汉字的偏旁部首。
+
+1. Linux系统提供了一套具体设备的抽象接口，比如字符设备, 块设备，网络设备，位图显示器等等。
+
+2. Linux系统将内核的功能接口制作成系统调用(system call)，系统调用是操作系统的最小功能单位，一个系统调用函数就像是汉字的一个笔画。
+
+3. Linux系统定义一些库函数(library routine)来将系统调用组合成某些常用的功能，库函数就像是汉字的偏旁部首。
 
 ## 其它
 - 进程是系统进行资源分配和调度的基本单位。

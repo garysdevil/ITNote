@@ -4,7 +4,9 @@
 - https://www.cnblogs.com/skyflask/p/7523535.html
 
 
-## Discovery rule
+## 自动发现 
+- Discovery rule
+
 1. 写脚本返回json格式的数据
 ```json
 {"data":[{"{#custom_name}":"value1"},{"{#custom_name}":"value12"}]}

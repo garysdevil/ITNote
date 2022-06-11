@@ -1,4 +1,5 @@
 [TOC]
+
 ## Centos7安装Zabbix服务
 - 参考文档
     - https://www.zabbix.com/documentation/5.0/manual/installation/install_from_packages/rhel_centos 
@@ -8,8 +9,10 @@
     + 数据库
     + zabbix后端
     + zabbix前端
--  其它
-In Zabbix 4.4 support for Nginx was added
+    + 
+-  其它信息
+    - In Zabbix 4.4 support for Nginx was added
+
 ### 一 安装数据库Mysql
 1. 需要安装mysql5.7+
     1. 安装5.6导入zabbix数据库数据时报错
@@ -80,8 +83,7 @@ In Zabbix 4.4 support for Nginx was added
     
 3. 安装nginx
 
-4. 配置nginx连接php
-参考配置 /etc/opt/rh/rh-nginx116/nginx/conf.d/zabbix.conf
+4. 配置nginx连接php - 参考 /etc/opt/rh/rh-nginx116/nginx/conf.d/zabbix.conf
 ```conf
 server {
         listen          80;
@@ -144,11 +146,11 @@ server {
 
 
 5. 打开网页
-- http://IP:PORT
-    1. 配置数据库地址
-    2. 配置Zabbix server地址
-    3. 配置完成后将显示 Configuration file "/etc/zabbix/web/zabbix.conf.php" created.
-- 默认管理员账号密码 Admin/zabbix
+   - http://IP:PORT
+       1. 配置数据库地址
+       2. 配置Zabbix server地址
+       3. 配置完成后将显示 Configuration file "/etc/zabbix/web/zabbix.conf.php" created.
+   - 默认管理员账号密码 Admin/zabbix
 
 ### 五 密码重置
 1.  
@@ -180,8 +182,8 @@ update users set  passwd='21232f297a57a5a743894a0e4a801fc3' where userid = '1';
     ```
 
 ### 更改配置
-vim /etc/zabbix/zabbix_agentd.conf
-vim /etc/zabbix/zabbix_agent2.conf
+- vim /etc/zabbix/zabbix_agentd.conf
+- vim /etc/zabbix/zabbix_agent2.conf
 ```conf
 Server=127.0.0.1 # 与web端host配置的的接口地址对应
 ServerActive=127.0.0.1 # 与web端host配置的的接口地址对应

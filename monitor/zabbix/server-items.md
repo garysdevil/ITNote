@@ -1,3 +1,5 @@
+[TOC]
+
 - 基于3.4版本
 - 监控项参考文档
     https://www.cnblogs.com/wyzhou/p/10832442.html
@@ -24,6 +26,8 @@
     Server processes data to get the value, '1' in our case
     TCP connection is closed
     ```
+
+5. 从Zabbix 3.4版本后，监控项多了一个功能Preprocessing，在监控项收集的数据存储到数据库前，可以预先对数据进行处理。
 
 ## Zabbix agent监控项
 - 一些常用的监控项
@@ -67,8 +71,8 @@
     1. 获取文件校验值 vfs.file.cksum[/etc/passwd]
 
 ## 自定义监控项
-```bash
-UserParameter=device.tps[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{print $3}'
-UserParameter=device.kB_read[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{print $3}'
-UserParameter=device.kB_write[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{print $3}'
+```conf
+UserParameter=device.tps[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{printf("%f",$2)}'
+UserParameter=device.kB_read[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{printf("%f",$3)}'
+UserParameter=device.kB_write[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{printf("%f",$4)}'
 ```

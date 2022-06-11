@@ -4,6 +4,7 @@
     + 数据库
     + zabbix后端程序
     + zabbix-web
+
 ### 一 安装数据库mariadb
 1. 安装
 ```bash
@@ -126,8 +127,7 @@ http://IP/zabbix
 - /etc/zabbix/web/zabbix.conf.php 被创建
 - 默认管理员账号密码 Admin/zabbix
 
-### 密码重置
-1.  
+## 密码重置 
 ```bash
 select userid,alias,passwd from users;
 echo -n  admin  | openssl md5

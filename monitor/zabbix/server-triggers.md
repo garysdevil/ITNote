@@ -1,11 +1,12 @@
-- 基于3.4版本
+[TOC]
+
+- 基于3.4版本的触发器讲解
 - 触发器参考文档
     https://www.cnblogs.com/dadonggg/p/8566443.html
     https://www.zabbix.com/documentation/3.4/manual/appendix/triggers/functions
     https://www.zabbix.com/documentation/3.4/manual/config/triggers
 
-#### 触发器
-##### 触发器语法
+## 触发器语法
 1. 触发器构建语法
 ```
 {<server>:<key>.<function>(<parameter>)\}<operator><constant>
@@ -27,7 +28,7 @@
 3. 触发器名称可以包含的宏变量
 {HOST.HOST}, {HOST.NAME}, {HOST.CONN}, {HOST.DNS}, {HOST.IP}, {ITEM.VALUE}, {ITEM.LASTVALUE} and {$MACRO}.
 $1, $2…$9 macros can be used to refer to the first, second…ninth constant of the expression.
-##### 触发器表达式
+## 触发器表达式
 - 基于3.4版本
 - 触发器表达式默认的时间单位都是秒。可以加上m,h,d,w单位。
 - 基于时间的函数(nodata(), date(), dayofmonth(), dayofweek(), time(), now())，触发器就会由 Zabbix timer 进程每 30 秒重新计算一次。当接收到一
@@ -79,7 +80,7 @@ $1, $2…$9 macros can be used to refer to the first, second…ninth constant of
 17. sum (sec|#num,<time_shift>)
     - 返回指定周期中收集到的值的总和
      
-##### 高级示例
+## 高级示例
 1. 如果表达式中的两个触发器表达式的结果大于 5，就会使触发器的状态变更为 PROBLEM 状态。
 ```
 ({server1:system.cpu.load[all,avg1].last()}>5) + 
