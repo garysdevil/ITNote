@@ -72,7 +72,8 @@
 
 ## 自定义监控项
 ```conf
-UserParameter=device.tps[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{printf("%f",$2)}'
-UserParameter=device.kB_read[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{printf("%f",$3)}'
-UserParameter=device.kB_write[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{printf("%f",$4)}'
+# Centos7系统写$$2。 Ubuntu20系统写$2
+UserParameter=device.tps[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{printf("%f",$$2)}'
+UserParameter=device.kB_read[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{printf("%f",$$3)}'
+UserParameter=device.kB_write[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{printf("%f",$$4)}'
 ```
