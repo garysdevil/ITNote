@@ -46,7 +46,6 @@
     wget https://dl.grafana.com/oss/release/grafana-7.3.1.linux-amd64.tar.gz
     tar -zxvf grafana-7.3.1.linux-amd64.tar.gz
     mkdir -p /opt/
-    tar xzf grafana-6.0.2.linux-amd64.tar.gz -C /opt/
     cd /opt/
     mv grafana-7.3.1 grafana
 
