@@ -10,17 +10,27 @@ rustc hello.rs
 ```
 ```rs
 fn main() {
+    println!("Hello World!");
     // 在输出字符串里，{} 大括号表示占位符
+    println!("{}", "Hello World!");
     println!("Hello World! \n--{0},{0},{1}", "Gary1", "Gary2");
+    // :?   格式化
+    // :#？ 自动缩进格式化
+    println!("{:?}", "Hello World!");
+    println!("{:#?}", "Hello World!");
+
+    // debug 输出数据并且返回数据
+    dbg!("hello");
+    dbg!(&"hello"); // 假如变量未实现Clone特性，又不想转移所有权，则可以在变量前添加&符号从而不会转移所有权。
 }
 ```
 
 ### 声明变量
-- 
+1. 要声明变量，必须使用 let 关键字。
+2. **变量默认是不能被改变的。**
+3. 如果在代码里未指定变量的数据类型，则编译时编译器会根据变量的值推断出变量的数据类型。
+
 ```rust
-// 要声明变量，必须使用 let 关键字。
-// let 关键字声明的变量，默认是不可以被改变的。
-// 如果在代码里未指定变量的数据类型，则编译时编译器会根据变量的值推断出变量的数据类型。
 let var_name1 = 123; 
 
 // 重影：变量的名称可以被重新使用的机制，即变量的值可以被重新绑定。
@@ -38,21 +48,23 @@ var_name2 = 234;
 const const_name1: i32 = 123;
 ```
 
-### 数据类型
+### 基本数据类型
 - 基本数据类型
-    - 所有整数类型，例如 i32 、 u32 、 i64 等。
+    - 所有整数类型，例如 i32 、 u32 、 i64 等。 默认为 i32 类型。
     - 布尔类型 bool，值为 true 或 false 。
-    - 所有浮点类型，f32 和 f64。
+    - 所有浮点类型，f32 和 f64。默认为 f64 类型。
     - 字符类型 char。
     - 仅包含以上类型数据的元组（Tuples）。
 
 1. 整数型
+    -  有符号8 bit整形，取值范围 2<sup>8</sup> - 1，即0到127
+    -  无符号8 bit整形，取值范围 -(2<sup>7-1</sup>) 到 2<sup>7</sup>-1，即-128到127
     ```rust
-    // - 有符号8 bit整形 i8
-    let var_name1: i8 = 11;
-    // - 无符号8 bit整形 u8
-    let var_name2: u8 = 22;
-    // ...
+    // - 有符号8 bit整形 i32
+    let var_name1: i32 = 10000;
+    let var_name1: i32 = 1_0000; // 1_0000 和 10000 效果等同，1_0000 更易于阅读
+    // - 无符号8 bit整形 u32
+    let var_name2: u32 = 22;
     ```
 
 2. 浮点数型
@@ -74,21 +86,30 @@ const const_name1: i32 = 123;
     let var_name1 = '❤';
     ```
 
-5. 复合类型=元组
+### 复合类型
+1. 元组
     - 一个变量可以包含不同类型的数据
     ```rust
-    let tuples_name: (i32, f64, u8) = (500, 6.4, 1);
-    let (x, y, z) = tuples_name;
+    let tuple_name: (i32, f64, u8) = (500, 6.4, 1);
+    let x = tuple_name.0; // 通过索引获取元组的值
+
+    let (x, y, z) = tuple_name; // 分解元组
+
+    let tupple_special_name = (); // 这是一个特殊的元组，unit type 
     ```
 
-6. 数组
+2. 数组
     ```rust
-    let arr_name1 = [1, 2, 3, 4, 5];
     let arr_name1: [i32; 5] = [1, 2, 3, 4, 5];
+    let arr_name1 = [1, 2, 3, 4, 5];
+    let arr_name1 = [3; 5]; // 等同于 let arr_name1 = [3, 3, 3, 3, 3]; 
+
+    let element = arr_name1[0]; // 通过索引获取元组的值
     // 可以通过 数组.iter() 方式进行数组的迭代
-    arr_name1.iter()
+    arr_name1.iter();
     ```
 
+### 集合
 7. 字符串
     ```rust
     let var_stack_name = String::from("garysdevil");
@@ -498,7 +519,6 @@ fn main() {
     // 通过 unwarp 方法获取 Some(x) 中 的 x 值。当值是None是则会报错。
     println!("{}", var_enum_name2.unwrap());
 
-
 }
 ```
 
@@ -571,67 +591,6 @@ fn main() {
     }
     ```
 
-## 组织管理
-- 包 Package
-    - 当使用 Cargo 执行 new 命令创建 Rust 工程时，工程目录下会建立一个 Cargo.toml 文件。工程的实质就是一个包，包必须由一个 Cargo.toml 文件来管理，该文件描述了包的基本信息以及依赖项。
-- 箱
-    - "箱"是二进制程序文件或者库文件，存在于"包"中。
-
-- 模块
-    - 关键字 mod
-
-### 模块
-- 默认文件名字即为模块的名字。
-
-- 权限
-    - 对于 模块、函数、结构体、结构体属性，不加pub修饰符，则默认是私有的。
-    - 对于私有的，只有在与其平级的位置或下级的位置才能访问，不能从其外部访问。
-
-- use 关键字能够将模块标识符引入当前作用域
-
-- 内置的标准模块（标准库） https://doc.rust-lang.org/stable/std/all.html
-
-```rust
-// vi phone_module.rs
-pub fn message() -> String {
-    String::from("执行发送信息的功能")
-}
-```
-```rust
-// mod phone_module; // 引用其它文件内的模块，
-mod person_module {
-    pub mod mouth {
-        pub fn eat() { println!("执行吃的功能") }
-    }
-    // hand模块没有pub修饰符，只能被平级或者下级的位置访问
-    mod hand {
-        pub fn hit() { println!("执行击打的功能") }
-    }
-    pub mod head {
-        pub fn action() {
-            super::hand::hit();
-        }
-    }
-}
-
-fn main() {
-    // 调用模块里的函数
-    person_module::head::action(); // 相对路径调用
-    crate::person_module::head::action(); // 绝对路径调用
-
-    use crate::person_module::mouth::eat; // 把 eat 标识符导入到了当前的模块下，然后可以直接使用
-    use crate::person_module::mouth::eat as person_eat; // 把 eat 标识符导入到了当前的模块下，并且添加一个别名
-    eat();
-    person_eat();
-
-    // println!("{}", phone_module::message()); 
-
-    // 引用标准库 std下的PI
-    use std::f64::consts::PI;
-    println!("{}", (PI / 2.0).sin());
-}
-```
-
 ## 泛型&特性
 ### 泛型
 - 泛型机制是编程语言用于表达类型抽象的机制，一般用于功能确定、数据类型待定的类，如链表、映射表等。
@@ -693,8 +652,10 @@ fn main() {
 
 ### 特性
 - 特性（trait）概念接近于 Java 中的接口（Interface），但两者不完全相同。
-- 特性与接口相同的地方在于它们都是一种行为规范，可以用于标识哪些类/结构体有哪些方法。
-- 特性里既可以定义接口（没有方法体的方法），也可以定义方法。
+  - 特性与接口相同的地方在于它们都是一种行为规范，可以用于标识哪些类/结构体有哪些方法。
+  - 特性里既可以定义接口（没有方法体的方法），也可以定义方法。
+- 特性是一系列接口和方法的集合，任何一个类型都可以去实现一个特性。
+
 ```rust
 // 定义特性
 trait Behaviour {
@@ -702,8 +663,13 @@ trait Behaviour {
         String::from("[Object]")
     }
     fn say(&self);
+
+    // 在 Rust 中，有两个self，一个指代当前的实例对象，一个指代特征或者方法类型的别名。
+    // 如下所示，self指代的是当前的实例对象，Self指代的是实例对象的类型。
+    fn new_self(&self) -> Self;
 }
 
+#[derive(Debug)]
 struct Person {
     name: String,
     age: u8
@@ -717,14 +683,18 @@ impl Behaviour for Person {
     fn say(&self) {
         println!("iloveyou");
     }
+    fn new_self(&self) -> Self {
+        return Person { name: self.name.clone(), age: self.age };
+    }
 }
 
 pub fn local_fn() {
-    let cali = Person {
-        name: String::from("Cali"),
+    let adam = Person {
+        name: String::from("Adam"),
         age: 24
     };
-    println!("{}", cali.describe());
+    println!("{}", adam.describe());
+    println!("{:?}", adam.new_self());
 }
 ```
 
@@ -980,6 +950,66 @@ fn main(){
 
 }
 ```
+## 组织管理
+- 包 Package
+    - 当使用 Cargo 执行 new 命令创建 Rust 工程时，工程目录下会建立一个 Cargo.toml 文件。工程的实质就是一个包，包必须由一个 Cargo.toml 文件来管理，该文件描述了包的基本信息以及依赖项。
+- 箱
+    - "箱"是二进制程序文件或者库文件，存在于"包"中。
+
+- 模块
+    - 关键字 mod
+
+### 模块
+- 默认文件名字即为模块的名字。
+
+- 权限
+    - 对于 模块、函数、结构体、结构体属性，不加pub修饰符，则默认是私有的。
+    - 对于私有的，只有在与其平级的位置或下级的位置才能访问，不能从其外部访问。
+
+- use 关键字能够将模块标识符引入当前作用域
+
+- 内置的标准模块（标准库） https://doc.rust-lang.org/stable/std/all.html
+
+```rust
+// vi phone_module.rs
+pub fn message() -> String {
+    String::from("执行发送信息的功能")
+}
+```
+```rust
+// mod phone_module; // 引用其它文件内的模块，
+mod person_module {
+    pub mod mouth {
+        pub fn eat() { println!("执行吃的功能") }
+    }
+    // hand模块没有pub修饰符，只能被平级或者下级的位置访问
+    mod hand {
+        pub fn hit() { println!("执行击打的功能") }
+    }
+    pub mod head {
+        pub fn action() {
+            super::hand::hit();
+        }
+    }
+}
+
+fn main() {
+    // 调用模块里的函数
+    person_module::head::action(); // 相对路径调用
+    crate::person_module::head::action(); // 绝对路径调用
+
+    use crate::person_module::mouth::eat; // 把 eat 标识符导入到了当前的模块下，然后可以直接使用
+    use crate::person_module::mouth::eat as person_eat; // 把 eat 标识符导入到了当前的模块下，并且添加一个别名
+    eat();
+    person_eat();
+
+    // println!("{}", phone_module::message()); 
+
+    // 引用标准库 std下的PI
+    use std::f64::consts::PI;
+    println!("{}", (PI / 2.0).sin());
+}
+```
 
 ## 面向对象编程
 - test.rs
@@ -1019,7 +1049,7 @@ fn main() {
 ## 并发编程
 - 主线程的结束，spawn 线程也随之结束。
 - join 方法可以使子线程运行结束后再停止运行程序。
-- 在所有权机制中，默认禁止子线程使用当前函数的资源，但可以使用 move 关键字来撤销禁止
+- 在所有权机制中，默认禁止子线程使用当前函数的资源，但可以使用 move 关键字将当前线程内变量的所有权移动进子线程里。
 
 - 通道（channel）是实现线程间消息传递的主要工具，通道有两部分组成，一个发送者（transmitter）和一个接收者（receiver）。
 
@@ -1087,28 +1117,6 @@ fn main() {
     let received = receiver.recv().unwrap();
     println!("Got: {}", received);
 }
-```
-
-## 标准库
-```rust
-// Rust 的标准库，有一个 prelude 子模块。
-// prelude 子模块里的模块默认导入程序的整个作作用域，也就是说不再需要使用use进行引用。 
-
-std::marker::{Copy, Send, Sized, Sync}
-std::ops::{Drop, Fn, FnMut, FnOnce}
-std::mem::drop
-std::boxed::Box
-std::borrow::ToOwned
-std::clone::Clone
-std::cmp::{PartialEq, PartialOrd, Eq, Ord}
-std::convert::{AsRef, AsMut, Into, From}
-std::default::Default
-std::iter::{Iterator, Extend, IntoIterator, DoubleEndedIterator, ExactSizeIterator}
-std::option::Option::{self, Some, None}
-std::result::Result::{self, Ok, Err}
-std::slice::SliceConcatExt
-std::string::{String, ToString}
-std::vec::Vec
 ```
 
 ## Rust的异同
