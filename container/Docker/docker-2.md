@@ -176,7 +176,16 @@ cp ~/.docker/config.json /var/lib/kubelet/
   "data-root": "/www/docker",
 
   # 更改docker存储目录 方式二
-  "graph":"/data/docker" # 默认位置 /var/lib/docker
+  "graph":"/data/docker", # 默认位置 /var/lib/docker
+
+  # 容器实例代理 # 未实践成功
+  "proxies": {
+    "default": {
+        "httpProxy": "代理ip:port",
+        "httpsProxy": "代理ip:port",
+        "noProxy": ""
+    }
+  }
 }
 ```
 

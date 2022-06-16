@@ -112,7 +112,8 @@ systemd-analyze blame
 # 显示指定服务的启动流
 systemd-analyze critical-chain kaspa-miner.service
 
-
+查看服务中被应用的变量
+systemctl show --property=Environment ${service_name}
 ```
 
 ## supervisorctl

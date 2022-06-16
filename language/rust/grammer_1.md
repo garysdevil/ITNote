@@ -1,5 +1,5 @@
 [TOC]
-## 基本语法
+## 一 基本语法
 - Rust 是强类型语言
 
 ### hello world
@@ -86,7 +86,7 @@ const const_name1: i32 = 123;
     let var_name1 = '❤';
     ```
 
-### 复合类型
+### 复合数据类型
 1. 元组
     - 一个变量可以包含不同类型的数据
     ```rust
@@ -137,7 +137,7 @@ const const_name1: i32 = 123;
     }
     ```
 
-## 流程控制
+## 二 流程控制
 - if else 是基于 true和false
 - match 是基于模式匹配
 ### 条件 if else
@@ -201,29 +201,6 @@ fn main() {
 
 ### 循环
 ```rust
-// while 循环
-fn fun_while() {
-    let mut var_number = 1;
-    while var_number != 4 {
-        println!("{}", var_number);
-        var_number += 1;
-    }
-    println!("EXIT");
-}
-
-// 没有 for 的三元语句控制循环，例如 for (i = 0; i < 10; i++)
-
-// for 循环遍历数组
-fn fun_for() {
-    let array = [10, 20, 30, 40, 50];
-    for value in array.iter() {
-        println!("值为 : {}", value);
-    }
-    for i in 0..5 {
-        println!("array[{}] = {}", i, array[i]);
-    }
-}
-
 // loop 无限循环
 // loop 无限循环体内，可以通过break结束循环，然后返回一个值
 fn fun_loop() {
@@ -238,11 +215,69 @@ fn fun_loop() {
     };
     println!("字母 \'C\' 的索引为 {}", location);
 }
+// 通过标签的方式跳出指定的loop循环
+fn main() {
+    let mut count = 0;
+    'counting_up: loop { // 给这个loop循环添加一个标签
+        println!("count = {}", count);
+        let mut remaining = 10;
+
+        loop {
+            println!("remaining = {}", remaining);
+            if remaining == 9 {
+                break;
+            }
+            if count == 2 {
+                break 'counting_up; // // 根据loop标签跳出指定的loop循环
+            }
+            remaining -= 1;
+        }
+
+        count += 1;
+    }
+    println!("End count = {}", count);
+}
 ```
 
-## 函数
+```rs
+// while 循环
+fn fun_while() {
+    let mut var_number = 1;
+    while var_number != 4 {
+        println!("{}", var_number);
+        var_number += 1;
+    }
+    println!("EXIT");
+}
+```
+
+```rs
+// 没有 for 的三元语句控制循环，例如 for (i = 0; i < 10; i++)
+
+// for 循环遍历数组
+fn fun_for() {
+    let array = [10, 20, 30, 40, 50];
+
+    for value in array {
+        println!("array = {}", value);
+    }
+    for value in array.iter() {
+        println!("array.iter = {}", value);
+    }
+    for i in 0..5 {
+        println!("array[{}] = {}", i, array[i]);
+    }
+}
+```
+
+## 三 函数
+- 函数是由一系列以表达式(Expression)结尾的声明(Statement)组成.
+  - 声明是执行某种动作的指令，不返回值。
+  - 表达式最后返回一个值。
+
+- Rust是一门以表达式为基础的语言。
+
 ```rust
-// 如果要声明函数，必须使用 fn 关键字。
 // 如果函数需要输入参数，必须填写参数名称和类型。
 fn function_name(x: i32, y: i32) {
     println!("x 的值为 : {}", x);
@@ -253,8 +288,15 @@ fn function_name(x: i32, y: i32) {
 fn add(x: i32, y: i32) -> i32 {
     return x + y;
 }
+
 fn main(){
     function_name(1,2);
+}
+
+// 等同于上一个函数。任何函数都会默认返回()
+fn main() -> (){
+    function_name(1,2);
+    return ();
 }
 ```
 

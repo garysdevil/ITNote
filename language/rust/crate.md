@@ -20,4 +20,10 @@ criterion = { version = "0.3.5" } # 基准测试工具  文档 https://bheisler.
 clap = { version = "3.1", features = [ "derive" ] } # 命令行参数解析
 
 rayon = { version = "1" } # 将线性计算转为并行计算
+tokio = { version = "^1.19.2", features = ["full"] }
+```
+
+## tokio
+```rs
+use tokio::sync::oneshot; // 线程之间发送消息，已同步的方式
 ```

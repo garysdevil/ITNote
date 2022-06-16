@@ -44,9 +44,9 @@ iptables -t nat -L --line-number
 
 # 根据编号删除规则
 iptables -t nat -L --line-number
-iptables -t ${tabletype}  -D ${direction} 1
-iptables -t nat  -D PREROUTING 1
-iptables -t filter -D INPUT 1
+iptables -t ${tabletype}  -D ${direction} ${line_number}
+iptables -t nat  -D PREROUTING ${line_number}
+iptables -t filter -D INPUT ${line_number}
 
 # 端口转发
 iptables -t nat -I PREROUTING -p tcp --dport 80 -m set --match-set kujiutest dst -j REDIRECT  --to-port 1080

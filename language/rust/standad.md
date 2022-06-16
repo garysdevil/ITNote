@@ -20,7 +20,7 @@
     println!("{:?}", name_arc1); // Arc::drop()就被调用了，name_arc1的原子计数减一，变成0，name_arc1变量数据被清除
     } 
     ```
-2. nce_cell::race::OnceBox 
+2. nce_cell::race::OnceBox 只能被写入一次的线程安全的单元
 
 
 ## 全局
