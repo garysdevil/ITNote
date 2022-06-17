@@ -115,27 +115,7 @@ const const_name1: i32 = 123;
     let var_stack_name = String::from("garysdevil");
     ```
 
-8. 切片
-    - 切片（Slice）是对数据值的部分引用。
-    - 切片的结果是 &str 类型的数据，&str也称为字符串字面量或字符串切片。
-    - &str是一种不可变引用，因此变量值不能被更改。
-    ```rust
-    fn main() {
-        // 声明一个 &str 类型的数据
-        let var_slice_name = "hello";
-        // 将字符串字面量转换为字符串对象
-        var_slice_name.to_string();
 
-        // 切片
-        let mut var_string_name = String::from("garyadam");
-        let var_slice_name1 = &var_string_name[0..4];
-        let var_slice_name2  = &var_string_name[4..8];
-        println!("{}={}+{}", var_string_name, var_slice_name1, var_slice_name2);
-        // 切片
-        let var_arr = [1, 3, 5, 7, 9];
-        let var_slice_name3 = &var_arr[0..3];
-    }
-    ```
 
 ## 二 流程控制
 - if else 是基于 true和false
@@ -300,72 +280,81 @@ fn main() -> (){
 }
 ```
 
-## 所有权&引用
-- 基于以下三条规则形成所有权
+## 四 所有权&引用
+### 概述
+- 堆数据引发了内存管理需求。
+    - 如果我们需要储存的数据长度不确定（比如用户输入的一串字符串），我们就无法在定义时明确数据长度，也就无法在编译阶段让程序分配固定长度的内存空间供数据储存使用。因此编程语言会提供一种在程序运行时程序自己申请使用内存的机制，堆。
+
+- 其它计算机语言的内存管理。
+    - 在C语言机制中，可以调用``free(变量名)``，来释放内存。
+    - 在java语言机制中，通过运行时垃圾回收机制释放，对性能产生一定的影响。
+
+- Rust内存管理。
+    - Rust所有权机制制定了一系列规范来进行内存管理。（所有权&引用）
+    - **在编译阶段，编译器将会检查代码是否符合所有权机制规范。**
+    - **在编译阶段，编译器检查到变量作用域结束时，将自动添加调用释放资源函数的步骤。**
+
+- 基于以下三条规则形成Rust所有权机制。
     - 每个值都有一个变量，称为其所有者。
     - 一次只能有一个所有者。
-    - 当所有者不在程序运行范围时，该值将被删除。
+    - 当所有者不在作用域内时，该值将被删除。
 
-### 变量有效范围
+### 变量作用域
 ```rust
 {
     // 在声明以前，变量 var_name 无效
     let var_name = "garysdevil";
-    // 这里是变量 var_name 的有效范围
+    // 这里是变量 var_name 的作用域
 }
-// 变量有效范围结束，变量 var_name 被释放
+// 变量作用域结束，变量 var_name 被释放
 ```
 
-### 内存分配/内存释放
-- 如果我们需要储存的数据长度不确定（比如用户输入的一串字符串），我们就无法在定义时明确数据长度，也就无法在编译阶段让程序分配固定长度的内存空间供数据储存使用。因此编程语言会提供一种在程序运行时程序自己申请使用内存的机制，堆。
-- 内存的释放
-    - 在C语言机制中，可以调用free(变量名)，来释放内存。
-    - 在java语言机制中，通过运行时垃圾回收机制释放，对性能产生一定的影响。
-    - 在Rust语言机制中，当变量有效范围结束时，Rust 编译器自动添加调用释放资源函数的步骤。
+### 所有权转移 move
 
-### 堆数据的移动
-
-- 堆变量间的相互赋值，将导致数据的移动
+- 堆变量间的相互赋值，堆数据的所有权发生了转移（move），堆变量变为无效。
     ```rust
-    // 基本数据类型都存储在栈中，变量值被复制给var_name2
+    // 基本数据类型都存储在栈中，变量值被复制给var_name2，不会导致数据所有权的移动。
     let var_name1 = 5;
     let var_name2 = var_name1;
 
     // 非基本数据类型的数据，存储在堆中。var_stack_name2指向var_stack_name1的数据值，var_stack_name1被释放。
     let var_stack_name1 = String::from("hello");
-    let var_stack_name2 = var_stack_name1; // var_stack_name1 被内存释放
+    let var_stack_name2 = var_stack_name1; // var_stack_name1 将被内存释放
     println!("{}, world!", var_stack_name1); // 错误！var_stack_name1 已经失效
     ```
 
-- 函数传递的输入参数/输出参数存储在堆里时，将导致数据的移动
+- 函数传递的输入参数/输出参数存储在堆里时，堆数据的所有权发生了转移（move），堆变量变为无效。
     ```rust
     fn main() {
         let var_stack_name1 = String::from("hello");
-        // var_stack_name1 是非基本数据类型，作为参数传入函数，var_stack_name1 被内存释放。
+        // var_stack_name1 是非基本数据类型，存储在堆里，作为参数传入函数时，堆数据所有权发生了移动， var_stack_name1 变量变为无效。。
         func_name1(var_stack_name1);
 
-        // var_name1 是基本数据类型，作为参数传入函数，var_name1 数据被复制了一份传入，var_name1不被释放。
+        // var_name1 是基本数据类型，存储在栈里，作为参数传入函数时，var_name1 数据被复制了一份传入， var_name1 变量依然有效。
         let var_name1 = 5;
         func_name2(var_name1);
     }
 
     fn func_name1(some_string: String) {
-        // 一个 String 参数 some_string 传入，有效
+        // 一个 String 参数 some_string 传入，变量有效
         println!("{}", some_string);
     } // 函数结束, some_string 在这里被释放
 
     fn func_name2(some_integer: i32) -> i32 {
-        // 一个 i32 参数 some_integer 传入，有效
+        // 一个 i32 参数 some_integer 传入，变量有效
         println!("{}", some_integer);
-    } // 函数结束, 参数 some_integer 是基本类型, 无需释放 ???疑惑
+    } // 函数结束, some_string 在这里被释放
     ```
+
+- 堆数据所有者转移机制，**避免垂悬指针问题**。
 
 ### 堆数据的克隆
 ```rust
-// 通过数据克隆，堆变量值不会被移除
+// 通过数据克隆，堆数据所有权不会被变更。
 let var_stack_name1 = String::from("hello");
 let var_stack_name2 = var_stack_name1.clone();
-// let var_name2 = var_stack_name1; 如果直接通过这种方式赋值，将导致对数据的移动，var_stack_name1将被释放，下面的语句将会报错。
+
+// let var_name2 = var_stack_name1; 如果直接通过这种方式赋值，将导致堆数所有权的移动，var_stack_name1将被释放，下面的语句将会报错。
 println!("var_stack_name1 = {}, s2 = {}", var_stack_name1, var_stack_name2);
 ```
 
@@ -377,21 +366,30 @@ println!("var_stack_name1 = {}, s2 = {}", var_stack_name1, var_stack_name2);
     - 引用不会获取值的所有权。
     - 引用只是租借值的所有权。
 
-- 可变引用不允许多重引用。意味着当可变引用未被释放时，所有者不能更改值或者对值进行其它操作。
+- 引用注意点
+    - 引用指向的地址背后的堆数据禁止为空。（**避免空指针问题**）
+    - 引用必须在变量的生命周期内。（**避免垂悬指针问题**）（之后的章节会讲解变量的生命周期）
 
-- 所有权机制的优点
-    - 解决数据共享冲突问题，垂悬指针问题。
-    - 引用指向的地址背后的堆数据为空，则编译时报错。（避免空指针问题）
+- 可变引用注意点
+    - 可变引用不允许多重引用。意味着当可变引用未被释放时，所有者不能更改值或者对值进行其它操作。
+    - 当变量的引用不再被后面的操作使用时，可以进行可变饮用。
 
-```rust
+- 通过禁止可变引用的多重引用，解决了数据竞争问题。
+    - 以下三种行为会发生数据竞争
+        - 两个或多个指针在同一时间访问相同的数据。
+        - 至少有一个指针用于写入数据。
+        - 没有用于同步数据访问的机制。
+
+```rs
 fn func_immutable_reference(){
     let var_stack_name1 = String::from("adam");
-    let var_stack_name2 = &var_stack_name1; // var_stack_name2可以理解为var_stack_name1的软链接
+    let var_stack_name2 = &var_stack_name1; // var_stack_name2 租借 var_stack_name1 的所有权
     println!("var_stack_name1 is {}, var_stack_name2 is {}", var_stack_name1, var_stack_name2);
-    let var_stack_name3 = var_stack_name1; // var_stack_name1的数据所有权被转移了， 之前的var_stack_name1相关的引用失效。
-    let var_stack_name2 = &var_stack_name3; // var_stack_name1 租借 var_stack_name3 的所有权
+    let var_stack_name3 = var_stack_name1; // var_stack_name1 发生所有权移动，之前var_stack_name1的相关引用失效。
+    let var_stack_name2 = &var_stack_name3; // var_stack_name2 租借 var_stack_name3 的所有权
 }
-
+```
+```rs
 fn func_mutable_reference(){
     let mut var_stack_name1 = String::from("AA-");
     let mut var_stack_name2 = &mut var_stack_name1; // var_stack_name2 是可变的引用
@@ -400,10 +398,44 @@ fn func_mutable_reference(){
     println!("var_stack_name2 is {}", var_stack_name2);
     // 当 var_stack_name2 在函数内不在被使用，则 租借所有权结束
     
+    let mut var_stack_name3 = &mut var_stack_name1;
+    println!("var_stack_name3 is {}", var_stack_name3);
+}
+```
+### 切片
+- 切片（Slice）是对集合中的连续元素序列的部分引用。
+- 切片是一种不可变引用，不拥有所有权。
+- 字符串切片 = 字符串字面量 = &str
+
+```rust
+fn main() {
+    // 声明一个 &str 类型的数据
+    let var_slice_name = "hello";
+    // 将字符串字面量转换为字符串对象
+    var_slice_name.to_string();
+
+    // 操作切片
+    let mut var_string_name = String::from("garyadam");
+    let var_slice_name1 = &var_string_name[0..4];
+    let var_slice_name2  = &var_string_name[4..8];
+    println!("{}={}+{}", var_string_name, var_slice_name1, var_slice_name2);
+
+    // 操作切片
+    let string_name = String::from("hello");
+    // 下面两种方式得到的结果相同
+    let slice1 = &string_name[0..2];
+    let slice1 = &string_name[..2];
+    // 下面两种方式得到的结果相同
+    let slice2 = &string_name[3..string_name.len()];
+    let slice2 = &string_name[3..];
+    // 下面两种方式得到的结果相同
+    let slice3 = &s[0..len];
+    let slice3 = &s[..];
+
 }
 ```
 
-## 结构体
+## 五 结构体
 
 ### 结构体
 - 关键字 struct
