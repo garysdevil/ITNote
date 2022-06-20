@@ -14,12 +14,8 @@ fn main() {
     // 在输出字符串里，{} 大括号表示占位符
     println!("{}", "Hello World!");
     println!("Hello World! \n--{0},{0},{1}", "Gary1", "Gary2");
-    // :?   格式化
-    // :#？ 自动缩进格式化
-    println!("{:?}", "Hello World!");
-    println!("{:#?}", "Hello World!");
 
-    // debug 输出数据并且返回数据
+    // dbg宏 输出数据并且返回数据
     dbg!("hello");
     dbg!(&"hello"); // 假如变量未实现Clone特性，又不想转移所有权，则可以在变量前添加&符号从而不会转移所有权。
 }
@@ -135,9 +131,9 @@ fn main() {
 }
 ```
 ### 分支选择 match
-- match 能够对枚举类、整数、浮点数、字符、字符串切片引用（&str）类型的数据进行分支选择
-- 关键字 match 实现分支结构，类似于Java的switch
-- if let 语法， 是只区分两种情况的 match 语句的"语法糖"
+- 关键字 match 能够对枚举类、整数、浮点数、字符、字符串切片引用（&str）类型的数据进行分支选择，类似于Java的switch。
+- match分支选择中，必须包含所有的可能性。
+- if let 语法， 是只区分两种情况的 match 语句的"语法糖"，避免了match需要匹配所有可能性的操作。
 
 ```rust
 fn main() {
@@ -145,7 +141,7 @@ fn main() {
     let var_str = "abc";
     match var_str {
         "abc" => println!("Yes"),
-        _ => { println!("No") },
+        _ => { println!("No") }, // 通过使用下划线 _ 来匹配所有的可能性。类似于 default
     }
     if let "abc" = var_str {
         println!("Yes");
@@ -155,26 +151,14 @@ fn main() {
 
     // 例子二 
     let var_name = Some(9);   
-    if let Some(temp) = var_name {  // 如果 var_name模式匹配成功，则会被赋值给temp变量
+    if let Some(temp) = var_name {  // 如果 var_name为非None，则会把9被赋值给temp变量，执行块内的代码
         println!("{}", temp);  
     }
-    if let Some(9) = var_name {
+    if let Some(9) = var_name { // 如果 var_name 等于 Some(9)，则执行块内的代码
         println!("{}", temp);  
     }
     if let Some(3) = var_name {
         println!("{}", temp);  
-    }
-
-    // 例子三
-    enum Book {
-        Number(u32),
-        Electronic(String)
-    }
-    let book = Book::Number(1001);
-    if let Book::Number(index) = book {
-        println!("Number {}", index);
-    } else {
-        println!("Can't find number");
     }
 }
 ```
@@ -438,11 +422,14 @@ fn main() {
 ## 五 结构体
 
 ### 结构体
-- 关键字 struct
+1. 定义结构体关键字 struct
+2. 元组结构体 tuple structs
+3. 单元结构体 unit-like structs 
+
 ```rust
-// 结构体定义
-#[derive(Debug)]
-struct Person {
+// 结构体
+#[derive(Debug)] // 通过衍生宏 给下一个数据类型实现Debug特性，然后可以使用{:?}或{:#?}格式化结构体进行输出展示
+struct Person { // 定义结构体
     name: String,
     nickname: String,
     age: u32
@@ -450,41 +437,63 @@ struct Person {
 fn func_strcut() {
     // 创建结构体实例
     let gary = Person {
-        name: String::from("gary"),
+        name: dbg!(String::from("gary")), // 将结果返回并且输出信息到标准错误输出，这样可以在运行时看到这个变量的值
         nickname: String::from("garysdevil"),
         age: 18
     };
-    // 创建结构体实例，更改个别属性值，其它属性值从一个结构体实例里移植过来
+    // 创建结构体实例，更改个别属性值，其它属性值从另一个结构体实例里复制过来
     let newgary = Person {
         age: 19,
-        ..gary // 进行移植操作
+        ..gary // 进行复制操作
     };
     println!("gary is {}", gary.age);
-    println!("newgary is {:?}", newgary); // 通过调试库 #[derive(Debug)]，输出一整个结构体
+    println!("newgary is {:?}", newgary); // :? 格式化输出一整个结构体实例
+    println!("{:#?}", newgary); // :#？ 自动缩进格式化输出一整个结构体实例
+}
+```
 
-    // 元组结构体
+```rs
+// 元组结构体
+fn func_tuple_strcut() {
     struct Color(u8, u8, u8); // 定义元组结构体
     let struct_black = Color(0, 0, 0); // 实例化元组结构体
     println!("black = ({}, {}, {})", struct_black.0, struct_black.1, struct_black.2);
 }
 ```
 
+```rs
+// 单元结构体 // 当需要在某个类型上实现特性，但没有任何要存储在类型本身中的数据时，类单元结构可能很有用。（下面的章节会讲解特性）
+struct AlwaysEqual; // 定义单元结构体
+
+fn func_uint_strcut() {
+    let subject = AlwaysEqual; // 实例化单元结构体
+}
+```
+### impl块/函数/方法
+
+- 关键字 impl 定义一个块，在 impl 块内， self 代表调用者， Self 代表调用者的类型。
+
+- function 函数。
+
+- methods 方法被定义在一个结构体、枚举、特性对象的内部，并且方法的第一个参数一定是self。
+
+- 每个结构体可以有多个impl块。
+
 ### 结构体方法
-- 关键字 impl
 ```rust
 struct Rectangle {
     width: u32,
     height: u32,
 }
 
-// 定义结构体方法时，struct关键字定义的名字 和 impl关键字定义的名字必须相同
-// 注意： 结构体方法的第一个参数必须是 &self，代表调用者
+// 定义结构体方法时，struct关键字定义的结构体名字 和 impl关键字定义的块名字必须相同
+// 注意： 结构体方法的第一个参数必须是 self，代表调用者
 // 调用： 结构体方法需要结构体实例来调用。
 impl Rectangle {
-    fn area(&self) -> u32 {
-        self.width * self.height
+    fn area(&self) -> u32 { // 等价于  fn area(self: &Self) -> u32 {
+        self.width * self.height // 等价于 (*self).width * self.height // Rust编译器自动添加 &, &mut, 或 *，因此不需要自己添加
     }
-    fn wider(&self, rect: &Rectangle) -> bool {
+    fn wider(&self, rect: &Rectangle) -> bool { // 可以传递多个参数
         self.width > rect.width
     }
 }
@@ -506,7 +515,7 @@ struct Rectangle {
 }
 
 // 定义结构体关联函数时，struct关键字定义的名字 和 impl关键字定义的名字必须相同.
-// 注意： 结构体关联函数的返回数据必须是结构体。String::from() 就是一个结构体关联函数
+// 注意： 结构体关联函数的返回数据必须是结构体。String::from() 就是一个结构体关联函数。
 // 调用： 使用结构体名称进行调用。
 impl Rectangle {
     fn create(width: u32, height: u32) -> Rectangle {
@@ -521,50 +530,85 @@ fn main() {
 }
 ```
 
-## 枚举
-- Rust世界里，Null 和 异常 都使用特殊的枚举类来处理。
+## 六 枚举
+- 枚举
+    - 可以列出所有可能的变量。枚举值只能是枚举类型中的一个变量。
+    - 可以在枚举变量内部放置任何类型的数据。
 
+- 在Rust世界里，Null 和 异常 都使用特殊的枚举类来处理。
 ### 枚举的定义 enum
-```rust
+```rs
+// 当定义一条信息，内容可能是退出、移动、写入、改变颜色。
+// 通过4个结构体来定义。看起来很凌乱，也不好实现共同的方法。
+struct QuitMessage; // unit struct
+struct MoveMessage {
+    x: i32,
+    y: i32,
+}
+struct WriteMessage(String); // tuple struct
+struct ChangeColorMessage(i32, i32, i32); // tuple struct
 
-// 定义一个枚举类型
+
+// 通过枚举来进行定义。
 #[derive(Debug)]
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+impl Message { // 实现共同的方法
+    fn call(&self) {
+        // method body would be defined here
+    }
+}
+
+fn main() {
+    let m = Message::Write(String::from("hello"));
+    println!("{:?}", m);
+    m.call();
+}
+```
+
+### 枚举与match
+```rs
+// 定义一个枚举类型
 enum Book {
-    Papery,
-    Number(u32), // 枚举类成员添加元组属性
+    Papery(u32), // 枚举类成员添加元组属性
     Electronic { url: String }, // 枚举类成员添加结构体属性；如果要为属性命名，则需要使用结构体语法
 }
 
 fn main() {
-
-    let book1 = Book::Papery; // 实例化枚举
-    let book2 = Book::Number(1001); // 实例化枚举
+    let book2 = Book::Papery(1001); // 实例化枚举
     let book3 = Book::Electronic{url: String::from("garys.top")}; // 实例化枚举
 
-    
-    println!("{:?}", book1);
-    println!("{:?}", book2);
-    println!("{:?}", book3);
-
-    match book1 { // match 语句实现分支结构，类似于Java的switch
-        Book::Papery => {
-            println!("This book is papery");
-        },
-        Book::Number( index ) => { // 如果枚举类成员拥有元组属性，则临时指定一个参数名字
-            println!("Number book {}", index);
+    match book2 { // match 语句实现分支结构，类似于Java的switch
+        Book::Papery( index ) => { // 如果枚举类成员拥有元组属性，则临时指定一个参数名字
+            println!("Papery book {}", index);
         },
         Book::Electronic { url } => {
             println!("E-book {}", url);
         }
     }
 }
-
+```
+```rs
+fn main() {
+    let dice_roll = 9;
+    match dice_roll {
+        3 => add_fancy_hat(),
+        7 => remove_fancy_hat(),
+        _ => (), // _ 下划线代表匹配任何值，() 代表不执行任何操作。
+    }
+}
+fn add_fancy_hat() {}
+fn remove_fancy_hat() {}
 ```
 
-### 特殊的枚举 Option
-- Option 是 Rust 标准库中的枚举类，这个类用于填补 Rust 不支持 null 引用的空白。
-- 一般当值可能有也可能无时，使用 Option。
-- Option要么是一个Some中包含一个值，要么是一个None；对应Option::Some(value)和Option::None。
+### None枚举 Option
+- null是指由于某种原因当前无效或不存在的值。
+- Option 是 Rust 标准库中的枚举类，这个枚举类用于填补 Rust 不支持 null 引用的空白，并且以一种安全的方式实现了被包装的null。
+- Option 要么是一个Some中包含一个值，要么是一个None；对应Option::Some(value)和Option::None。
 
 ```rust
 // Option枚举的基本形式
@@ -575,12 +619,23 @@ pub enum Option<T> {
 ```
 
 ```rust
-fn main() {
-    let var_enum_name1 = Option::Some("Hello"); // 定义一个Option枚举
+fn plus_one(x: Option<i32>) -> Option<i32> {
+    match x {
+        None => None,
+        Some(i) => Some(i + 1),
+    }
+}
 
+fn main() {
+    // 例子一
+    let five = Some(5);
+    let six = plus_one(five);
+    let none = plus_one(None);
+
+    // 例子二
+    let var_enum_name1 = Option::Some("Hello"); // 定义一个Option枚举
     // 如果使用None而不是Some时，需要告诉编译器Option<T>的类型。
     let var_enum_name2: Option<&str> = Option::None; // 定义一个Option空枚举
-
     match var_enum_name2 {
         Option::Some(something) => {
             println!("{}", something);
@@ -589,14 +644,12 @@ fn main() {
             println!("var_enum_name2 is nothing");
         }
     }
-
-    // 通过 unwarp 方法获取 Some(x) 中 的 x 值。当值是None是则会报错。
+    // 通过 unwarp 方法获取 Some(x) 中 的 x 值。当值是None时则会报错。
     println!("{}", var_enum_name2.unwrap());
-
 }
 ```
 
-### 特殊的枚举 Result
+### 异常处理枚举 Result
 - 在 Rust 中通过 Result<T, E> 枚举类作返回值来进行异常处理。
 - 在 Rust 标准库中可能产生异常的函数的返回值都是 Result 枚举类型的，最常见的使用是在IO操作中。
 - 一般可能产生可以恢复的错误时，都使用Result作为返回值。
@@ -664,6 +717,68 @@ fn main() {
         }
     }
     ```
+## 七 组织管理
+- 包 Package
+    - 当使用 Cargo 执行 new 命令创建 Rust 工程时，工程目录下会建立一个 Cargo.toml 文件。
+    - 工程的实质就是一个包，包必须由一个 Cargo.toml 文件来管理，该文件描述了包的基本信息以及依赖项。
+
+- 箱
+    - "箱"是二进制程序文件或者库文件，存在于"包"中。
+
+- 模块
+    - 关键字 mod
+
+### 模块
+- 默认文件名字即为模块的名字。
+
+- 权限
+    - 对于 模块、函数、结构体、结构体属性，不加pub修饰符，则默认是私有的。
+    - 对于私有的，只有在与其平级的位置或下级的位置才能访问，不能从其外部访问。
+
+- use 关键字能够将模块符引入当前作用域
+
+- 内置的标准模块（标准库） https://doc.rust-lang.org/stable/std/all.html
+
+```rust
+// vi phone_module.rs
+pub fn message() -> String {
+    String::from("执行发送信息的功能")
+}
+```
+```rust
+// mod phone_module; // 引用其它文件内的模块，
+mod person_module {
+    pub mod mouth {
+        pub fn eat() { println!("执行吃的功能") }
+    }
+    // hand模块没有pub修饰符，只能被平级或者下级的位置访问
+    mod hand {
+        pub fn hit() { println!("执行击打的功能") }
+    }
+    pub mod head {
+        pub fn action() {
+            super::hand::hit();
+        }
+    }
+}
+
+fn main() {
+    // 调用模块里的函数
+    person_module::head::action(); // 相对路径调用
+    crate::person_module::head::action(); // 绝对路径调用
+
+    use crate::person_module::mouth::eat; // 把 eat 标识符导入到了当前的模块下，然后可以直接使用
+    use crate::person_module::mouth::eat as person_eat; // 把 eat 标识符导入到了当前的模块下，并且添加一个别名
+    eat();
+    person_eat();
+
+    // println!("{}", phone_module::message()); 
+
+    // 引用标准库 std下的PI
+    use std::f64::consts::PI;
+    println!("{}", (PI / 2.0).sin());
+}
+```
 
 ## 泛型&特性
 ### 泛型
@@ -1022,66 +1137,6 @@ fn main(){
     println!("{}", var_chars.count()); // 字符集合统计字符的数量；变量值会被移动
     println!("{}", var_chars.nth(2)); // 通过下标，取出一个字符集合的值
 
-}
-```
-## 组织管理
-- 包 Package
-    - 当使用 Cargo 执行 new 命令创建 Rust 工程时，工程目录下会建立一个 Cargo.toml 文件。工程的实质就是一个包，包必须由一个 Cargo.toml 文件来管理，该文件描述了包的基本信息以及依赖项。
-- 箱
-    - "箱"是二进制程序文件或者库文件，存在于"包"中。
-
-- 模块
-    - 关键字 mod
-
-### 模块
-- 默认文件名字即为模块的名字。
-
-- 权限
-    - 对于 模块、函数、结构体、结构体属性，不加pub修饰符，则默认是私有的。
-    - 对于私有的，只有在与其平级的位置或下级的位置才能访问，不能从其外部访问。
-
-- use 关键字能够将模块标识符引入当前作用域
-
-- 内置的标准模块（标准库） https://doc.rust-lang.org/stable/std/all.html
-
-```rust
-// vi phone_module.rs
-pub fn message() -> String {
-    String::from("执行发送信息的功能")
-}
-```
-```rust
-// mod phone_module; // 引用其它文件内的模块，
-mod person_module {
-    pub mod mouth {
-        pub fn eat() { println!("执行吃的功能") }
-    }
-    // hand模块没有pub修饰符，只能被平级或者下级的位置访问
-    mod hand {
-        pub fn hit() { println!("执行击打的功能") }
-    }
-    pub mod head {
-        pub fn action() {
-            super::hand::hit();
-        }
-    }
-}
-
-fn main() {
-    // 调用模块里的函数
-    person_module::head::action(); // 相对路径调用
-    crate::person_module::head::action(); // 绝对路径调用
-
-    use crate::person_module::mouth::eat; // 把 eat 标识符导入到了当前的模块下，然后可以直接使用
-    use crate::person_module::mouth::eat as person_eat; // 把 eat 标识符导入到了当前的模块下，并且添加一个别名
-    eat();
-    person_eat();
-
-    // println!("{}", phone_module::message()); 
-
-    // 引用标准库 std下的PI
-    use std::f64::consts::PI;
-    println!("{}", (PI / 2.0).sin());
 }
 ```
 

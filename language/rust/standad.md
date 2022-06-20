@@ -23,7 +23,7 @@
 2. nce_cell::race::OnceBox 只能被写入一次的线程安全的单元
 
 
-## 全局
+## 全局作用域标准库
 ```rust
 // Rust 的标准库，有一个 prelude 子模块。 
 // prelude 子模块里的模块默认导入程序的整个作作用域，也就是说不再需要使用use进行引用。 
@@ -43,3 +43,6 @@ std::slice::SliceConcatExt
 std::string::{String, ToString}
 std::vec::Vec
 ```
+
+## 宏
+1. dbg!() 将结果返回并且输出信息到标准错误输出
