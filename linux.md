@@ -682,3 +682,14 @@ SYN flooding on port 80. Sending cookies.  Check SNMP counters.
 # 关掉所有的休眠服务
 systemctl mask sleep.target suspend.target hibernate.target hybridsleep.target
 ```
+
+
+### grep
+```bash
+# -E 使用正则表达式
+# -i 忽视大小写
+# -v 取反
+```
+
+- 通过主线程名字查看所有子线程
+    - ps -ef | grep ${process_name} | grep -v grep | awk '{print $2}' | xargs ps -T -p

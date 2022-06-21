@@ -45,35 +45,6 @@ source $HOME/.cargo/env
       - Rust 语言服务器（RLS）基于 LSP（Language Server Protocol），即语言服务器协议，LSP 由红帽、微软和 Codenvy 联合推出，可以让不同的程序编辑器与集成开发环境（IDE）方便地嵌入各种编程语言，允许开发人员在最喜爱的工具中使用各种语言来编写程序。
     - racer
 
-
-## 术语
-- 宝箱(crate)
-    - 可以是 a library crate。
-    - 可以是 a binary crate。
-
-- 包(package)
-    - 包含任意多个 binary crate。
-    - 至多只能包含一个 library crate。
-    - 至少包含一个 crate。
-
-- crate root 是一个源文件，Rust 编译器以它为起始点，并构成 crate 的根模块。
-    - 二进制根 
-        - src/main.rs 是一个 binary crate 的根；入口点 src/main.rs::main。
-        - 通过将文件放在 src/bin 目录下，一个包可以拥有多个二进制 crate，每个 src/bin 下的文件都会被编译成一个独立的二进制 crate。
-    - 库根 
-        - src/lib.rs 是一个 library crate 的根。
-
-- 模块(mod)
-    - 模块的声明
-        - 可以使用 ``` mod 模块名{} ``` 来声明一个模块。
-        - 一个文件，其本身就代表声明了一个模块，文件名为模块名。
-        - 一个文件夹，需要在文件夹内创建 mod.rs 文件来表示声明了一个模块。文件夹内的模块需要通过 mod.rs 文件进行对外暴露。
-    - 模块的引用
-        - 编译器只能看到 crate root 的根文件，如果需要使用模块，则需要在根文件下使用mod关键字进行引用，例如 ``` mod 模块名; ```。
-    - 模块被引入后，调用模块内函数的方式 
-        - 方式一 ``` 模块名::模块名::方法名() ``` 
-        - 方式二 使用use关键字将某个模块下的函数都引入到当前的模块下，再直接通过函数名进行调用 ``` use 模块名::模块名::*; 方法名() ```。
-
 ## 指令
 
 ```bash
