@@ -219,10 +219,12 @@ fn main() {
 ```
 
 ## rocksdb
+- 默认会创建rocksdb:low 和 rocksdb:high两个线程。
+
 ```rs
 use rocksdb::{DB};
 
-pub fn local_fn() {
+pub fn main() {
     // NB: db is automatically closed at end of lifetime
     let path = "/Users/gary/git/NOTE/myrust/local_path_for_rocksdb_storage";
     {

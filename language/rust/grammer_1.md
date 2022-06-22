@@ -428,7 +428,7 @@ fn main() {
 
 ```rust
 // 结构体
-#[derive(Debug)] // 通过衍生宏 给下一个数据类型实现Debug特性，然后可以使用{:?}或{:#?}格式化结构体进行输出展示
+#[derive(Debug)] // 通过衍生宏给下一个数据类型实现Debug特性，然后可以使用{:?}或{:#?}格式化结构体进行输出展示
 struct Person { // 定义结构体
     name: String,
     nickname: String,
@@ -649,74 +649,6 @@ fn main() {
 }
 ```
 
-### 异常处理枚举 Result
-- 在 Rust 中通过 Result<T, E> 枚举类作返回值来进行异常处理。
-- 在 Rust 标准库中可能产生异常的函数的返回值都是 Result 枚举类型的，最常见的使用是在IO操作中。
-- 一般可能产生可以恢复的错误时，都使用Result作为返回值。
-
-
-- 异常
-    ```rust
-    enum Result<T, E> {
-        Ok(T),
-        Err(E),
-    }
-    ```
-
-- 错误处理
-    ```rust
-    use std::fs::File;
-
-    fn main() {
-        // 可恢复错误
-        let f = File::open("./hello.txt");
-        if let Ok(file) = f {
-            println!("File opened successfully.");
-        } else {
-            println!("Failed to open the file.");
-        }
-
-        // 抛出异常，程序终止
-        // panic!("error occured");
-
-        // 可恢复错误按不可恢复错误处理，直接抛出异常程序终止
-        File::open("hello.txt").unwrap(); // 方式一
-        File::open("hello.txt").expect("Failed to open."); // 方式二
-        assert!(File::open("hello.txt").is_ok()); // 方式三
-    }
-    ```
-
-- 错误的传递
-    ```rust
-    // 可恢复错误的传递
-    fn func_judge(i: i32) -> Result<i32, bool> { // 判断一个数字是否大于0
-        if i >= 0 { Ok(i) }
-        else { Err(false) }
-    }
-
-    fn func_name(i: i32) -> Result<i32, bool> {
-        // 传递错误 方式一
-        // let result = func_judge(i);
-        // return match result {
-        //     Ok(i) => Ok(i),
-        //     Err(b) => Err(b)
-        // };
-        
-        // 传递错误 方式二
-        // Rust 中可以在 Result 对象后添加 ? 操作符将同类的 Err 直接传递出去
-        let result = func_judge(i)?;
-        Ok(result) // 因为确定 t 不是 Err, t 在这里已经是 i32 类型
-    }
-
-    fn main() {
-        let result = func_name(10000);
-        if let Ok(v) = result {
-            println!("Ok: g(10000) = {}", v);
-        } else {
-            println!("Err");
-        }
-    }
-    ```
 ## 七 组织管理
 ### 包 package
 - 当使用 `` cargo new ${project_name} `` 创建 Rust 工程时，工程目录下会建立一个 Cargo.toml 文件。
@@ -937,12 +869,141 @@ fn main() {
     println!("{:?}", map);
 }
 ```
+## 九 错误处理
+### 可恢复错误
+```toml
+[profile.release]
+panic = 'abort' # 设置程序panic时直接终止程序，不进行回退和清理操作。 # 默认是panic时进行回退清理操作。
+```
 
-## 泛型&特性
-### 泛型
+```rs
+fn main() {
+    // 手动进行panic操作
+    panic!("crash and burn");
+}
+```
+
+```bash
+# 只有开启debug模式才能回溯(backtraces)信息，当使用``cargo build``或者``cargo run``时，没有 --release 时，debug模式是默认开启的。
+RUST_BACKTRACE=1 cargo run
+```
+
+### 可恢复错误处理 枚举Result
+- 在 Rust 中通过 Result<T, E> 枚举类作返回值来进行异常处理。
+- 在 Rust 标准库中可能产生异常的函数的返回值都是 Result 枚举类型的，最常见的使用是在IO操作中。
+
+```rs
+// Result<T, E>
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+```
+
+```rs
+// 可恢复错误处理
+use std::fs::File;
+use std::io::ErrorKind;
+
+fn main() {
+    let f1 = File::open("./hello.txt");
+    let f2 = File::open("./hello.txt");
+    // 方式一
+    if let Ok(file) = f1 {
+        println!("File opened successfully.");
+    } else {
+        println!("Failed to open the file.");
+    }
+    // 方式二
+    let f2 = match f2 {
+        Ok(file) => file,
+        Err(error) => match error.kind() {
+            ErrorKind::NotFound => match File::create("hello.txt") {
+                Ok(fc) => fc,
+                Err(e) => panic!("Problem creating the file: {:?}", e), // // 抛出异常，程序终止
+            },
+            other_error => {
+                panic!("Problem opening the file: {:?}", other_error)
+            }
+        },
+    };
+    // 方式三
+    let f3 = File::open("hello.txt").unwrap_or_else(|error| {
+        if error.kind() == ErrorKind::NotFound {
+            File::create("hello.txt").unwrap_or_else(|error| {
+                panic!("Problem creating the file: {:?}", error);
+            })
+        } else {
+            panic!("Problem opening the file: {:?}", error);
+        }
+    });
+
+    // 可恢复错误按不可恢复错误处理，直接抛出异常程序终止
+    File::open("hello.txt").unwrap(); // 方式一
+    File::open("hello.txt").expect("Failed to open."); // 方式二
+    assert!(File::open("hello.txt").is_ok()); // 方式三
+}
+```
+
+```rs
+// 可恢复错误的传递
+
+// 判断一个数字是否大于0
+fn func_judge(i: i32) -> Result<i32, bool> {
+    if i >= 0 { Ok(i) }
+    else { Err(false) }
+}
+fn func_propagating_1(i: i32) -> Result<i32, bool> {
+    // 传递错误 方式一
+    let result = func_judge(i);
+    return match result {
+        Ok(i) => Ok(i),
+        Err(b) => Err(b)
+    };
+}
+fn func_propagating_2(i: i32) -> Result<i32, bool> {
+    // 传递错误 方式二 通过?
+    // Rust 中可以在 Result 对象后添加 ? 操作符将同类的 Err 直接传递出去
+    let result = func_judge(i)?;
+    Ok(result) // 因为确定 result 不是 Err, result 在这里已经是 i32 类型
+}
+
+fn main() {
+    let result = func_propagating_2(-3);
+    if let Ok(v) = result {
+        println!("Ok: g(10000) = {}", v);
+    } else {
+        println!("Err:{:?}", result);
+    }
+}
+```
+
+- 当数据返回类型是 `Result` 或 `Option` 时可以在表达式尾部使用`?`来返回Err<> 或 None。
+ 
+```rs
+fn last_char_of_first_line(text: &str) -> Option<char> {
+    text.lines().next()?.chars().last()
+}
+```
+
+```rs
+// 任意传递错误
+use std::error::Error;
+use std::fs::File;
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let f = File::open("hello.txt")?;
+
+    Ok(())
+}
+```
+
+## 十 泛型
 - 泛型机制是编程语言用于表达类型抽象的机制，一般用于功能确定、数据类型待定的类，如链表、映射表等。
+- Rust泛型可以用来定义函数、结构、枚举和方法。 关键符合<>。
+- Rust泛型不会影响性能，在编译阶段，编译器会根据上下文将泛型转会特定类型的代码。
 
-- 函数范型
+- 范型函数
     ```rust
     // 函数范型
     fn func_return_first<T>(array: &[T]) -> &T {
@@ -986,44 +1047,36 @@ fn main() {
     }
     ```
 
-- where 关键字
-    ```rust
-    // 复杂的实现关系可以使用 where 关键字简化
-    // 例如：T数据类型必须实现了Display和Clone特性，U数据类型必须实现了Clone和Debug特性
-    fn some_function<T: Display + Clone, U: Clone + Debug>(t: T, u: U) -> i32
-    // 另一种表达方式
-    fn some_function<T, U>(t: T, u: U) -> i32
-        where T: Display + Clone,
-            U: Clone + Debug
-    ```
+## 十一 特性
+- 特性（trait）是一系列接口和方法的集合，任何一个类型都可以去实现一个特性。
 
-### 特性
 - 特性（trait）概念接近于 Java 中的接口（Interface），但两者不完全相同。
   - 特性与接口相同的地方在于它们都是一种行为规范，可以用于标识哪些类/结构体有哪些方法。
   - 特性里既可以定义接口（没有方法体的方法），也可以定义方法。
-- 特性是一系列接口和方法的集合，任何一个类型都可以去实现一个特性。
+
+- 可以定义特性实现了另一个特性。模版： `` trait 特性名称: 另一个特性名称 ``
+
+- 注意： 特性和结构体，必须有其中一个是本地代码定义的。否则两个宝箱可以为同一个类型实现同一个特性，编译器将不知道哪个实现需要被使用到。
 
 ```rust
 // 定义特性
-trait Behaviour {
+trait MyTrait1 {
+    // 这个方法可以被重写
     fn describe(&self) -> String {
         String::from("[Object]")
     }
+    // 这个接口必须重写
     fn say(&self);
 
-    // 在 Rust 中，有两个self，一个指代当前的实例对象，一个指代特征或者方法类型的别名。
-    // 如下所示，self指代的是当前的实例对象，Self指代的是实例对象的类型。
-    fn new_self(&self) -> Self;
+    fn new_self(&self) -> Self; // self指代的是当前的实例对象，Self指代的是实例对象的类型。
 }
-
 #[derive(Debug)]
 struct Person {
     name: String,
     age: u8
 }
-
 // 结构体Person重写特性定义的方法describe
-impl Behaviour for Person {
+impl MyTrait1 for Person {
     fn describe(&self) -> String {
         format!("{} {}", self.name, self.age)
     }
@@ -1034,26 +1087,48 @@ impl Behaviour for Person {
         return Person { name: self.name.clone(), age: self.age };
     }
 }
-
-pub fn local_fn() {
+// 特性可以作为函数的参数。
+fn say(T: &(impl MyTrait1 + std::fmt::Display)) { // 可以传入任意的数据类型，但数据类型必须实现 了MyTrait1 特性和 std::fmt::Display 特性
+    println!("Breaking news! {:?}", T.say());
+}
+pub fn main() {
     let adam = Person {
         name: String::from("Adam"),
         age: 24
     };
+    adam.say();
     println!("{}", adam.describe());
     println!("{:?}", adam.new_self());
 }
 ```
 
-### 范型与特性
-```rust
+## 十二 范型&特性&结构体
+- 可以定义函数传入的范型数据类型必须实现了指定的特性。
+- 可以定义函数返回的数据类型可以是任意的但是必须实现了指定的特性。
+- 定义结构体方法时，可以定义结构体必须实现了指定的特性
+
+### 范型&特性
+```rs
+// 范型&特性
+
 // 定义一个特性
-trait Comparable {
+trait Comparable: std::fmt::Display { // Comparable特性实现了std::fmt::Display特性
     fn compare(&self, object: &Self) -> i8;
 }
-
+// impl<T: Debug> Comparable for T {
+//     // --snip--
+// }
+// f32的数据类型实现Comparable特性
+impl Comparable for f32 {
+    fn compare(&self, object: &f32) -> i8 {
+        if &self > &object { 1 }
+        else if &self == &object { 0 }
+        else { -1 }
+    }
+}
 // 定义一个方法；输入参数 为 范型数据类型，并且该范型数据类型必须实现了Comparable特性
-fn max<T: Comparable>(array: &[T]) -> &T {
+fn max_1<T: Comparable>(array: &[T]) -> &T {
+// fn max<T: Comparable + My_Trait>(array: &[T]) -> &T { // 可以使用+加号，规定传入的数据类型必须实现了 Comparable 和 My_Trait 特性
     let mut max_index = 0;
     let mut i = 1;
     while i < array.len() {
@@ -1064,22 +1139,61 @@ fn max<T: Comparable>(array: &[T]) -> &T {
     }
     &array[max_index]
 }
-
-// f64的数据类型实现Comparable特性
-impl Comparable for f64 {
-    fn compare(&self, object: &f64) -> i8 {
-        if &self > &object { 1 }
-        else if &self == &object { 0 }
-        else { -1 }
+// 返回的数据类型可以是必须实现了某个特性的数据类型
+fn max_2<T: Comparable + Clone>(array: &[T]) -> impl Comparable {
+    let mut max_index = 0;
+    let mut i = 1;
+    while i < array.len() {
+        if array[i].compare(&array[max_index]) > 0 {
+            max_index = i;
+        }
+        i += 1;
     }
+    array[max_index].clone()
 }
-
 fn main() {
     let arr = [1.0, 3.0, 5.0, 4.0, 2.0];
-    println!("maximum of arr is {}", max(&arr));
+    println!("maximum of arr is {}", max_2(&arr));
 }
 ```
- 
+
+### 范型&特性&结构体
+```rs
+// 范型&特性&结构体
+use std::fmt::Display;
+struct Pair<T> {
+    x: T,
+    y: T,
+}
+impl<T> Pair<T> {
+    fn new(x: T, y: T) -> Self {
+        Self { x, y }
+    }
+}
+// 定义结构体方法时，定义结构体必须实现了指定的特性
+impl<T: Display + PartialOrd> Pair<T> {
+    fn cmp_display(&self) {
+        if self.x >= self.y {
+            println!("The largest member is x = {}", self.x);
+        } else {
+            println!("The largest member is y = {}", self.y);
+        }
+    }
+}
+```
+
+### where 关键字
+```rs
+// 复杂的数据类型和特性的绑定关系可以使用 where 关键字简化
+// 例如：T数据类型必须实现了Display和Clone特性，U数据类型必须实现了Clone和Debug特性
+fn some_function<T: Display + Clone, U: Clone + Debug>(t: T, u: U) -> i32
+// 另一种更易于阅读的表达方式
+fn some_function<T, U>(t: T, u: U) -> i32
+    where T: Display + Clone,
+        U: Clone + Debug
+```
+
+
 ## 生命周期
 1. 程序中每个变量都有一个固定的作用域，当超出变量的作用域以后，变量就会被销毁。变量在作用域中从初始化到销毁的整个过程称之为生命周期。
 2. rust 中的借用是指对一块内存空间的引用。rust 有一条借用规则是借用方的生命周期不能比出借方的生命周期还要长。
@@ -1092,12 +1206,15 @@ fn main() {
     - &'a mut i32 // 可变型含有生命周期注释的引用
 
 - 特殊的生命周期注释
-    - &i32          // 常规引用
     - &'static str  // 含有'static生命周期注释的引用，则该引用的存活时间和该运行程序一样长。
+
+- **声明周期可以避免垂悬指针问题**
+
+
 
 ````rust
 // fun_longer函数在在编译期间将报错，因为返回值引用可能会返回过期的引用，rust机制不允许任何可能的意外发生
-// fn fun_longer(var_string_1: &str, var_string_2: &str) -> &str {
+// fn fun_longer(var_string_1: &str, var_string_2: &str) -> &str { // 返回更长的字符串切片
 //     if var_string_2.len() > var_string_1.len() {
 //         var_string_2
 //     } else {
@@ -1105,7 +1222,7 @@ fn main() {
 //     }
 // }
 
-fn fun_longer_life<'a>(var_string_1: &'a str, var_string_2: &'a str) -> &'a str {
+fn fun_longer_life<'a>(var_string_1: &'a str, var_string_2: &'a str) -> &'a str { // 返回更长的字符串切片
     if var_string_2.len() > var_string_1.len() {
         var_string_2
     } else {
