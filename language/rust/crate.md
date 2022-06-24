@@ -24,6 +24,8 @@ num_cpus = { version = "1.13.1" } # 获取服务器上的CPU数量
 
 rayon = { version = "1" } # 将线性计算转为并行计算
 tokio = { version = "^1.19.2", features = ["full"] } # 异步运行时库
+jsonrpsee = { version = "0.14.0" } # 建立在tokio异步运行时库上的web服务框架
+tracing = { ersion = "0.1.35"  } # 结构化日志
 ```
 
 ## tokio
@@ -38,27 +40,24 @@ tokio = { version = "^1.19.2", features = ["full"] } # 异步运行时库
     - Reactor接收事件通知。
     - Scheduler将任务调度给executer。
 
-
 ```rs
-use tokio::sync::oneshot; // 线程之间发送消息，通过同步的方式
-```
+// 主题： runtime的创建
 
-```rs
 use tokio;
 fn main1() {
-  // 创建runtime // 创建多线程的runtime
-  let rt = tokio::runtime::Runtime::new().unwrap();
-  std::thread::sleep(std::time::Duration::from_secs(10)); // 睡眠，然后执行 ps -ef | grep ${process_name} | grep -v grep | awk '{print $2}' | xargs ps -T -p 查看 程序启动的线程数量
+    // 创建多线程的runtime
+    let rt = tokio::runtime::Runtime::new().unwrap();
+    std::thread::sleep(std::time::Duration::from_secs(10)); // 睡眠，然后执行 ps -ef | grep ${process_name} | grep -v grep | awk '{print $2}' | xargs ps -T -p 查看 程序启动的线程数量
 }
 
 fn main2() {
-  // 创建带有线程池的runtime
-  let rt = tokio::runtime::Builder::new_multi_thread() // // 使用Runtime Builder来配置并创建runtime
-    .worker_threads(8)  // 8个工作线程
-    .enable_io()        // 可在runtime中使用异步IO
-    .enable_time()      // 可在runtime中使用异步计时器(timer)
-    .build()            // 创建runtime
-    .unwrap();
+    // 创建多线程的runtime // 自定义配置
+    let rt = tokio::runtime::Builder::new_multi_thread() // // 使用Runtime Builder来配置并创建runtime
+        .worker_threads(8)  // 8个工作线程 // 默认等同于逻辑线程数量
+        .enable_io()        // 可在runtime中使用异步IO
+        .enable_time()      // 可在runtime中使用异步计时器(timer)
+        .build()            // 创建runtime
+        .unwrap();
 }
 
 fn main3() {
@@ -68,17 +67,17 @@ fn main3() {
 
 // 通过宏来创建runtime
 #[tokio::main]
-async fn main4() {}
+async fn main() {}
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 10))]
-async fn main5() {}
+async fn main() {}
 
 #[tokio::main(flavor = "current_thread")]
-async fn main6() {}
+async fn main() {}
 ```
 
 ```rs
-// CPU-bound tasks and blocking code
+// 主题： CPU-bound tasks and blocking code
 
 use std::{time::Duration,thread};
 #[tokio::main]
@@ -104,7 +103,7 @@ async fn main() {
 ```
 
 ```rs
-// Asynchronous IO
+// 主题： Asynchronous IO
 
 use tokio::net::TcpListener;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
@@ -143,7 +142,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 ```rs
-// block_on 阻塞当前线程，运行future(异步线程)
+// 主题： block_on 阻塞当前线程，运行future(异步线程)
 
 use std::{thread,time::Duration};
 use chrono::Local;
@@ -175,8 +174,9 @@ fn main() {
 ```
 
 ```rs
-// 线程间的消息传递
-use tokio::sync::mpsc;
+// 主题： 线程间的消息传递
+// use tokio::sync::oneshot; // 一个Sender，一个Receiver，Sender只能发送一次消息。通过同步的方式。
+use tokio::sync::mpsc; // 可以有多个Sender，一个Receiver，Sender可以发送多次消息。通过同步的方式。
  
 #[tokio::main]
 async fn main() {
@@ -184,7 +184,7 @@ async fn main() {
     let tx2 = tx.clone(); //clone之后可以将channel指派给不同任务
  
     tokio::spawn(async move {
-        tx.send("sending from first handle").await; //必须调用await才会阻塞
+        tx.send("sending from first handle").await; //必须调用await才会执行
  
     });
 
@@ -197,6 +197,7 @@ async fn main() {
     }
 }
 ```
+
 ## rayon
 
 ```rs

@@ -1195,76 +1195,140 @@ fn some_function<T, U>(t: T, u: U) -> i32
 
 
 ## 生命周期
-1. 程序中每个变量都有一个固定的作用域，当超出变量的作用域以后，变量就会被销毁。变量在作用域中从初始化到销毁的整个过程称之为生命周期。
-2. rust 中的借用是指对一块内存空间的引用。rust 有一条借用规则是借用方的生命周期不能比出借方的生命周期还要长。
-3. 对于一个参数和返回值都包含引用的函数而言，该函数的参数是出借方，函数返回值所绑定到的那个变量就是借用方。
-4. 生命周期注释是描述引用生命周期的办法。对函数的参数和返回值都进行生命周期注释，是告知编译器借用方和出借方的生命周期一样。
+1. 程序中每个变量都有一个固定的作用域，当超出变量的作用域以后，变量就会被销毁。
+2. 生命周期就是引用类型变量的有效作用域。
+3. 在大多数时候，我们无需手动的声明生命周期，因为编译器可以自动进行推导。当多种类型存在时或多个生命周期存在时，编译器往往要求用户手动标明生命周期。
 
-- 生命周期注释用单引号开头，跟着一个小写字母单词：
+4. 生命周期注释用单引号开头，跟着一个小写字母单词：
     - &i32        // 常规引用
     - &'a i32     // 含有生命周期注释的引用
     - &'a mut i32 // 可变型含有生命周期注释的引用
-
-- 特殊的生命周期注释
-    - &'static str  // 含有'static生命周期注释的引用，则该引用的存活时间和该运行程序一样长。
+    - &'static str  // 表示静态生命周期，则该引用的存活时间和该运行程序一样长。
 
 - **声明周期可以避免垂悬指针问题**
 
+### 1 函数中的生命周期
+- 函数中的生命周期
+    1. rust 中的借用是指对一块内存空间的引用。rust 有一条借用规则是借用方的生命周期不能比出借方的生命周期还要长。
+    2. 对于一个参数和返回值都包含引用的函数而言，该函数的参数是出借方，函数返回值所绑定到的那个变量就是借用方。
+    3. 生命周期注释是描述引用生命周期的办法。对函数的参数和返回值都进行生命周期注释，是告知编译器借用方和出借方的生命周期一样。
 
+- 生命周期语法用来将函数的多个引用参数和返回值的作用域关联到一起，一旦关联到一起后，Rust 就拥有充分的信息来确保用户的操作是内存安全的。即确保当输入参数的值所有权发生改变后，函数返回的引用变量不能在被使用，避免避免垂悬指针问题。
 
 ````rust
 // fun_longer函数在在编译期间将报错，因为返回值引用可能会返回过期的引用，rust机制不允许任何可能的意外发生
-// fn fun_longer(var_string_1: &str, var_string_2: &str) -> &str { // 返回更长的字符串切片
-//     if var_string_2.len() > var_string_1.len() {
-//         var_string_2
+// fn fun_longer(var_str_1: &str, var_str_2: &str) -> &str { // 返回更长的字符串切片
+//     if var_str_2.len() > var_str_1.len() {
+//         var_str_2
 //     } else {
-//         var_string_1
+//         var_str_1
 //     }
 // }
 
-fn fun_longer_life<'a>(var_string_1: &'a str, var_string_2: &'a str) -> &'a str { // 返回更长的字符串切片
-    if var_string_2.len() > var_string_1.len() {
-        var_string_2
+// 进行生命周期注释
+// 输入参数，引用类型，'a的具体生命周期是var_str_1的生命周期与var_str_2的生命周期重叠的部分。即'a的生命周期等于var_str_1和var_str_1的生命周期中的较小者。
+// 返回值，引用类型，生命周期必须<='a的生命周期
+fn fun_longer_life<'a>(var_str_1: &'a str, var_str_2: &'a str) -> &'a str { // 返回更长的字符串切片
+    if var_str_2.len() > var_str_1.len() {
+        var_str_2
     } else {
-        var_string_1
+        var_str_1
     }
 }
 
 fn main() {
     let result;
     {
-        let var_string_1 = "rust";
-        let var_string_2 = "ecmascript";
-        result = fun_longer_life(var_string_1, var_string_2);
+        let var_str_1 = "rust";
+        let var_str_2 = "ecmascript";
+        result = fun_longer_life(var_str_1, var_str_2);
     }
     println!("{} is longer", result);
 }
 ````
 
+### 2 结构体中的生命周期
+```rs
+// 该生命周期标注说明结构体 ImportantExcerpt 所引用的字符串 str 必须比该结构体活得更久。
+struct ImportantExcerpt<'a> {
+    part: &'a str,
+}
 
+fn main() {
+    let novel = String::from("Call me Ishmael. Some years ago...");
+    let first_sentence = novel.split('.').next().expect("Could not find a '.'");
+    let i = ImportantExcerpt {
+        part: first_sentence,
+    };
+}
+
+```
+
+### 3 自动标注生命周期规则
+- 编译器使用三条消除规则来确定哪些场景不需要显式地去标注生命周期
+    1. 每一个引用参数都会获得独自的生命周期。
+    2. 若只有一个输入生命周期(函数参数中只有一个引用类型)，那么该生命周期会被赋给所有的输出生命周期。
+    3. 若存在多个输入生命周期，且其中一个是 &self 或 &mut self，则 &self 的生命周期被赋给所有的输出生命周期。
+
+### 4 方法的生命周期
+```rs
+struct ImportantExcerpt<'a> {
+    part: &'a str,
+}
+
+impl<'a> ImportantExcerpt<'a> {
+    // announce_and_return_part1方法 和 announce_and_return_part2方法是等价的，因为编译器给符合自动标注生命周期规则的代码，进行了自动标注生命周期。
+    fn announce_and_return_part1(&self, announcement: &str) -> &str {
+        println!("Attention please: {}", announcement);
+        self.part
+    }
+    fn announce_and_return_part2<'b>(&'a self, announcement: &'b str) -> &'a str {
+        println!("Attention please: {}", announcement);
+        self.part
+    }
+}
+// <'a: 'b, 'b> 表示'a的生命周期比'b的生命周期长
+impl<'a: 'b, 'b> ImportantExcerpt<'a> {
+    fn announce_and_return_part3(&'a self, announcement: &'b str) -> &'b str {
+        println!("Attention please: {}", announcement);
+        self.part
+    }
+}
+impl<'a> ImportantExcerpt<'a> {
+    fn announce_and_return_part4<'b>(&'a self, announcement: &'b str) -> &'b str
+    where
+        'a: 'b,
+    {
+        println!("Attention please: {}", announcement);
+        self.part
+    }
+}
+```
+
+### 5 静态生命周期
 ```rust
 // 符串字面面具有 'static 生命周期
 fn fn_main(){
     // let mark_twain: &str = "Samuel Clemens";
-    let mark_twain = "Samuel Clemens";
+    let mark_twain = "Samuel Clemens"; // 这声明和上面是等价的
     print_author(mark_twain);
-}
-// fn print_author(author: &'static str) {
-fn print_author(author: &str) {
-    println!("{}", author);
 }
 ```
 
+### 6 泛型/特性/生命周期
 ```rust
-// 出自于 Rust 圣经 的一段程序
 // 同时使用了泛型、特性、生命周期机制
 // T 范型
 // 'a 生命周期
 // T 数据类型必须实现了 Display特性
 use std::fmt::Display;
-
-fn longest_with_an_announcement<'a, T>(x: &'a str, y: &'a str, ann: T) -> &'a str
-    where T: Display
+fn longest_with_an_announcement<'a, T>(
+    x: &'a str,
+    y: &'a str,
+    ann: T,
+) -> &'a str
+where
+    T: Display,
 {
     println!("Announcement! {}", ann);
     if x.len() > y.len() {
@@ -1272,6 +1336,17 @@ fn longest_with_an_announcement<'a, T>(x: &'a str, y: &'a str, ann: T) -> &'a st
     } else {
         y
     }
+}
+fn main() {
+    let string1 = String::from("abcd");
+    let string2 = "xyz";
+
+    let result = longest_with_an_announcement(
+        string1.as_str(),
+        string2,
+        "Today is someone's birthday!",
+    );
+    println!("The longest string is {}", result);
 }
 ```
 

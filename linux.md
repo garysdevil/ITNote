@@ -62,6 +62,25 @@ lsblk
 fdisk -l
 
 ### shell
+- 数组长度
+```bash
+#!/bin/bash
+array_name=(
+  "137.184.202.162:4132"
+  "218.17.62.53:4132"
+  "141.95.85.71:4132"
+)
+# 输出数组长度
+echo ${#array_name[*]}
+echo ${#array_name[@]}
+# 输出数组所有的值
+echo ${arr[@]} 
+#  遍历数组
+for ipport in ${array_name[@]};do
+    echo $ipport;
+done
+```
+
 - 变量的提取和替换
 ```bash
 ${var#*/} # 去掉变量var从左边算起的第一个'/'字符及其左边的内容
@@ -693,3 +712,12 @@ systemctl mask sleep.target suspend.target hibernate.target hybridsleep.target
 
 - 通过主线程名字查看所有子线程
     - ps -ef | grep ${process_name} | grep -v grep | awk '{print $2}' | xargs ps -T -p
+
+
+### jq
+```bash
+jq .元素名字.元素名字
+jq .[数组索引]
+jq '.元素名字.元素名字 | .[数组索引]'
+jq -r # 输出字符串原始值而不是字符串 JSON 序列化后的值
+```
