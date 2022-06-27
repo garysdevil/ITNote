@@ -1,56 +1,154 @@
 
+[toc]
+
 ## 标准库
-1. std::sync::Arc 原子引用计数（Arc)类型是一种智能指针，它能够让你以线程安全的方式在线程间共享不可变数据。
-    ```rust
-    use std::thread;
-    use std::time::Duration;
-    use std::sync::Arc;
 
-    fn main() {
-        let name_arc1 = Arc::new(String::from("I Love You")); 
-        let name_arc2 = Arc::clone(&name_arc1); 
-        // move 关键字批准 name_arc2变量的所有权转移进线程。
-        // 由于name_arc2的作用域结束，Arc::drop()就被调用了，name_arc1的原子计数减一
-        // 如果name_arc1 和 name_arc2 是常规的变量类型，那么引用变量类型 name_arc2 没法传递进线程里，因为 name_arc1 的生命周期可能小于 name_arc2 的生命周期。
-        thread::spawn(move || { 
-            thread::sleep(Duration::from_secs(1));
-            println!("{:?}", *name_arc2);
-        });
-        
-        println!("{:?}", name_arc1); // Arc::drop()就被调用了，name_arc1的原子计数减一，变成0，name_arc1变量数据被清除
-    } 
-    ```
+### time
+```rs
+use std::time::{Duration, Instant};
+use std::thread;
 
-2. nce_cell::race::OnceBox 只能被写入一次的线程安全的单元
+fn expensive_function() {
+    thread::sleep(Duration::from_secs(1));
+}
 
-3. std::time 时间
-    ```rs
-    use std::time::{Duration, Instant};
-    use std::thread;
+fn main() {
+    // std::time::Duration 的使用
+    let five_seconds = Duration::from_secs(5);
+    assert_eq!(five_seconds, Duration::from_millis(5_000));
+    assert_eq!(five_seconds, Duration::from_micros(5_000_000));
+    assert_eq!(five_seconds, Duration::from_nanos(5_000_000_000));
+    let ten_seconds = Duration::from_secs(10);
+    let seven_nanos = Duration::from_nanos(7);
+    let total = ten_seconds + seven_nanos;
+    assert_eq!(total, Duration::new(10, 7)); // 传入 (秒, 纳秒)
 
-    fn expensive_function() {
+
+    // 可以通过 time::Instant::elapsed 和 time::Instant::now 输出代码的运行时间
+    let start = Instant::now();
+    expensive_function();
+    let duration = start.elapsed();
+    println!("Time elapsed in expensive_function() is: {:?}", duration);
+}
+```
+
+### thread
+```rs
+use std::thread;
+fn main1() {
+    // 创建一个线程
+    let thread_handler = thread::spawn(move || {
+        println!("I am a new thread.");
+    });
+    // 等待新建线程执行完成 // join函数使主线程等待子线程结束
+    thread_handler.join().unwrap();
+}
+
+fn main2() {
+    // 创建一个线程，线程名称为 thread1, 堆栈大小为4k
+    let thread_handler = thread::Builder::new()
+                            .name("thread1".to_string())
+                            .stack_size(4*1024*1024).spawn(move || {
+        println!("I am thread1.");
+    });
+    // 等待新创建的线程执行完成
+    thread_handler.unwrap().join().unwrap();
+}
+```
+
+```rs
+// 线程通讯： 通过静态变量
+use std::thread;
+static mut VAR: i32 = 5;
+fn main() {
+    // 创建一个新线程
+    let new_thread = thread::spawn(move|| {
+        unsafe {
+            println!("static value in new thread: {}", VAR);
+            VAR = VAR + 1;
+        }
+    });
+    // 等待新线程先运行
+    new_thread.join().unwrap();
+    unsafe {
+        println!("static value in main thread: {}", VAR);
+    }
+}
+```
+```rs
+// 线程通讯： 通过共享内存
+use std::thread;
+use std::sync::Arc;
+fn main() {
+    let var : Arc<i32> = Arc::new(5);
+    let share_var = var.clone();
+    // 创建一个新线程
+    let new_thread = thread::spawn(move|| {
+        println!("share value in new thread: {}, address: {:p}", share_var, &*share_var);
+    });
+    // 等待新建线程先执行
+    new_thread.join().unwrap();
+    println!("share value in main thread: {}, address: {:p}", var, &*var);
+}
+```
+```rs
+// 线程通讯： 通过通道
+use std::sync::mpsc;
+use std::thread;
+fn main() {
+    // 创建一个同步通道
+    // let (tx, rx): (mpsc::SyncSender<i32>, mpsc::Receiver<i32>) = mpsc::sync_channel(0); // 同步通道
+    let (tx, rx): (mpsc::Sender<i32>, mpsc::Receiver<i32>) = mpsc::channel(); // 异步通道
+    // 创建线程用于发送消息
+    let new_thread = thread::spawn(move || {
+        // 发送一个消息，此处是数字id
+        tx.send(99).unwrap();
+    });
+    // 在主线程中接收子线程发送的消息并输出
+    println!("receive {}", rx.recv().unwrap());
+    new_thread.join().unwrap();
+}
+```
+### sync
+```rust
+use std::thread;
+use std::time::Duration;
+use std::sync::Arc; // 原子引用计数（Arc)类型是一种智能指针，它能够让你以线程安全的方式在线程间共享不可变数据。
+
+fn main() {
+    let name_arc1 = Arc::new(String::from("I Love You")); 
+    let name_arc2 = Arc::clone(&name_arc1); 
+    // move 关键字批准 name_arc2变量的所有权转移进线程。
+    // 由于name_arc2的作用域结束，Arc::drop()就被调用了，name_arc1的原子计数减一
+    // 如果name_arc1 和 name_arc2 是常规的变量类型，那么引用变量类型 name_arc2 没法传递进线程里，因为 name_arc1 的生命周期可能小于 name_arc2 的生命周期。
+    thread::spawn(move || { 
         thread::sleep(Duration::from_secs(1));
-    }
+        println!("{:?}", *name_arc2);
+    });
+    
+    println!("{:?}", name_arc1); // Arc::drop()就被调用了，name_arc1的原子计数减一，变成0，name_arc1变量数据被清除
+} 
+```
 
-    fn main() {
-        // std::time::Duration 的使用
-        let five_seconds = Duration::from_secs(5);
-        assert_eq!(five_seconds, Duration::from_millis(5_000));
-        assert_eq!(five_seconds, Duration::from_micros(5_000_000));
-        assert_eq!(five_seconds, Duration::from_nanos(5_000_000_000));
-        let ten_seconds = Duration::from_secs(10);
-        let seven_nanos = Duration::from_nanos(7);
-        let total = ten_seconds + seven_nanos;
-        assert_eq!(total, Duration::new(10, 7)); // 传入 (秒, 纳秒)
+### net
+```rs
+use std::net::{IpAddr, Ipv4Addr, SocketAddr, TcpStream};
+use std::io::prelude::*;
 
+fn main() -> std::io::Result<()> {
+    let socket = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 8080);
+    // let mut stream = TcpStream::connect("127.0.0.1:8080")?;
+    let mut stream = TcpStream::connect(socket)?;
 
-        // 可以通过 time::Instant::elapsed 和 time::Instant::now 输出代码的运行时间
-        let start = Instant::now();
-        expensive_function();
-        let duration = start.elapsed();
-        println!("Time elapsed in expensive_function() is: {:?}", duration);
-    }
-    ```
+    stream.write(&[1])?; // 写入数据进服务端
+    stream.read(&mut [0; 128])?; // 从服务端读取数据
+    Ok(())
+}
+
+```
+
+### -
+1. once_cell::race::OnceBox 只能被写入一次的线程安全的单元
 
 ## 全局作用域标准库
 ```rust

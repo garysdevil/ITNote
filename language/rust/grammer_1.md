@@ -1194,7 +1194,7 @@ fn some_function<T, U>(t: T, u: U) -> i32
 ```
 
 
-## 生命周期
+## 十三 生命周期
 1. 程序中每个变量都有一个固定的作用域，当超出变量的作用域以后，变量就会被销毁。
 2. 生命周期就是引用类型变量的有效作用域。
 3. 在大多数时候，我们无需手动的声明生命周期，因为编译器可以自动进行推导。当多种类型存在时或多个生命周期存在时，编译器往往要求用户手动标明生命周期。
@@ -1348,6 +1348,67 @@ fn main() {
     );
     println!("The longest string is {}", result);
 }
+```
+
+## 自动化测试
+- 每一个测试函数都会运行在一个新的线程上。
+- 断言
+    1. assert! 判断布尔值
+    2. assert_eq! 判断数字是否等于
+    3. assert_ne! 判断数字是否不等于
+
+```bash
+cargo test -- --test-threads=1 # 设置自动化测试不并行运行，只在一个线程上运行
+
+cargo test -- --show-output # 展示测试成功的函数执行结果
+
+cargo test ${name} # 测试函数名称含有${name}的都会运行
+
+cargo test -- --ignored # 只运行含有#[ignore]标识的测试函数
+
+cargo test -- --include-ignored # 运行测试函数和含有#[ignore]标识的函数
+```
+
+```rs
+pub fn sub_two(a: u32) -> u32 {
+    a - 2
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test] // 通过#[test]标注此函数为测试函数，只有在执行cargo test时才会运行
+    fn it_sub_two() {
+        assert_eq!(8, sub_two(10));
+    }
+    #[test]
+    #[ignore] // #[ignore]标识表示测试函数在运行时被排除
+    fn it_sub_two_custom() {
+        let result = sub_two(10);
+        assert!(
+            result==8,
+            "sub_two function returned a wrong result `{}`",
+            result
+        );
+    }
+    #[test]
+    #[should_panic] // 断言这个测试函数会触发panic
+    // #[should_panic(expected = "---")] // 断言这个测试函数会触发panic，panic内容为 ---
+    fn it_sub_two_should_panic() {
+        sub_two(0);
+    }
+    // 在测试中使用Result<T, E>
+    #[test]
+    fn it_works() -> Result<(), String> {
+        if 10 - 2 == 8 {
+            Ok(())
+        } else {
+            Err(String::from("ten minus two does not equal eight"))
+        }
+    }
+}
+
 ```
 
 ## 输入输出
