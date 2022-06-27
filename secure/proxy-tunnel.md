@@ -45,6 +45,7 @@
     - http://ivo-wang.github.io/2018/02/24/ss-redir/
 
 ### v2ray
+#### v2ray
 - 源码 https://github.com/v2fly/v2ray-core
 - 教程 https://www.v2fly.org/guide/start.html
 - 安装 https://www.v2fly.org/guide/install.html
@@ -66,6 +67,10 @@
         ```
 
 - 验证配置文件的正确性 /usr/local/bin/v2ray -test -config /usr/local/etc/v2ray/config.json
+
+#### v2rayA
+-  v2ray的GUI管理界面
+- 源码 https://github.com/v2rayA/v2rayA
 
 ## 前置代理工具
 ### Proxy SwitchyOmega
