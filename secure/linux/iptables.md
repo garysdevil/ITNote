@@ -7,17 +7,18 @@
 
 ### 命令
 - iptables -t ${tabletype} ${action_direction} ${direction}  ${packet_pattern} -j ${what_to_do}
-1. ${tabletype}
-     - -t 定义表类型 
-     - filter、nat、mangle、raw; 默认为filter. （每张表提供了特定的功能）
+1. ${tabletype} 总共4张表，每张表提供了特定的功能，默认为filter表。使用方式 ``-t ${tabletype}``
+     - filter
+     - nat
+     - mangle
+     - raw
 2. ${direction} 5个方向(五链) （每个链都代表了数据需要经过的地点）
     1. PREROUTING 路由前的数据包
     2. FORWARD 转发的数据包
-    2. INPUT 进入的数据包
-    3. OUTPUT 传出的数据包
-    4. POSTROUTING  路由后的数据包
-    
-3. ${action_direction} 
+    3. INPUT 进入的数据包
+    4. OUTPUT 传出的数据包
+    5. POSTROUTING  路由后的数据包
+3. ${action_direction}  匹配到规则后，停止搜索，因此前面的规则权重大于后面的规则
     - -I 在规则链头部添加一个规则
     - -A 在规则链末尾添加一个规则
     - -D 从规则链删除一个规则
@@ -32,73 +33,120 @@
     3. ACCEPT 对数据包进行-A选项相关动作的操作
     4. REDIRECT 重定向，主要用于实现端口重定向
 
-```bash
-# -p 指定协议 -p all 代表所有协议
 
+```bash
+# -p 指定协议， -p all 代表所有协议
+# -m 指定要加载的模块
+```
+
+```bash
 # 列出当前的iptables配置
 iptables -L
-iptables -t filter -L --line-number # --line-number 显示编号
-iptables -t filter -L INPUT --line-number
-iptables -t nat -L --line-number
+iptables -t filter -L --line-number
+iptables -t filter -L INPUT --line-number -n
+iptables -t ${tabletype} -L ${direction} --line-number
+# --line-number 显示编号
+# -n 以数字格式显示地址和端口号
+# -v 显示详细信息
 
 
 # 根据编号删除规则
-iptables -t nat -L --line-number
 iptables -t ${tabletype}  -D ${direction} ${line_number}
 iptables -t nat  -D PREROUTING ${line_number}
 iptables -t filter -D INPUT ${line_number}
 
+
 # 端口转发
 iptables -t nat -I PREROUTING -p tcp --dport 80 -m set --match-set kujiutest dst -j REDIRECT  --to-port 1080
 iptables -t nat -I PREROUTING -p tcp -m multiport --dports 80,443 -m set --match-set kujiutest dst -j REDIRECT  --to-port 1080
-# -m 指定要加载的模块
+
 
 # 禁止访问某个IP
 iptables -A OUTPUT -d ${IP} -j REJECT
 
+
 # 允许/禁止某个IP被访问
 # IP=127.0.0.1 或 IP=192.168.0.1/16
-iptables -I INPUT -j DROP #禁止其他所有流量进入
-iptables -I INPUT -s ${IP} -j DROP # 禁止${IP}访问
-iptables -I INPUT -p tcp --dport 8545 -j DROP  # 禁止所有IP的访问8545端口
-iptables -I INPUT -d 192.169.1.1 -p tcp --dport 8545 -j DROP  # 禁止所有IP通过TCP协议访问特定的IP:端口
-iptables -I INPUT -s ${IP} -p tcp --dport 8545 -j ACCEPT # 允许${IP}访问本地的8545端口
+iptables -A INPUT -j DROP #禁止其他所有流量进入
+iptables -A INPUT -s ${IP} -j DROP # 禁止${IP}访问
+iptables -A INPUT -p tcp --dport 8545 -j DROP  # 禁止所有IP的访问8545端口
+iptables -A INPUT -d ${IP} -p tcp --dport ${PORT} -j DROP  # 禁止所有IP通过TCP协议访问特${IP}:${PORT}
+iptables -A INPUT -s ${IP} -p tcp --dport ${PORT} -j ACCEPT # 允许${IP}通过TCP协议访问本地的${PORT}端口
 
+
+iptables -F # 清空防火墙策略
 ```
 
-### ipset
-1. 安装
-    ```bash
-    yum install ipset
-    ```
+### multiport扩展
+- 以离散方式定义多端口匹配；最多匹配指定15个端口
+```bash
+iptables -I INPUT -p tcp -m multiport --dport 8545,8546 -j DROP 
+```
 
-1. 禁止IP访问
-    ```bash
-    ipset create blacklist hash:ip # 创建名为 blacklist 的集合，以 hash 方式存储，存储内容是 IP 地址
-    # ipset -N blacklist iphash
-    iptables -A INPUT -m set --match-set blacklist src -j DROP # 在集合 blacklist 里的IP将被过滤掉
-    ipset add blacklist ${IP1}
-    ipset add blacklist ${IP2}
-    ipset list blacklist
-    ```
+### iprange扩展
+- 指明连续的（但一般是不能扩展为整个网络）ip地址范围时使用.
+```bash
+# 指明连续的（但一般是不能扩展为整个网络）ip地址范围时使用
+–src-range from[-to] # 指明连续的源ip地址范围
+–dst-range from[-to] # 指明连续的目标IP地址范围
 
-2. 只允许指定ip连接指定端口
-    ```bash
-    iptables -A INPUT -m set --match-set whitelist src -d ${IP} -p tcp --dport ${PORT} -j ACCEPT # 通过whitelist的IP通过tcp协议访问${IP}:${PORT}
-    ```
+iptables -I INPUT -m iprange –src-range 192.168.1.1-192.168.1.10 -j DROP
+```
 
-- ipset
-    ```bash
-    # 查看所有的集合
-    ipset list
-    ipset list ${name}
+### time扩展
+- 根据报文到达的时间与指定的时间范围进行匹配
+```bash
+iptables -I INPUT -p tcp --dport 8545 -m time –timestart 00:00 –timestop 12:00 -j DROP
+–datestart
+–datestop
 
-    # 规则保存进文件
-    ipset save blacklist -f blacklist.txt
+–monthdays
+–weekdays
+```
 
-    # 删除ipset 集合
-    ipset destroy blacklist
+### ipset扩展
+- ipset hash类型的集合默认大小为1024。当在iptables/ip6tables中使用了ipset hash类型的集合，则该集合将不能再新增条目。
 
-    # 导入ipset 集合
-    ipset restore -f blacklist.txt
-    ```
+```bash
+# Centos安装ipset
+yum install ipset
+
+# ipset 查看所有的集合
+ipset list
+ipset list ${setname}
+
+# ipset 创建blacklist集合
+ipset create blacklist hash:ip timeout 0 # timeout表示多少秒后失效，0表示永久生效。
+ipset -N blacklist iphash # 方式二
+
+#  ipset 在blacklist集合中添加元素
+ipset add blacklist ${IP1}
+
+#ipset  删除blacklist集合里的某个元素
+ipset del blacklist ${IP}
+
+# ipset 导出blacklist集合规则进文件blacklist.txt
+ipset save blacklist -f blacklist.txt
+
+# ipset 删blacklist除集合
+ipset destroy blacklist
+
+# ipset 清空集合
+ipset flush ${setname}
+
+# ipset 从文件导入集合规则
+ipset restore -f blacklist.txt
+```
+
+```bash
+# iptables使用ipset
+# ipset配合iptables使用方式
+-m set --match-set ${setname} src/dst
+
+# 禁止IP访问
+ipset create blacklist hash:ip # 创建名为 blacklist 的集合，以 hash 方式存储，存储内容是 IP 地址
+iptables -I INPUT -m set --match-set blacklist src -j DROP # 在集合 blacklist 里的IP将被过滤掉
+
+# 只允许指定ip连接指定端口
+iptables -I INPUT -m set --match-set whitelist src -d ${IP} -p tcp --dport ${PORT} -j ACCEPT # 通过whitelist的IP通过tcp协议访问${IP}:${PORT}
+```

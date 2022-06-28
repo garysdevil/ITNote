@@ -23,6 +23,7 @@
 
 3. 客户端HTTP方式连接代理配置 linux系统配置 /etc/profile
     ```conf
+    # 执行 source /etc/profile，使配置文件立即生效
     export http_proxy=squid服务端IP地址:3128 # http协议访问时使用代理，也可以设置https，ftp等协议
     export https_proxy=squid服务端IP地址:3128
     export no_proxy='localhost,127.0.0.1'
@@ -96,7 +97,7 @@
 
 ## Openvpn
 - 参考
-    - https://openvpn.net/access-server-manual/deployment-overview/
+    - 官方 https://openvpn.net/access-server-manual/deployment-overview/
     - https://www.wanhebin.com/openvpn/639.html
 ### 安装
 ```bash
@@ -110,6 +111,10 @@ yum install easy-rsa openvpn
 echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 ```
 
+### 使用openVPN自带的http-proxy作代理
+- OpenVPN本身可以使用http代理，也就是说，OpenVPN客户端不是直接和OpenVPN服务器连接，而是使用http代理进行连接。这个特性是OpenVPN的外围特性，不是其核心的，然而却能解决很多实际问题，它相当于隧道外面又套了一个隧道，不过这个外面的隧道并不是真实的隧道，因为它并没有封装，而仅仅是伪装了端口信息而已。
+- OpenVPN客户端 -->  http代理服务器（squid）  -->  OpenVPN服务器
+- 
 ## UDPspeeder
 - 源码 https://github.com/wangyu-/UDPspeeder
     
