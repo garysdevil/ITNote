@@ -116,7 +116,7 @@ ipset list
 ipset list ${setname}
 
 # ipset 创建blacklist集合
-ipset create blacklist hash:ip timeout 0 # timeout表示多少秒后失效，0表示永久生效。
+ipset create blacklist hash:ip hashsize 2048 maxelem 65536 timeout 0 # timeout表示多少秒后失效，0表示永久生效。集合的默认大小hashsize为2048；集合默认最大为65536
 ipset -N blacklist iphash # 方式二
 
 #  ipset 在blacklist集合中添加元素
