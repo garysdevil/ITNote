@@ -25,7 +25,9 @@ num_cpus = { version = "1.13.1" } # 获取服务器上的CPU数量
 rayon = { version = "1" } # 将线性计算转为并行计算
 tokio = { version = "^1.19.2", features = ["full"] } # 异步运行时库
 jsonrpsee = { version = "0.14.0" } # 建立在tokio异步运行时库上的web服务框架
-tracing = { ersion = "0.1.35"  } # 结构化日志
+tracing = { version = "0.1.35"  } # 结构化日志
+
+once_cell = { version = "1.12.0"  } # 安全的初始化变量，用来存储堆上的信息，并且具有最多只能赋值一次的特性
 ```
 
 ## rayon

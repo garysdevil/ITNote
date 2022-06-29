@@ -104,3 +104,11 @@ cargo bench -- --load-baseline ${name1}  --baseline ${name2} # --load-baseline $
     7. 编译器对中级中间语言MIL进行借用检查、优化、宏的代码生成、范型、单态化等。（MIL）
     8. 转译为LLVM的中间语言LLVMIR（LLVMIR）
     9. 通过LLVM后端，优化，生成机器码。
+
+
+## Rust编程思想
+- 逻辑代码
+    - 把程序分成main.rs和lib.rs，主要代码逻辑放在lib.rs里。
+    - main.rs主要负责调用命令行解析逻辑、设置配置项、调取lib.rs的运行函数、处理lib.rs运行函数返回的错误。
+
+- Test-driven development (TDD) process

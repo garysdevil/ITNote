@@ -147,9 +147,6 @@ fn main() -> std::io::Result<()> {
 
 ```
 
-### -
-1. once_cell::race::OnceBox 只能被写入一次的线程安全的单元
-
 ## 全局作用域标准库
 ```rust
 // Rust 的标准库，有一个 prelude 子模块。 
