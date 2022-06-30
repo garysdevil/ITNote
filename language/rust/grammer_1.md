@@ -1417,64 +1417,60 @@ mod tests {
 }
 
 ```
+## 十五 闭包
+- 定义： 闭包(Closures)是一种匿名函数，它可以赋值给变量也可以作为参数传递给其它函数，不同于函数的是，它允许捕获调用者作用域中的值。
 
-## 输入输出
-- 接收命令行参数
-    ```rust
-    fn main() {
-        let args = std::env::args();
-        // println!("{:?}", args);
-        for arg in args {
-            println!("{}", arg);
-        }
+- 闭包函数的作用
+    1. 使用函数作为参数进行传递
+    2. 使用函数作为函数返回值
+    3. 将函数赋值给变量
+
+
+```rs
+// 闭包的声明
+fn main() {
+    fn  add_one_v1   (x: u32) -> u32 { x + 1 }  // 函数声明方式
+    let add_one_v2 = |x: u32| -> u32 { x + 1 }; // 闭包函数
+    let add_one_v3 = |x|             { x + 1 }; // 闭包函数可以省去类型声明。编译器会根据上下文推测出输入参数的类型。
+    let add_one_v4 = |x|               x + 1  ; // 因为只有一个表达式，所以这个闭包函数可以去掉花括号。
+    add_one_v3(3);
+    add_one_v3(4);
+}
+```
+
+```rs
+// 闭包函数可以捕获调用者作用域中的值。
+// 当闭包从调用者作用域中捕获一个值时，会分配内存去存储这些值。对于有些场景来说，这种额外的内存分配会成为一种负担。与之相比，函数就不会去捕获这些环境值，因此定义和使用函数不会拥有这种内存负担。
+fn main() {
+   let x = 1;
+   let sum = |y| x + y;
+    assert_eq!(3, sum(2));
+
+    // 通过 move 关键字，变量所有权被转移进闭包内。此功能通常用于闭包的生命周期大于所捕获的变量的原生命周期。
+    let string_name = String::from("Iamcaptured");
+    let closure_move_own = move || string_name; 
+    assert_eq!("Iamcaptured", closure_move_own());
+}
+```
+
+```rs
+// 结构体和闭包
+// 如何实现泛型参数是闭包
+fn main() {
+struct Cacher<T>
+    where
+        T: Fn(u32) -> u32, // 泛型T受到了特征约束，Fn代表一个特征，使用闭包实现了特征。
+    {
+        query: T,
+        value: Option<u32>,
     }
-    ```
+}
+// 特征的闭包实现，有三种类型。任何闭包都实现了下面其中的一个特性
+// Fn 该类型的闭包会对变量进行借用。
+// FnMut 该类型的闭包会变量进行可变借用。
+// FnOnce 该类型的闭包会转移变量的所有权。
+```
 
-- 命令行输入
-    ```rust
-    use std::io::stdin;
-
-    fn main() {
-    let mut str_buf = String::new();
-
-        stdin().read_line(&mut str_buf)
-            .expect("Failed to read line.");
-
-        println!("Your input line is \n{}", str_buf);
-    }
-    ```
-
-- 文件读取与写入
-    ```rust
-    use std::fs;
-    use std::io::prelude::*;
-
-    fn main() {
-
-        // fs::write("./text.txt", "I am Gary Adam").unwrap();
-
-        let mut file = fs::File::create("./text.txt").unwrap();
-        file.write(b"I am Gary Adam2").unwrap();
-
-        let text = fs::read_to_string("./text.txt").unwrap();
-        println!("{}", text);
-    }
-    ```
-- 文件追加内容
-    ```rust
-    use std::io::prelude::*;
-    use std::fs::OpenOptions;
-
-    fn main() -> std::io::Result<()> {
-
-        let mut file = OpenOptions::new()
-                .append(true).open("text.txt")?;
-
-        file.write(b" I am Gary Adam3")?;
-
-        Ok(())
-    }
-    ```
 
 ## 面向对象编程
 - test.rs
@@ -1514,7 +1510,6 @@ fn main() {
 ## 并发编程
 - 主线程的结束，spawn 线程也随之结束。
 - join 方法可以使子线程运行结束后再停止运行程序。
-- 在所有权机制中，默认禁止子线程使用当前函数的资源，但可以使用 move 关键字将当前线程内变量的所有权移动进子线程里。
 
 - 通道（channel）是实现线程间消息传递的主要工具，通道有两部分组成，一个发送者（transmitter）和一个接收者（receiver）。
 
@@ -1552,7 +1547,6 @@ fn main() {
         thread::sleep(Duration::from_millis(1));
     }
 
-    // 关键字move的作用是将所引用的变量的所有权转移至闭包内，通常用于使闭包的生命周期大于所捕获的变量的原生命周期
     let var_string = "hello";
     let handle = thread::spawn(move || {
         println!("{}", var_string);

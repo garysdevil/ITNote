@@ -2,7 +2,50 @@
 [toc]
 
 ## 标准库
+### env
+```rs
+// 接收命令行参数
+fn read_args() {
+    let args = std::env::args();
+    for arg in args {
+        println!("{}", arg);
+    }
+}
+```
+### io
+```rs
+// 读取命令行输入
+fn read_stdin() {
+    let mut str_buf = String::new();
+    std::io::stdin().read_line(&mut str_buf)
+        .expect("Failed to read line.");
+    println!("Your input line is \n{}", str_buf);
+}
+```
+### fs
+```rs
+// 文件读取与写入
+use std::fs;
+use std::io::prelude::*;
+fn file_rw() {
+    // fs::write("./text.txt", "I am Gary Adam").unwrap();
+    let mut file = fs::File::create("./text.txt").unwrap();
+    file.write(b"I am Gary Adam2").unwrap();
 
+    let text = fs::read_to_string("./text.txt").unwrap();
+    println!("{}", text);
+}
+// 文件追加内容
+use std::io::prelude::*;
+use std::fs::OpenOptions;
+// file append
+fn main() -> std::io::Result<()> {
+    let mut file = OpenOptions::new()
+            .append(true).open("text.txt")?;
+    file.write(b" I am Gary Adam3")?;
+    Ok(())
+}
+```
 ### time
 ```rs
 use std::time::{Duration, Instant};
@@ -146,6 +189,7 @@ fn main() -> std::io::Result<()> {
 }
 
 ```
+
 
 ## 全局作用域标准库
 ```rust

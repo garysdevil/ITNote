@@ -6,9 +6,9 @@
     - Fixed-size threadpool for executors，为tokio::spawn产生的任务服务
     - Bounded threadpool for blocking calls，为tokio::task::spawn_blocking产生的任务服务
 
-- tokio 每创建一个Runtime时，就在这个Runtime中创建好了一个Reactor、一个Scheduler、一个任务队列。
-    - Reactor接收事件通知。
-    - Scheduler将任务调度给executer。
+- tokio 每创建一个Runtime时，就在这个Runtime中创建好了一个Reactor、一个Scheduler、任务队列。
+    - Reactor接收事件通知。 阻塞队列中的每一个被阻塞的任务，都需要等待Reactor收到对应的事件通知(比如IO完成的通知、睡眠完成的通知等)来唤醒它。当该任务被唤醒后，它将被放入就绪队列，等待调度器的调度。
+    - Scheduler将就绪队列任务调度给executer。
 
 
 - 锁

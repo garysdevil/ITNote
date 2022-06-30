@@ -35,8 +35,8 @@ once_cell = { version = "1.12.0"  } # 安全的初始化变量，用来存储堆
 ```rs
 use rayon::prelude::*;
 fn sum_of_squares(input: &[i32]) -> i32 {
-    input.iter() // 使用串形模式 
-    // input.par_iter() // 使用rayon将串形模式改为并行模式
+    // input.iter() // 使用串形模式 
+    input.par_iter() // 使用rayon将串形模式改为并行模式
          .map(|&i| i * i)
          .sum()
 }
