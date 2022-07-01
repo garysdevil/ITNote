@@ -1418,7 +1418,7 @@ mod tests {
 
 ```
 ## 十五 闭包
-- 定义： 闭包(Closures)是一种匿名函数，它可以赋值给变量也可以作为参数传递给其它函数，不同于函数的是，它允许捕获调用者作用域中的值。
+- 定义： 闭包(Closure)是一种匿名函数，它可以赋值给变量也可以作为参数传递给其它函数，不同于函数的是，它允许捕获调用者作用域中的值。
 
 - 闭包函数的作用
     1. 使用函数作为参数进行传递
@@ -1469,6 +1469,116 @@ struct Cacher<T>
 // Fn 该类型的闭包会对变量进行借用。
 // FnMut 该类型的闭包会变量进行可变借用。
 // FnOnce 该类型的闭包会转移变量的所有权。
+```
+
+## 十六 迭代
+- 迭代(Iterator)负责遍历序列中的每一项和决定序列何时结束的逻辑。
+- Rust迭代器通过闭包函数实现了赖加载。
+
+- 关键函数
+    - iter() 
+    - into_iter()
+    - filter()
+    - skip()
+    - map()
+
+```rs
+// 所有的具有迭代功能的类型都实现了这个特性
+pub trait Iterator {
+    type Item;
+
+    fn next(&mut self) -> Option<Self::Item>;
+
+    // methods with default implementations elided
+}
+```
+
+```rs
+// 迭代示范
+fn main() {
+    let v1 = vec![1, 2, 3];
+
+    // let v1 = vec![1, 2, 3];
+    let v1_iter = v1.iter();
+    for val in v1_iter { // v1_iter的所有权被拿走了
+        println!("Got: {}", val);
+    }
+
+    let mut v1_iter = v1.iter();
+    assert_eq!(v1_iter.next(), Some(&1)); // v1_iter的所有权还在， v1_iter被借用了并且被修改了，因此v1_iter必须是可变的变量
+    assert_eq!(v1_iter.next(), Some(&2));
+    assert_eq!(v1_iter.next(), Some(&3));
+    assert_eq!(v1_iter.next(), None);
+
+
+    let v2_iter = v1.iter().map(|x| x + 1); // 所有的数字加一，返回迭代器
+    let v2: Vec<_>= v2_iter.collect(); // 获取所有迭代器的值生成新的集合
+    assert_eq!(v2, vec![2, 3, 4]);
+}
+
+```
+
+```rs
+// 迭代+过滤操作示范
+struct Shoe {
+    size: u32,
+    style: String,
+}
+
+fn shoes_in_size(shoes: Vec<Shoe>, shoe_size: u32) -> Vec<Shoe> {
+    shoes.into_iter().filter(|s| s.size == shoe_size).collect()
+}
+```
+
+```rs
+// 自定义结构体实现迭代器特性
+// 使用标准库中定义好的Iterator特性所实现的一些关于迭代器的关联方法
+struct Counter {
+    count: u32,
+}
+impl Counter {
+    fn new() -> Counter {
+        Counter { count: 0 }
+    }
+}
+impl Iterator for Counter { // 实现迭代器特性
+    type Item = u32;
+
+    fn next(&mut self) -> Option<Self::Item> { // 实现迭代器接口
+        if self.count < 5 {
+            self.count += 1;
+            Some(self.count)
+        } else {
+            None
+        }
+    }
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn calling_next_directly() {
+        let mut counter = Counter::new();
+
+        assert_eq!(counter.next(), Some(1));
+        assert_eq!(counter.next(), Some(2));
+        assert_eq!(counter.next(), Some(3));
+        assert_eq!(counter.next(), Some(4));
+        assert_eq!(counter.next(), Some(5));
+        assert_eq!(counter.next(), None);
+    }
+
+    #[test]
+    fn using_other_iterator_trait_methods() {
+        let sum: u32 = Counter::new()
+            .zip(Counter::new().skip(1)) // zip函数将两个迭代器合成一个迭代器对
+            .map(|(a, b)| a * b) 
+            .filter(|x| x % 3 == 0)
+            .sum();
+        assert_eq!(18, sum);
+    }
+}
 ```
 
 
