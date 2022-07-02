@@ -1,5 +1,5 @@
 ## Rust学习
-- 基于 rustc 1.61.0 版本的学习笔记
+- 基于 rustc 1.61.0 版本``cargo doc``文档的学习笔记
 
 ## 目录
 1. [Rust必看](./rust.md)

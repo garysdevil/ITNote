@@ -91,6 +91,15 @@ cargo bench # 运行benchmark(基准测试,性能测试)
 cargo bench -- --save-baseline ${name} # 显示当次结果，并且和名字为${name}的结果进行比较，然后将当次结果覆盖进${name}
 cargo bench -- --baseline ${name} # 显示当次结果，并且和名字为${name}的结果进行比较
 cargo bench -- --load-baseline ${name1}  --baseline ${name2} # --load-baseline ${name} 加载名字为${name1}的结果作为当次结果，将名字为{name2}的结果作为上次结果，然后进行比较
+
+# 发布宝箱进入crates.io 
+# 使用github账户登入crates.io ，获取token
+cargo login ${token} # 登入crates.io，API token 将会被存入这个文件内 ~/.cargo/credentials 
+cargo publish # 发布宝箱
+
+# 虽然你不能删除之前版本的 crate，但是可以阻止任何将来的项目将他们加入到依赖中。通 cargo yank 指令
+cargo yank --vers 1.0.1 # 禁止用户在使用1.0.1这个版本的宝箱
+cargo yank --vers 1.0.1 --undo # 撤回
 ```
 
 ## 编译器
