@@ -1374,6 +1374,8 @@ cargo test ${name} # 测试函数名称含有${name}的都会运行
 cargo test -- --ignored # 只运行含有#[ignore]标识的测试函数
 
 cargo test -- --include-ignored # 运行测试函数和含有#[ignore]标识的函数
+
+cargo test -p ${crate} # 运行特定宝箱的测试函数
 ```
 
 ```rs

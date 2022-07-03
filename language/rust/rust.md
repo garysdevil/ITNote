@@ -69,14 +69,10 @@ rustc ${filepath} # 编译生成二进制文件
 cargo --version
 cargo new greeting # 构建一个项目 默认参数--bin
 cargo build # 编译一个项目
+cargo install --path . # 安装二进制文件（默认位置 $HOME/.cargo/bin）
 # cargo build/run --release 使用 release 编译会比默认的 debug 编译性能提升 10 倍以上，但是 release 缺点是编译速度较慢，而且不会显示 panic backtrace 的具体行号 
 cargo run # 编译运行一个项目
-cargo install --path . # 安装二进制文件（默认位置 $HOME/.cargo/bin）
 cargo check # 快速检查代码语法的正确性，并不会进行编译操作
-
-cargo doc # 生成rust学习文档
-cargo doc --open  # 生成依赖包的文档
-
 cargo fix # 查看告警项，并且可能进行自动修复  --allow-dirty
 cargo update # 会下载更新最新的依赖版本进Cargo.toml.lockd文件，输出相关的更新内容；但Cargo.toml的文件需要手动更新。
 cargo clippy # 类似eslint，lint工具检查代码可以优化的地方
@@ -84,6 +80,13 @@ cargo fmt # 类似go fmt，代码格式化
 cargo tree # 查看第三方库的版本和依赖关系
 cargo udeps # 检查项目中未使用的依赖 (第三方工具，需要单独下载)
 
+# 子指令
+cargo --list # 列出所有的子指令
+# 如果二进制程序在$PATH目录下，并以 cargo-${name} 方式命名的二进制都可以作为cargo的子指令，可以通过cargo ${name} 来运行
+
+# 文档
+cargo doc # 生成项目文档
+cargo doc --open  # 生成项目文档并且在网页上打开
 
 # 创建与运行基准测试
 cargo new benches
