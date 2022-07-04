@@ -1584,6 +1584,153 @@ mod tests {
 }
 ```
 
+## 智能指针
+- 指针（pointer）是一个包含内存地址的变量的通用概念。Rust中的引用就是一种指针，它只能指向一个数据，没有特别的功能。
+- 智能指针（smart pointer）是一种数据结构，它不仅可以指向一个数据并且可以拥有这个数据的所有权，还拥有元数据和功能。
+
+- String 和 Vec<T> 就属于智能指针。
+
+- 智能指针通常使用结构体来实现。智能指针区别于常规结构体的显著特性在于其实现了 Deref 和 Drop 特性。
+    - Deref 特性允许一个数据类型被当作引用对待。
+    - Drop 特性可以让当变量离开作用域时，它所指向的堆数据也会被清除。
+
+### Box<T> 最简单的智能指针
+- 最简单直接的智能指针是 box，其类型是 Box<T>。 Box<T> 允许你将一个值分配到堆上，然后在栈上保留一个智能指针指向堆上的数据。
+
+- 可以在以下场景中使用它
+    1. 特意的将数据分配在堆上
+    2. 数据较大时，又不想在转移所有权时进行数据拷贝
+    3. 类型的大小在编译期无法确定，但是我们又需要固定大小的类型时
+    4. 特征对象，用于说明对象实现了一个特征，而不是某个特定的类型
+
+```rs
+fn main() {
+    let var_box1 = Box::new(5); // 数值5被放入了堆上
+    println!("b = {}", var_box1); // 隐式地调用了 Deref 对智能指针 var_box 进行了解引用
+    let var_box2 = *var_box1 + 1;  // 在表达式中，无法自动隐式地执行 Deref 解引用操作，需要使用 * 操作符来显式的对 var_box1 进行解引用
+
+    let var_box_arr = Box::new([0;1000]); // 当数据很大时，使用Box类型将数据被放入堆中。当变量被拷贝时，就只会触发所有权的转移，避免过多的性能开销。
+}
+```
+
+```rs
+// 使用Box将动态大小类型变为 Sized 固定大小类型
+// 创建一个递归类型
+// Rust 需要在编译时知道类型占用多少空间。一种无法在编译时知道大小的类型是 递归类型（recursive type），其值的一部分可以是相同类型的另一个值。这种值的嵌套理论上可以无限的进行下去，所以 Rust 不知道递归类型需要多少空间。不过 box 有一个已知的大小，所以通过在循环类型定义中插入 box，就可以创建递归类型了。
+
+// enum List { // 错误
+//     Cons(i32, List),
+//     Nil,
+// }
+// use List::{Cons, Nil};
+// fn main() {
+//     let list = Cons(1, Cons(2, Cons(3, Nil)));
+// }
+enum List {
+    Cons(i32, Box<List>),
+    Nil,
+}
+use List::{Cons, Nil};
+fn main() {
+    let list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
+}
+```
+
+### Deref 特性
+- Deref 实现的3种转换
+    1. 当 T: Deref<Target=U>，可以将 &T 转换成 &U
+    2. 当 T: DerefMut<Target=U>，可以将 &mut T 转换成 &mut U
+    3. 当 T: Deref<Target=U>，可以将 &mut T 转换成 &U
+
+```rs
+// 自定义一个智能指针
+struct MyBox<T>(T);
+impl<T> MyBox<T> {
+    fn new(x: T) -> MyBox<T> {
+        MyBox(x)
+    }
+}
+use std::ops::Deref;
+impl<T> Deref for MyBox<T> { // 实现 Deref 特性，当进行解引用时，会自动对智能指针里面的数据进行解引用
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+use std::ops::DerefMut;
+impl<T> DerefMut for MyBox<T> { // 实现 Deref 特性，当进行解引用时，会自动对智能指针里面的可变数据进行解引用
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+fn display(s: &mut String) {
+    s.push_str("world");
+    println!("{}", s);
+}
+fn main() {
+    // 解引用示范
+    let var_box_1 = 5;
+    let var_box_2 = MyBox::new(var_box_1);
+    assert_eq!(5, var_box_1);
+    assert_eq!(5, *var_box_2); // 通过 * 操作符对y进行显示地解引用， *y 等价于 *(y.deref()) 
+
+    // 解引用示范
+    let var_box_3 = MyBox::new(String::from("Rust")); 
+    println!("{:?}", &(*var_box_3)[..]); // 通过 (*m) 解引用出 String 类型的数据，再通过 &()[..] 获取字符串切片
+    println!("{:?}", *var_box_3); // Rust机制中的 deref 特性自动帮我们进行了解引用
+
+    // 解引用示范 // 可变解引用
+    let mut var_box_4 = String::from("hello");
+    display(&mut var_box_4);
+}
+```
+
+### Drop 特性
+- 互斥的 Copy 和 Drop ，我们无法为一个类型同时实现 Copy 和 Drop 特征。因为实现了 Copy 的特征会被编译器隐式的复制。
+```rs
+struct CustomSmartPointer {
+    data: String,
+}
+
+impl Drop for CustomSmartPointer {
+    fn drop(&mut self) {
+        println!("Dropping CustomSmartPointer with data `{}`!", self.data);
+    }
+}
+fn main() {
+    let c = CustomSmartPointer {
+        data: String::from("my stuff"),
+    };
+    let d = CustomSmartPointer {
+        data: String::from("other stuff"),
+    };
+    println!("CustomSmartPointers created.");
+    // c.drop() // 编译器不允许我们直接调用c.drop()函数来清理变量的内存，因为当变量的作用域未结束时，后面的代码依然可以使用这个变量，那么这个变量的指向就是空的，非常不安全。编译器在变量作用域结束后会自动进行调用。
+    drop(c); // 但我们可以通过 std::mem::drop(c) 来提前清理数据，这个函数会拿走变量的所有权，作用域内后面的代码将无法使用这个变量，因此此方式是内存安全的。
+    println!("Leaving scope");
+}
+```
+
+## Rc<T> 引用计数智能指针
+- 引用计数智能指针 Rc<T>
+- **Rc<T> 只能被使用于但线程场景上。**
+
+```rs
+enum List {
+    Cons(i32, Rc<List>),
+    Nil,
+}
+
+use List::{Cons, Nil};
+use std::rc::Rc;
+
+fn main() {
+    let var_rc_1 = Rc::new(Cons(5, Rc::new(Cons(10, Rc::new(Nil))))); // var_rc_1 变量可以被拥有多个所有权
+    let var_rc_2 = Cons(3, Rc::clone(&var_rc_1)); // 区别于var_rc_1.clone()函数对数据的深层拷贝，Rc::clone(&var_rc_1)函数只是增加了引用计数
+    let var_rc_3 = Cons(4, Rc::clone(&var_rc_1));
+}
+```
 
 ## 面向对象编程
 - test.rs

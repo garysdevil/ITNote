@@ -82,7 +82,7 @@ cargo udeps # 检查项目中未使用的依赖 (第三方工具，需要单独�
 
 # 子指令
 cargo --list # 列出所有的子指令
-# 如果二进制程序在$PATH目录下，并以 cargo-${name} 方式命名的二进制都可以作为cargo的子指令，可以通过cargo ${name} 来运行
+# 如果二进制程序在$PATH目录下，并以 cargo-${name} 方式命名，则二进制都可以作为cargo的子指令，可以通过cargo ${name} 来运行
 
 # 文档
 cargo doc # 生成项目文档
