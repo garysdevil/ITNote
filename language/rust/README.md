@@ -6,9 +6,9 @@
 
 ## 目录
 1. [Rust必看](./rust.md)
-2. [基本语法](./grammer_1.md)
-3. [进阶语法](./grammer_2.md)
-4. [高级语法](./grammer_advanced.md)
+2. [基本语法](./grammar_1.md)
+3. [进阶语法](./grammar_2.md)
+4. [高级语法](./grammar_advanced.md)
 5. [包管理与构建工具cargo](./cargo.md)
 6. [标准库](./standad.md)
 7. [常用的宝箱](./crate.md)

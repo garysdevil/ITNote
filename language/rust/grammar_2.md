@@ -163,93 +163,67 @@ fn main() {
 ### 引用循环与内存泄漏 （Todo 未悟透，还需要学习）
 
 
-## 并发编程
+## 二 并发编程
 - 序
     - 随着时间的推移，团队发现所有权和类型系统是一系列解决内存安全 和 并发问题的强有力的工具！
     - 通过利用所有权和类型检查，在 Rust 中很多并发错误都是 编译时 错误，而非运行时错误。
 
-- 主线程的结束，spawn 线程也随之结束。
-- join 方法可以使子线程运行结束后再停止运行程序。
+- 线程
+    - 主线程的结束，子线程也随之结束。
+    - spawn 关联函数可以产生一个新的子线程。
+    - join 关联函数可以阻塞主线程，知道子线程运行结束。
 
-- 通道（channel）是实现线程间消息传递的主要工具，通道有两部分组成，一个发送者（transmitter）和一个接收者（receiver）。
-
+- 通讯
+    - 线程间的通讯和Go一样遵循着同样的原则 “Do not communicate by sharing memory; instead, share memory by communicating.”
+    - 通道（channel）是实现线程间消息传递的主要工具。
+        - 通道有两部分组成，一个发送者（transmitter）和一个接收者（receiver）。
+        - 可以有多个发送者（transmitter）。
+    - 共享状态
+        - 互斥锁 Mutex<T> 
+        - 多线程安全的引用计数智能指针 Arc<T>
 ### 线程
 ```rust
+// 线程
 use std::thread;
 use std::time::Duration;
 
 fn func_spawn() {
-    for i in 0..5 {
-        println!("func_spawn: spawned thread print {}", i);
-        thread::sleep(Duration::from_millis(1));
-    }
+    println!("func_spawn: spawned thread print nothing");
 }
 
 fn main() {
-    // 必包函数/匿名函数
-    let inc = |num: i32| -> i32 {
-        num + 1
-    };
-    println!("inc(5) = {}", inc(5));
-
     // 运行一个线程 
     thread::spawn(func_spawn);
 
-    thread::spawn(|| { // 必包函数/匿名函数
+    thread::spawn(|| { // 通过必包函数运行一个线程
         for i in 0..5 {
-            println!("closures: spawned thread print {}", i);
+            println!("closures: spawned thread_1 print {}", i);
             thread::sleep(Duration::from_millis(1));
         }
-    }).join().unwrap(); // join方法使主线程等待当前线程执行结束
+    });
 
-    for i in 0..3 {
-        println!("main thread print {}", i);
-        thread::sleep(Duration::from_millis(1));
-    }
+    // 通过必包函数运行一个线程
+    thread::spawn(|| {
+        for i in 0..5 {
+            println!("closures: spawned thread_2 print {}", i);
+            thread::sleep(Duration::from_millis(1));
+        }
+    }).join().unwrap(); // join方法会阻塞主线程，但不影响没有join()的子线程的运行
 
-    let var_string = "hello";
-    let handle = thread::spawn(move || {
+
+    let var_string = String::from("hello");
+    // 通过必包函数运行一个线程，并且返回线程的句柄
+    let handle = thread::spawn(move || { // 通过 move 关键字，将被捕获到的变量所有权转移进闭包函数内
         println!("{}", var_string);
     });
-    handle.join().unwrap();
+    let thread = handle.thread(); // 获取潜在线程的句柄
+    println!("thread id: {:?}", thread.id()); // 获取线程的唯一标识符
+    println!("thread name: {:?}", thread.name()); // 获取线程的名字
+    handle.join().unwrap(); // // join方法会阻塞主线程，但不影响没有join()的子线程的运行
+
+    println!("main thread ending");
 }
 ```
-
-## 面向对象编程
-- test.rs
-```rust
-pub struct ClassName {
-    id: i32,
-}
-
-impl ClassName {
-    pub fn new(value: i32) -> ClassName {
-        ClassName {
-            id: value
-        }
-    }
-
-    pub fn public_method(&self) {
-        println!("from public method");
-        self.private_method();
-    }
-
-    fn private_method(&self) {
-        println!("from private method");
-    }
-}
-```
-- main.rs
-```rust
-mod test;
-use test::ClassName;
-
-fn main() {
-    let object = ClassName::new(1024);
-    object.public_method();
-}
-```
-
 
 ### 通道
 ```rust
@@ -274,10 +248,87 @@ fn main() {
 }
 ```
 
-## Rust的异同
-- rust编程语言里 不支持 ++ 和 -- 的数学运算符号。
+### 共享状态
+```rs
+use std::sync::{Arc, Mutex};
+use std::thread;
 
-- rust编程语言里 没有 for 的三元语句控制循环，例如 for (i = 0; i < 10; i++)
+fn main() {
+    let counter = Arc::new(Mutex::new(0)); // 当变量被多个线程使用时，使用多线程安全的引用计数智能指针Arc将其包裹起来
+    let mut handles = vec![];
 
-- () 是一种特殊的类型，值只有一个就是() 
-    - https://doc.rust-lang.org/std/primitive.unit.html
+    for _ in 0..10 {
+        let counter = Arc::clone(&counter); // 分别拷贝一份进子线程里
+        let handle = thread::spawn(move || { // 多个线程共享 counter 状态
+            let mut num = counter.lock().unwrap(); // Mutex<T> 也提供了 内部可变性 的功能，因此即使 counter 变量是不可变的，但 T 的值是可以变的。
+
+            *num += 1;
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Result: {}", *counter.lock().unwrap());
+}
+```
+
+## 三 面向对象编程
+- 面向对象编程的特点是
+    - 数据和行为 Rust通过结构体和枚举来包含数据，通过``impl``块来实现行为。
+    - 封装 Rust通过``pub``关键字来实现了封装。
+    - 继承 Rust机制中没有继承，但对于代码复用，可以通过`` trait``来实现。
+    - 多态 Rust机制中没有多态这个概率，但对于一段代码处理多种类型的数据，可以通过泛型实现。
+
+```rs
+/// 定义一个“对象”
+pub struct AveragedCollection {
+    list: Vec<i32>,
+    average: f64,
+}
+// 定义“对象”内的方法
+impl AveragedCollection {
+    pub fn add(&mut self, value: i32) {
+        self.list.push(value);
+        self.update_average();
+    }
+
+    pub fn remove(&mut self) -> Option<i32> {
+        let result = self.list.pop();
+        match result {
+            Some(value) => {
+                self.update_average();
+                Some(value)
+            }
+            None => None,
+        }
+    }
+
+    pub fn average(&self) -> f64 {
+        self.average
+    }
+
+    fn update_average(&mut self) {
+        let total: i32 = self.list.iter().sum();
+        self.average = total as f64 / self.list.len() as f64;
+    }
+
+    // pub fn new(list: Vec<i32>) -> AveragedCollection {}
+    
+    pub fn new() -> AveragedCollection {
+        let list = Vec::new();
+        let average = 0.0;
+        AveragedCollection {
+            list,
+            average
+        }
+    }
+}
+fn main() {
+    // 实例化一个”对象“
+    let mut object = AveragedCollection::new();
+    object.add(3);
+}
+```
