@@ -26,6 +26,11 @@ fn main1() {
 }
 
 fn main2() {
+    // 创建单一线程的runtime
+    let tokio_rt = tokio::runtime::Builder::new_current_thread().build().unwrap();
+}
+
+fn main3() {
     // 创建多线程的runtime // 自定义配置
     let tokio_rt = tokio::runtime::Builder::new_multi_thread() // // 使用Runtime Builder来配置并创建runtime
         .worker_threads(8)  // 8个工作线程 // 默认等同于逻辑线程数量
@@ -36,10 +41,6 @@ fn main2() {
     std::thread::sleep(std::time::Duration::from_secs(10)); // 睡眠，然后执行 ps -ef | grep ${process_name} | grep -v grep | awk '{print $2}' | xargs ps -T -p 查看 程序启动的线程数量
 }
 
-fn main3() {
-    // 创建单一线程的runtime
-    let tokio_rt = tokio::runtime::Builder::new_current_thread().build().unwrap();
-}
 
 // 通过宏来创建runtime
 #[tokio::main]
@@ -59,20 +60,20 @@ async fn main() {}
 use std::{time::Duration,thread};
 #[tokio::main]
 async fn main() {
-    // 创建一个异步阻塞线程
+    // 创建一个异步阻塞任务
     let blocking_task1 = tokio::task::spawn_blocking(|| {
         thread::sleep(Duration::from_secs(2));
         println!("111");
     });
-    // 创建一个异步阻塞线程
+    // 创建一个异步阻塞任务 // 创建一个线程
     let blocking_task2 = tokio::task::spawn_blocking(|| {
         println!("222");
     });
 
     println!("333");
     thread::sleep(Duration::from_secs(2));  // blocking_task1 和 blocking_task2 不会被主线程阻塞
-    blocking_task1.await.unwrap(); // 主线程被阻塞，blocking_task1 抛出异常则程序终止
-    blocking_task2.await.unwrap(); // 主线程被阻塞，blocking_task2 抛出异常则程序终止
+    blocking_task1.await.unwrap(); // 通过 .await 主线程被阻塞，通过 unwrap() blocking_task1 抛出异常则程序终止
+    blocking_task2.await.unwrap();
     println!("444");
 }
 ```
@@ -116,7 +117,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 ```rs
-// 主题： block_on 阻塞当前线程，运行future(异步线程)
+// 主题： block_on 阻塞当前线程，运行future
 
 use std::{thread,time::Duration};
 use chrono::Local;

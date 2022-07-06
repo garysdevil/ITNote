@@ -332,3 +332,438 @@ fn main() {
     object.add(3);
 }
 ```
+
+## 四 模式匹配
+- 模式匹配分为 refutable 模式 和 irrefutable 模式
+    - refutable 意味着模式匹配存在匹配失败的可能性。像 match，while let 都需要refutable类型的模式匹配。
+    - irrefutable 意味着模式一定要匹配成功。像 let声明，输入参数 都需要irrefutable类型的模式匹配。
+
+```rs
+// match 模式匹配
+fn main() {
+    let x = 1;
+
+    match x {
+        1 => println!("one"),
+        2 => println!("two"),
+        3 => println!("three"),
+        _ => println!("anything"),
+    }
+}
+```
+
+```rs
+// while let 条件循环
+fn main() {
+    let mut stack = Vec::new();
+
+    stack.push(1);
+    stack.push(2);
+    stack.push(3);
+
+    while let Some(top) = stack.pop() { // refutable 模式
+        println!("{}", top);
+    }
+}
+```
+
+```rs
+// for Loops
+fn main() {
+    let v = vec!['a', 'b', 'c'];
+
+    for (index, value) in v.iter().enumerate() {
+        println!("{} is at index {}", value, index);
+    }
+}
+
+```
+
+```rs
+// 声明也是一种模式匹配，并且是一种 irrefutable 模式
+// let PATTERN = EXPRESSION;
+let x = 5;
+```
+
+```rs
+// 函数输入参数重的模式匹配
+fn print_coordinates_1((x, y): (i32, i32)) {
+    println!("Current location: ({}, {})", x, y);
+}
+fn print_coordinates_2(x: i32, y: i32) {
+    println!("Current location: ({}, {})", x, y);
+}
+fn main() {
+    let point = (3, 5);
+    print_coordinates_1(point);
+    print_coordinates_2(3, 5);
+}
+```
+
+```rs
+// match 模式匹配会生成新的作用域
+fn main() {
+    let x = Some(5);
+    let y = 10;
+
+    match x {
+        Some(50) => println!("Got 50"),
+        Some(y) => println!("Matched, y = {:?}", y), // y变量会被重影，这里的y变量值为5
+        _ => println!("Default case, x = {:?}", x),
+    }
+
+    println!("at the end: x = {:?}, y = {:?}", x, y);
+}
+```
+
+```rs
+// 通过 | 匹配多种可能性
+fn main() {
+    let x = 1;
+
+    match x {
+        1 | 2 => println!("one or two"),
+        3 => println!("three"),
+        _ => println!("anything"),
+    }
+}
+
+```
+
+```rs
+// 范围匹配 ..= // 只能匹配数字或字符
+fn main() {
+    let x = 5;
+    match x {
+        1..=5 => println!("one through five"),
+        _ => println!("something else"),
+    }
+
+    let x = 'c';
+    match x {
+        'a'..='j' => println!("early ASCII letter"),
+        'k'..='z' => println!("late ASCII letter"),
+        _ => println!("something else"),
+    }
+}
+```
+
+```rs
+// 解构结构体进行模式匹配
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+fn main() {
+    let p = Point { x: 0, y: 7 };
+    // 方式一
+    let Point { x: a, y: b } = p;
+    assert_eq!(0, a);
+    assert_eq!(7, b);
+    // 方式二 // 简写模式，通过变量名称与字段名称相匹配，然后进行赋值
+    let Point { x, y } = p;
+    assert_eq!(0, x);
+    assert_eq!(7, y);
+    // 方式三
+    match p {
+        Point { x, y: 0 } => println!("On the x axis at {}", x),
+        Point { x: 0, y } => println!("On the y axis at {}", y),
+        Point { x, y } => println!("On neither axis: ({}, {})", x, y),
+    }
+}
+```
+
+```rs
+// 解构枚举进行模式匹配
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+
+fn main() {
+    let msg = Message::ChangeColor(0, 160, 255);
+
+    match msg {
+        Message::Quit => {
+            println!("The Quit variant has no data to destructure.")
+        }
+        Message::Move { x, y } => {
+            println!(
+                "Move in the x direction {} and in the y direction {}",
+                x, y
+            );
+        }
+        Message::Write(text) => println!("Text message: {}", text),
+        Message::ChangeColor(r, g, b) => println!(
+            "Change the color to red {}, green {}, and blue {}",
+            r, g, b
+        ),
+    }
+}
+```
+
+```rs
+// 解构嵌套的枚举或结构体进行模式匹配
+enum Color {
+    Rgb(i32, i32, i32),
+    Hsv(i32, i32, i32),
+}
+
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(Color),
+}
+
+fn main() {
+    let msg = Message::ChangeColor(Color::Hsv(0, 160, 255));
+
+    match msg {
+        Message::ChangeColor(Color::Rgb(r, g, b)) => println!(
+            "Change the color to red {}, green {}, and blue {}",
+            r, g, b
+        ),
+        Message::ChangeColor(Color::Hsv(h, s, v)) => println!(
+            "Change the color to hue {}, saturation {}, and value {}",
+            h, s, v
+        ),
+        _ => (),
+    }
+}
+```
+
+```rs
+// 函数输入参数忽视变量值的模式匹配
+fn foo(_: i32, y: i32) {
+    println!("This code only uses the y parameter: {}", y);
+}
+
+fn main() {
+    foo(3, 4);
+}
+```
+
+```rs
+// match 忽视变量值的模式匹配
+fn main() {
+    let mut setting_value = Some(5);
+    let new_setting_value = Some(10);
+    match (setting_value, new_setting_value) {
+        (Some(_), Some(_)) => {
+            println!("Can't overwrite an existing customized value");
+        }
+        _ => {
+            setting_value = new_setting_value;
+        }
+    }
+    println!("setting is {:?}", setting_value);
+
+
+    let numbers = (2, 4, 8, 16, 32);
+    match numbers {
+        (first, _, third, _, fifth) => {
+            println!("Some numbers: {}, {}, {}", first, third, fifth)
+        }
+    }
+}
+```
+
+```rs
+// 忽视以 _ 开头的变量。当暂时不想使用某个变量，又不想在编译时收到警告，则可以让变量以 _ 开头。
+fn main() {
+    let _x = 5;
+    let y = 10;
+}
+```
+
+```rs
+// 使用 .. 忽视一些值，一个模式匹配中只能使用一次 ..
+fn main() {
+    struct Point {
+        x: i32,
+        y: i32,
+        z: i32,
+    }
+
+    let origin = Point { x: 0, y: 0, z: 0 };
+
+    match origin {
+        Point { x, .. } => println!("x is {}", x),
+    }
+    match origin {
+        Point { x, y: _, z: _ } => println!("x is {}", x),
+    }
+}
+```
+
+```rs
+// Match Guards
+fn main() {
+    let num = Some(4);
+
+    match num {
+        Some(x) if x % 2 == 0 => println!("The number {} is even", x), // 先进行模式匹配，再进行条件判断
+        Some(x) => println!("The number {} is odd", x),
+        None => (),
+    }
+}
+```
+
+```rs
+// @ Bindings
+// 通过@可以在模式匹配中验证 值 是否匹配某些值，如果匹配则将值赋予给新的变量
+fn main() {
+    enum Message {
+        Hello { id: i32 },
+    }
+
+    let msg = Message::Hello { id: 5 };
+
+    match msg {
+        Message::Hello {
+            id: id_variable @ 3..=7, // 如果 id 值在3～7的范围内，则将 id变量值 赋值给 id_variable变量值。
+        } => println!("Found an id in range: {}", id_variable),
+        Message::Hello { id: 10..=12 } => {
+            println!("Found an id in another range")
+        }
+        Message::Hello { id } => println!("Found some other id: {}", id),
+    }
+}
+```
+
+## Unsafe Rust
+- safe Rust 指的是所有代码都被编译器在编译期间通过各种代码检查保证了运行时的内存安全。
+- unsafe Rust 会减少编译期间的检查，将运行时的内存安全交给程序员去保障。但运行期间的Rust程序也必须遵守Rust的安全机制，例如借用规则，如果违反了则panic。
+
+- 使用 Unsafe Rust 
+    - 放弃内存安全保障
+    - 获取更好的性能
+    - 获取和另一门语言或者硬件进行交互的能力
+
+- 通过``unsafe``关键字定义代码块，可以获取一下5个超能力
+    1. Dereference a raw pointer 解引用原始指针
+    2. Call an unsafe function or method 调用不安全的函数和方法
+    3. Access or modify a mutable static variable 访问或修改一个可变的静态变量
+    4. Implement an unsafe trait 实现不安全的特性
+    5. Access fields of unions 访问union字段。union主要用于和C语言的对接。
+
+```rs
+fn main() {
+    let mut num = 5;
+    // 通过关键字 as 创建原始指针（raw pointer） // 可以在安全代码里声明原始指针，但不能解引用
+    let r1 = &num as *const i32;  *const i32; // *const i32 原始指针
+    let r2 = &mut num as *mut i32; //  *mut i32 原始指针
+    unsafe {
+        // 在关键字unsafe代码块内进行解引用
+        println!("r1 is: {}", *r1);
+        println!("r2 is: {}", *r2);
+    }
+
+    // 使用随机的内存地址
+    let address = 0x012345usize;
+    let r3 = address as *const i32;
+}
+```
+
+```rs
+// 调用不安全的关联函数
+fn main() {
+    unsafe fn dangerous() {}
+
+    unsafe {
+        dangerous();
+    }
+}
+```
+```rs
+// 调用不安全的关联函数
+use std::slice;
+
+fn split_at_mut(values: &mut [i32], mid: usize) -> (&mut [i32], &mut [i32]) {
+    let len = values.len();
+    let ptr = values.as_mut_ptr();
+
+    assert!(mid <= len);
+
+    // 这里会触发编译报错。
+    // 编译器认定values变量被借用了两次，编译器不能分辨出我们其实是借用了数组的不同部分。
+    // 代码实际上是安全的，因此我们需要使用unsafe关键字来完成这个功能。
+    // (&mut values[..mid], &mut values[mid..])
+
+    unsafe {    // 使用unsafe的代码来完成
+        (
+            slice::from_raw_parts_mut(ptr, mid), // slice::from_raw_parts_mut 获取了原始指针
+            slice::from_raw_parts_mut(ptr.add(mid), len - mid), // 不能确定偏移mid数量的位置后，指针依然是有效的。
+        )
+    }
+}
+
+fn main() {
+    let mut vector = vec![1, 2, 3, 4, 5, 6];
+    let (left, right) = split_at_mut(&mut vector, 3);
+}
+```
+
+```rs
+// 使用关键字extern调用其它语言的代码
+extern "C" { // 调用C语言的代码
+    fn abs(input: i32) -> i32;
+}
+
+fn main() {
+    unsafe {
+        println!("Absolute value of -3 according to C: {}", abs(-3));
+    }
+}
+```
+
+```rs
+// 通过extern关键字创建函数，让其它语言进行调用
+#![allow(unused)]
+fn main() {
+#[no_mangle] // 禁止编译时期编译器优化更改函数名字
+pub extern "C" fn call_from_c() { // 提供给C语言使用这个函数
+    println!("Just called a Rust function from C!");
+}
+}
+```
+
+```rs
+// 修改可变静态变量
+static mut COUNTER: u32 = 0;
+
+fn add_to_count(inc: u32) {
+    // 修改静态变量是不符合Safe Rust安全检查的，因为可能会触发数据竞争
+    unsafe {
+        COUNTER += inc;
+    }
+}
+
+fn main() {
+    add_to_count(3);
+
+    unsafe {
+        println!("COUNTER: {}", COUNTER);
+    }
+}
+```
+
+```rs
+// 不安全的特性
+unsafe trait Foo {
+    // methods go here
+}
+
+unsafe impl Foo for i32 {
+    // method implementations go here
+}
+
+fn main() {}
+```
+
+
+## 
