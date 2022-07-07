@@ -10,7 +10,7 @@ rand = { version = "0.8.5" } # 随机数功能
 ```conf
 bincode = "1.2.1" # 序列化与反序列化功能
 rust-crypto = "0.2.36" # 各种加密算法功能
-serde = { version = "1.0.137", features = ["derive"] } # 通过派生宏给结构体、枚举、联合体提供序列化特性
+serde = { version = "1.0.137", features = ["derive"] } # 通过派生宏给结构体、枚举、联合体提供序列化特征
 chrono = { version="0.4.19" } # 时间相关的功能
 anyhow = "0.1.0" # 处理异常的功能
 clap = { version = "3.1" } # 命令行参数解析功能
@@ -27,7 +27,7 @@ tokio = { version = "^1.19.2", features = ["full"] } # 异步运行时库
 jsonrpsee = { version = "0.14.0" } # 建立在tokio异步运行时库上的web服务框架
 tracing = { version = "0.1.35"  } # 结构化日志
 
-once_cell = { version = "1.12.0"  } # 安全的初始化变量，用来存储堆上的信息，并且具有最多只能赋值一次的特性
+once_cell = { version = "1.12.0"  } # 安全的初始化变量，用来存储堆上的信息，并且具有最多只能赋值一次的特征
 ```
 
 ## rayon

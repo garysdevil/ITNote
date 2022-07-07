@@ -10,13 +10,13 @@
     - Reactor接收事件通知。 阻塞队列中的每一个被阻塞的任务，都需要等待Reactor收到对应的事件通知(比如IO完成的通知、睡眠完成的通知等)来唤醒它。当该任务被唤醒后，它将被放入就绪队列，等待调度器的调度。
     - Scheduler将就绪队列任务调度给executer。
 
-
 - 锁
     - 标准库中的锁定策略取决于操作系统的实现
         1. Windows和macOS，读者和作家公平排队。
         2. Linux，读者优先，作家会出现饥饿现象。
     - tokio中的锁定策略是读者和作家公平排队，与操作系统无关。
     - tokio的RwLock在挂起的时候，会让出执行权，标准库的不会。
+
 ## runtime的创建
 ```rs
 use tokio;
@@ -148,6 +148,41 @@ fn main() {
 }
 ```
 
+```rs
+// tokio::spawn 生成一个future，并且在runtime里运行这个future
+// async fn 生成一个future，等待被运行
+use std::time::{Duration,Instant};
+use std::thread;
+
+fn main() {
+    let tokio_rt = tokio::runtime::Runtime::new().unwrap();
+
+    tokio_rt.block_on(async {
+
+        task_1().await; // 运行task_1()，阻塞主线程
+        tokio::spawn(task_2()); // 运行task_1()，不阻塞主线程，因此主线可能会先于task_2()结束
+
+        tokio::spawn(async { // 不阻塞主线程，因此主线可能会先结束
+            println!("tokio::spawn closure.");
+        });
+
+        let handle = tokio::spawn(async { // 不阻塞主线程，因此主线可能会先结束
+            println!("tokio::spawn closure, block main thread");
+        });
+        handle.await.unwrap();  // 阻塞主线程
+    });
+}
+async fn task_1() {
+    thread::sleep(Duration::from_secs(1));
+    println!("task_1 async task over: {:?}", Instant::now());
+}
+async fn task_2() {
+    thread::sleep(Duration::from_secs(1));
+    println!("task_2 async task over: {:?}", Instant::now());
+}
+```
+
+## 线程间的消息传递
 ```rs
 // 主题： 线程间的消息传递
 // use tokio::sync::oneshot; // 一个Sender，一个Receiver，Sender只能发送一次消息。通过同步的方式。

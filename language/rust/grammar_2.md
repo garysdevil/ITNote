@@ -6,9 +6,9 @@
 
 - String 和 Vec<T> 就属于智能指针。
 
-- 智能指针通常使用结构体来实现。智能指针区别于常规结构体的显著特性在于其实现了 Deref 和 Drop 特性。
-    - Deref 特性允许一个数据类型被当作引用对待。
-    - Drop 特性可以让当变量离开作用域时，它所指向的堆数据也会被清除。
+- 智能指针通常使用结构体来实现。智能指针区别于常规结构体的显著特征在于其实现了 Deref 和 Drop 特征。
+    - Deref 特征允许一个数据类型被当作引用对待。
+    - Drop 特征可以让当变量离开作用域时，它所指向的堆数据也会被清除。
 
 ### Box<T> 最简单的智能指针
 - 最简单直接的智能指针是 box，其类型是 Box<T>。 Box<T> 允许你将一个值分配到堆上，然后在栈上保留一个智能指针指向堆上的数据。
@@ -52,7 +52,7 @@ fn main() {
 }
 ```
 
-### Deref 特性
+### Deref 特征
 - Deref 实现的3种转换
     1. 当 T: Deref<Target=U>，可以将 &T 转换成 &U
     2. 当 T: DerefMut<Target=U>，可以将 &mut T 转换成 &mut U
@@ -67,7 +67,7 @@ impl<T> MyBox<T> {
     }
 }
 use std::ops::Deref;
-impl<T> Deref for MyBox<T> { // 实现 Deref 特性，当进行解引用时，会自动对智能指针里面的数据进行解引用
+impl<T> Deref for MyBox<T> { // 实现 Deref 特征，当进行解引用时，会自动对智能指针里面的数据进行解引用
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
@@ -75,7 +75,7 @@ impl<T> Deref for MyBox<T> { // 实现 Deref 特性，当进行解引用时，�
     }
 }
 use std::ops::DerefMut;
-impl<T> DerefMut for MyBox<T> { // 实现 Deref 特性，当进行解引用时，会自动对智能指针里面的可变数据进行解引用
+impl<T> DerefMut for MyBox<T> { // 实现 Deref 特征，当进行解引用时，会自动对智能指针里面的可变数据进行解引用
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
@@ -94,7 +94,7 @@ fn main() {
     // 解引用示范
     let var_box_3 = MyBox::new(String::from("Rust")); 
     println!("{:?}", &(*var_box_3)[..]); // 通过 (*m) 解引用出 String 类型的数据，再通过 &()[..] 获取字符串切片
-    println!("{:?}", *var_box_3); // Rust机制中的 deref 特性自动帮我们进行了解引用
+    println!("{:?}", *var_box_3); // Rust机制中的 deref 特征自动帮我们进行了解引用
 
     // 解引用示范 // 可变解引用
     let mut var_box_4 = String::from("hello");
@@ -102,7 +102,7 @@ fn main() {
 }
 ```
 
-### Drop 特性
+### Drop 特征
 - 互斥的 Copy 和 Drop ，我们无法为一个类型同时实现 Copy 和 Drop 特征。因为实现了 Copy 的特征会被编译器隐式的复制。
 ```rs
 struct CustomSmartPointer {
@@ -635,7 +635,7 @@ fn main() {
 }
 ```
 
-## Unsafe Rust
+## 五 Unsafe Rust
 - safe Rust 指的是所有代码都被编译器在编译期间通过各种代码检查保证了运行时的内存安全。
 - unsafe Rust 会减少编译期间的检查，将运行时的内存安全交给程序员去保障。但运行期间的Rust程序也必须遵守Rust的安全机制，例如借用规则，如果违反了则panic。
 
@@ -648,7 +648,7 @@ fn main() {
     1. Dereference a raw pointer 解引用原始指针
     2. Call an unsafe function or method 调用不安全的函数和方法
     3. Access or modify a mutable static variable 访问或修改一个可变的静态变量
-    4. Implement an unsafe trait 实现不安全的特性
+    4. Implement an unsafe trait 实现不安全的特征
     5. Access fields of unions 访问union字段。union主要用于和C语言的对接。
 
 ```rs
@@ -753,7 +753,7 @@ fn main() {
 ```
 
 ```rs
-// 不安全的特性
+// 不安全的特征
 unsafe trait Foo {
     // methods go here
 }
@@ -766,4 +766,228 @@ fn main() {}
 ```
 
 
-## 
+## 六 深入特征
+- 关联类型（associated types）是一个将类型占位符与 特征 相关联的方式。
+- 默认泛型类型参数
+- 完全限定语法与消歧义：调用相同名称的方法
+
+```rs
+// 在特征中使用关联类型作为占位符
+#![allow(unused)]
+pub trait Iterator {
+    type Item; // 关联类型未定义具体的类型
+
+    fn next(&mut self) -> Option<Self::Item>;
+}
+struct Counter {
+    count: u32,
+}
+
+impl Counter {
+    fn new() -> Counter {
+        Counter { count: 0 }
+    }
+}
+
+impl Iterator for Counter {
+    type Item = u32; // 在这里，定义具体的类型
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.count < 5 {
+            self.count += 1;
+            Some(self.count)
+        } else {
+            None
+        }
+    }
+}
+
+```
+
+```rs
+// 给 特征 的输入参数泛型定义默认的数据类型
+#![allow(unused)]
+fn main() {
+trait Add<Rhs=Self> {
+    type Output;
+
+    fn add(self, rhs: Rhs) -> Self::Output;
+}
+}
+```
+
+```rs
+//  完全限定无歧义调用
+```
+
+```rs
+// 定义一个实现这个特征的数据类型也需要实现另外几个特征
+use std::fmt;
+
+trait OutlinePrint: fmt::Display { // 定义实现OutlinePrint特征的数据类型必须也实现了fmt::Display特征
+    fn outline_print(&self) {
+        let output = self.to_string();
+        let len = output.len();
+        println!("{}", "*".repeat(len + 4));
+        println!("*{}*", " ".repeat(len + 2));
+        println!("* {} *", output);
+        println!("*{}*", " ".repeat(len + 2));
+        println!("{}", "*".repeat(len + 4));
+    }
+}
+
+fn main() {}
+```
+
+```rs
+// Rust机制里的orphan rul：只要 特征 或 类型 对于当前 crate 是本地的话就可以在此类型上实现该 trait。
+// 但，也可以通过 newtype pattern 模式绕过这个规则
+use std::fmt;
+
+struct Wrapper(Vec<String>); // 通过构建封装Vec<String>类型，构建一个新的类型 Wrapper
+
+impl fmt::Display for Wrapper { // 通过新的类型 Wrapper 去实现 fmt::Display 特征
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "[{}]", self.0.join(", "))
+    }
+}
+
+fn main() {
+    let w = Wrapper(vec![String::from("hello"), String::from("world")]);
+    println!("w = {}", w);
+}
+
+```
+
+## 七 深入类型
+- 类型别名(Type Alias)
+- newtype 使用元组结构体的方式将已有的类型包裹起来
+- 动态类型 = ynamically sized types = DST = 不定长类型 = unsized
+
+```rs
+// 类型别名 实例一
+fn main() {
+    type Kilometers = i32; // 给 i32 定义一个类型别名Kilometers
+
+    let x: i32 = 5;
+    let y: Kilometers = 5;
+
+    println!("x + y = {}", x + y);
+}
+```
+
+```rs
+// 类型别名 实例二
+fn main() {
+    let f: Box<dyn Fn() + Send + 'static> = Box::new(|| println!("hi"));
+
+
+    fn takes_long_type(f: Box<dyn Fn() + Send + 'static>) {}
+    fn returns_long_type() -> Box<dyn Fn() + Send + 'static> {
+        Box::new(|| ())
+    }
+
+    // 通过别类型名让代码看起来更易于阅读
+    type Thunk = Box<dyn Fn() + Send + 'static>;
+    let f: Thunk = Box::new(|| println!("hi"));
+    fn takes_long_type(f: Thunk) {}
+
+    fn returns_long_type() -> Thunk {
+        Box::new(|| ())
+    }
+}
+```
+
+```rs
+// 特殊的类型()
+fn fn_name_1(){
+    // --snip--
+}
+fn fn_name_1() -> (){
+    // --snip--
+}
+```
+
+
+```rs
+// 动态类型
+fn generic_1<T: Sized>(t: T) {
+    // --snip--
+}
+// 泛型T 的大小是未知的
+fn generic_1<T: ?Sized>(t: &T) {
+    // --snip--
+}
+
+// Box<dyn Trait>  // 特征 是动态类型
+```
+
+## 八 函数和闭包
+```rs
+// 函数作为参数，参数类型为fn，被命名为function pointer
+fn add_one(x: i32) -> i32 {
+    x + 1
+}
+
+fn do_twice(f: fn(i32) -> i32, arg: i32) -> i32 {
+    f(arg) + f(arg)
+}
+
+fn main() {
+    let answer = do_twice(add_one, 5);
+
+    println!("The answer is: {}", answer);
+}
+```
+
+```rs
+// function pointer 类型，既可以传 函数 也可以传 闭包
+fn main1() {
+    // 传递闭包进.map()里
+    let list_of_numbers = vec![1, 2, 3];
+    let list_of_strings: Vec<String> =
+        list_of_numbers.iter().map(|i| i.to_string()).collect();
+}
+fn main2() {
+    // 传递函数进.map()里
+    let list_of_numbers = vec![1, 2, 3];
+    let list_of_strings: Vec<String> =
+        list_of_numbers.iter().map(ToString::to_string).collect(); 
+}
+```
+
+```rs
+// 闭包和创建变量
+fn main() {
+    #[derive(Debug)]
+    enum Status {
+        Value(u32),
+        Stop,
+    }
+    // 通过传递function pointer来创建变量
+    let list_of_statuses_1: Vec<Status> = (0u32..20).map(Status::Value).collect();
+
+    // 传统的创建变量方式
+    let mut list_of_statuses_2: Vec<Status> = Vec::new();
+    for i in (0u32..20){
+        list_of_statuses_2.push(Status::Value(i));
+    }
+
+    println!("{:?}", list_of_statuses_1);
+    println!("{:?}", list_of_statuses_2);
+}
+```
+
+```rs
+// 闭包的表示形式为特征。
+
+// 直接返回 特征会 报错，因为编译器不知道闭包的内存占用大小
+// fn returns_closure() -> dyn Fn(i32) -> i32 {
+//     |x| x + 1
+// }
+
+// 将 特征 封装进特定的数据类型里，再进行返回
+fn returns_closure() -> Box<dyn Fn(i32) -> i32> {
+    Box::new(|x| x + 1)
+}
+```

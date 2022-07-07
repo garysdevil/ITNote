@@ -18,7 +18,7 @@ fn main() {
 
     // dbg宏 输出数据并且返回数据
     dbg!("hello");
-    dbg!(&"hello"); // 假如变量未实现Clone特性，又不想转移所有权，则可以在变量前添加&符号从而不会转移所有权。
+    dbg!(&"hello"); // 假如变量未实现Clone特征，又不想转移所有权，则可以在变量前添加&符号从而不会转移所有权。
 }
 ```
 
@@ -437,7 +437,7 @@ fn main() {
 
 ```rust
 // 结构体
-#[derive(Debug)] // 通过衍生宏给下一个数据类型实现Debug特性，然后可以使用{:?}或{:#?}格式化结构体进行输出展示
+#[derive(Debug)] // 通过衍生宏给下一个数据类型实现Debug特征，然后可以使用{:?}或{:#?}格式化结构体进行输出展示
 struct Person { // 定义结构体
     name: String,
     nickname: String,
@@ -471,7 +471,7 @@ fn func_tuple_strcut() {
 ```
 
 ```rs
-// 单元结构体 // 当需要在某个类型上实现特性，但没有任何要存储在类型本身中的数据时，类单元结构可能很有用。（下面的章节会讲解特性）
+// 单元结构体 // 当需要在某个类型上实现特征，但没有任何要存储在类型本身中的数据时，类单元结构可能很有用。（下面的章节会讲解特征）
 struct AlwaysEqual; // 定义单元结构体
 
 fn func_uint_strcut() {
@@ -484,7 +484,7 @@ fn func_uint_strcut() {
 
 - function 函数。
 
-- methods 方法被定义在一个结构体、枚举、特性对象的内部，并且方法的第一个参数一定是self。
+- methods 方法被定义在一个结构体、枚举、特征对象的内部，并且方法的第一个参数一定是self。
 
 - 每个结构体可以有多个impl块。
 
@@ -1006,7 +1006,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 // 看不懂可以暂时先忽视掉，属于高级语法
-// dyn表示实现了指定特性的数据类型。在这里，dyn表示任何实现了Error特性的类型。
+// dyn是特征对象类型的前缀。在这里，dyn表示任何实现了Error特征的类型。
 // dyn会影响性能，因为它不是静态调度的，它不能在编译时期确定传入参数的数据类型，也就不能将dyn转成特定类型的代码。
 ```
 
@@ -1059,19 +1059,19 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
     ```
 
-## 十一 特性
-- 特性（trait）是一系列接口和方法的集合，任何一个类型都可以去实现一个特性。
+## 十一 特征
+- 特征（trait）是一系列接口和方法的集合，任何一个类型都可以去实现一个特征。
 
-- 特性（trait）概念接近于 Java 中的接口（Interface），但两者不完全相同。
-  - 特性与接口相同的地方在于它们都是一种行为规范，可以用于标识哪些类/结构体有哪些方法。
-  - 特性里既可以定义接口（没有方法体的方法），也可以定义方法。
+- 特征（trait）概念接近于 Java 中的接口（Interface），但两者不完全相同。
+  - 特征与接口相同的地方在于它们都是一种行为规范，可以用于标识哪些类/结构体有哪些方法。
+  - 特征里既可以定义接口（没有方法体的方法），也可以定义方法。
 
-- 可以定义特性实现了另一个特性。模版： `` trait 特性名称: 另一个特性名称 ``
+- 可以定义特征实现了另一个特征。模版： `` trait 特征名称: 另一个特征名称 ``
 
-- 注意： 特性和结构体，必须有其中一个是本地代码定义的。否则两个宝箱可以为同一个类型实现同一个特性，编译器将不知道哪个实现需要被使用到。
+- 注意： 特征和结构体，必须有其中一个是本地代码定义的。否则两个宝箱可以为同一个类型实现同一个特征，编译器将不知道哪个实现需要被使用到。
 
 ```rust
-// 定义特性
+// 定义特征
 trait MyTrait1 {
     // 这个方法可以被重写
     fn describe(&self) -> String {
@@ -1087,7 +1087,7 @@ struct Person {
     name: String,
     age: u8
 }
-// 结构体Person重写特性定义的方法describe
+// 结构体Person重写特征定义的方法describe
 impl MyTrait1 for Person {
     fn describe(&self) -> String {
         format!("{} {}", self.name, self.age)
@@ -1099,8 +1099,8 @@ impl MyTrait1 for Person {
         return Person { name: self.name.clone(), age: self.age };
     }
 }
-// 特性可以作为函数的参数。
-fn say(T: &(impl MyTrait1 + std::fmt::Display)) { // 可以传入任意的数据类型，但数据类型必须实现 了MyTrait1 特性和 std::fmt::Display 特性
+// 特征可以作为函数的参数。
+fn say(T: &(impl MyTrait1 + std::fmt::Display)) { // 可以传入任意的数据类型，但数据类型必须实现 了MyTrait1 特征和 std::fmt::Display 特征
     println!("Breaking news! {:?}", T.say());
 }
 pub fn main() {
@@ -1114,23 +1114,23 @@ pub fn main() {
 }
 ```
 
-## 十二 范型&特性&结构体
-- 可以定义函数传入的范型数据类型必须实现了指定的特性。
-- 可以定义函数返回的数据类型可以是任意的但是必须实现了指定的特性。
-- 定义结构体方法时，可以定义结构体必须实现了指定的特性
+## 十二 范型&特征&结构体
+- 可以定义函数传入的范型数据类型必须实现了指定的特征。
+- 可以定义函数返回的数据类型可以是任意的但是必须实现了指定的特征。
+- 定义结构体方法时，可以定义结构体必须实现了指定的特征
 
-### 范型&特性
+### 范型&特征
 ```rs
-// 范型&特性
+// 范型&特征
 
-// 定义一个特性
-trait Comparable: std::fmt::Display { // Comparable特性实现了std::fmt::Display特性
+// 定义一个特征
+trait Comparable: std::fmt::Display { // Comparable特征实现了std::fmt::Display特征
     fn compare(&self, object: &Self) -> i8;
 }
 // impl<T: Debug> Comparable for T {
 //     // --snip--
 // }
-// f32的数据类型实现Comparable特性
+// f32的数据类型实现Comparable特征
 impl Comparable for f32 {
     fn compare(&self, object: &f32) -> i8 {
         if &self > &object { 1 }
@@ -1138,9 +1138,9 @@ impl Comparable for f32 {
         else { -1 }
     }
 }
-// 定义一个方法；输入参数 为 范型数据类型，并且该范型数据类型必须实现了Comparable特性
+// 定义一个方法；输入参数 为 范型数据类型，并且该范型数据类型必须实现了Comparable特征
 fn max_1<T: Comparable>(array: &[T]) -> &T {
-// fn max<T: Comparable + My_Trait>(array: &[T]) -> &T { // 可以使用+加号，规定传入的数据类型必须实现了 Comparable 和 My_Trait 特性
+// fn max<T: Comparable + My_Trait>(array: &[T]) -> &T { // 可以使用+加号，规定传入的数据类型必须实现了 Comparable 和 My_Trait 特征
     let mut max_index = 0;
     let mut i = 1;
     while i < array.len() {
@@ -1151,7 +1151,7 @@ fn max_1<T: Comparable>(array: &[T]) -> &T {
     }
     &array[max_index]
 }
-// 返回的数据类型可以是必须实现了某个特性的数据类型
+// 返回的数据类型可以是必须实现了某个特征的数据类型
 fn max_2<T: Comparable + Clone>(array: &[T]) -> impl Comparable {
     let mut max_index = 0;
     let mut i = 1;
@@ -1169,9 +1169,9 @@ fn main() {
 }
 ```
 
-### 范型&特性&结构体
+### 范型&特征&结构体
 ```rs
-// 范型&特性&结构体
+// 范型&特征&结构体
 use std::fmt::Display;
 struct Pair<T> {
     x: T,
@@ -1182,7 +1182,7 @@ impl<T> Pair<T> {
         Self { x, y }
     }
 }
-// 定义结构体方法时，定义结构体必须实现了指定的特性
+// 定义结构体方法时，定义结构体必须实现了指定的特征
 impl<T: Display + PartialOrd> Pair<T> {
     fn cmp_display(&self) {
         if self.x >= self.y {
@@ -1196,8 +1196,8 @@ impl<T: Display + PartialOrd> Pair<T> {
 
 ### where 关键字
 ```rs
-// 复杂的数据类型和特性的绑定关系可以使用 where 关键字简化
-// 例如：T数据类型必须实现了Display和Clone特性，U数据类型必须实现了Clone和Debug特性
+// 复杂的数据类型和特征的绑定关系可以使用 where 关键字简化
+// 例如：T数据类型必须实现了Display和Clone特征，U数据类型必须实现了Clone和Debug特征
 fn some_function<T: Display + Clone, U: Clone + Debug>(t: T, u: U) -> i32
 // 另一种更易于阅读的表达方式
 fn some_function<T, U>(t: T, u: U) -> i32
@@ -1327,12 +1327,12 @@ fn fn_main(){
 }
 ```
 
-### 6 泛型/特性/生命周期
+### 6 泛型/特征/生命周期
 ```rust
-// 同时使用了泛型、特性、生命周期机制
+// 同时使用了泛型、特征、生命周期机制
 // T 范型
 // 'a 生命周期
-// T 数据类型必须实现了 Display特性
+// T 数据类型必须实现了 Display特征
 use std::fmt::Display;
 fn longest_with_an_announcement<'a, T>(
     x: &'a str,
@@ -1479,7 +1479,7 @@ struct Cacher<T>
         value: Option<u32>,
     }
 }
-// 特征的闭包实现，有三种类型。任何闭包都实现了下面其中的一个特性
+// 特征的闭包实现，有三种类型。任何闭包都实现了下面其中的一个特征
 // Fn 该类型的闭包会对变量进行借用。
 // FnMut 该类型的闭包会变量进行可变借用。
 // FnOnce 该类型的闭包会转移变量的所有权。
@@ -1489,7 +1489,7 @@ struct Cacher<T>
 - 迭代(Iterator)负责遍历序列中的每一项和决定序列何时结束的逻辑。
 - Rust迭代器通过闭包函数实现了赖加载，是零成本抽象（zero-cost abstractions）之一，它意味着抽象并不会引入运行时开销。
 
-- 标准库里Iterator特性实现的关联方法
+- 标准库里Iterator特征实现的关联方法
     - iter() 
     - into_iter()
     - filter()
@@ -1497,7 +1497,7 @@ struct Cacher<T>
     - map()
 
 ```rs
-// 所有的具有迭代功能的类型都实现了这个特性
+// 所有的具有迭代功能的类型都实现了这个特征
 pub trait Iterator {
     type Item;
 
@@ -1545,8 +1545,8 @@ fn shoes_in_size(shoes: Vec<Shoe>, shoe_size: u32) -> Vec<Shoe> {
 ```
 
 ```rs
-// 自定义结构体实现迭代器特性
-// 使用标准库中定义好的Iterator特性所实现的一些关于迭代器的关联方法
+// 自定义结构体实现迭代器特征
+// 使用标准库中定义好的Iterator特征所实现的一些关于迭代器的关联方法
 struct Counter {
     count: u32,
 }
@@ -1555,7 +1555,7 @@ impl Counter {
         Counter { count: 0 }
     }
 }
-impl Iterator for Counter { // 实现迭代器特性
+impl Iterator for Counter { // 实现迭代器特征
     type Item = u32;
 
     fn next(&mut self) -> Option<Self::Item> { // 实现迭代器接口
