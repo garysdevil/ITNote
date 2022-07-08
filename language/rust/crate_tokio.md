@@ -118,7 +118,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ```rs
 // 主题： block_on 阻塞当前线程，运行future
-
 use std::{thread,time::Duration};
 use chrono::Local;
 use tokio::{self, runtime::Runtime, time};
@@ -127,21 +126,20 @@ fn now() -> String {
     Local::now().format("%F %T").to_string()
 }
 
-// 在runtime外部定义一个异步任务，且该函数返回值不是Future类型
-fn async_task() {
-  println!("create an async task: {}", now());
+fn fn_name() {
   tokio::spawn(async {
+    println!("an async task start at: {}", now());
     time::sleep(time::Duration::from_secs(1)).await;
-    println!("async task over: {}", now());
+    println!("an async task over at: {}", now());
   });
 }
 
 fn main() {
-    let rt1 = Runtime::new().unwrap();
-    rt1.block_on(async {
-      // 调用函数，该函数内创建了一个异步任务，将在当前runtime内执行
-      async_task();
-      println!("-----{}", now());
+    let rt = Runtime::new().unwrap();
+    // block_on() 阻塞主线程
+    rt.block_on(async {
+      fn_name();
+      println!("============{}", now());
     });
     // 睡眠，阻塞主线程结束
     thread::sleep(Duration::from_secs(2));
@@ -150,7 +148,7 @@ fn main() {
 
 ```rs
 // tokio::spawn 生成一个future，并且在runtime里运行这个future
-// async fn 生成一个future，等待被运行
+// async fn 会返回一个future，等待被运行
 use std::time::{Duration,Instant};
 use std::thread;
 
@@ -204,6 +202,53 @@ async fn main() {
  
     while let Some(message) = rx.recv().await {
         println!("GOT = {}", message);
+    }
+}
+```
+
+## tokio::select!
+```rs
+// tokio::select! 
+// 同时等待多个异步操作的结果，并且对其结果进行进一步处理
+// 任何一个 select 分支完成后，都会继续执行后面的代码，没被执行的分支会被丢弃
+
+use tokio::sync::oneshot;
+
+async fn some_operation()  {
+    println!("执行some_operation操作");
+}
+
+#[tokio::main]
+async fn main() {
+    let (mut tx1, mut rx1) = oneshot::channel();
+    let (tx2, rx2) = oneshot::channel();
+    // rx1.close(); // 主动关闭通道的接收端，会向通道的发送端发送一条关闭消息。
+    tokio::spawn(async {
+        // 等待 `some_operation` 的完成
+        // 或者处理 `oneshot` 的关闭通知
+        tokio::select! {
+            val = some_operation() => {
+                println!("some_operation函数执行完成");
+                let _ = tx1.send(val);
+            }
+            _ = tx1.closed() => { // 收到了发送端发来的关闭信号
+                println!("tx1收到通道接收端的关闭信号");
+                // `select` 即将结束，此时，正在进行的 `some_operation()` 任务会被取消，任务自动完成，
+                // tx1 被释放
+            }
+        }
+    });
+
+    tokio::spawn(async {
+        let _ = tx2.send("two");
+    });
+    tokio::select! {
+        val = rx1 => {
+            println!("rx1 completed first with {:?}", val);
+        }
+        val = rx2 => {
+            println!("rx2 completed first with {:?}", val);
+        }
     }
 }
 ```

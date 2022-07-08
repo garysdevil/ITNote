@@ -57,6 +57,12 @@ echo "${username}      ALL=(ALL)       NOPASSWD:ALL" >> /etc/sudoers
 chmod u-w /etc/sudoers
 ```
 
+```conf
+admin1  ALL=(root)    NOPASSWD:ALL,!/usr/sbin/visudo,!/usr/bin/su,!/usr/bin/passwd root,!/usr/bin/vi,!/usr/bin/vim,!/usr/bin/nano,!/usr/bin/echo,!/usr/bin/mv,!/usr/bin/cp
+admin2  ALL=(root)    /usr/bin/apt
+
+```
+
 3. 禁止root登入
 ```bash
 vim /etc/ssh/sshd_config

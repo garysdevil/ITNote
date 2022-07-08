@@ -402,9 +402,16 @@ done
 ```bash
 # scp  -i 指定密钥文件 -C 允许压缩 源文件 目的地址
 scp -P22 home.tar 192.168.205.34:/home/home.tar
-# rsync可以实现意外中断后，下次继续传
+# -r 拷贝目录
+
+# rsync支持在本地计算机与远程计算机之间，或者两个本地目录之间同步文件
 rsync -P --rsh=ssh home.tar 192.168.205.34:/home/home.tar
 rsync -P -e'ssh -p 22' home.tar 192.168.205.34:/home/home.tar
+# -P 可以实现意外中断后，下次继续传
+# -r 拷贝目录
+# -a 参数可以替代-r，除了可以递归同步以外，还可以同步元信息（比如修改时间、权限等）
+# --exclude 排除某些文件或目录
+# -e 指定协议
 ```
 
 ### GPU
@@ -720,4 +727,14 @@ jq .元素名字.元素名字
 jq .[数组索引]
 jq '.元素名字.元素名字 | .[数组索引]'
 jq -r # 输出字符串原始值而不是字符串 JSON 序列化后的值
+```
+
+### -
+```bash
+# 更改默认编辑器 方式一
+update-alternatives --config editor 
+# 更改默认编辑器 方式二
+select-editor
+# 临时更改默认编辑器
+export EDITOR="/usr/bin/vim"
 ```

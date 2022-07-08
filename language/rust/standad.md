@@ -218,6 +218,37 @@ fn main() {
 
 ### net
 ```rs
+// 服务端监听地址端口 // 一个简单的单线程服务器
+use std::net::{TcpListener, TcpStream};
+use std::io::prelude::*;
+
+fn handle_client(mut stream: TcpStream) {
+    println!("One connection established, client is {:?}", stream.peer_addr().unwrap());
+
+    // 处理客户端输入的数据
+    let mut buffer = [0; 1024]; // 在栈上声明一个缓冲区
+    stream.read(&mut buffer).unwrap(); // 阻塞，等待从连接中获取数据，将数据读取进缓冲区
+    println!("Request: {}", String::from_utf8_lossy(&buffer[..])); // 将字节转为字符串，并且输出
+
+    // 返回数据给客户端
+    let response = "HTTP/1.1 200 OK\r\n\r\n";
+    stream.write(response.as_bytes()).unwrap();
+    stream.flush().unwrap();
+}
+
+fn main() -> std::io::Result<()> {
+    let listener = TcpListener::bind("127.0.0.1:8080")?;
+
+    // accept connections and process them serially
+    for stream in listener.incoming() {
+        handle_client(stream?);
+    }
+    Ok(())
+}
+```
+
+```rs
+// 连接服务端
 use std::net::{IpAddr, Ipv4Addr, SocketAddr, TcpStream};
 use std::io::prelude::*;
 

@@ -1,5 +1,13 @@
 [TOC]
 # Disk
+## 硬盘
+- 最快的固态 Nvme
+- 固态硬盘 SSD(Solid State Drives)
+
+- HDD 机械硬盘
+    - 机械硬盘 SAS
+    - 最慢的机械硬盘 SATA
+
 ## 非关机状态下扩容磁盘
 - 添加新硬盘进行扩容，重新扫描SCSI总线来添加设备 
 	echo "- - -" >  /sys/class/scsi_host/host最大的序号/scan
@@ -7,29 +15,29 @@
 	echo '1' > /sys/class/scsi_disk/对应的硬盘/device/rescan
 
 ## 对磁盘进行分区
-### 情景一 2T以下磁盘：
+### 情景一 2T以下磁盘
+#### 交互式
 1. 查看所有磁盘的分区。
-	fdisk -l
+	- fdisk -l
 2. 进入磁盘进行分区。
 	1. fdisk /dev/sdb
 	2. 依次输入如下指令进行分区：
-		n 创建新磁盘
-		p 创建主分区
-		创建分区ID 1-4为主分区（回车即可）
-		根据提示选择磁盘开始位置（回车即可）
-		选择结束位置（回车即可）
+		1. n 创建新磁盘
+		2. p 创建主分区
+		3. 创建分区ID 1-4为主分区（回车即可）
+		4. 根据提示选择磁盘开始位置（回车即可）
+		5. 选择结束位置（回车即可）
 	3. 更改partition's system id为Linux LVM
-		t
-		8e
+		1. t
+		2. 8e
 	4. 查看此磁盘的分区
-		p 
+		1. p 
 	5. 输入 wq 保存退出。
 	
-- 通知系统内核分区表的变化
-partprobe /dev/sdb # install parted  
-### 非交互式
-vi fdisk.txt
-``` 
+3. 通知系统内核分区表的变化 partprobe /dev/sdb # install parted
+#### 非交互式
+- vi fdisk.txt
+```
 n
 p
 1
@@ -41,11 +49,28 @@ t
 p
 wq
 ```
+```bash
 fdisk /dev/sdb < fdisk.txt
+partprobe /dev/sdb # install parted # 通知系统内核分区表的变化
+```
 
 ### 情景二 2T以上磁盘：
 ```bash
+# 交互式操作
 parted /dev/sdb
+
+# 创建一个分区表，分区表类型为gpt
+parted /dev/sdf mklabel gpt
+# 进行分区  模版： parted /dev/sdf mkpart 1/primary/2/extended 文件系统格式 开始位置 结束位置
+parted /dev/sdf mkpart 1 ext4 1 5.5T 
+parted /dev/sdf mkpart primary ext4 1 100%
+
+# 查看所有分区
+parted -l
+# 查看分区
+parted -s /dev/sdf print
+# 删除分区
+parted -s /dev/sdf rm ${number}
 ```
 
 ## LVM
@@ -53,16 +78,19 @@ parted /dev/sdb
 - LVM是在磁盘分区和文件系统之间添加的一个逻辑层,目的在于解决磁盘扩容问题。可以简单理解pv对应着物理分区，lv对应着文件夹，vg为pv与lv的纽带。
 	
 ### LVM查询操作 
-1. 先查看所有的逻辑卷
-	lvs
-2. 先查看所有的卷组
-	vgs
-3. 先查看所有的物理卷
-	pvs
-4. 查看所有的pv,vg,lv及相关信息
-	lvdisplay
-5. 其它查询操作
-	lvscan，vgscan，pvscan
+```bash
+# 1. 先查看所有的逻辑卷
+lvs
+# 2. 先查看所有的卷组
+vgs
+# 3. 先查看所有的物理卷
+pvs
+# 4. 查看所有的pv,vg,lv及相关信息
+lvdisplay
+# 5. 其它查询操作
+lvscan，vgscan，pvscan
+```
+
 ### 进行LVM操作
 ```bash
 # 0. 如果没有lvm 则 
@@ -75,6 +103,7 @@ vgcreate  vg_data  /dev/sdb1
 lvcreate -n lv_data -L  1999.99G  vg_data
 # 4. 格式化lvm, mkfs.文件系统 /dev/卷组名称/逻辑卷名称
 mkfs.xfs /dev/vg_data/lv_data
+mkfs.ext4 /dev/vg_data/lv_data
 # 5. 写入 /etc/fstab 文件，使机器每次开机自动挂载磁盘：/dev/卷组名称/逻辑卷名称 挂载的磁盘目录 磁盘格式 default 0 0
 mkdir /data
 echo '/dev/vg_data/lv_data   /data   xfs    defaults    0  0'  >> /etc/fstab
@@ -86,28 +115,32 @@ mount -t xfs /dev/磁盘分区地址  /目录
 ```
 ### 添加新pv，扩容现有的lvm逻辑卷
 - 思路：创建新的PV---将新的PV加入到当前VG---扩容现有LV---扩容文件系统
-1. 创建新的pv：pvcreate 磁盘路径
-	pvcreate /dev/sdb2
-2. 将新的PV加入到当前VG：vgextend 现有的vg名称 PV的绝对路径
-	vgextend  vg_data /dev/sdb2
-3. 扩容现有的lv （lvdisplay查看lv信息） vextend -L +需要扩的空间 现有逻辑卷的绝对路径
-	lvextend -L +9999G /dev/vg_data/lv_data
-4. 扩容文件系统：xfs_growfs /dev/卷组名/逻辑卷名
-	xfs_growfs /dev/vg_data/lv_data  （扩容xfs格式）
-	resize2fs /dev/vg_data/lv_data   （扩容ext格式）
+```bash
+# 1. 创建新的pv：pvcreate 磁盘路径
+pvcreate /dev/sdb2
+# 2. 将新的PV加入到当前VG：vgextend 现有的vg名称 PV的绝对路径
+vgextend  vg_data /dev/sdb2
+# 3. 扩容现有的lv （lvdisplay查看lv信息） vextend -L +需要扩的空间 现有逻辑卷的绝对路径
+lvextend -L +9999G /dev/vg_data/lv_data
+# 4. 扩容文件系统：xfs_growfs /dev/卷组名/逻辑卷名
+xfs_growfs /dev/vg_data/lv_data  # （扩容xfs格式）
+resize2fs /dev/vg_data/lv_data   # （扩容ext格式）
+```
+
 ### 删除LVM卷
 - 顺序：卸载磁盘，删除逻辑卷，删除卷组，删除物理卷。
-1. 卸载磁盘
-	- 查看目前磁盘的挂载情况 
-	df -h
-	- 卸载磁盘：umount 文件夹的绝对路径 
-	umount /data
-2. 删除逻辑卷：lvremove /dev/卷组/逻辑卷  
-	lvremove /dev/vg_data/lv_data
-2. 删除卷组：vgremove 卷组名
-	vgremove vg_data
-3. 删除物理卷：pvremove 物理卷地址
-	pvremove /dev/sdc 
+```bash
+# - 查看目前磁盘的挂载情况 df -h
+
+# 1. 卸载磁盘 umount 文件夹的绝对路径 
+umount /data
+# 2. 删除逻辑卷：lvremove /dev/卷组/逻辑卷  
+lvremove /dev/vg_data/lv_data
+# 2. 删除卷组：vgremove 卷组名
+vgremove vg_data
+# 3. 删除物理卷：pvremove 物理卷地址
+pvremove /dev/sdc 
+```
 
 # File
 1. 硬盘的最小存储单位: 扇区-Sector, 每个扇区储存512字节-相当于0.5KB.
