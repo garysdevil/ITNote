@@ -71,9 +71,14 @@
     1. 获取文件校验值 vfs.file.cksum[/etc/passwd]
 
 ## 自定义监控项
+### 磁盘监控
 ```conf
 # Centos7系统写$$2。 Ubuntu20系统写$2
 UserParameter=device.tps[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{printf("%f",$$2)}'
 UserParameter=device.kB_read[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{printf("%f",$$3)}'
 UserParameter=device.kB_write[*],Device=$1 && iostat -d -k ${Device} | grep "${Device} "  | awk '{printf("%f",$$4)}'
 ```
+- Template 配置
+    - Name: {#DEVNAME}: Disk tps
+    - Key: device.tps[{#DEVNAME}]
+    - Type of information: Numeric(float)

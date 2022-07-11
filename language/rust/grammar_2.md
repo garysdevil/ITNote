@@ -991,3 +991,17 @@ fn returns_closure() -> Box<dyn Fn(i32) -> i32> {
     Box::new(|x| x + 1)
 }
 ```
+
+## 其它
+```rs
+fn main() {
+    let s = Some(String::from("Hello!"));
+    match s {
+        // 通过 ref 关键字，定义 t 变量是引用类型变量，因此s的所有权没有被转移
+        // 在这里只能使用 ref 关键声明 t 变量是引用类型
+        Some(ref t) => println!("t = {}", t),
+        _ => {}
+    }
+    println!("s = {}", s.unwrap());
+}
+```

@@ -235,11 +235,13 @@ cat /proc/sys/vm/swappiness
 - Linux Amazon 系统映像(AMI)使用两种虚拟化类型之一：半虚拟化 (PV) 或硬件虚拟机 (HVM)。
 
 ### 公钥
-扫描其它机器的公钥：ssh-keyscan
-生成公钥：ssh-keygen -C "备注信息"
-authorized_keys   id_rsa  id_rsa.pub  know_hosts
-authorized_keys,并修改 authorized_keys 权限为 600,当前目录权限为 700
-
+```bash
+# 扫描其它机器的公钥
+ssh-keyscan
+# 生成公钥
+ssh-keygen -C "备注信息"
+# authorized_keys   id_rsa  id_rsa.pub  know_hosts
+```
 
 ### 压缩
 ```bash
@@ -407,11 +409,18 @@ scp -P22 home.tar 192.168.205.34:/home/home.tar
 # rsync支持在本地计算机与远程计算机之间，或者两个本地目录之间同步文件
 rsync -P --rsh=ssh home.tar 192.168.205.34:/home/home.tar
 rsync -P -e'ssh -p 22' home.tar 192.168.205.34:/home/home.tar
-# -P 可以实现意外中断后，下次继续传
+# -P 可以实现意外中断后，下次继续传。当于 --partial --progress
 # -r 拷贝目录
 # -a 参数可以替代-r，除了可以递归同步以外，还可以同步元信息（比如修改时间、权限等）
 # --exclude 排除某些文件或目录
 # -e 指定协议
+# --partial 允许恢复中断的传输
+# --append 文件接着上次中断的地方，继续传输
+# --append-verify 跟--append参数类似，但会对传输完成后的文件进行一次校验。如果校验失败，将重新发送整个文件。
+# -z 同步时压缩数据
+
+# 通过ssh协议远程同步时的参数
+-a --append-verify -P -v -z -e'ssh -p 22'
 ```
 
 ### GPU

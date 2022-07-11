@@ -264,7 +264,26 @@ fn main() -> std::io::Result<()> {
 
 ```
 
+### collections
+```rs
+use std::collections::HashMap;
 
+fn main(){
+    let mut letters = HashMap::new();
+
+    for ch in "a short treatise on fungi".chars() {
+        let counter = letters.entry(ch).or_insert(0);
+        // hashmap_instance.entry() 如果不存在这个健，则向hashmap实例插入kv健值对，并且返回被插入hashmap实例的项
+        // .or_insert(0) 如果这个健不不存在值，则向kv健值对插入默认值，并且返回kv健值对值的引用
+        
+        *counter += 1;
+    }
+    assert_eq!(letters[&'s'], 2);
+    assert_eq!(letters[&'t'], 3);
+    assert_eq!(letters[&'u'], 1);
+    assert_eq!(letters.get(&'y'), None);
+}
+```
 ## 全局作用域标准库
 ```rust
 // Rust 的标准库，有一个 prelude 子模块。 
