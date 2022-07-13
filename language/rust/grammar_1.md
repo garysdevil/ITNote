@@ -1192,6 +1192,14 @@ impl<T: Display + PartialOrd> Pair<T> {
         }
     }
 }
+pub fn main() {
+    let point1 = Pair{x:1, y:2}; // 编译器自动推断参数类型
+    let point2 = Pair::<i32>{x:1, y:2}; // 通过turbofish语法，指定参数类型
+    let point3 = Pair::new(2, 3);
+    point1.cmp_display();
+    point2.cmp_display();
+    point3.cmp_display();
+}
 ```
 
 ### where 关键字

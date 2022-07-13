@@ -318,16 +318,67 @@ ps -A  -o comm,pmem,pcpu | sort | uniq -c | head -15
 # 内存消耗从大到小
 ps -eo pid,ppid,%mem,%cpu,cmd --sort=-%mem | head
 ps -eo pid,ppid,%mem,%cpu,comm --sort=-%mem | head
-
+```
+```bash
 # top 只显示一次CPU资源使用信息
 top -n 1
+# 查看所有线程
+top -H
+# 查看指定进程的所有线程
+top -H -p ${pid}
 # 
 top -c -b -o +%MEM | head -n 20 | tail -15
 top -b -o +%MEM | head -n 20 | tail -15
-
+```
+```bash
 # lsof（list open files）是一个列出当前系统打开文件的工具
 lsof  -i @fw.google.com:2150=2180
 ```
+
+### htop
+```bash
+# 一个基于ncurses的交互进程查看器
+htop
+# -C --no-color　　　　 　　 使用一个单色的配色方案
+# -d --delay=DELAY　　　　 设置延迟更新时间，单位秒
+# -h --help　　　　　　  　　 显示htop 命令帮助信息
+# -u --user=USERNAME　　  只显示一个给定的用户的过程
+# -p --pid=PID,PID…　　　    只显示给定的PIDs
+# -s --sort-key COLUMN　    依此列来排序
+# -v –version　　　　　　　   显示版本信息 
+```
+- 交互式界面从左到右依次各项的含义
+    1. PID      表示进程的标识号。
+    2. USER     表示运行此进程的用户。
+    3. PRI      表示进程的优先级。
+    4. NI       表示进程的优先级别值，默认的为0，可以进行调整。
+    5. VIRT     表示进程占用的虚拟内存值。
+    6. RES      表示进程占用的物理内存值。
+    7. SHR      表示进程占用的共享内存值。
+    8. S        表示进程的运行状况，R表示正在运行、S表示休眠，等待唤醒、Z表示僵死状态。
+    9. %CPU     表示该进程占用的CPU使用率。
+    10. %MEM    表示该进程占用的物理内存和总内存的百分比。
+    11. TIME+   表示该进程启动后占用的总的CPU时间。
+    12. COMMAND 表示进程启动的启动命令名称。
+
+- 交互式界面指令
+    1. F1 或者h    查看帮助文档。
+    2. F2 或者S    设置htop
+    3. / 或者F3    搜索进程。
+    4. \ 或者F4    增量进程过滤器。
+    5. t 或者F5    显示树形结构。
+    6. F6 +,-     按照某个指标进行排序。
+    7. ] 或者F7    可提高nice值可以提高对应进程的优先级
+    8. [ 或者F8    可减少nice值可以提高对应进程的优先级
+    9. k 或者 F9   杀掉进程。
+    10. q 或者F10  结束htop。
+    11. u         只显示一个给定的用户的进程。
+    12. H         显示或隐藏用户线程。
+    13. K         显示或隐藏内核线程。
+    14. F         跟踪进程。
+    15. P         按CPU 使用排序。
+    16. M         按内存使用排序。
+    17. T         按Time+ 使用排序。
 
 ### sysstat
 - 分析服务器的性能和资源的使用效率。可以监控CPU、硬盘、网络等数据.
@@ -738,7 +789,7 @@ jq '.元素名字.元素名字 | .[数组索引]'
 jq -r # 输出字符串原始值而不是字符串 JSON 序列化后的值
 ```
 
-### -
+### linux默认编辑器
 ```bash
 # 更改默认编辑器 方式一
 update-alternatives --config editor 

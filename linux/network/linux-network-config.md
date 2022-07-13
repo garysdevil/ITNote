@@ -27,10 +27,11 @@ systemctl restart networking
 3. 使用ifconfig命令配置 网关,IP（临时生效）
 ifconfig eth0 192.168.0.1 netmask 255.255.255.0 up
 
-### Ubuntu18.04配置
-1. 配置
-- 网关,IP,DNS
-vi /etc/netplan/50-cloud-init.yaml
+### Ubuntu18.04配置 Ubuntu20.0.4
+1. 配置 网关,IP,DNS
+    - ``vi /etc/netplan/${name}.yaml``
+    - ``vi /etc/netplan/50-cloud-init.yaml``
+    - 使配置生效 ``netplan apply``
 ```yaml
 network:
     ethernets:
@@ -41,11 +42,13 @@ network:
                     addresses: [114.114.114.114,8.8.8.8]
     version: 2
 ```
-netplan apply
 
-2. 查看
+
+```bash
+# 1. 查看
 systemctl status systemd-networkd
 networkctl status 
+```
 
 ### Centos7.5配置
 1. 查看网卡

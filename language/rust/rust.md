@@ -18,31 +18,36 @@
 - 宝箱文档 https://docs.rs/
 
 ## Rust工具包
+- Rust工具链管理器 ``rustup``
 ```bash
-# 下载安装rust工具包
+# 下载安装Rust工具链管理器
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source $HOME/.cargo/env
 ```
 
-- Rust工具链管理器： rustup
+- channel： Rust发布在三个不同的"channel"上：stable，beta 和 nightly，对应三种不同的版本。
+### rustup 工具链
+1. Rust编译器 ``rustc``
 
--  Rust编译器： rustc
-    
-- cargo
-    - Rust 内置的构建系统和包管理器。
+2. Rust标准库rust-std
+
+3. Rust包管理和构建工具 ``cargo``
     - 可以使用 cargo 指令进行 工程构建、编译、运行、打包、获取包等功能。
 
-- 源代码格式化工具
-    - cargo-fmt
-    - rustfmt
+4. Rust文档生成器 ``rustup doc``
 
-- 调试器: rust-gdb
+5. Rust源代码格式化工具
+    - ``cargo-fmt 或者 cargo fmt``
+    - ``rustfmt``
 
-- 文档生成器 rustdoc
+6. Rust代码检查工具clippy
+
+### 其它
+- 调试器 ``rust-gdb``
 
 - 代码提示工具
     - rls
-      - Rust 语言服务器（RLS）基于 LSP（Language Server Protocol），即语言服务器协议，LSP 由红帽、微软和 Codenvy 联合推出，可以让不同的程序编辑器与集成开发环境（IDE）方便地嵌入各种编程语言，允许开发人员在最喜爱的工具中使用各种语言来编写程序。
+        - Rust 语言服务器（RLS）基于 LSP（Language Server Protocol），即语言服务器协议，LSP 由红帽、微软和 Codenvy 联合推出，可以让不同的程序编辑器与集成开发环境（IDE）方便地嵌入各种编程语言，允许开发人员在最喜爱的工具中使用各种语言来编写程序。
     - racer
 
 ## 指令
@@ -50,12 +55,13 @@ source $HOME/.cargo/env
 ```bash
 # rustup 相关操作
 rustup update # 升级rust
+rustup show # 展示目前所有安装的工具链
 rustup self uninstall # 卸载rust相关的工具
 rustup install nightly # 安装nightly版本
 rustup install 1.57 # 安装历史版本1.57
 rustup toolchain list # 查看rust工具包版本
 rustup override set nightly # 设置使用nightly版本
-
+cargo +nightly-2020-09-30 build --release # 指定rustup版本进行编译
 ```
 
 ```bash
@@ -124,3 +130,6 @@ cargo yank --vers 1.0.1 --undo # 撤回
     - main.rs主要负责调用命令行解析逻辑、设置配置项、调取lib.rs的运行函数、处理lib.rs运行函数返回的错误。
 
 - Test-driven development (TDD) process
+
+## Rust
+- rustacian rust编程者

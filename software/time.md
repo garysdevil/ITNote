@@ -42,7 +42,7 @@ pool time.nist.gov iburst # 美国标准技术研究院 NTP 服务器
     1. GMT 格林尼治标准时间 Greenwich Mean Time
         - +0
         - 东零时区/西零时区，是西经15度到东经15度的地方，格林威治是英国伦敦泰晤士河南岸的一个地方。
-    2. PST 太平洋标准时间 Pacific Time Zone
+    2. PST/PT 太平洋标准时间 Pacific Time Zone
         - UTC/GMT -08 (冬令时)
         - UTC/GMT -07 (夏令时)
         - 西八时区，包括太平洋沿岸的4个州，代表城市洛杉矶、旧金山、圣地亚哥、拉斯维加斯、西雅图。

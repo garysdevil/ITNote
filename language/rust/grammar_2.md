@@ -993,6 +993,9 @@ fn returns_closure() -> Box<dyn Fn(i32) -> i32> {
 ```
 
 ## 其它
+### 引用类型的两种定义方式
+- &
+- ref
 ```rs
 fn main() {
     let s = Some(String::from("Hello!"));
@@ -1005,3 +1008,4 @@ fn main() {
     println!("s = {}", s.unwrap());
 }
 ```
+

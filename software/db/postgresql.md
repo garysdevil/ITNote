@@ -1,13 +1,25 @@
 ## Postgresql
-- 安装参考文档 https://www.postgresql.org/
+### 相关链接
+- https://www.postgresql.org/
+- https://www.postgresql.org/about/press/presskit12/zh/
+
+### 版本
+
+| Version | Current minor | Supported | First Release      | Final Release     |
+| ------- | ------------- | --------- | ------------------ | ----------------- |
+| 14      | 14.4          | Yes       | September 30, 2021 | November 12, 2026 |
+| 13      | 13.7          | Yes       | September 24, 2020 | November 13, 2025 |
+| 12      | 12.11         | Yes       | October 3, 2019    | November 14, 2024 |
+| 11      | 11.16         | Yes       | October 18, 2018   | November 9, 2023  |
+| 10      | 10.21         | Yes       | October 5, 2017    | November 10, 2022 |
+
 ### 安装
-##### ubuntu安装
+#### ubuntu安装
 1. 安装
 ```bash
 # https://www.postgresql.org/download/linux/ubuntu/
-echo 'deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main' >> /etc/apt/sources.list.d/pgdg.list # ubuntu16
+echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 
-echo  'deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main'  >> /etc/apt/sources.list.d/pgdg.list # ubuntu18
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 apt-get update
 

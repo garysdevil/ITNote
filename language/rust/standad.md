@@ -88,7 +88,7 @@ fn main1() {
 }
 
 fn main2() {
-    // 创建一个线程，线程名称为 thread1, 堆栈大小为4k
+    // 创建一个线程，进行定义化，线程名称为 thread1, 堆栈大小为4k
     let thread_handler = thread::Builder::new()
                             .name("thread1".to_string())
                             .stack_size(4*1024*1024).spawn(move || {

@@ -210,3 +210,34 @@ fn test(){
     3. 大型数据，只建议在堆上分配和使用
     - 栈的分配速度肯定比堆上快，但是读取速度往往取决于你的数据能不能放入寄存器或 CPU 高速缓存。
 
+## turbofish 涡轮鱼
+- 参考 
+    - https://stackoverflow.com/questions/52360464/what-is-the-syntax-instance-methodsomething
+    - https://matematikaadit.github.io/posts/rust-turbofish.html
+
+- turbofish，通常用于在表达式中为泛型类型、函数或方法指定具体的参数类型。
+
+```rs
+fn main () {
+    // let var_a = (0..255).sum(); // 编译器无法推断出数据类型，报错
+    let var_b = (0..255).sum::<u32>(); // 通过turbofish语法，指定参数类型
+    let var_c: u32 = (0..255).sum(); // 直接定义了变量var_c的数据类型
+}
+```
+
+```rs
+```rs
+use core::fmt::Debug;
+
+fn foo<T: Default + Debug>() { // 可以通过这种方式传入一个泛型，此泛型必须实现了Default和Debug特征
+    let t: T = Default::default();
+    // or
+    // let t = <T as Default>::default();
+    println!("{t:?}");
+}
+
+fn main() {
+    foo::<u32>(); // 通过turbofish语法，指定参数类型
+}
+```
+```
