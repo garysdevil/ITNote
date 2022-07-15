@@ -453,6 +453,11 @@ done
 
 ### 传文件
 ```bash
+# 本地快速拷贝文件夹
+tar cvf – 源文件夹路径 | tar xvf – -C 目的文件夹路径
+```
+
+```bash
 # scp  -i 指定密钥文件 -C 允许压缩 源文件 目的地址
 scp -P22 home.tar 192.168.205.34:/home/home.tar
 # -r 拷贝目录
