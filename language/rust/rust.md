@@ -40,7 +40,11 @@ source $HOME/.cargo/env
     - ``cargo-fmt 或者 cargo fmt``
     - ``rustfmt``
 
-6. Rust代码检查工具clippy
+6. Rust代码检查工具 ``cargo clippy``
+    - 参考 https://magiclen.org/clippy/
+    - lint最早用于C语言，是一种用来检查代码的工具，现在的主流编程语言几乎都有lint可以使用，尤其是JavaScript、Python等直译式编程语言，因为它们的代码不会经过编译，所以特别需要使用lint来检查原代码。
+    - 通过lint，可以写出疑虑较少、性能更好或是更容易阅读的代码。
+    - Rust编程语言虽然是静态类型的编程语言，而且拥有十分严谨的编译器，但官方还是提供了一个lint工具 Clippy。
 
 ### 其它
 - 调试器 ``rust-gdb``
@@ -74,7 +78,8 @@ rustc ${filepath} # 编译生成二进制文件
 # cargo 相关操作
 cargo --version
 cargo new greeting # 构建一个项目 默认参数--bin
-cargo build # 编译一个项目
+cargo build # 编译一个项目，会激活#[cfg(debug_assertions)]属性，来使用调试(debug)相关的代码。
+cargo build --release # 允许使用编译器所有的优化功能，并禁用有加上#[cfg(debug_assertions)]属性的代码
 cargo install --path . # 安装二进制文件（默认位置 $HOME/.cargo/bin）
 # cargo build/run --release 使用 release 编译会比默认的 debug 编译性能提升 10 倍以上，但是 release 缺点是编译速度较慢，而且不会显示 panic backtrace 的具体行号 
 cargo run # 编译运行一个项目

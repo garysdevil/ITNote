@@ -286,7 +286,38 @@ fn main(){
 ```
 
 ### std::cell
+- 内部可变性智能指针。
+- 来源
+    - Rust 通过其所有权机制，严格控制拥有和借用关系，来保证程序的安全，并且这种安全是在编译期可计算、可预测的。但是这种严格的控制，有时也会带来灵活性的丧失，有的场景下甚至还满足不了需求。
+    - Rust 标准库中，设计了这样一个系统的组件 ``Cell 和 RefCell``,它们弥补了 Rust 所有权机制在灵活性上和某些场景下的不足。同时，又没有打破 Rust 的核心设计。它们的出现，使得 Rust 革命性的语言理论设计更加完整，更加实用。
+- Rust 机制里修改一个值，必须是值的拥有者，并且声明 mut；或 以 &mut 的形式，借用。而通过 Cell, RefCell，则可以在需要的时候，就可以修改里面的对象。而不受编译期静态借用规则束缚。
+- Cell 和 RefCell 的区别
+    - Cell只能包装拥有Copy特征的类型。
+    - RefCell能够包装任何类型。
 
+```rs
+use std::cell::Cell;
+
+struct SomeStruct {
+    regular_field: u8,
+    special_field: Cell<u8>,
+}
+
+let my_struct = SomeStruct {
+    regular_field: 0,
+    special_field: Cell::new(1),
+};
+
+let new_value = 100;
+
+// ERROR: `my_struct` is immutable
+// my_struct.regular_field = new_value;
+
+// WORKS: although `my_struct` is immutable, `special_field` is a `Cell`,
+// which can always be mutated
+my_struct.special_field.set(new_value);
+assert_eq!(my_struct.special_field.get(), new_value);
+```
 
 ## 全局作用域标准库
 ```rust
