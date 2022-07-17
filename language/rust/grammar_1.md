@@ -678,6 +678,13 @@ fn main() {
     - 至多只能包含一个 library crate。
     - 至少包含一个 crate。
 
+- 曾经需要使用 extern crate ${库名字} 来将外部库加载进作用域内，自从Rust 2018后，只需要向Cargo.toml添加外部依赖项，就会将外部库加载进整个crate作用域内。
+    ```rs
+    // 1.3 版本之前的语法
+    #[macro_use] // 将 lib_name 所有 macro 的作用域扩展到上一级
+    extern crate lib_name;
+    ```
+
 ### 模块 module
 - 通过模块化可以进行作用域和私有变量的控制，工程组织结构的布局。
 

@@ -148,15 +148,13 @@ fn main() {
 - RefCell<T>  通过将安全检查放置运行时，提供了一个可以用于当需要不可变类型但是需要改变其内部值能力的类型。但依然需要在运行时遵守所有权借用规则，否则会导致panic。
 
 ```rs
-
+use std::cell::RefCell;
 fn main() {
     // let x = 5;
     // let y = &mut x;
-
-    use std::cell::RefCell;
     let var_refcell_1 = RefCell::new(5);
     let var_refcell_2 = var_refcell_1.borrow_mut(); // 
-    // let var_refcell_2 = var_refcell_1.borrow(); // 可以编译通过，但在运行时打破借用规则，触发panic
+    let var_refcell_3 = var_refcell_1.borrow(); // 可以编译通过，但如果在运行时打破借用规则，依然会触发panic
 }
 ```
 
@@ -254,7 +252,7 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 
 fn main() {
-    let counter = Arc::new(Mutex::new(0)); // 当变量被多个线程使用时，使用多线程安全的引用计数智能指针Arc将其包裹起来
+    let counter = Arc::new(Mutex::new(0)); // 当变量被多个线程使用时，使用多线程安全的引用计数智能指针Arc将其包裹起来用于共享状态
     let mut handles = vec![];
 
     for _ in 0..10 {
@@ -262,7 +260,7 @@ fn main() {
         let handle = thread::spawn(move || { // 多个线程共享 counter 状态
             let mut num = counter.lock().unwrap(); // Mutex<T> 也提供了 内部可变性 的功能，因此即使 counter 变量是不可变的，但 T 的值是可以变的。
 
-            *num += 1;
+            *num += 1; // 当变量 num 作用域结束时，自动解锁。
         });
         handles.push(handle);
     }
@@ -709,7 +707,7 @@ fn main() {
 ```
 
 ```rs
-// 使用关键字extern调用其它语言的代码
+// 使用关键字extern调用其它语言的代码。
 extern "C" { // 调用C语言的代码
     fn abs(input: i32) -> i32;
 }

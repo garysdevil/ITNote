@@ -2,44 +2,47 @@
 ## 宏
 - 宏按照来源分类
     - 声明宏（Declarative Macro）
-        - 用某种语法直接声明出的宏。
-        - 可以定义一种符合当前场景的数据结构, 然后使用该宏来编写rust代码.
+        - 用某种语法直接定义出的宏。
+        - 可以定义一种符合当前场景的数据结构, 然后使用该宏来编写rust代码。
         - 例如 vec!、println!、write!
     - 过程宏（Procedural Macro）
         - 直接生成抽象语法树过程的宏。
         - 主要是为结构体、元祖等数据结构增加通用的trait公共接口和公共方法.
         - 例如 #[derive(Debug)]、#[derive(PartialEq)] 
         - 自定义过程宏，必须引入官方的过程宏库 proc_macro，或者引入第三方更友好的库syn、quote、proc_macro2
+    - 区别
+        - 声明宏只能用 macro_rules! 来定义出来，它定义出的一定是调用宏。
+        - 过程宏可以产生属性宏，也可以产生调用宏。
 
 - 过程宏分为三种
     1. 派生宏（Derive macro）：用于结构体（struct）、枚举（enum）、联合（union）类型，可为其实现函数或特征（Trait）。
-    2. 属性宏（Attribute macro）：用在结构体、字段、函数等地方，为其指定属性等功能。如标准库中的#[inline]、#[derive(...)]等都是属性宏。
+    2. 属性宏（Attribute macro）：用在结构体、字段、函数等地方，为其指定属性等功能。如标准库中的#[inline]等都是属性宏。
     3. 函数式宏（Function-like macro）：用法与普通的规则宏类似，但功能更加强大，可实现任意语法树层面的转换功能。
     - 函数式宏和属性宏拥有修改原AST的能力，而派生宏只能做追加的工作.
 
 - 宏按照使用方式分类
-    - 属性宏：给声明添加属性的宏，例如 #[derive(Debug)] 和 #[test]
+    - 属性宏：给类型添加属性的宏，例如 #[derive(Debug)] 和 #[test]
     - 调用宏：像函数一样的宏，例如 println!
 
-- 区别
-    - 声明宏目前只能用 macro_rules! 声明出来，它声明出的一定是调用宏。
-    - 过程宏可以产生属性宏，也可以产生调用宏。
+- 宏和函数的对比
+    - 函数必须明确参数的数量和类型。
+    - 宏可以有各种各样的参数。
 
 - 对比C/C++
     - C/C++中的宏，在预编译阶段通过文本替换。
     - 在词法层面甚至语法树层面作替换，其功能更加强大，也更加安全。
-### 常用的过程宏
+
+### 标准库中的宏
 ```rust
-#![allow(dead_code)] // 此宏必须写在文件顶部，忽略未使用到的代码的警告
-#![allow(unused_variables)] // 此宏必须写在文件顶部，忽略未使用大的变量的警告
+#![allow(dead_code)] // 此宏必须写在文件顶部。此宏表示忽略未使用到到的代码的警告。
+#![allow(unused_variables)] // 此宏必须写在文件顶部。此宏表示忽略未使用到的变量的警告。
 ```
 
-### 定义一个 声明宏
+### 定义和使用 声明宏
 - 定义宏实现创建链表的功能 list
     ```rust
-    #[macro_export]
-    macro_rules! list {
-        // #[macro_export] 标记一个宏可以在其它包中使用，默认为只能被当前包所使用。
+    #[macro_export] // #[macro_export] 标记一个宏可以在其它包中使用，默认为只能被当前包所使用。
+    macro_rules! list { // macro_rules! 表示定义创建一个声明宏，名字为 list
         // $x 是变量
         // :expr 是关键字语法, 表示表达式
         // * 表示零次或多次表达式匹配
@@ -55,23 +58,47 @@
         }
     }
     
-    let x = list!(1,2,3);
+    let x = list!(1,2,3); // 通过 声明宏名字!(参数...) 来使用声明宏
     println!("{:?}", x)
     ```
-### 过程宏
-#### 派生宏
+
+### 定义和使用 派生宏
 ```rust
-#[proc_macro_derive(Builder)] // #[proc_macro_derive(Builder)]表明derive_builder是一个派生宏
+#[proc_macro_derive(Builder)] // #[proc_macro_derive(Builder) ]表示 derive_builder 是一个派生宏
 fn derive_builder(input: TokenStream) -> TokenStream {
     let _ = input;
 
     unimplemented!()
 }
 
-#[derive(Builder)]
+#[derive(Builder)] // 通过在结构体枚举联合类型上标注 #[derive(过程宏名字)] 来使用过程宏
 struct Command {
     // ...
 }
+```
+
+### 定义和使用 属性宏
+```rs
+#[proc_macro_attribute] // #[proc_macro_attribute] 表示定义一个属性宏
+// 定义属性宏时，函数传入两个参数，第一个表示属性宏传入的参数，第二个参数表示所关联的类型主体。
+// 例如下面所属，GET 和 "/" 表示传入的第一个参数，fn index() {} 表示传入的第二个参数。
+pub fn route(attr: TokenStream, item: TokenStream) -> TokenStream { 
+    // ..
+}
+
+#[route(GET, "/")] // 通过在一个类型上标注 #[属性宏(参数, 参数)] 来使用一个属性宏
+fn index() {}
+```
+
+### 定义和使用 函数宏
+```rs
+#[proc_macro] // proc_macro 表示定义一个函数宏
+pub fn sql(input: TokenStream) -> TokenStream {
+    // ...
+}
+
+
+let sql = sql!(SELECT * FROM posts WHERE id=1); // 通过 sql!() 函数宏的名字和感叹号来使用使用函数宏
 ```
 
 ## 异步
