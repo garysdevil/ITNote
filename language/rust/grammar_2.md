@@ -261,7 +261,8 @@ fn main() {
         let handle = thread::spawn(move || { // 多个线程共享 counter 状态
             let mut num = counter.lock().unwrap(); // Mutex<T> 也提供了 内部可变性 的功能，因此即使 counter 变量是不可变的，但 T 的值是可以变的。
 
-            *num += 1; // 当变量 num 作用域结束时，自动解锁。
+            *num += 1; 
+            // 当变量 num 作用域结束时，自动解锁。
         });
         handles.push(handle);
     }

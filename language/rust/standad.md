@@ -196,6 +196,7 @@ fn main() {
 }
 ```
 ### sync
+1. std::sync::Arc
 ```rust
 use std::thread;
 use std::time::Duration;
@@ -215,6 +216,18 @@ fn main() {
     println!("{:?}", name_arc1); // Arc::drop()就被调用了，name_arc1的原子计数减一，变成0，name_arc1变量数据被清除
 } 
 ```
+
+### std::sync::atomic
+- 诞生： Rust编程语言在1.34之后的版本中开始正式提供完整的原子(Atomic)类型。
+- 功能： 多线程之间使用原子类型通过共享内存的方式进行线程间通信
+- 优点： 原子操作若用得好，就不需要去使用会拖累程序性能的互斥锁(Mutex)或是消息传递(message passing)机制。
+- 原子类型
+    - 原子是指一系列不可被上下文交换(Context Switch)的机器指令，这些机器指令组成的操作又称为原子操作(Atomic Operation)。
+    - 在多CPU内核的环境下，当某个CPU内核开始运行原子操作时，就会先暂停其它CPU内核对内存的操作，以保证在原子操作运行的过程中，内存内容不会受到其它CPU内核干扰。
+    - 原子操作会牵扯到编译器优化以及CPU架构的问题.
+- Rust原子操作操作有5中内存顺序: Relaxed/Release/Acquire/AcqRel/SeqCst
+
+1. std::sync::atomic::AtomicBool
 
 ### net
 ```rs

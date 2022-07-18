@@ -474,9 +474,22 @@ rsync -P -e'ssh -p 22' home.tar 192.168.205.34:/home/home.tar
 # --append 文件接着上次中断的地方，继续传输
 # --append-verify 跟--append参数类似，但会对传输完成后的文件进行一次校验。如果校验失败，将重新发送整个文件。
 # -z 同步时压缩数据
+# -S 传输稀疏文件 sparse file
 
 # 通过ssh协议远程同步时的参数
 -a --append-verify -P -v -z -e'ssh -p 22'
+```
+
+- 稀疏文件 sparse file
+    - 稀疏文件就是在文件中留有很多空余空间，留备将来插入数据使用。如果这些空余空间被ASCII码的NULL字符占据，并且这些空间相当大，那么，这个文件就被称为稀疏文件，而且，并不分配相应的磁盘块。
+    - Linux中常见的qcow2文件和raw文件，都是稀疏文件。
+    - ``qemu-img info ${path}`` 查看稀疏文件的大小
+```bash
+# 拷贝稀疏文件的几种方式 # 好想都没有很好的效果
+# 方式一
+tar cSf 0.tar 0 && rsync -P -S -e'ssh -p 22' 0.tar  10.10.1.42:~/
+# 方式二
+tar Scjf - 0 | ssh 10.10.1.42 tar Sxjf - -C ./
 ```
 
 ### GPU
@@ -584,6 +597,16 @@ taskset -cp ${start},${end}  ${PID} # start核end
 ```
 
 ### ssh 
+```bash
+ssh -p22 127.0.0.1 -i 私钥文件路径
+```
+
+- vi ~/.ssh/config
+```conf
+# 定义ssh登入时默认使用的私钥
+IdentityFile ~/.ssh/私钥文件名
+```
+
 - 问题：用SSH客户端连接linux服务器时，经常会话连接中断。
 - 解决方案：设置服务器向SSH客户端连接会话时发送的频率和时间。
 ```bash
