@@ -178,7 +178,7 @@ fn main() {
         - 通道有两部分组成，一个发送者（transmitter）和一个接收者（receiver）。
         - 可以有多个发送者（transmitter）。
     - 共享状态
-        - 互斥锁 Mutex<T> 
+        - 互斥锁 Mutex<T>  互斥锁并没有实现Send特征，因此不能被发送到另一个线程。
         - 多线程安全的引用计数智能指针 Arc<T>
 ### 线程
 ```rust

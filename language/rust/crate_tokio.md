@@ -20,6 +20,10 @@
     - tokio中的锁定策略是读者和作家公平排队，与操作系统无关。
     - tokio的RwLock在挂起的时候，会让出执行权，标准库的不会。
 
+- Task
+    - 每个task占用64 bytes
+    - .await 执行期间，task可能会在线程间转移
+
 ## runtime的创建
 ```rs
 use tokio;
@@ -120,7 +124,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 ```rs
-// 主题： block_on 阻塞当前线程，运行future
+// 主题： block_on 阻塞当前线程
 use std::{thread,time::Duration};
 use chrono::Local;
 use tokio::{self, runtime::Runtime, time};
@@ -132,7 +136,8 @@ fn now() -> String {
 fn fn_name() {
   tokio::spawn(async {
     println!("an async task start at: {}", now());
-    time::sleep(time::Duration::from_secs(1)).await;
+    time::sleep(time::Duration::from_secs(1)).await; // 不会阻塞主线程
+    thread::sleep(Duration::from_secs(1)); // 阻塞主线程
     println!("an async task over at: {}", now());
   });
 }
@@ -186,8 +191,10 @@ async fn task_2() {
 ## 线程间的消息传递
 ```rs
 // 主题： 线程间的消息传递
-// use tokio::sync::oneshot; // 一个Sender，一个Receiver，Sender只能发送一次消息。通过同步的方式。
-use tokio::sync::mpsc; // 可以有多个Sender，一个Receiver，Sender可以发送多次消息。通过同步的方式。
+// use tokio::sync::oneshot; // 一个Sender，一个Receiver，Sender只能发送一次消息。
+// use tokio::sync::broadcast; // 多个Sender，多个Receiver，每个Receiver都可以接收到每条消息。
+// use tokio::sync::watch; // 一个Sender，多个Receiver，消息不被保存，Receiver只能收到最新的消息。
+use tokio::sync::mpsc; // 多个Sender，一个Receiver。 // 是懒加载的
  
 #[tokio::main]
 async fn main() {
