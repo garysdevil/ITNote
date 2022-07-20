@@ -467,30 +467,66 @@ rsync -P --rsh=ssh home.tar 192.168.205.34:/home/home.tar
 rsync -P -e'ssh -p 22' home.tar 192.168.205.34:/home/home.tar
 # -P 可以实现意外中断后，下次继续传。当于 --partial --progress
 # -r 拷贝目录
-# -a 参数可以替代-r，除了可以递归同步以外，还可以同步元信息（比如修改时间、权限等）
-# --exclude 排除某些文件或目录
+# -a 参数可以替代-r，除了可以递归同步以外，还可以同步元信息（比如修改时间、权限等）,从而做到增量同步
+# --exclude='' 排除某些文件或目录
 # -e 指定协议
 # --partial 允许恢复中断的传输
 # --append 文件接着上次中断的地方，继续传输
-# --append-verify 跟--append参数类似，但会对传输完成后的文件进行一次校验。如果校验失败，将重新发送整个文件。
+# --append-verify 跟--append参数类似，但会对传输完成后的文件进行一次校验。如果校验失败，将重新发送整个文件。非常影响传输速度。
 # -z 同步时压缩数据
 # -S 传输稀疏文件 sparse file
+# --bwlimit=1024 # 单位为KB/s
 
-# 通过ssh协议远程同步时的参数
--a --append-verify -P -v -z -e'ssh -p 22'
+# 通过ssh协议远程同步目录时的参数
+--append-verify -P -a -z -e'ssh -p 22'
 ```
 
+### 稀疏文件
 - 稀疏文件 sparse file
     - 稀疏文件就是在文件中留有很多空余空间，留备将来插入数据使用。如果这些空余空间被ASCII码的NULL字符占据，并且这些空间相当大，那么，这个文件就被称为稀疏文件，而且，并不分配相应的磁盘块。
     - Linux中常见的qcow2文件和raw文件，都是稀疏文件。
-    - ``qemu-img info ${path}`` 查看稀疏文件的大小
 ```bash
-# 拷贝稀疏文件的几种方式 # 好想都没有很好的效果
-# 方式一
-tar cSf 0.tar 0 && rsync -P -S -e'ssh -p 22' 0.tar  10.10.1.42:~/
-# 方式二
-tar Scjf - 0 | ssh 10.10.1.42 tar Sxjf - -C ./
+# 创建稀疏文件，将创建一个5MB大小的文件，但不在磁盘上存储数据（仅存储元数据）
+spare_file_path=spare_file
+# dd命令创建
+dd of=${spare_file_path} bs=1k seek=5120 count=0
+# truncate命令创建
+truncate -s 5M sparse_file_name
+# qemu-img命令创建
+qemu-img create -f qcow2 ${spare_file_path}.qcow2 5M
+
+# 查看稀疏文件的大小
+qemu-img info ${spare_file_path}
 ```
+
+### 传稀疏文件
+```bash
+# 拷贝稀疏文件的几种方式 # 两台机器的文件系统必须相同，否则下面的指令无效
+
+# 进行拷贝稀疏文件测试 稀疏文件大小：virtual size: 1.93 GiB, disk size: 860 MiB, 传输速度维持在11.27MB/s左右
+
+# rsync传输
+rsync -P -S -e'ssh -p 22' 0  10.10.1.42:~/ # 2m55.485s
+
+# rsync压缩传输
+rsync -P -S -z -e'ssh -p 22' 0  10.10.1.42:~/ # 0m46.092s # 显示的传输速度为 43.35MB/s，应该是由于压缩原因，实际上是传输大小减小了
+rsync -P -S -z  0  10.10.1.42:~/  # 0m50.225s
+
+# tar打包，rsync传输
+tar Scvf 0.tar 0 && rsync -P -S -e'ssh -p 22' 0.tar  10.10.1.42:~/ && ssh 10.10.1.42 tar xvf ~/0.tar # 1m23.187s
+
+# tar打包压缩，rsync传输
+tar Sczvf 0.tar.gz 0 && rsync -P -S -e'ssh -p 22' 0.tar.gz  10.10.1.42:~/ && ssh 10.10.1.42 tar xzvf ~/0.tar.gz # 1m7.679s
+
+# tar打包压缩, scp传输
+tar Scjvf - 0 | ssh 10.10.1.42 tar xjvf - -C ./  # 1m41.213s
+tar Sczvf - 0 | ssh 10.10.1.42 tar xzvf - -C ./  # 0m46.807s
+
+# 最佳实践
+time rsync -P -S -a -z  -e'ssh -p 22' ./aa  10.10.3.76:/tank1/
+```
+
+
 
 ### GPU
 - 参考

@@ -22,6 +22,16 @@ fn read_stdin() {
     println!("Your input line is \n{}", str_buf);
 }
 ```
+
+```rs
+// Sink.write() 会消耗所有的数据，类似读于把所有数据写入 /dev/null
+use std::io::{self, Write};
+fn read_stdin() {
+    let buffer = vec![1, 2, 3, 5, 8];
+    let num_bytes = io::sink().write(&buffer).unwrap();
+    assert_eq!(num_bytes, 5);
+}
+```
 ### fs
 ```rs
 // 文件读取与写入

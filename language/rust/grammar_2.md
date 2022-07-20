@@ -253,7 +253,7 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 
 fn main() {
-    let counter = Arc::new(Mutex::new(0)); // 当变量被多个线程使用时，使用多线程安全的引用计数智能指针Arc将其包裹起来用于共享状态
+    let counter = Arc::new(Mutex::new(0)); // 当变量被多个线程使用时，让数据资源拥有多个所有者。使用多线程安全的引用计数智能指针Arc将其包裹起来用于共享状态
     let mut handles = vec![];
 
     for _ in 0..10 {
