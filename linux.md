@@ -862,3 +862,22 @@ select-editor
 # 临时更改默认编辑器
 export EDITOR="/usr/bin/vim"
 ```
+
+### Linux查看磁盘是固态还是机械
+```bash
+lsblk
+# 1 代表是机械硬盘，0 则就是 ssd 
+# 查看某个磁盘类型
+cat /sys/block/{block_name}/queue/rotational
+# 查看所有磁盘类型 方式一
+grep ^ /sys/block/*/queue/rotational
+# 查看所有磁盘类型 方式二
+lsblk -d -o name,rota
+```
+
+### iotop 进程IO监控
+```bash
+iotop -oP 
+# -o 只显示有I/O行为的线程
+# -P 只显示进程
+```

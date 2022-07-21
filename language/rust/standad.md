@@ -1,7 +1,28 @@
 
 [toc]
 
-## 标准库
+## 全局作用域的标准库
+```rust
+// Rust 的标准库，有一个 prelude 子模块。 
+// prelude 子模块里的模块默认导入程序的整个作作用域，也就是说不再需要使用use进行引用。 
+std::marker::{Copy, Send, Sized, Sync}
+std::ops::{Drop, Fn, FnMut, FnOnce}
+std::mem::drop
+std::boxed::Box
+std::borrow::ToOwned
+std::clone::Clone
+std::cmp::{PartialEq, PartialOrd, Eq, Ord}
+std::convert::{AsRef, AsMut, Into, From}
+std::default::Default
+std::iter::{Iterator, Extend, IntoIterator, DoubleEndedIterator, ExactSizeIterator}
+std::option::Option::{self, Some, None}
+std::result::Result::{self, Ok, Err}
+std::slice::SliceConcatExt
+std::string::{String, ToString}
+std::vec::Vec
+```
+
+## 标准库 基本
 ### env
 ```rs
 // 接收命令行参数
@@ -85,36 +106,140 @@ fn main() {
 }
 ```
 
-### thread
+### net
 ```rs
-use std::thread;
-fn main1() {
-    // 创建一个线程
-    let thread_handler = thread::spawn(move || {
-        println!("I am a new thread.");
-    });
-    // 等待新建线程执行完成 // join函数使主线程等待子线程结束
-    thread_handler.join().unwrap();
+// 服务端监听地址端口 // 一个简单的单线程服务器
+use std::net::{TcpListener, TcpStream};
+use std::io::prelude::*;
+
+fn handle_client(mut stream: TcpStream) {
+    println!("One connection established, client is {:?}", stream.peer_addr().unwrap());
+
+    // 处理客户端输入的数据
+    let mut buffer = [0; 1024]; // 在栈上声明一个缓冲区
+    stream.read(&mut buffer).unwrap(); // 阻塞，等待从连接中获取数据，将数据读取进缓冲区
+    println!("Request: {}", String::from_utf8_lossy(&buffer[..])); // 将字节转为字符串，并且输出
+
+    // 返回数据给客户端
+    let response = "HTTP/1.1 200 OK\r\n\r\n";
+    stream.write(response.as_bytes()).unwrap();
+    stream.flush().unwrap();
 }
 
-fn main2() {
-    // 创建一个线程，进行定义化，线程名称为 thread1, 堆栈大小为4k
-    let thread_handler = thread::Builder::new()
-                            .name("thread1".to_string())
-                            .stack_size(4*1024*1024).spawn(move || {
-        println!("I am thread1.");
-    });
-    // 等待新创建的线程执行完成
-    thread_handler.unwrap().join().unwrap();
+fn main() -> std::io::Result<()> {
+    let listener = TcpListener::bind("127.0.0.1:8080")?;
+
+    // accept connections and process them serially
+    for stream in listener.incoming() {
+        handle_client(stream?);
+    }
+    Ok(())
 }
 ```
 
 ```rs
-// 线程通讯： 通过静态变量
+// 连接服务端
+use std::net::{IpAddr, Ipv4Addr, SocketAddr, TcpStream};
+use std::io::prelude::*;
+
+fn main() -> std::io::Result<()> {
+    let socket = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 8080);
+    // let mut stream = TcpStream::connect("127.0.0.1:8080")?;
+    let mut stream = TcpStream::connect(socket)?;
+
+    stream.write(&[1])?; // 写入数据进服务端
+    stream.read(&mut [0; 128])?; // 从服务端读取数据
+    Ok(())
+}
+```
+
+### collections
+```rs
+use std::collections::HashMap;
+
+fn main(){
+    let mut letters = HashMap::new();
+
+    for ch in "a short treatise on fungi".chars() {
+        let counter = letters.entry(ch).or_insert(0);
+        // hashmap_instance.entry() 如果不存在这个健，则向hashmap实例插入kv健值对，并且返回被插入hashmap实例的项
+        // .or_insert(0) 如果这个健不不存在值，则向kv健值对插入默认值，并且返回kv健值对值的引用
+        
+        *counter += 1;
+    }
+    assert_eq!(letters[&'s'], 2);
+    assert_eq!(letters[&'t'], 3);
+    assert_eq!(letters[&'u'], 1);
+    assert_eq!(letters.get(&'y'), None);
+}
+```
+
+### cell
+- 内部可变性智能指针。
+- 来源
+    - Rust 通过其所有权机制，严格控制拥有和借用关系，来保证程序的安全，并且这种安全是在编译期可计算、可预测的。但是这种严格的控制，有时也会带来灵活性的丧失，有的场景下甚至还满足不了需求。
+    - Rust 标准库中，设计了这样一个系统的组件 ``Cell 和 RefCell``,它们弥补了 Rust 所有权机制在灵活性上和某些场景下的不足。同时，又没有打破 Rust 的核心设计。它们的出现，使得 Rust 革命性的语言理论设计更加完整，更加实用。
+- Rust 机制里修改一个值，必须是值的拥有者，并且声明 mut；或 以 &mut 的形式，借用。而通过 Cell, RefCell，则可以在需要的时候，就可以修改里面的对象。而不受编译期静态借用规则束缚。
+- Cell 和 RefCell 的区别
+    - Cell只能包装拥有Copy特征的类型。
+    - RefCell能够包装任何类型。
+
+```rs
+use std::cell::Cell;
+
+struct SomeStruct {
+    regular_field: u8,
+    special_field: Cell<u8>,
+}
+
+let my_struct = SomeStruct {
+    regular_field: 0,
+    special_field: Cell::new(1),
+};
+
+let new_value = 100;
+
+// ERROR: `my_struct` is immutable
+// my_struct.regular_field = new_value;
+
+// WORKS: although `my_struct` is immutable, `special_field` is a `Cell`,
+// which can always be mutated
+my_struct.special_field.set(new_value);
+assert_eq!(my_struct.special_field.get(), new_value);
+```
+
+## 标准库 多线程
+### thread
+```rs
+// 启动线程
+use std::thread;
+fn main() {
+    // 启动一个线程
+    let thread_handler_1 = thread::spawn(move || {
+        thread::yield_now();
+        println!("I am a new thread thread_handler_1.");
+    });
+    // 启动一个线程，自定义线程配置。线程名称为 thread_2, 栈大小为4MB // 默认栈大小为2MB
+    let thread_handler_2 = thread::Builder::new()
+                            .name("thread_2".to_string())
+                            .stack_size(4*1024*1024).spawn(move || {
+        println!("I am a new thread thread_handler_2.");
+    });
+
+    // join函数使主线程挂起等待特定的子线程结束。
+    thread_handler_1.join().unwrap();
+    if let Ok(thread_handler) = thread_handler_2{
+        thread_handler.join().unwrap();
+    }
+}
+```
+
+```rs
+// 线程间通讯： 通过静态变量
 use std::thread;
 static mut VAR: i32 = 5;
 fn main() {
-    // 创建一个新线程
+    // 启动一个新线程
     let new_thread = thread::spawn(move|| {
         unsafe {
             println!("static value in new thread: {}", VAR);
@@ -129,7 +254,7 @@ fn main() {
 }
 ```
 ```rs
-// 线程通讯： 通过共享内存
+// 线程间通讯： 通过共享内存
 use std::thread;
 use std::sync::Arc;
 fn main() {
@@ -145,7 +270,7 @@ fn main() {
 }
 ```
 ```rs
-// 线程通讯： 通过通道
+// 线程间通讯： 通过通道
 use std::sync::mpsc;
 use std::thread;
 fn main() {
@@ -205,8 +330,7 @@ fn main() {
     }
 }
 ```
-### sync
-1. std::sync::Arc
+### sync::Arc
 ```rust
 use std::thread;
 use std::time::Duration;
@@ -227,7 +351,7 @@ fn main() {
 } 
 ```
 
-### std::sync::atomic
+### sync::atomic
 - 诞生： Rust编程语言在1.34之后的版本中开始正式提供完整的原子(Atomic)类型。
 - 功能： 多线程之间使用原子类型通过共享内存的方式进行线程间通信
 - 优点： 原子操作若用得好，就不需要去使用会拖累程序性能的互斥锁(Mutex)或是消息传递(message passing)机制。
@@ -239,138 +363,15 @@ fn main() {
 
 1. std::sync::atomic::AtomicBool
 
-### net
-```rs
-// 服务端监听地址端口 // 一个简单的单线程服务器
-use std::net::{TcpListener, TcpStream};
-use std::io::prelude::*;
 
-fn handle_client(mut stream: TcpStream) {
-    println!("One connection established, client is {:?}", stream.peer_addr().unwrap());
-
-    // 处理客户端输入的数据
-    let mut buffer = [0; 1024]; // 在栈上声明一个缓冲区
-    stream.read(&mut buffer).unwrap(); // 阻塞，等待从连接中获取数据，将数据读取进缓冲区
-    println!("Request: {}", String::from_utf8_lossy(&buffer[..])); // 将字节转为字符串，并且输出
-
-    // 返回数据给客户端
-    let response = "HTTP/1.1 200 OK\r\n\r\n";
-    stream.write(response.as_bytes()).unwrap();
-    stream.flush().unwrap();
-}
-
-fn main() -> std::io::Result<()> {
-    let listener = TcpListener::bind("127.0.0.1:8080")?;
-
-    // accept connections and process them serially
-    for stream in listener.incoming() {
-        handle_client(stream?);
-    }
-    Ok(())
-}
-```
-
-```rs
-// 连接服务端
-use std::net::{IpAddr, Ipv4Addr, SocketAddr, TcpStream};
-use std::io::prelude::*;
-
-fn main() -> std::io::Result<()> {
-    let socket = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 8080);
-    // let mut stream = TcpStream::connect("127.0.0.1:8080")?;
-    let mut stream = TcpStream::connect(socket)?;
-
-    stream.write(&[1])?; // 写入数据进服务端
-    stream.read(&mut [0; 128])?; // 从服务端读取数据
-    Ok(())
-}
-
-```
-
-### collections
-```rs
-use std::collections::HashMap;
-
-fn main(){
-    let mut letters = HashMap::new();
-
-    for ch in "a short treatise on fungi".chars() {
-        let counter = letters.entry(ch).or_insert(0);
-        // hashmap_instance.entry() 如果不存在这个健，则向hashmap实例插入kv健值对，并且返回被插入hashmap实例的项
-        // .or_insert(0) 如果这个健不不存在值，则向kv健值对插入默认值，并且返回kv健值对值的引用
-        
-        *counter += 1;
-    }
-    assert_eq!(letters[&'s'], 2);
-    assert_eq!(letters[&'t'], 3);
-    assert_eq!(letters[&'u'], 1);
-    assert_eq!(letters.get(&'y'), None);
-}
-```
-
-### std::cell
-- 内部可变性智能指针。
-- 来源
-    - Rust 通过其所有权机制，严格控制拥有和借用关系，来保证程序的安全，并且这种安全是在编译期可计算、可预测的。但是这种严格的控制，有时也会带来灵活性的丧失，有的场景下甚至还满足不了需求。
-    - Rust 标准库中，设计了这样一个系统的组件 ``Cell 和 RefCell``,它们弥补了 Rust 所有权机制在灵活性上和某些场景下的不足。同时，又没有打破 Rust 的核心设计。它们的出现，使得 Rust 革命性的语言理论设计更加完整，更加实用。
-- Rust 机制里修改一个值，必须是值的拥有者，并且声明 mut；或 以 &mut 的形式，借用。而通过 Cell, RefCell，则可以在需要的时候，就可以修改里面的对象。而不受编译期静态借用规则束缚。
-- Cell 和 RefCell 的区别
-    - Cell只能包装拥有Copy特征的类型。
-    - RefCell能够包装任何类型。
-
-```rs
-use std::cell::Cell;
-
-struct SomeStruct {
-    regular_field: u8,
-    special_field: Cell<u8>,
-}
-
-let my_struct = SomeStruct {
-    regular_field: 0,
-    special_field: Cell::new(1),
-};
-
-let new_value = 100;
-
-// ERROR: `my_struct` is immutable
-// my_struct.regular_field = new_value;
-
-// WORKS: although `my_struct` is immutable, `special_field` is a `Cell`,
-// which can always be mutated
-my_struct.special_field.set(new_value);
-assert_eq!(my_struct.special_field.get(), new_value);
-```
-
-## 全局作用域标准库
-```rust
-// Rust 的标准库，有一个 prelude 子模块。 
-// prelude 子模块里的模块默认导入程序的整个作作用域，也就是说不再需要使用use进行引用。 
-std::marker::{Copy, Send, Sized, Sync}
-std::ops::{Drop, Fn, FnMut, FnOnce}
-std::mem::drop
-std::boxed::Box
-std::borrow::ToOwned
-std::clone::Clone
-std::cmp::{PartialEq, PartialOrd, Eq, Ord}
-std::convert::{AsRef, AsMut, Into, From}
-std::default::Default
-std::iter::{Iterator, Extend, IntoIterator, DoubleEndedIterator, ExactSizeIterator}
-std::option::Option::{self, Some, None}
-std::result::Result::{self, Ok, Err}
-std::slice::SliceConcatExt
-std::string::{String, ToString}
-std::vec::Vec
-```
-
-## 标准库
+## 标准库 其它
 ```rs
 fn main{
     let array = [1, 2, 3];
     dbg!((array.iter().any(|&x| x > 0))); // 只要有一个元素满足条件则立刻返回true
 }
-
 ```
 
-## 宏
-1. dbg!() 将结果返回并且输出信息到标准错误输出
+## 标准库 宏
+1. `` dbg!("i am dbg macro") `` 将结果返回并且输出信息到标准错误输出。
+2. `` let b = format!("{}", "i am format macro"); `` 将字符串字面量转为字符串。
