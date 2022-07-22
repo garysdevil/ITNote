@@ -26,7 +26,13 @@
     - 执行.await后，task会在线程间转移。
     - task内的数据必须存储在当前task内，当task发生线程间的转移时，会涉及到task内的数据拷贝。
     - task 的类型是 'static 的，因此任务内部的变量不能存在外部引用。
-    - 
+
+## 相关链接
+- 代码仓库 https://github.com/tokio-rs
+- 用例示范 https://github.com/tokio-rs/tokio/tree/master/examples
+- 官网 https://tokio.rs/
+- 教程 https://tokio.rs/tokio
+
 
 ## runtime的创建
 ```rs
