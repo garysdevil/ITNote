@@ -655,7 +655,7 @@ fn main() {
 fn main() {
     let mut num = 5;
     // 通过关键字 as 创建原始指针（raw pointer） // 可以在安全代码里声明原始指针，但不能解引用
-    let r1 = &num as *const i32;  *const i32; // *const i32 原始指针
+    let r1 = &num as *const i32;  // *const i32 原始指针
     let r2 = &mut num as *mut i32; //  *mut i32 原始指针
     unsafe {
         // 在关键字unsafe代码块内进行解引用

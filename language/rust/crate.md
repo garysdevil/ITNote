@@ -32,7 +32,7 @@ clap = { version = "3.1", features = [ "derive" ] } # 命令行参数解析。
 futures = { version = "0.3.21" } # 对异步编程的抽象
 tokio = { version = "^1.19.2", features = ["full"] } # 异步运行时库
 tokio-util = { version = "0.7.3" } # tokio的附加工具
-tokio-stream = { version = "0.1.9" } # 异步版本的标准库 Iterator 特征
+tokio-stream = { version = "0.1.9" } # 迭代器，异步版本的std::iter::Iterator特征
 jsonrpsee = { version = "0.14.0" } # 建立在tokio异步运行时库上的web服务框架
 
 # 多核编程
@@ -40,9 +40,10 @@ rayon = { version = "1" } # 将线性计算转为并行计算
 crossbeam = { version = "0.8" }  # 并发编程工具库。
 
 # 日志
-tracing = { version = "0.1.35"  } # 一个范围明确、结构化的日志记录和诊断系统；涵盖了链路追踪的功能。主要由 spans、events、subscribers 组成，tracing库只实现了spans和events功能。
+tracing = { version = "0.1.35"  } # 一个范围明确、结构化的日志记录和诊断系统。主要由 spans、events、subscribers 组成，tracing库只实现了spans和events功能。
 tracing-subscriber = { version = "0.3.15" } # tracing日志系统的subscribers。
-
+tracing-opentelemetry = { version = "0.17.4"} # 将tracing日志记录进opentelemetry的包
+tracing-timing  = { version = "0.6.0"} 
 
 ```
 

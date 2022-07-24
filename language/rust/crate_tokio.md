@@ -59,14 +59,17 @@ fn main3() {
 }
 
 
-// 通过宏来创建runtime
+// 通过宏来创建runtime 
+// 创建多线程的runtime
 #[tokio::main]
 async fn main() {}
 
-#[tokio::main(flavor = "multi_thread", worker_threads = 10))]
+// 创建单一线程的runtime
+#[tokio::main(flavor = "current_thread")]
 async fn main() {}
 
-#[tokio::main(flavor = "current_thread")]
+// 创建多线程的runtime // 自定义配置
+#[tokio::main(flavor = "multi_thread", worker_threads = 10))]
 async fn main() {}
 ```
 
@@ -200,7 +203,7 @@ async fn task_2() {
 
 ## 线程间的消息传递
 ```rs
-// 主题： 线程间的消息传递
+// 主题： 线程间的消息传递，4种方式
 // use tokio::sync::oneshot; // 一个Sender，一个Receiver，Sender只能发送一次消息。
 // use tokio::sync::broadcast; // 多个Sender，多个Receiver，每个Receiver都可以接收到每条消息。
 // use tokio::sync::watch; // 一个Sender，多个Receiver，消息不被保存，Receiver只能收到最新的消息。
@@ -227,11 +230,11 @@ async fn main() {
 ```
 
 ## tokio::select!
-```rs
-// tokio::select! 
-// 同时等待多个异步操作的结果，并且对其结果进行进一步处理
-// 任何一个 select 分支完成后，都会继续执行后面的代码，没被执行的分支会被丢弃
+1. 允许同时等待多个异步计算操作，然后当其中一个操作完成时就退出等待。
+2. 最多可以支持 64 个分支
+3. 能返回一个值。
 
+```rs
 use tokio::sync::oneshot;
 
 async fn some_operation()  {
@@ -273,9 +276,146 @@ async fn main() {
 }
 ```
 
+```rs
+async fn action_1() -> u8{
+    11
+}
+async fn action_2() -> u8{
+    22
+}
+#[tokio::main]
+async fn main() {
+    let operation_2 = action_2();
+    tokio::pin!(operation_2); // 让 operation_2 实现Unpin特征
+
+    let ( tx, mut rx) = tokio::sync::mpsc::channel::<u8>(128);
+
+    tokio::spawn( async move{
+        
+        std::thread::sleep(std::time::Duration::from_micros(1));
+        tx.send(33).await.unwrap();
+    });
+
+    loop {
+        tokio::select! {
+            Some(v) = rx.recv() => {
+                println!("{}", v);
+                println!{"{}", & operation_2.await} // 如果要在一个引用上使用 .await，那么引用的值就必须是不能移动的或者实现了 Unpin
+                break
+            },
+            v = action_1() => {println!("{}", v);},
+            // 22 = &mut operation_2 => {println!("{}", 22); break},
+        }
+    }
+}
+```
 ## async IO
 - 案例在myrust仓库内
 
 ## Frame
 - 通过帧可以将字节流转换成帧组成的流。
 - 每个帧就是一个数据单元，例如客户端发送的一次请求就是一个帧。
+
+## 优雅关闭
+- 关键点
+    1. 找出合适的关闭时机
+    2. 通知程序的每一个子部分开始关闭
+    3. 在主线程等待各个部分的关闭结果
+
+## async
+```rs
+// 通过tokio库创建future
+async fn do_stuff(i: i32) -> String {
+    // do stuff
+    format!("This future is created by tokio")
+}
+
+// 通过标准库创建future
+use std::future::Future;
+// the async function above is the same as this:
+fn do_stuff(i: i32) -> impl Future<Output = String> {
+    async move {
+        // do stuff
+        fformat!("This future is created by std library")
+    }
+}
+```
+
+## tokio 和 trace
+### tokio-console
+```conf
+tokio = { version = "1", features = ["full", "tracing"] } # 异步运行时库 # 开启 tokio-console 功能，tokio-console 还是一个不稳定的功能，RUSTFLAGS="--cfg tokio_unstable" cargo run
+console-subscriber = "0.1.6"
+```
+
+```bash
+# 本地安装启动 tokio-console
+cargo install --locked tokio-console
+tokio-console
+
+# 运行rust代码
+RUSTFLAGS="--cfg tokio_unstable" cargo run
+```
+
+### Integrating with OpenTelemetry
+```bash
+# 安装启动 Jaeger，一个可视化trace的UI工具
+# Jaeger官网 https://www.jaegertracing.io/
+docker run -d -p6831:6831/udp -p6832:6832/udp -p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest
+```
+
+```toml
+opentelemetry = "0.17.0"
+tracing-opentelemetry = "0.17.2" 
+opentelemetry-jaeger = "0.16.0"
+```
+
+```rs
+use opentelemetry::global;
+use tracing_subscriber::{
+    fmt, layer::SubscriberExt, util::SubscriberInitExt,
+};
+
+// Allows you to pass along context (i.e., trace IDs) across services
+global::set_text_map_propagator(opentelemetry_jaeger::Propagator::new());
+// Sets up the machinery needed to export data to Jaeger
+// There are other OTel crates that provide pipelines for the vendors
+// mentioned earlier.
+let tracer = opentelemetry_jaeger::new_pipeline()
+    .with_service_name("mini-redis")
+    .install_simple()?;
+
+// Create a tracing layer with the configured tracer
+let opentelemetry = tracing_opentelemetry::layer().with_tracer(tracer);
+
+// The SubscriberExt and SubscriberInitExt traits are needed to extend the
+// Registry to accept `opentelemetry (the OpenTelemetryLayer type).
+tracing_subscriber::registry()
+    .with(opentelemetry)
+    // Continue logging to stdout
+    .with(fmt::Layer::default())
+    .try_init()?;
+```
+
+## 术语
+- Yielding  task交出时间片给runtime，task挂起这个task，去运行其它的task
+
+- Actor 一种并发编程模型
+    - 参考 https://www.brianstorti.com/the-actor-model/#:~:text=The%20actor%20model%20is%20a,this%20model%20is%20probably%20Erlang%20.
+    - 并发编程中的线程间通信
+        - 通过消息传递
+        - 通过共享内存
+    - 共享内存更适合单机多核的并发编程，而且共享带来的问题很多，编程也困难。随着多核时代和分布式系统的到来，共享模型已经不太适合并发编程。
+    - Actor模型(Actor model)
+        - 是由Carl Hewitt在1973定义， 由Erlang OTP 推广。
+        - Actor属于并发组件模型，通过组件方式定义并发编程范式的高级阶段，避免使用者直接接触多线程并发或线程池等基础概念。
+        - Actor模型=数据+行为+消息。
+        - Actor模型share nothing，所有的线程(或进程)通过消息传递的方式进行合作，这些线程(或进程)称为Actor。
+
+    - Actor模式的应用
+        - MapReduce是一种典型的Actor模式
+        - Erlang是一种语言级对Actor支持的编程语言
+        - Scala也提供了Actor，但是并不是在语言层面支持
+        - Java也有第三方的Actor包
+        - Go语言channel机制也是一种类Actor模型。
+    - tokio库中，通过spawn一个task来管理应用的部分资源，task之间通过channel进行通信。
