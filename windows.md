@@ -33,6 +33,9 @@ get-history
 3. 文件的创建
 new-item $FILENAEM -type file
 
+## Win + r
+1. 配置开机启动项 ``msconfig``
+
 # Others
 1. RSS
     - https://juejin.cn/post/6844903760142024711

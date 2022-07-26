@@ -45,6 +45,8 @@
     # Ubuntu20离线安装
     wget https://packages.erlang-solutions.com/erlang/debian/pool/esl-erlang_24.2-1~ubuntu~focal_amd64.deb
     apt install -y ./esl-erlang_24.2-1~ubuntu~focal_amd64.deb
+
+    # Ubuntu安装
     apt-get install erlang
 
     # 安装成功后查看eshell版本

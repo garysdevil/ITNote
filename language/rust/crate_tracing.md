@@ -22,6 +22,8 @@ fn main() {
         .with_thread_ids(true)
         // Don't display the event's target (module path)
         .with_target(false)
+        // 设置输出的日志等级
+        .with_max_level(tracing::Level::INFO)
         // Build the subscriber
         .finish();
     subscriber.init();

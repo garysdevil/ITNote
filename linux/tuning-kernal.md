@@ -15,8 +15,6 @@ echo 1 >  /proc/sys/net/ipv4/ip_forward # 临时改变某个指定参数的值
 ```
 
 
-
-
 ```conf
 # 1. 一个进程可以拥有的VMA(虚拟内存区域)的数量
 vm.max_map_count = 262144
@@ -28,7 +26,6 @@ fs.file-max = 2000000
 vm.nr_hugepages = 2048
 ```
 
-
 ## IO读优化
 - 参考
     - https://www.kernel.org/doc/Documentation/block/stat.txt
@@ -36,22 +33,17 @@ vm.nr_hugepages = 2048
 
 ```bash
 # 更改最大IO请求大小硬件支持的最大值/sys/block/${disk}/queue/max_hw_sectors_kb
-echo ${max_hw_sectors_kb} /sys/block/${disk}/queue/max_sectors_kb
+echo ${max_hw_sectors_kb} /sys/block/${disk}/queue/max_sectors_kb # 默认为 128 KB
 
 # I/O 请求队列长度（调大能增加硬盘吞吐量，但要占用更多内存）
-echo 1024 /sys/block/${disk}/queue/nr_requests # 默认为 128 KB
+echo 1024 /sys/block/${disk}/queue/nr_requests
 
 # 为了增加连续读取的吞吐量，可以增加预读数据量。预读的实际值是自适应的，所以使用一个较高的值，不会降低小型随机存取的性能。
 # 如果LINUX判断一个进程在顺序读取文件，那么它会提前读取进程所需文件的数据，放在缓存中。
 echo 8192 > /sys/block/${disk}/queue/read_ahead_kb # 更改预读大小为8MB。默认为 128 KB
 
-
-
 # 更改I/O调度算法
-echo anticipatory  /sys/block/${disk}/queue/max_sectors_kb 
-
-
-
+echo anticipatory  /sys/block/${disk}/queue/scheduler 
 
 # 查看
 cat /sys/block/${disk}/queue/

@@ -9,9 +9,11 @@
     - Fixed-size threadpool for executors，为tokio::spawn产生的任务服务
     - Bounded threadpool for blocking calls，为tokio::task::spawn_blocking产生的任务服务
 
-- tokio 每创建一个Runtime时，就在这个Runtime中创建好了一个Reactor、一个Scheduler、一个或多个 executor，任务队列。
-    - Reactor接收事件通知。 阻塞队列中的每一个被阻塞的任务，都需要等待Reactor收到对应的事件通知(比如IO完成的通知、睡眠完成的通知等)来唤醒它。当该任务被唤醒后，它将被放入就绪队列，等待调度器的调度。
-    - Scheduler将就绪队列任务调度给executer。
+- tokio 每创建一个Runtime时，就在这个Runtime中创建好了一个Reactor、一个Scheduler、一个或多个 executor。
+    - Waker 唤醒。每一个task运行时，都会将自己的Waker交给Reactor。
+    - Reactor 接收事件通知。 “阻塞队列”中的每一个task，都需要等待Reactor收到对应的事件通知(比如IO完成的通知、睡眠完成的通知等)来唤醒它。当该任务被唤醒后，它将被放入“就绪队列”，等待调度器的调度。
+    - Scheduler 调度器。将“就绪队列”task调度给Executer。
+    - Executor 执行者。
 
 - 锁
     - 标准库中的锁定策略取决于操作系统的实现
@@ -32,7 +34,6 @@
 - 用例示范 https://github.com/tokio-rs/tokio/tree/master/examples
 - 官网 https://tokio.rs/
 - 教程 https://tokio.rs/tokio
-
 
 ## runtime的创建
 ```rs
@@ -341,11 +342,16 @@ fn do_stuff(i: i32) -> impl Future<Output = String> {
 }
 ```
 
-## tokio 和 trace
+## tokio 和 tracing
 ### tokio-console
 ```conf
 tokio = { version = "1", features = ["full", "tracing"] } # 异步运行时库 # 开启 tokio-console 功能，tokio-console 还是一个不稳定的功能，RUSTFLAGS="--cfg tokio_unstable" cargo run
-console-subscriber = "0.1.6"
+console-subscriber = { version = "0.1.6"  }
+```
+
+```rs
+// tracing_subscriber::fmt::try_init()?; 替换这一行
+console_subscriber::init();
 ```
 
 ```bash
