@@ -1,15 +1,27 @@
+
+
+## 初始化日志系统的几种方式
+- tracing_subscriber负责生成span IDs和将它们指派给spans。
+- tracing_subscriber对tracing事件``tracing::{trace,debug,info,warn,error};``进行监听，然后进行相关的处理。
+
+### 默认方式启动全局订阅者
+```rs
+use tracing::{trace,debug,info,warn,error};
+use tracing_subscriber;
+fn main() {
+    // 如果还没有tracing订阅者被配置，则配置一个全局订阅者，通过环境变量RUST_LOG进行日志过滤``export RUST_LOG=info && cargo run``
+    tracing_subscriber::fmt::init();  // 默认打印级别 error
+    tracing_subscriber::fmt().init(); // 默认打印级别 info
+    info!("Hello from tracing");
+}
+```
+
+### 配置化启动全局订阅者
 ```rs
 use tracing::{trace,debug,info,warn,error};
 use tracing_subscriber::{self, util::SubscriberInitExt};
 
 fn main() {
-    // 方式一
-    // 默认只有error级别的日志才会输出，需要通过设置环境变量改变输出的日志等级 export RUST_LOG=info && cargo run
-    // install global collector configured based on RUST_LOG env var.
-    // tracing_subscriber::fmt::init(); 
-    
-    // 方式二
-    // 默认只有info以上级别的日志才会输出。
     // Start configuring a `fmt` subscriber
     let subscriber = tracing_subscriber::fmt()
         // Use a more compact, abbreviated log format
@@ -28,27 +40,36 @@ fn main() {
         .finish();
     subscriber.init();
 
-    let var_name = 3;
-    // this creates a new event, outside of any spans.
-    info!(var_name, "Hello from tracing");
+    info!("Hello from tracing");
 }
 ```
 
+### 手动设置全局订阅者
 ```rs
-// use tracing::{trace,debug,info,warn,error};
-// use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt};
+use tracing::{trace,debug,info,warn,error};
+use tracing_subscriber;
+fn main() {
+    // construct a subscriber that prints formatted traces to stdout
+    let subscriber = tracing_subscriber::FmtSubscriber::new(); // 默认打印级别 info
+    // use that subscriber to process traces emitted after this point
+    tracing::subscriber::set_global_default(subscriber).unwrap();
+    info!("Hello world");
+}
+```
 
-// fn main() {
-//     // 只有注册 subscriber 后， 才能在控制台上看到日志输出
-//     tracing_subscriber::registry()
-//         .with(fmt::layer())
-//         .init();
+### 注册配置全局订阅者
+- 抽象出Layer特征，每一个特征可以对同一个事件进行不同的处理。
+- tracing_subscriber可以实现多个Layer特征，然后注册多个Layer特征。
+```rs
+use tracing::{trace,debug,info,warn,error};
+use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
-//     // 调用 `log` 包的 `info!`
-//     info!("Hello world");
+fn main() {
+    // 只有注册 subscriber 后， 才能在控制台上看到日志输出
+    tracing_subscriber::registry()
+        .with(fmt::layer())
+        .init();
 
-//     let var_name = 999;
-//     // 调用 `tracing` 包的 `info!`
-//     info!(var_name, "Hello from tracing");
-// }
+    info!("Hello world");
+}
 ```

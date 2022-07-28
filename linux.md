@@ -476,10 +476,14 @@ rsync -P -e'ssh -p 22' home.tar 192.168.205.34:/home/home.tar
 # -z 同步时压缩数据
 # -S 传输稀疏文件 sparse file
 # --bwlimit=1024 # 单位为KB/s
+# -x 指定传输时不能跨文件系统
+# --inplace
 
 # 通过ssh协议远程同步目录时的参数
 --append-verify -P -a -z -e'ssh -p 22'
 ```
+
+- rsync 使用-a参数时，文件夹内的文件太多，可能会导致这个问题，例如当文件夹内含有8691137个文件时 ``No space left on device (28)``
 
 ### 稀疏文件
 - 稀疏文件 sparse file
@@ -756,6 +760,8 @@ kubectl get pods -o wide | grep ${nodename} | awk {'print $1'} | xargs -n1 kubec
 - screen ssh退出后可以运行在后台的窗口，可以替代nohup
 ```bash
 # 创建一个screen
+screen -l
+# 创建一个screen，并进行命名
 screen -S  ${screenName}
 # 查看已经存在的screen
 screen -ls
@@ -888,4 +894,12 @@ iotop -oP
 disk=/dev/sda
 hdparm  ${disk} # 显示指定硬盘的相关信息
 hdparm -t ${disk} # 评估硬盘读取效率
+```
+
+### 日志颜色
+```bash
+apt install expect
+# 保留日志的颜色进文件内
+unbuffer 可执行程序 >> log
+unbuffer 可执行程序 | tee log
 ```

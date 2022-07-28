@@ -11,7 +11,7 @@ rand = { version = "0.8.5" } # 随机数功能
 
 rust-crypto = "0.2.36" # 各种加密算法功能
 chrono = { version="0.4.19" } # 时间相关的功能
-anyhow = "0.1.0" # 基于 std::error::Error 对各种错误类型进行了封装
+anyhow = { version="1.0.58" } # 基于 std::error::Error 对各种错误类型进行了封装
 num_cpus = { version = "1.13.1" } # 获取服务器上的CPU数量
 futures-util = { version = "0.3" }  # Combinators and utilities for working with Futures, Streams, Sinks, and the AsyncRead and AsyncWrite traits.
 once_cell = { version = "1.12.0"  } # 线程安全的初始化变量，用来存储堆上的信息，并且具有最多只能赋值一次的特征。
@@ -34,9 +34,10 @@ tokio = { version = "^1.19.2", features = ["full"] } # 异步运行时库
 tokio-util = { version = "0.7.3" } # tokio的附加工具
 tokio-stream = { version = "0.1.9" } # 迭代器，异步版本的std::iter::Iterator特征
 jsonrpsee = { version = "0.14.0" } # 建立在tokio异步运行时库上的web服务框架
+futures-util = "0.3.21" # Common utilities and extension traits for the futures-rs library.
 
 # 多核编程
-rayon = { version = "1" } # 将线性计算转为并行计算
+rayon = { version = "1.5.3" } # 将线性计算转为并行计算
 crossbeam = { version = "0.8" }  # 并发编程工具库。
 
 # 日志

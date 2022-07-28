@@ -205,18 +205,22 @@ async fn task_2() {
 ## 线程间的消息传递
 ```rs
 // 主题： 线程间的消息传递，4种方式
-// use tokio::sync::oneshot; // 一个Sender，一个Receiver，Sender只能发送一次消息。
 // use tokio::sync::broadcast; // 多个Sender，多个Receiver，每个Receiver都可以接收到每条消息。
 // use tokio::sync::watch; // 一个Sender，多个Receiver，消息不被保存，Receiver只能收到最新的消息。
+
+use tokio::sync::oneshot; // 一个Sender，一个Receiver，Sender只能发送一次消息。
 use tokio::sync::mpsc; // 多个Sender，一个Receiver。 // 是懒加载的
  
 #[tokio::main]
 async fn main() {
     let (tx, mut rx) = mpsc::channel(32);
     let tx2 = tx.clone(); //clone之后可以将channel指派给不同任务
+
+    let (tx_one, rx_one) = oneshot::channel();
  
     tokio::spawn(async move {
         tx.send("sending from first handle").await; //必须调用await才会执行
+        tx_one.send("done");
  
     });
 
@@ -224,8 +228,11 @@ async fn main() {
         tx2.send("sending from second handle").await;
     });
  
+    if let Ok(str) = rx_one.await{
+        println!("rx_one GOT = {}", str);
+    };
     while let Some(message) = rx.recv().await {
-        println!("GOT = {}", message);
+        println!("rx GOT = {}", message);
     }
 }
 ```
