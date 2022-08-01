@@ -191,9 +191,14 @@ fn main() {
 ```
 
 ### 循环
+1. loop
+2. while
+3. for
+
 ```rust
 // loop 无限循环
-// loop 无限循环体内，可以通过break结束循环，然后返回一个值
+// loop 无限循环体内，可以通过 break 关键字结束循环，然后返回一个值
+// loop 无限循环体内，可以通过 continue 关键字结束这一次迭代，从头开始继续循环。 
 fn fun_loop() {
     let array = ['A', 'B', 'C', 'D'];
     let mut i = 0;

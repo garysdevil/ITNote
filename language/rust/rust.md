@@ -6,7 +6,7 @@
 - 2015年，第一个稳定版本 Rust 1.0 首次发布。
 
 - Rust 的编译器是在 MIT License 和 Apache License 2.0 双重协议声明下的免费开源软件。
-- Rust 有完善的提案流程（RFC，Request For Comments），每一个人都可以提交提案，进行开发工作的核心团队细分为专项治理语言项目、社区运营、语言核心开发、工具开发、库开发等，来管理维护各个项目的各方面事项。
+- Rust 有完善的提案流程（RFC，Request For Comments），每一个人都可以提交提案，进行开发工作的核心团队细分为专项治理语言package、社区运营、语言核心开发、工具开发、库开发等，来管理维护各个package的各方面事项。
 
 ## 相关链接
 - 官网  https://www.rust-lang.org/
@@ -77,31 +77,33 @@ rustc ${filepath} # 编译生成二进制文件
 ```bash
 # cargo 相关操作
 cargo --version
-cargo new greeting # 构建一个项目 默认参数--bin
-cargo build # 编译一个项目，会激活#[cfg(debug_assertions)]属性，来使用调试(debug)相关的代码。
+cargo new greeting # 构建一个package 默认参数--bin
+cargo init greeting # 在现有的一个package中，创建一个新的package 默认参数--bin
+cargo build # 编译一个package，会激活#[cfg(debug_assertions)]属性，来使用调试(debug)相关的代码。
 cargo build --release # 允许使用编译器所有的优化功能，并禁用有加上#[cfg(debug_assertions)]属性的代码
 cargo install --path . # 安装二进制文件（默认位置 $HOME/.cargo/bin）
 # cargo build/run --release 使用 release 编译会比默认的 debug 编译性能提升 10 倍以上，但是 release 缺点是编译速度较慢，而且不会显示 panic backtrace 的具体行号 
-cargo run # 编译运行一个项目
+cargo run # 编译运行一个package
 cargo check # 快速检查代码语法的正确性，并不会进行编译操作
 cargo fix # 查看告警项，并且可能进行自动修复  --allow-dirty
 cargo update # 会下载更新最新的依赖版本进Cargo.toml.lockd文件，输出相关的更新内容；但Cargo.toml的文件需要手动更新。
 cargo clippy # 类似eslint，lint工具检查代码可以优化的地方
 cargo fmt # 类似go fmt，代码格式化
 cargo tree # 查看第三方库的版本和依赖关系
-cargo udeps # 检查项目中未使用的依赖 (第三方工具，需要单独下载)
+cargo udeps # 检查package中未使用的依赖 (第三方工具，需要单独下载)
 
 # 子指令
 cargo --list # 列出所有的子指令
 # 如果二进制程序在$PATH目录下，并以 cargo-${name} 方式命名，则二进制都可以作为cargo的子指令，可以通过cargo ${name} 来运行
 
 # 文档
-cargo doc # 生成项目文档
-cargo doc --open  # 生成项目文档并且在网页上打开
+cargo doc # 生成package文档
+cargo doc --open  # 生成package文档并且在网页上打开
 
 # 创建与运行基准测试
 cargo new benches
 cargo bench # 运行benchmark(基准测试,性能测试)
+cargo bench --bench ${filename}  # 运行指定的文件
 cargo bench -- --save-baseline ${name} # 显示当次结果，并且和名字为${name}的结果进行比较，然后将当次结果覆盖进${name}
 cargo bench -- --baseline ${name} # 显示当次结果，并且和名字为${name}的结果进行比较
 cargo bench -- --load-baseline ${name1}  --baseline ${name2} # --load-baseline ${name} 加载名字为${name1}的结果作为当次结果，将名字为{name2}的结果作为上次结果，然后进行比较
@@ -111,7 +113,7 @@ cargo bench -- --load-baseline ${name1}  --baseline ${name2} # --load-baseline $
 cargo login ${token} # 登入crates.io，API token 将会被存入这个文件内 ~/.cargo/credentials 
 cargo publish # 发布宝箱
 
-# 虽然你不能删除之前版本的 crate，但是可以阻止任何将来的项目将他们加入到依赖中。通 cargo yank 指令
+# 虽然你不能删除之前版本的 crate，但是可以阻止任何将来的package将他们加入到依赖中。通 cargo yank 指令
 cargo yank --vers 1.0.1 # 禁止用户在使用1.0.1这个版本的宝箱
 cargo yank --vers 1.0.1 --undo # 撤回
 ```
