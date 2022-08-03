@@ -69,6 +69,22 @@
 
 - 验证配置文件的正确性 /usr/local/bin/v2ray -test -config /usr/local/etc/v2ray/config.json
 
+### v2gen
+- 通过订阅模式配置v2ray
+```bash
+#下载v2gen
+wget https://github.com/iochen/v2gen/releases/latest/download/v2gen_amd64_linux
+#改名
+mv v2gen_amd64_linux v2gen
+#加上执行权限
+chmod u+x v2gen
+#移动文件
+mv v2gen /usr/local/bin/
+
+# 生成config.json文件
+v2gen -u “订阅url” -o /usr/local/etc/v2ray/config.json
+```
+
 #### v2rayA
 -  v2ray的GUI管理界面
 - 源码 https://github.com/v2rayA/v2rayA

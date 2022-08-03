@@ -1,4 +1,4 @@
-
+[TOC]
 
 ### 查看CPU数量
 ```bash
@@ -472,7 +472,8 @@ rsync -P -e'ssh -p 22' home.tar 192.168.205.34:/home/home.tar
 # -e 指定协议
 # --partial 允许恢复中断的传输
 # --append 文件接着上次中断的地方，继续传输
-# --append-verify 跟--append参数类似，但会对传输完成后的文件进行一次校验。如果校验失败，将重新发送整个文件。非常影响传输速度。
+# --append-verify 跟--append参数类似，但会对
+传输完成后的文件进行一次校验。如果校验失败，将重新发送整个文件。非常影响传输速度。
 # -z 同步时压缩数据
 # -S 传输稀疏文件 sparse file
 # --bwlimit=1024 # 单位为KB/s
@@ -481,6 +482,7 @@ rsync -P -e'ssh -p 22' home.tar 192.168.205.34:/home/home.tar
 
 # 通过ssh协议远程同步目录时的参数
 --append-verify -P -a -z -e'ssh -p 22'
+-P -a -z -e'ssh -p 22'
 ```
 
 - rsync 使用-a参数时，文件夹内的文件太多，可能会导致这个问题，例如当文件夹内含有8691137个文件时 ``No space left on device (28)``
