@@ -208,6 +208,19 @@ my_struct.special_field.set(new_value);
 assert_eq!(my_struct.special_field.get(), new_value);
 ```
 
+### td::hash
+```rs
+pub fn main() {
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::{Hash, Hasher};
+    
+    let mut hasher = DefaultHasher::new();
+    "eee".hash(&mut hasher);
+    println!("Hash is {:x}!", hasher.finish());
+}
+```
+
+
 ## 标准库 多线程
 ### thread
 ```rs

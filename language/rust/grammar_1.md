@@ -1506,6 +1506,21 @@ fn main() {
 ```
 
 ```rs
+// 闭包作为参数
+fn main() {
+    time_spend(|| -> () {
+        println!("--");
+    });
+}
+fn time_spend(f: fn()) {
+    let start = std::time::Instant::now();
+    f();
+    let duration = start.elapsed();
+    println!("Total time elapsed  {:?}", duration);
+}
+```
+
+```rs
 // 结构体和闭包
 // 如何实现泛型参数是闭包
 fn main() {
