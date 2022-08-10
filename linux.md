@@ -620,6 +620,7 @@ echo "scale=3; ${num}*5/60/60" | bc -l
 ```
 
 ### taskset
+- 设置和查看CPU和进程间的关系
 ```bash
 # 查看线程和CPU间的亲和性
 taskset -p ${PID}
@@ -633,6 +634,7 @@ start=0
 end=3
 taskset -cp ${start}-${end}  ${PID} # start到end
 taskset -cp ${start},${end}  ${PID} # start核end
+taskset -c ${start}-${end}  ${Command}
 
 # -p 通过${PID}查看指定的线程
 # -c 查看线程可以使用的CPU范围

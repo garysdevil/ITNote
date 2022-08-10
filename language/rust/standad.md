@@ -229,7 +229,7 @@ use std::thread;
 fn main() {
     // 启动一个线程
     let thread_handler_1 = thread::spawn(move || {
-        thread::yield_now();
+        thread::yield_now(); // 放弃CPU时间片给操作系统调度器
         println!("I am a new thread thread_handler_1.");
     });
     // 启动一个线程，自定义线程配置。线程名称为 thread_2, 栈大小为4MB // 默认栈大小为2MB
@@ -239,7 +239,7 @@ fn main() {
         println!("I am a new thread thread_handler_2.");
     });
 
-    // join函数使主线程挂起等待特定的子线程结束。
+    // join函数使主线程挂起等待子线程结束。
     thread_handler_1.join().unwrap();
     if let Ok(thread_handler) = thread_handler_2{
         thread_handler.join().unwrap();

@@ -1,13 +1,10 @@
 [TOC]
-## 常用的宝箱 一
-```conf
-rand = { version = "0.8.5" } # 随机数功能
-```
-
-## 常用的宝箱 二
+## 常用的宝箱
 - 文档搜索 https://docs.rs/${宝箱的名字}
 
 ```conf
+rand = { version = "0.8.5" } # 随机数生成器
+rand_chacha = { version = "0.3.1" } # 使用ChaCha算法的加密安全随机数生成器
 
 rust-crypto = "0.2.36" # 各种加密算法功能
 chrono = { version="0.4.19" } # 时间相关的功能
@@ -49,15 +46,19 @@ tracing-timing  = { version = "0.6.0"}
 ```
 
 ## rayon
+- 对比标准库中的迭代函数
+    - rayon并行迭代函数内的闭包不能改变外部状态。
+    - rayon并行迭代函数会有些不同。
+
+- 功能
+    - Rayon并行迭代器负责确定如何将数据划分为并行任务。动态适应以达到最佳性能。
+    - Rayon提供了join和scope函数，允许用户自己创建并行任务。提供了更大的灵活性。
+    - 可以创建自定义线程池，而不是使用Rayon的默认全局线程池。获得了更多控制。
+
+- 工作原理
+    - 通过线程间 Work stealing 的方式达到并行。 
 
 ```rs
-use rayon::prelude::*;
-fn sum_of_squares(input: &[i32]) -> i32 {
-    // input.iter() // 使用串形模式 
-    input.par_iter() // 使用rayon将串形模式改为并行模式
-         .map(|&i| i * i)
-         .sum()
-}
 fn main() {
     // 手动配置 rayon 线程池
     rayon::ThreadPoolBuilder::new()
@@ -66,6 +67,14 @@ fn main() {
         .build_global()
         .unwrap();
     dbg!(rayon::current_num_threads()); // 输出线程池最大并行线程数
+}
+
+use rayon::prelude::*;
+fn sum_of_squares(input: &[i32]) -> i32 {
+    // input.iter() // 使用串行模式 
+    input.par_iter() // 使用rayon将串行模式改为并行模式
+         .map(|&i| i * i)
+         .sum()
 }
 ```
 
@@ -90,6 +99,48 @@ pub fn main() {
         db.delete(b"my key").unwrap(); // 删除一个kv数据
     }
     // DB::destroy(&Options::default(), path).unwrap(); // 删除rocksdb数据库
+}
+
+```
+
+
+## rand
+```rs
+use rand::prelude::*;
+
+fn main() {
+    // 方式一 生成随机数
+    let x: u8 = random();
+    println!("{}", x);
+
+    // 方式二 生成布尔值
+    if random() {
+        println!("Heads!");
+    }
+
+    // 方式三 通过更高效一点的方式，生成更精确范围的随机数
+    let mut rng = thread_rng();
+    if rng.gen() { // 生成布尔值
+        let x: f64 = rng.gen(); // 生成 [0, 1)
+        let y = rng.gen_range(0..=u64::MAX);
+        println!("x is: {}", x);
+        println!("y is: {}", y);
+    }
+    
+    // 方式四 Sometimes it's useful to use distributions directly:
+    let distr = rand::distributions::Uniform::new_inclusive(1, 100);
+    let mut nums = [0i32; 3];
+    for x in &mut nums {
+        *x = rng.sample(distr);
+    }
+    println!("Some numbers: {:?}", nums);
+
+    // 方式五 We can also interact with iterators and slices:
+    let arrows_iter = "➡⬈⬆⬉⬅⬋⬇⬊".chars();
+    println!("Lets go in this direction: {}", arrows_iter.choose(&mut rng).unwrap());
+    let mut nums = [1, 2, 3, 4, 5];
+    nums.shuffle(&mut rng);
+    println!("I shuffled my {:?}", nums);
 }
 
 ```

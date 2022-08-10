@@ -41,11 +41,13 @@ use tokio;
 fn main1() {
     // 创建多线程的runtime
     let tokio_rt = tokio::runtime::Runtime::new().unwrap();
+    tokio_rt.block_on(async {})
 }
 
 fn main2() {
     // 创建单一线程的runtime
     let tokio_rt = tokio::runtime::Builder::new_current_thread().build().unwrap();
+    tokio_rt.block_on(async {})
 }
 
 fn main3() {
@@ -57,6 +59,7 @@ fn main3() {
         .build()            // 创建runtime
         .unwrap();
     std::thread::sleep(std::time::Duration::from_secs(10)); // 睡眠，然后执行 ps -ef | grep ${process_name} | grep -v grep | awk '{print $2}' | xargs ps -T -p 查看 程序启动的线程数量
+    tokio_rt.block_on(async {})
 }
 
 
@@ -201,6 +204,30 @@ async fn task_2() {
     println!("task_2 async task over: {:?}", Instant::now());
 }
 ```
+
+## join!()
+- join!()宏 
+    - 使多个future运行在同一个task上。
+    - 等待所有的future执行完成。
+```rs
+async fn do_stuff_async() {
+    // async work
+}
+
+async fn more_async_work() {
+    // more here
+}
+
+#[tokio::main]
+async fn main() {
+    let (first, second) = tokio::join!(
+        do_stuff_async(),
+        more_async_work());
+
+    // do something with the values
+}
+```
+
 
 ## 线程间的消息传递
 ```rs
