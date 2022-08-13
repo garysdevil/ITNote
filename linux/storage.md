@@ -53,9 +53,9 @@ exportfs -a
 ```
 
 ```conf
-/tank1/nfs2 *(ro,sync,subtree_check)
+/tank1/nfs2 *(ro,insecure,sync,no_subtree_check)
 # 只有特定的IP才能访问
-/tank1/nfs3 ${IP}(insecure,rw,async,no_root_squash,no_subtree_check)
+/tank1/nfs3 ${IP}(rw,insecure,async,no_root_squash,no_subtree_check)
 
 # sync： 将数据同步写入内存缓冲区与磁盘中，效率低，但是可以保证数据的一致性；
 # async： 将数据先保存在内存缓冲区中，必要时才写入磁盘；
@@ -79,6 +79,8 @@ mount ${IP}:/tank1/nfs1 /opt/example1
 mount -t nfs -o ro,bg,soft,nolock ${IP}:/tank1/nfs2 /opt/example2
 # 以写的方式挂载（挂载成功后正常读写主机文件与文件夹
 mount -t nfs -o rw,bg,soft,nolock ${IP}:/tank1/nfs3 /opt/example2
+# 
+umount /opt/example2
 
 # 开机自动挂载
 echo "${IP}:/tank1/nfs  /opt/example2  nfs4  defaults  0  0" >> /etc/fstab
