@@ -23,8 +23,8 @@ echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" 
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 apt-get update
 
-apt-get install postgresql-10
-apt-get install libpq-dev
+apt-get install postgresql-12 -y
+apt-get install libpq-dev -y
 
 ```
 2. 安装完后
@@ -39,29 +39,31 @@ apt-get install libpq-dev
     - 初始化数据库 
         mkdir /data/postgresql; chown postgres.postgres /data/postgresql
         su - postgres
-        /usr/lib/postgresql/10/bin/initdb -D /data/postgresql/
-    - 更改配置文件/etc/postgresql/10/main/postgresql.conf文件。
+        /usr/lib/postgresql/12/bin/initdb -D /data/postgresql/
+    - 更改配置文件/etc/postgresql/12/main/postgresql.conf文件字段data_directory。
+    - root权限下重启服务 systemctl restart postgresql
 
-5. 进入数据库
+5. 登入数据库
 ```bash
+# 方式一 本地登入
 sudo -i -u postgres
+psql
+# 方式二 远程登入
 psql -h IP地址 -p 端口 -d 数据库名 -U 用户名 -W 密码
-
 psql -h 127.0.0.1 -p 5432 -d eth -U eth
 ```
 
-6. 数据库配置文件    /etc/postgresql/10/main/pg_hba.conf
+6. 数据库配置文件  /etc/postgresql/10/main/pg_hba.conf
 
-7. 彻底删除postgres https://www.cnblogs.com/jimlee027/p/6276723.html
+7. 彻底删除postgres  https://www.cnblogs.com/jimlee027/p/6276723.html
 ### 概念
 1. 模式 Schema
     - 可以看着是一个表的集合。
     - 一个模式可以包含视图、索引、据类型、函数和操作符等。
 ### 基本操作
-1. 
-show data_directory;
+1. 查看 ``show data_directory;``
 
-2. 权限
+1. 权限
     - 用户与数据库
     ```sql
     CREATE USER pg_user WITH PASSWORD '*****';
@@ -81,19 +83,19 @@ show data_directory;
     ALTER USER user_name WITH PASSWORD 'password';
     ```
 
-3. 常规操作
+2. 常规操作
     1. 列举数据库：\l
     2. 切换数据库：\c 数据库名
-    2. 切换用户 \c - 用户名
-    3. 查看该某个库中的所有表：\dt
-    4. 切换数据库：\c interface
-    5. 查看某个库中的某个表结构：\d 表名
-    6. 查看某个库中某个表的记录：select * from apps limit 1;
-    7. 显示字符集：\encoding
-    8. 退出psgl：\q
-    9. 格式化输出： \x 
+    3. 切换用户 \c - 用户名
+    4. 查看该某个库中的所有表：\dt
+    5. 切换数据库：\c interface
+    6. 查看某个库中的某个表结构：\d 表名
+    7. 查看某个库中某个表的记录：select * from apps limit 1;
+    8. 显示字符集：\encoding
+    9. 退出psgl：\q
+    10. 格式化输出： \x 
 
-4. 添加索引
+3. 添加索引
 ```sql
 CREATE INDEX 索引名
     ON public.表名 USING btree

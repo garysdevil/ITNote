@@ -3,9 +3,6 @@
 - 文档搜索 https://docs.rs/${宝箱的名字}
 
 ```conf
-rand = { version = "0.8.5" } # 随机数生成器
-rand_chacha = { version = "0.3.1" } # 使用ChaCha算法的加密安全随机数生成器
-
 rust-crypto = "0.2.36" # 各种加密算法功能
 chrono = { version="0.4.19" } # 时间相关的功能
 anyhow = { version="1.0.58" } # 基于 std::error::Error 对各种错误类型进行了封装
@@ -13,6 +10,13 @@ num_cpus = { version = "1.13.1" } # 获取服务器上的CPU数量
 futures-util = { version = "0.3" }  # Combinators and utilities for working with Futures, Streams, Sinks, and the AsyncRead and AsyncWrite traits.
 once_cell = { version = "1.12.0"  } # 线程安全的初始化变量，用来存储堆上的信息，并且具有最多只能赋值一次的特征。
 criterion = { version = "0.3.5" } # 基准测试工具  文档 https://bheisler.github.io/criterion.rs/book/getting_started.html
+
+# 随机数
+rand = { version = "0.8.5" } # 随机数生成器
+rand_chacha = { version = "0.3.1" } # 使用ChaCha算法的加密安全随机数生成器
+
+# gpu
+rust-gpu = { version = "0.1.0" }
 
 # 序列化
 bincode = "1.2.1" # 序列化与反序列化功能

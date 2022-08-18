@@ -365,8 +365,9 @@ rsync -P -e'ssh -p 22' home.tar 192.168.205.34:/home/home.tar
 # --inplace
 
 # 通过ssh协议远程同步目录时的参数
---append-verify -P -a -z -e'ssh -p 22'
--P -a -z -e'ssh -p 22'
+# --append-verify -P -a -z -e'ssh -p 22'
+# -P -a -z -e'ssh -p 22'
+rsync -P -a -z -e'ssh -p 22' 192.168.205.34:/home/home ./
 ```
 
 - rsync 使用-a参数时，文件夹内的文件太多，可能会导致这个问题，例如当文件夹内含有8691137个文件时 ``No space left on device (28)``

@@ -380,6 +380,8 @@ fn main() {
 - Rust原子操作操作有5中内存顺序: Relaxed/Release/Acquire/AcqRel/SeqCst
     1. Relaxed 没有内存顺序约束, 仅仅是原子类型自己的 store/load 函数是原子操作。
     2. Release/Acquire Release之前的写原子操作优先于Acquire之后的读原子操作。
+       1. Release： CPU每次写数据，立刻将其刷新到内存里。一定会被使用Acquire的线程看到。
+       2. Acquire： CPU每次读数据，都从内存里获取最新的数据。
     3. AcqRel 读的时候使用Acquire顺序, 写的时候使用Release顺序。
     4. SeqCst 该原子操作的优先级最低。
 
