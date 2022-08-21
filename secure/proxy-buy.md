@@ -3,3 +3,7 @@
     - windows https://www.opai.xin/v2rayN.rar
     - mac   https://www.opai.xin/V2rayU.dmg
     - androud https://www.opai.xin/v2rayNG.html
+
+## ClashX
+- https://www.zuoyou.org.uk/
+- https://vip.jltdd.com/
