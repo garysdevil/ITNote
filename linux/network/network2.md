@@ -119,6 +119,12 @@ mtr ${hostname}
 # -r --report 结果显示，并不动态显示
 ```
 
+### nethogs
+- 监听不同进程的流程
+```bash
+# 监控指定网卡数据 
+nethogs eth0
+```
 
 ### 其它监控指令
 1. glances

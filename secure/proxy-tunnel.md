@@ -85,7 +85,7 @@ mv v2gen /usr/local/bin/
 v2gen -u “订阅url” -o /usr/local/etc/v2ray/config.json
 ```
 
-#### v2rayA
+### v2rayA
 -  v2ray的GUI管理界面
 - 源码 https://github.com/v2rayA/v2rayA
 
