@@ -10,6 +10,8 @@ num_cpus = { version = "1.13.1" } # 获取服务器上的CPU数量
 futures-util = { version = "0.3" }  # Combinators and utilities for working with Futures, Streams, Sinks, and the AsyncRead and AsyncWrite traits.
 once_cell = { version = "1.12.0"  } # 线程安全的初始化变量，用来存储堆上的信息，并且具有最多只能赋值一次的特征。
 criterion = { version = "0.3.5" } # 基准测试工具  文档 https://bheisler.github.io/criterion.rs/book/getting_started.html
+backoff = "0.4.0" # 指数级回退和重试机制
+bytes = "1.2.1" # 提供高效的字节结构；Buf和BufMut特征。
 
 # 随机数
 rand = { version = "0.8.5" } # 随机数生成器
@@ -36,6 +38,9 @@ tokio-util = { version = "0.7.3" } # tokio的附加工具
 tokio-stream = { version = "0.1.9" } # 迭代器，异步版本的std::iter::Iterator特征
 jsonrpsee = { version = "0.14.0" } # 建立在tokio异步运行时库上的web服务框架
 futures-util = "0.3.21" # Common utilities and extension traits for the futures-rs library.
+
+# web
+warp = "0.3.2" # web服务器框架
 
 # 多核编程
 rayon = { version = "1.5.3" } # 将线性计算转为并行计算
@@ -147,4 +152,81 @@ fn main() {
     println!("I shuffled my {:?}", nums);
 }
 
+```
+
+
+## backoff
+- 可以用于同步和异步编程中
+
+
+```toml
+[dependencies]
+backoff = "0.4.0"
+reqwest = {version = "0.11", features = ["json", "blocking"]}
+```
+```rs
+fn main() {
+    use backoff::{retry, Error, ExponentialBackoff};
+
+    let op = || {
+        println!("---");
+        let result = reqwest::blocking::get("https://baidu.com").map_err(Error::transient);
+        // match result{
+        //     Err(e) => println!("{}", e),
+        //     Ok(o)  => println!("{:?}", o),
+        // };
+        println!("{:?}", &result);
+        result
+    };
+    let backoff = ExponentialBackoff::default();
+    // backoff.current_interval = std::time::Duration::from_secs(1);
+    retry(backoff, op).err().unwrap();
+}
+```
+
+## bytes
+- Bytes
+- BytesMut 容量会进行伸缩。
+
+```rs
+fn main1() {
+    use bytes::Bytes;
+
+    let mut mem = Bytes::from("Hello world");
+    let mem_1 = mem.slice(0..5); // 复制数据
+    let mem_2 = mem.split_to(6); // 切割 mem 的数据
+
+    assert_eq!(mem_1, "Hello"); 
+    assert_eq!(mem, "world");
+    assert_eq!(mem_2, "Hello ");
+}
+fn main2() {
+    use bytes::{BytesMut, BufMut};
+
+    let mut buf = BytesMut::with_capacity(1024);
+
+    buf.put(&b"hello world"[..]);
+    buf.put_u16(1234);
+    let buf_1 = buf.split(); // 移动 buf 的数据被给 buf_1
+    assert_eq!(buf_1, b"hello world\x04\xD2"[..]);
+
+    assert!(buf.is_empty());
+    assert_eq!(buf.capacity(), 1011);
+}
+```
+
+## wrap
+```rs
+use warp::Filter;
+
+#[tokio::main]
+async fn main() {
+    // GET /hello/warp => 200 OK with body "Hello, warp!"
+    let hello = warp::path!("hello" / String)
+        .map(|name| format!("Hello, {}!", name));
+
+    warp::serve(hello)
+        .run(([127, 0, 0, 1], 8888))
+        .await;
+}
 ```
