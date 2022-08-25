@@ -1,10 +1,10 @@
-## Postgresql
-### 相关链接
+- PostgreSQL
+## 相关链接
 - https://www.postgresql.org/
 - https://www.postgresql.org/about/press/presskit12/zh/
 
+## 安装
 ### 版本
-
 | Version | Current minor | Supported | First Release      | Final Release     |
 | ------- | ------------- | --------- | ------------------ | ----------------- |
 | 14      | 14.4          | Yes       | September 30, 2021 | November 12, 2026 |
@@ -13,8 +13,8 @@
 | 11      | 11.16         | Yes       | October 18, 2018   | November 9, 2023  |
 | 10      | 10.21         | Yes       | October 5, 2017    | November 10, 2022 |
 
-### 安装
-#### ubuntu安装
+
+### Ubuntu安装
 1. 安装
 ```bash
 # https://www.postgresql.org/download/linux/ubuntu/
@@ -56,66 +56,89 @@ psql -h 127.0.0.1 -p 5432 -d eth -U eth
 6. 数据库配置文件  /etc/postgresql/10/main/pg_hba.conf
 
 7. 彻底删除postgres  https://www.cnblogs.com/jimlee027/p/6276723.html
+
+## 语法
 ### 概念
-1. 模式 Schema
+1. 数据库 database
+2. 模式 Schema
     - 可以看着是一个表的集合。
     - 一个模式可以包含视图、索引、据类型、函数和操作符等。
-### 基本操作
-1. 查看 ``show data_directory;``
+3. 表 table
 
-1. 权限
-    - 用户与数据库
-    ```sql
-    CREATE USER pg_user WITH PASSWORD '*****';
-    CREATE DATABASE db_name OWNER pg_user;
-    GRANT ALL PRIVILEGES ON DATABASE db_name TO pg_user;
-    ```
+### 常规操作
+1. 列举数据库： \l
+2. 切换数据库： \c 数据库名
+3. 列出用户： \du
+4. 切换用户： \c - 用户名
+5. 获取当前连接数据库中可见的schema ``select * from information_schema.schemata;``
+6. 创建schema ``CREATE SCHEMA pool;``
+7. 切换schema ``set search_path to schema的名字;``
+8. 查看该某个库中的所有表： \dt
+9. 切换数据库： \c interface
+10. 查看某个库中的某个表结构： \d 表名
+11. 查看某个库中某个表的记录： select * from apps limit 1;
+12. 显示字符集： \encoding
+13. 退出psgl： \q
+14. 格式化输出：  \x 
+15. 执行sql文件： \i /path/xxx.sql
 
-    - 用户与表
-    ```sql
-    ALTER TABLE table_name OWNER TO pg_user;
-    ```
-    
-    - 用户角色密码
-    ```sql
-    SELECT * FROM pg_roles;
-    SELECT * FROM pg_user;
-    ALTER USER user_name WITH PASSWORD 'password';
-    ```
+### SQL
+#### 软件信息
+1. 查看数据目录 ``show data_directory;``
+2. 查看服务版本 ``select version();``
 
-2. 常规操作
-    1. 列举数据库：\l
-    2. 切换数据库：\c 数据库名
-    3. 切换用户 \c - 用户名
-    4. 查看该某个库中的所有表：\dt
-    5. 切换数据库：\c interface
-    6. 查看某个库中的某个表结构：\d 表名
-    7. 查看某个库中某个表的记录：select * from apps limit 1;
-    8. 显示字符集：\encoding
-    9. 退出psgl：\q
-    10. 格式化输出： \x 
+#### 权限
+ - 用户与数据库
+ ```sql
+ CREATE USER pg_user WITH PASSWORD '*****';
+ CREATE DATABASE db_name OWNER pg_user;
+ GRANT ALL PRIVILEGES ON DATABASE db_name TO pg_user;
+ ```
 
-3. 添加索引
+ - 用户与表
+ ```sql
+ create table table_name;
+ ALTER TABLE table_name OWNER TO pg_user;
+ ```
+ 
+ - 用户角色密码
+ ```sql
+ SELECT * FROM pg_roles;
+ SELECT * FROM pg_user;
+ ALTER USER user_name WITH PASSWORD 'password';
+ ```
+
+#### sql
 ```sql
+-- 添加索引
 CREATE INDEX 索引名
     ON public.表名 USING btree
     (字段名 COLLATE pg_catalog."default")
     TABLESPACE pg_default;
+
+
+-- 清空表格
+TRUNCATE ${tablename} RESTART IDENTITY;
 ```
 
-5. sql
-    1. 清空表格 TRUNCATE ${tablename} RESTART IDENTITY;
-## Postgrest
-- 参考文档 https://postgrest.org/en/v7.0.0/install.html
-- 基于PostgreSQL数据库，实现条件查询和访问性控制，提供RESTful API 的稳定WEB服务。
-    - 数据库结构和约束决定API的端点和操作。 
-    - PostgREST可以替代手动的CRUD开发。
 
-### 安装配置Postgrest
+## Postgrest
+- 参考文档 
+    1. https://postgrest.org/en/v7.0.0/install.html
+- 基于PostgreSQL数据库，实现条件查询和访问性控制，提供RESTful API 的稳定WEB服务。
+    1. 数据库结构和约束决定API的端点和操作。 
+    2. PostgREST可以替代手动的CRUD开发。
+
+### 安装
+```bash
 curl -O https://github.com/PostgREST/postgrest/releases/download/v7.0.0/postgrest-v7.0.0-ubuntu.tar.xz
 xz -d postgrest-v7.0.0-ubuntu.tar.xz
-或者 tar -xvJf postgrest-v7.0.0-ubuntu.tar.xz
-```conf vim postgrest.conf
+# 或者 tar -xvJf postgrest-v7.0.0-ubuntu.tar.xz
+```
+
+### 配置启动
+- 配置配置文件 vim postgrest.conf
+```conf 
 db-uri = "postgres://eth:eth@127.0.0.1:5432/eth"
 db-schema = "public"
 db-anon-role = "eth"
@@ -124,6 +147,7 @@ server-host = "0.0.0.0"
 server-port = 3000
 ```
 
+- 配置服务 vim /lib/systemd/system/postgrest.service
 ```conf
 # /lib/systemd/system/postgrest.service
 [Unit]
@@ -143,9 +167,12 @@ LimitCORE=infinity
 
 [Install]
 WantedBy=multi-user.target
+```
 
+- 启动
 ```
 ./postgrest postgrest.conf
+```
 
 ### API
 ```bash
