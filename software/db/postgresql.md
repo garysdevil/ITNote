@@ -4,7 +4,7 @@
 - https://www.postgresql.org/about/press/presskit12/zh/
 
 ## 安装
-### 版本
+### 版本2021
 | Version | Current minor | Supported | First Release      | Final Release     |
 | ------- | ------------- | --------- | ------------------ | ----------------- |
 | 14      | 14.4          | Yes       | September 30, 2021 | November 12, 2026 |
@@ -46,8 +46,7 @@ apt-get install libpq-dev -y
 5. 登入数据库
 ```bash
 # 方式一 本地登入
-sudo -i -u postgres
-psql
+\
 # 方式二 远程登入
 psql -h IP地址 -p 端口 -d 数据库名 -U 用户名 -W 密码
 psql -h 127.0.0.1 -p 5432 -d eth -U eth
@@ -70,17 +69,16 @@ psql -h 127.0.0.1 -p 5432 -d eth -U eth
 2. 切换数据库： \c 数据库名
 3. 列出用户： \du
 4. 切换用户： \c - 用户名
-5. 获取当前连接数据库中可见的schema ``select * from information_schema.schemata;``
-6. 创建schema ``CREATE SCHEMA pool;``
-7. 切换schema ``set search_path to schema的名字;``
-8. 查看该某个库中的所有表： \dt
-9. 切换数据库： \c interface
-10. 查看某个库中的某个表结构： \d 表名
-11. 查看某个库中某个表的记录： select * from apps limit 1;
-12. 显示字符集： \encoding
-13. 退出psgl： \q
-14. 格式化输出：  \x 
-15. 执行sql文件： \i /path/xxx.sql
+5. 获取当前连接数据库中可见的schema ``\dn`` 或 ``select * from information_schema.schemata;``
+6. 创建schema ``create schema schema名字;``
+7. 切换schema ``set search_path to schema名字;``
+8. 查看该当前库当前schema中的所有表： \dt
+9.  查看表结构： \d 表名
+10. 显示字符集： \encoding
+11. 退出psgl： \q
+12. 格式化输出：  \x 
+13. 执行sql文件： \i /path/xxx.sql
+14. 设置内部变量或者列出所有的变量 \set
 
 ### SQL
 #### 软件信息
@@ -108,8 +106,11 @@ psql -h 127.0.0.1 -p 5432 -d eth -U eth
  ALTER USER user_name WITH PASSWORD 'password';
  ```
 
-#### sql
+#### SQL
 ```sql
+-- 创建表格
+create table gary_user_tb (user_id int,  user_name varchar(40) not null, primary key ( user_id ));
+
 -- 添加索引
 CREATE INDEX 索引名
     ON public.表名 USING btree
