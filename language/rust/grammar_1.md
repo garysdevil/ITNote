@@ -28,21 +28,25 @@ fn main() {
 3. 如果在代码里未指定变量的数据类型，则编译时编译器会根据变量的值推断出变量的数据类型。
 
 ```rust
-let var_name1 = 123; 
+fn main(){
+    let var_name1 = 123; 
 
-// shadowed 重影：变量的名称可以被重新使用的机制，即变量的值可以被重新绑定。
-let var_name1 = "aa";
+    // shadowed 重影：变量的名称可以被重新使用的机制，即变量的值可以被重新绑定。
+    let var_name1 = "aa";
 
-// 如果要声明变量时指定变量的类型，必须在变量后面使用 : 关键字。
-let var_name1: u8 = 123; 
+    // 如果要声明变量时指定变量的类型，必须在变量后面使用 : 关键字。
+    let var_name1: u8 = 123; 
 
-// 如果要声明可变的变量，必须使用 mut 关键字。
-let mut var_name2 = 123;
-var_name2 = 234;
-
+    // 如果要声明可变的变量，必须使用 mut 关键字。
+    let mut var_name2 = 123;
+    var_name2 = 234;
+}
 // 声明常量，必须使用 const 关键字。
 // 常量不能被重影。
-const const_name1: i32 = 123;
+const CONST_NUM: i32 = 123;
+
+// 全局变量声明，必须是要static关键字。
+static mut STATIC_NUM: i32 = 123;
 ```
 
 ### 基本数据类型
