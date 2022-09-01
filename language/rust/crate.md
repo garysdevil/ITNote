@@ -12,7 +12,6 @@ once_cell = { version = "1.12.0"  } # 线程安全的初始化变量，用来存
 criterion = { version = "0.3.5" } # 基准测试工具  文档 https://bheisler.github.io/criterion.rs/book/getting_started.html
 backoff = "0.4.0" # 指数级回退和重试机制
 bytes = "1.2.1" # 提供高效的字节结构；Buf和BufMut特征。
-ansi_term = "0.12.1" # 进行颜色和格式化的控制
 
 # 随机数
 rand = { version = "0.8.5" } # 随机数生成器
@@ -27,10 +26,6 @@ serde = { version = "1.0.137", features = ["derive"] } # 通过派生宏给结�
 
 # 数据库
 rocksdb = { version = "0.18.0" } # rocksdb的rust封装，即通过rust调用rocksdb c++ api
-
-# 命令行参数
-structopt = { version = "0.3" } # 命令行参数解析进结构体内。由于 structopt 已经被集成进 clap v3 ，所以 structopt 不再添加新功能，只进行维护操作。
-clap = { version = "3.1", features = [ "derive" ] } # 命令行参数解析。
 
 # 异步编程
 futures = { version = "0.3.21" } # 对异步编程的抽象
@@ -53,6 +48,12 @@ tracing-subscriber = { version = "0.3.15" } # tracing日志系统的subscribers�
 tracing-opentelemetry = { version = "0.17.4"} # 将tracing日志记录进opentelemetry的包
 tracing-timing  = { version = "0.6.0"} 
 
+# 终端
+structopt = { version = "0.3" } # 命令行参数解析进结构体内。由于 structopt 已经被集成进 clap v3 ，所以 structopt 不再添加新功能，只进行维护操作。
+clap = { version = "3.1", features = [ "derive" ] } # 命令行参数解析。
+crossterm = "0.25.0" # 跨平台的终端操作库。
+ansi_term = "0.12.1" # 控制终端颜色输出和格式化
+colored = "2.0.0" # 控制终端颜色输出(推荐)
 ```
 
 ## rayon
@@ -235,6 +236,47 @@ async fn main() {
 ## ansi_term
 ```rs
 use ansi_term::Colour::Red;
+use ansi_term::Colour::Cyan;
+fn main() {
+    println!("This is in red: {}", Red.paint("a red string"));
+    println!(
+        "{}", 
+        Cyan.normal().paint(format!(
+        "Total proofs: {} (1m: {} p/s, 5m: {} p/s, 15m: {} p/s, 30m: {} p/s, 60m: {} p/s)",
+        100, 1, 2, 3, 4, 5
+        ))
+    )
+}
+```
 
-println!("This is in red: {}", Red.paint("a red string"));
+## colored
+```rs
+use colored::*;
+fn main() {
+    println!("{}", "this is blue".blue());
+    println!("{}", "this is red".red());
+    println!("{}", "this is red on blue".red().on_blue());
+    println!("{}", "this is also red on blue".on_blue().red());
+    println!("{}", "you can use truecolor values too!".truecolor(0, 255, 136));
+    println!("{}", "background truecolor also works :)".on_truecolor(135, 28, 167));
+    println!("{}", "bright colors are welcome as well".on_bright_blue().bright_red());
+    println!("{}", "you can also make bold comments".bold());
+    println!("{}", "or change advice. This is red".yellow().blue().red());
+    println!("{}", "or clear things up. This is default color and style".red().bold().clear());
+    println!("{}", "purple and magenta are the same".purple().magenta());
+    println!("{}", "and so are normal and clear".normal().clear());
+    println!("{}", "you can specify color by string".color("blue").on_color("red"));
+    println!("{}", String::from("this also works!").green().bold());
+    println!("{}", format!("{:30}", "format works as expected. This will be padded".blue()));
+    println!("{}", format!("{:.3}", "and this will be green but truncated to 3 chars".green()));
+    println!("{} {} {}", "or use".cyan(), "any".italic().yellow(), "string type".cyan());
+
+    println!(
+        "{}", 
+        format!(
+        "Total proofs: {} (1m: {} p/s, 5m: {} p/s, 15m: {} p/s, 30m: {} p/s, 60m: {} p/s)",
+        100, 1, 2, 3, 4, 5
+        ).blue()
+    )
+}
 ```

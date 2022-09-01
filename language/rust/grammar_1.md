@@ -998,7 +998,7 @@ fn func_propagating_1(i: i32) -> Result<i32, bool> {
 }
 fn func_propagating_2(i: i32) -> Result<i32, bool> {
     // 传递错误 方式二 通过?
-    // Rust 中可以在 Result 对象后添加 ? 操作符将同类的 Err 直接传递出去
+    // Rust 中可以在 Result 对象后添加 ? 操作符，对Result进行内的结果进行提取，Err则直接传递出去，否则继续执行之后的代码
     let result = func_judge(i)?;
     Ok(result) // 因为确定 result 不是 Err, result 在这里已经是 i32 类型
 }
