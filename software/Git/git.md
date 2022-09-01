@@ -131,7 +131,8 @@ git stash pop
 git stash list  
 
 8. 打tag  
-    - git tag v1.0.0  
+    - 轻量标签 ``git tag v1.0.0  ``
+    - 附注标签 ``git tag -a v1.4 -m "my version 1.4"``
     - 推所有的tag上远程仓库 git push --tags  
     - 推单个tag上远程仓库 git push origin v1.0.0  
 

@@ -128,14 +128,6 @@ static mut STATIC_NUM: i32 = 123;
     arr_name1.iter();
     ```
 
-### 集合
-7. 字符串
-    ```rust
-    let var_stack_name = String::from("garysdevil");
-    ```
-
-
-
 ## 二 流程控制
 - if else 是基于 true和false
 - match 是基于模式匹配

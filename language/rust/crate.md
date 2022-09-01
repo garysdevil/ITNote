@@ -12,6 +12,7 @@ once_cell = { version = "1.12.0"  } # 线程安全的初始化变量，用来存
 criterion = { version = "0.3.5" } # 基准测试工具  文档 https://bheisler.github.io/criterion.rs/book/getting_started.html
 backoff = "0.4.0" # 指数级回退和重试机制
 bytes = "1.2.1" # 提供高效的字节结构；Buf和BufMut特征。
+ansi_term = "0.12.1" # 进行颜色和格式化的控制
 
 # 随机数
 rand = { version = "0.8.5" } # 随机数生成器
@@ -229,4 +230,11 @@ async fn main() {
         .run(([127, 0, 0, 1], 8888))
         .await;
 }
+```
+
+## ansi_term
+```rs
+use ansi_term::Colour::Red;
+
+println!("This is in red: {}", Red.paint("a red string"));
 ```

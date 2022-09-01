@@ -73,3 +73,29 @@ fn main() {
     info!("Hello world");
 }
 ```
+
+### 例子
+```rs
+fn config_log(debug: bool) {
+    let tracing_level = if debug {
+        tracing::Level::DEBUG
+    } else {
+        tracing::Level::INFO
+    };
+
+    let subscriber = tracing_subscriber::fmt::Subscriber::builder()
+    .with_max_level(tracing_level)
+    .finish();
+
+    let log_file: Option<String>;
+    log_file = None; //Some(String::from("./log.log"));
+    if let Some(file_path) = log_file {
+        let file = std::fs::File::create(file_path).unwrap();
+        let file = tracing_subscriber::fmt::layer().with_writer(file).with_ansi(false);
+        tracing::subscriber::set_global_default(subscriber.with(file))
+            .expect("unable to set global default subscriber");
+    } else {
+        tracing::subscriber::set_global_default(subscriber).expect("unable to set global default subscriber");
+    }
+}
+```
