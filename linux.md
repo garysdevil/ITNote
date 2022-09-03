@@ -425,8 +425,8 @@ echo "2/3" | bc -l
 echo "scale=3; ${num}*5/60/60" | bc -l
 ```
 
-### taskset
-- 设置和查看CPU和进程间的关系
+### taskset CPU隔离
+- taskset 设置和查看CPU和进程间的亲和性
 ```bash
 # 查看线程和CPU间的亲和性
 taskset -p ${PID}
@@ -439,11 +439,29 @@ taskset -cp ${PID}
 start=0
 end=3
 taskset -cp ${start}-${end}  ${PID} # start到end
-taskset -cp ${start},${end}  ${PID} # start核end
-taskset -c ${start}-${end}  ${Command}
+taskset -cp ${start},${end}  ${PID} # start核和end核
+ta  ${Command} # start到end
 
 # -p 通过${PID}查看指定的线程
 # -c 查看线程可以使用的CPU范围
+```
+
+```bash
+# 参考 http://t.csdn.cn/iUoHT
+
+# 一 隔离CPU，避免其它线程run在被隔离的CPU上。(作用于用户态上)
+# 修改Linux内核的启动参数isolcpus。 isolcpus将从线程调度器中移除选定的CPU，这些被移除的CPU称为"isolated" CPU。若想要在被隔离的CPU上run进程，必须调用CPU亲和度相关的syscalls。
+vim /etc/default/grub # redhat vim /boot/grub/grub.conf
+# GRUB_CMDLINE_LINUX="isolcpus=0,1,2,3,4,5,6"
+GRUB_CMDLINE_LINUX="isolcpus=0-34,40-79"
+# 更新/boot/grub/grub.cfg文件 # 查看 /boot/grub/grub.cfg 的时间戳验证是否更新成功
+update-grub # grub-mkconfig -o /boot/grub/grub.cfg # 或者重启
+
+# 二 被隔离的CPU虽然没有线程run在上面，但是仍会收到interrupt。绑定所有的interrupts到非隔离的CPU上，避免被隔离的CPU收到interrupt。(作用于内核态上)
+
+# 三 把特定的线程绑定到某一被隔离的CPU上。(作用于用户态上)
+# 通过taskset指定CPU亲和性
+
 ```
 
 ### ssh 
