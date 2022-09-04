@@ -69,7 +69,7 @@
 
 - 验证配置文件的正确性 /usr/local/bin/v2ray -test -config /usr/local/etc/v2ray/config.json
 
-### v2gen
+#### v2gen
 - 通过订阅模式配置v2ray
 ```bash
 #下载v2gen
@@ -85,9 +85,13 @@ mv v2gen /usr/local/bin/
 v2gen -u “订阅url” -o /usr/local/etc/v2ray/config.json
 ```
 
-### v2rayA
+#### v2rayA
 -  v2ray的GUI管理界面
 - 源码 https://github.com/v2rayA/v2rayA
+
+### clash
+- https://github.com/Dreamacro/clash
+
 
 ## 前置代理工具
 ### Proxy SwitchyOmega

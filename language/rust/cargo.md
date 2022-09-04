@@ -52,9 +52,18 @@ ssl = ["openssl"] # 定义一个条件，满足这个条件则获取 openssl 依
 nativetls = ["native-tls"] # 定义一个条件，满足这个条件则获取 native-tls 依赖。
 
 [dependencies] # cargo new greeting操作后默认生成；crate的库依赖。
-aaa = "../aaa" # 来自本地的crate
 futures-preview = "0.3.0-alpha.13" # 来自 crates.io 的crate
+; some-crate = { version = "1.0", registry = "my-registry" } 来自特定的crate仓库
 romio = { git = "https://github.com/withoutboats/romio", branch = "master" } # 来自github的crate
+myutils = "../myutils" # 来自本地的crate
+myutils = { path = "myutils", version = "0.1.0" } # 来自本地的crate
+
+# 根据硬件和系统类型，下载特定的依赖
+# 通过 rustc --print=cfg 查询本地机器的 cfg targets 信息
+# 通过 rustc --print=cfg --target=x86_64-pc-windows-msvc 查询特定机器的 cfg targets 信息
+[target.'cfg(unix)'.dependencies] 
+openssl = "1.0.1"
+
 [dependencies.openssl] # 可选依赖，满足条件才拉取进行编译
 optional = true
 version = "0.10"

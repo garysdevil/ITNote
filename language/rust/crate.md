@@ -114,6 +114,19 @@ pub fn main() {
             Err(e) => println!("operational problem encountered: {}", e),
         }
         db.delete(b"my key").unwrap(); // 删除一个kv数据
+
+        // 查看有多少个sst文件
+        let livefiles = db.live_files().unwrap();
+        println!("{}",livefiles.len());
+        
+        // 迭代
+        let iter = db.iterator(IteratorMode::Start); // 返回kv迭代
+        assert!(iter.next().is_none()); // 往后进行一次迭代
+        // 遍历数据库
+        for (idx, (db_key, db_value)) in iter.map(Result::unwrap).enumerate() {
+            // println!("{}", idx);
+            println!("{}, {}, {}", idx, String::from_utf8(db_key.to_vec()).expect("Found invalid UTF-8"), String::from_utf8(db_value.to_vec()).expect("Found invalid UTF-8"));
+        }
     }
     // DB::destroy(&Options::default(), path).unwrap(); // 删除rocksdb数据库
 }
