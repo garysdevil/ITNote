@@ -76,6 +76,7 @@ version = "0.2"
 
 [workspace] # 
 members = [] # 相当于你自己可以在src中添加其它的二进制package，然后可以引用这些二进制package里的东西。
+# exclude = [""]
 
 [lib] # 当使用 --lib 参数生成crate时，才可以使用这个配置
 name = "library_name" # 生成库的名字

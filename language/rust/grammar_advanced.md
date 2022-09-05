@@ -199,7 +199,7 @@ impl T2 for S{}
 // 1. 当结构体实现了两个特征，并且这两个特别拥有相同名字的函数时，可以通过如下方式进行区分。
 fn test(){
     S::f(); // 默认先调用结构体方法
-    // 完全限定无歧义调用
+    // 完全限定无歧义调用 fully-qualified syntax  https://doc.rust-lang.org/error-index.html#E0223
     <S as T1>::f();
     <S as T2>::f();
 }

@@ -12,8 +12,42 @@ fn main2() {
     println!("result: {}", s);
 }
 
+// Vec<T> 和 Box<[T]> 互转
+fn main3(){
+    let v1 = vec![1, 2, 3, 4];
+    let b1 = v1.into_boxed_slice(); // 从 Vec<T> 转换成 Box<[T]>，此时会丢弃多余的 capacity
+    let v2 = b1.into_vec(); // 从 Box<[T]> 转换成 Vec<T>
+}
+```
 
-let v1 = vec![1, 2, 3, 4];
-let b1 = v1.into_boxed_slice(); // 从 Vec<T> 转换成 Box<[T]>，此时会丢弃多余的 capacity
-let v2 = b1.into_vec(); // 从 Box<[T]> 转换成 Vec<T>
+
+```rs
+// 迭代器迭代
+fn main(){
+    let vec = vec!["a".to_owned(), "b".to_owned(), "c".to_owned(), "d".to_owned(), "f".to_owned()];
+    let iter = vec.iter();
+    let mut iter1 = iter.clone();
+    let mut iter2 = iter.clone();
+    let mut iter3 = iter.clone();
+
+    println!("for iter"); // 迭代失败
+    for element in &iter1.next() {
+        println!("{:?}",element);
+    }
+
+    println!("loop iter");
+    loop {
+        match &iter2.next() {
+            None => break,
+            Some(element) => {
+                println!("{:?}", element);
+            }
+        }
+    }
+    
+    println!("while iter");
+    while let Some(element) = &iter3.next() {
+        println!("{:?}", element);
+    }
+}
 ```

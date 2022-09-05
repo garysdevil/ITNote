@@ -307,6 +307,50 @@ impl From<Utf8Error> for CustomError {
 pub type IResult<I> = std::result::Result<I, CustomError>;
 ```
 
+## 标准库 特殊
+### marker
+- PhantomData<T> 特点
+    1. 零成本抽象，一个不占用任何空间的单元结构体
+    2. 在编译期，PhantomData<T> 等同于 T
+    3. 在运行时，PhantomData<T> 等同于 ()
+
+```rs
+use std::marker::PhantomData;
+struct Slice<'a, T: 'a> {
+    start: *const T,
+    end: *const T,
+    phantom: PhantomData<&'a T>,
+}
+fn borrow_vec<T>(vec: &Vec<T>) -> Slice<'_, T> {
+    let ptr = vec.as_ptr();
+    Slice {
+        start: ptr,
+        end: unsafe { ptr.add(vec.len()) },
+        phantom: PhantomData,
+    }
+}
+```
+
+### borrow
+- Cow
+    - Cow表示copy on write
+    - Cow是一个enum。
+    - Cow可以是两个变体中的任意一种，可以是指向类型B的一个引用，也可以在需要的时候，把这个引用变成Owned类型。
+    - Cow内部会根据请求的方式内部来决定是否需要clone。
+```rs
+pub enum Cow<'a, B> 
+where
+    B: 'a + ToOwned + ?Sized, 
+ {
+    Borrowed(&'a B),
+    Owned(<B as ToOwned>::Owned),
+}
+```
+```rs
+use std::borrow::Cow;
+```
+
+
 ## 标准库 多线程
 ### thread
 ```rs

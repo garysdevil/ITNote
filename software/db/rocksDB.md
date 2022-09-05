@@ -17,3 +17,23 @@
     - LevelDB只有一个Memtable，诺Memtable满了还没有来得及Flush刀sst文件，则会引起系统停顿；DocksDB可以根据服务器内存情况开辟多个Immutable Memtable。
     - LevelDB每次只能获取一个KV；RocksDB支持批量获取。
     - LevelDB不支持备份和恢复；RocksDB支持增量备份、全量备份和恢复。
+
+```bash
+git clone https://github.com/facebook/rocksdb
+
+# 下载依赖，跟进后面的链接 https://github.com/facebook/rocksdb/blob/main/INSTALL.md
+
+make ldb
+
+./ldb -h
+
+db_path=~/.aleo/storage/ledger-3/
+
+./ldb --db=${db_path} --create_if_missing put gary_key gary_value
+
+./ldb --db=${db_path} get gary_key
+
+./ldb --db=${db_path} scan
+
+./ldb --db=${db_path} list_live_files_metadata
+```

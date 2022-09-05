@@ -700,8 +700,9 @@ fn main() {
 - 曾经需要使用 extern crate ${库名字} 来将外部库加载进作用域内，自从Rust 2018后，只需要向Cargo.toml添加外部依赖项，就会将外部库加载进整个crate作用域内。
     ```rs
     // 1.3 版本之前的语法
-    #[macro_use] // 将 lib_name 所有 macro 的作用域扩展到上一级
+    #[macro_use] // 将 lib_name 宝箱内所有的宏作用域扩展到上一级
     extern crate lib_name;
+    // 上面的代码放在根文件里，则表示将 lib_name 宝箱内所有的宏作用于全局，lib_name的宏可以直接在任何地方进行使用
     ```
 
 ### 模块 module

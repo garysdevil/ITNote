@@ -33,7 +33,7 @@ rocksdb = { version = "0.19.0" } # rocksdb的rust封装，即通过rust调用roc
 
 # 异步编程
 futures = { version = "0.3.21" } # 对异步编程的抽象
-tokio = { version = "1.19.2", features = ["full"] } # 异步运行时库
+tokio = { version = "1.21.0", features = ["full"] } # 异步运行时库
 tokio-util = { version = "0.7.3" } # tokio的附加工具
 tokio-stream = { version = "0.1.9" } # 迭代器，异步版本的std::iter::Iterator特征
 jsonrpsee = { version = "0.14.0" } # 建立在tokio异步运行时库上的web服务框架
