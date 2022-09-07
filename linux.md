@@ -432,18 +432,22 @@ echo "scale=3; ${num}*5/60/60" | bc -l
 taskset -p ${PID}
 # ffffffffffffffffff 表示可以使用任意的CPU逻辑核
 
-# 查看线程可以使用的CPU范围
+# 查看进程可以使用的CPU范围
 taskset -cp ${PID}
+
+# 查看进程内的所有线程可以使用的CPU范围
+taskset -acp ${PID}
 
 # 设置线程的CPU亲和性为指导的CPU逻辑核
 start=0
 end=3
 taskset -cp ${start}-${end}  ${PID} # start到end
 taskset -cp ${start},${end}  ${PID} # start核和end核
-ta  ${Command} # start到end
+taskset -c ${start}-${end}  ${Command} # start到end
 
 # -p 通过${PID}查看指定的线程
 # -c 查看线程可以使用的CPU范围
+# -a 获取给定进程pid的所有线程的cpu亲和性。
 ```
 
 ```bash
@@ -451,7 +455,7 @@ ta  ${Command} # start到end
 
 # 一 隔离CPU，避免其它线程run在被隔离的CPU上。(作用于用户态上)
 # 修改Linux内核的启动参数isolcpus。 isolcpus将从线程调度器中移除选定的CPU，这些被移除的CPU称为"isolated" CPU。若想要在被隔离的CPU上run进程，必须调用CPU亲和度相关的syscalls。
-vim /etc/default/grub # redhat vim /boot/grub/grub.conf
+vim /etc/default/grub # redhat vim/boot/grub/grub.conf
 # GRUB_CMDLINE_LINUX="isolcpus=0,1,2,3,4,5,6"
 GRUB_CMDLINE_LINUX="isolcpus=0-34,40-79"
 # 更新/boot/grub/grub.cfg文件 # 查看 /boot/grub/grub.cfg 的时间戳验证是否更新成功

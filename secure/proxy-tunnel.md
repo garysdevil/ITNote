@@ -121,6 +121,7 @@ v2gen -u “订阅url” -o /usr/local/etc/v2ray/config.json
     - https://www.wanhebin.com/openvpn/639.html
 ### 安装
 ```bash
+# Centos系统
 # 安装epel 仓库源
 wget http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
 
@@ -129,6 +130,16 @@ rpm -Uvh epel-release-6-8.noarch.rpm
 yum install easy-rsa openvpn
 
 echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+```
+```bash
+# Ubuntu系统
+apt-get install openvpn
+```
+
+```bash
+# 客户端启动
+openvpn  /etc/openvpn/client/client.ovpn
+openvpn --ca /etc/openvpn/client/ca.crt --config /etc/openvpn/client/client.ovpn --auth-user-pass /etc/openvpn/client/passwd --log-append /tmp/openvpn.log
 ```
 
 ### 使用openVPN自带的http-proxy作代理
@@ -147,6 +158,7 @@ nobind #不绑定本地特定的端口号
 verb 3 #指定日志文件的记录详细级别，可选0-9，等级越高日志内容越详细
 persist-key #通过keepalive检测超时后，重新启动VPN，不重新读取keys，保留第一次使用的keys
 persist-tun #检测超时后，重新启动VPN，一直保持tun是linkup的。否则网络会先linkdown然后再linkup
+; block-outside-dns # 阻止使用外部的DNS
 # 证书密钥
 ca ca.crt #指定CA证书的文件路径
 cert client.crt #指定当前客户端的证书文件路径
@@ -155,7 +167,6 @@ key client.key #指定当前客户端的私钥文件路径
 route-nopull # 不添加路由，也就是不会有任何网络请求走 openvpn 代理
 route 192.168.2.0 255.255.255.0 vpn_gateway # 指定网络段才走 openvpn 代理
 route 172.121.0.0 255.255.0.0 net_gateway # 与 vpn_gateway 相反，它是指定哪些IP不走 openvpn 代理
-
 ```
 
 ## UDPspeeder

@@ -337,6 +337,10 @@ fn borrow_vec<T>(vec: &Vec<T>) -> Slice<'_, T> {
     - Cow是一个enum。
     - Cow可以是两个变体中的任意一种，可以是指向类型B的一个引用，也可以在需要的时候，把这个引用变成Owned类型。
     - Cow内部会根据请求的方式内部来决定是否需要clone。
+- 结构体方法
+    - .into_owned() 取出 Cow 中的所有权数据，当为获取所有权时，进行 clone 操作
+    - .to_mut() 获取所有权的可变引用
+
 ```rs
 pub enum Cow<'a, B> 
 where
@@ -348,6 +352,52 @@ where
 ```
 ```rs
 use std::borrow::Cow;
+fn abs_all(input: &mut Cow<[i32]>) {
+    for i in 0..input.len() {
+        let v = input[i];
+        if v < 0 {
+            // Clones into a vector if not already owned.
+            input.to_mut()[i] = -v;
+        }
+    }
+}
+fn main(){
+    // No clone occurs because `input` doesn't need to be mutated.
+    let slice = [0, 1, 2];
+    let mut input = Cow::from(&slice[..]);
+    abs_all(&mut input);
+    print_addr(*input);
+
+    // Clone occurs because `input` needs to be mutated.
+    let slice = [-1, 0, 1];
+    let mut input = Cow::from(&slice[..]);
+    abs_all(&mut input);
+
+    // No clone occurs because `input` is already owned.
+    let mut input = Cow::from(vec![-1, 0, 1]);
+    abs_all(&mut input);
+}
+```
+
+```rs
+use std::borrow::Cow;
+fn print_addr(s: &str) {
+    println!("{}", s);
+    let mut p = s.as_ptr();
+    for ch in s.chars() {
+        println!("\t{:p}\t{}", p, ch);
+        p = p.wrapping_add(ch.len_utf8());
+    }
+}
+fn main(){
+    let s = String::from("AB");
+    print_addr(&s);
+    let mut cow = Cow::Borrowed(&s);
+    cow.to_mut().insert_str(1, "cd"); // 数据发生了改变，发生了clone
+    let sr = cow.into_owned(); // 
+    // let sr = cow.as_str();
+    print_addr(&sr);
+}
 ```
 
 
