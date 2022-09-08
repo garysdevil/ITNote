@@ -2,17 +2,20 @@
 ## 安装
 1. 下载
 ```bash
-curl -O http://mirrors.hust.edu.cn/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+# https://maven.apache.org/download.cgi
+wget https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.zip
 tar xzvf apache-maven-3.6.3-bin.tar.gz
 ```
 2. 配置环境变量
 vi /etc/profile/maven.sh
 ```conf
-export M2_HOME=/opt/app/apache-maven-3.6.3
+export M2_HOME=/opt/app/apache-maven-3.8.6
 export PATH=$PATH:$M2_HOME/bin
 ```
+```bash
 source /etc/profile
 mvn -v
+```
 
 3. 配置 本地仓库存储位置/中央仓库
 - conf/settings.xml  

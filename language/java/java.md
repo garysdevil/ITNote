@@ -1,6 +1,7 @@
 # Java
 - 参考
     - https://www.onitroad.com/jc/archive/install-java-on-amazon-linux.html
+    - https://www.oracle.com/java/technologies/downloads/#java17
 ## 安装openjdk
 1. CentOS7源安装
 ```bash

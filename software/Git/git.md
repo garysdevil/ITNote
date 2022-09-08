@@ -148,6 +148,11 @@ git stash list
     4. head~ 指定上一次commit状态  
     - 重置回工作区状态  `` git reset --mix origin/master  ``
     - 重置回上一次commit状态 `` git checkout . ``
+11. 清楚未被跟踪的文件clean
+    1.  `` git clean -nfd `` `` git clean -fd``
+    2.  -f 删除 untracked files
+    3.  -d 连 untracked 的目录也一起删掉
+    4.  -n 查看会删掉哪些文件，并不会执行删除操作
 
 ## Git免密登陆
 ### https方式-明文
