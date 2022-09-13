@@ -35,6 +35,12 @@
 
 - 工作流程
 
+## 机制
+- 并发
+    - 一次只能由一个进程打开数据库。rocksdb实现从操作系统获取锁以防止误用。
+    - 在单个进程中，同一 rocksdb::DB 实例可以由多个并发线程安全地共享。也就是说，不同的线程可以在没有任何外部同步的情况下写入或获取迭代器，或者在同一个数据库上调用Get（rocksdb实现将自动执行所需的同步）。
+    - 在单个进程中，Iterator 、 WriteBatch 等实例可能需要外部进行同步。
+
 ## 指令操作
 ```bash
 git clone https://github.com/facebook/rocksdb

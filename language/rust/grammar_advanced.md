@@ -267,4 +267,49 @@ fn main() {
     foo::<u32>(); // 通过turbofish语法，指定参数类型
 }
 ```
+
+
+## 特征
+- 参考
+    - https://zhuanlan.zhihu.com/p/109990547
+    - https://alschwalm.com/blog/static/2017/03/07/exploring-dynamic-dispatch-in-rust/
+
+- 代码分发
+    - 即当代码涉及多态时，需要某种机制决定实际调动类型。
+    - impl trait 被称为静态分发。
+    - dyn trait 被称为动态分发。
+    - 动态分发 是通过一种被称之为 特征对象 的机制。
+
+-  Rust 编译器要求函数不能返回多种类型。
+    -  因为 Rust 在需要在 编译期确定返回值占用的内存大小。
+    -  使用智能指针，确定返回值的大小。例如 ``-> Box<dyn View>``，只要实现了View特征的Box<?>都可以被返回。
+
+```rs
+trait TraitA {
+    fn default_impl(&self) {
+        println!("correct impl!");
+    }
+}
+impl dyn TraitA { // 特征对象TraitA的代码块
+    fn trait_object() {
+        println!("trait object impl");
+    }
+}
+struct StructA {}
+
+impl TraitA for StructA {}
+
+fn main() {
+    let struct_a = StructA{};
+    struct_a.default_impl(); // 特征对象的方法
+    <dyn TraitA>::trait_object();  // 特征对象的关联方法
+}
 ```
+
+## 泛型
+- 通过单态化, 编译器消除了泛型, 而且没有性能损耗。
+    - 但过多展开可能会导致编译生成的二级制文件体积过大。
+
+## 多态
+- 虚函数表 vtable
+    - 虚函数表在编译的时候就确定了，这是实现多态的关键!

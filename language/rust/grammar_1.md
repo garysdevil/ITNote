@@ -1,4 +1,5 @@
 [TOC]
+
 ## 一 基本语法
 - Rust 是强类型语言
 
@@ -1126,18 +1127,29 @@ impl MyTrait1 for Person {
         return Person { name: self.name.clone(), age: self.age };
     }
 }
-// 特征可以作为函数的参数。
-fn say(T: &(impl MyTrait1 + std::fmt::Display)) { // 可以传入任意的数据类型，但数据类型必须实现 了MyTrait1 特征和 std::fmt::Display 特征
+// 为 Person 结构体实现 Display 特征。
+impl std::fmt::Display for Person {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({}, {})", 11, 1122)
+    }
+}
+// 特征可以作为函数的参数，
+fn say_fn(T: &(impl MyTrait1 + std::fmt::Display)) { // 可以传入任意的数据类型，但数据类型必须实现 了MyTrait1 特征和 std::fmt::Display 特征
     println!("Breaking news! {:?}", T.say());
 }
+
 pub fn main() {
     let adam = Person {
         name: String::from("Adam"),
         age: 24
     };
     adam.say();
+    say_fn(&adam);
     println!("{}", adam.describe());
     println!("{:?}", adam.new_self());
+
+    println!("{}", &adam); // 使用 std::fmt::Display 衍生宏特征输出格式进行输出
+    println!("{:?}", &adam); // 使用 std::fmt::Debug 特征输出格式进行输出
 }
 ```
 

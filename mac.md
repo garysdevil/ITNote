@@ -20,6 +20,12 @@ top -l 1 | head -n 10 | grep PhysMem
 
 # 5. 查看本地IP
 ifconfig en0
+
+# 6. 清除dns缓存
+killall -HUP mDNSResponder
+
+# 7. 查看某个域名的 DNS 缓存
+nslookup -q=ns baidu.com
 ```
 
 ## 软件

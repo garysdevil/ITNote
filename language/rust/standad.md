@@ -33,6 +33,20 @@ fn read_args() {
     }
 }
 ```
+## fmt
+- std::fmt::Debug
+    - 实现Debug特征的结构体，可以使用`` {:?} ``或`` {:#?} ``格式化结构体进行输出展示。
+    - 所有的结构体都可以直接添加衍生宏 `` #[derive(Debug)] `` 来实现格式化。
+- std::fmt::Display
+    - 实现Display特征的结构体，可以使用``{}``格式化结构体进行输出展示
+
+- 标准库里的类型都实现了Debug和Display特征。
+
+```rs
+#[derive(Debug)]
+struct DebugPrintable(i32);
+```
+
 ### io
 ```rs
 // 读取命令行输入
