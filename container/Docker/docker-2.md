@@ -30,41 +30,27 @@ systemctl start docker
 systemctl enable docker.service
 ```
 ### ubuntu安装docker
-- 参考 https://docs.docker.com/engine/install/ubuntu/
-- 方式一
-  ```bash
-  apt-get remove docker docker-engine docker.io containerd runc
-  apt-get update -y
-  apt-get install apt-transport-https ca-certificates gnupg-agent software-properties-common -y
+```bash
+# 删除旧的版本
+apt-get remove docker docker-engine docker.io containerd runc
+apt-get update
+# 设置仓库源
+apt-get install ca-certificates curl gnupg lsb-release -y
+mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg -y
 
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+# 设置Docker稳定版仓库
+add-apt-repository "deb [arch=$(dpkg --print-architecture)] https://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
+# 设置Docker稳定版仓库 国内阿里云仓库 
+# add-apt-repository "deb [arch=amd64] https://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
 
-  # 9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88
-  # 设置Docker稳定版仓库
-  # add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-  # 国内阿里云仓库 
-  add-apt-repository "deb [arch=amd64] https://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
-  apt-get update
-  apt-get install docker-ce docker-ce-cli containerd.io -y
-  ```
+# 安装docker引擎
+apt-get update
+apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
 
-- 方式二
-  ```bash
-  apt-get remove docker docker-engine docker.io containerd runc
-  apt-get update -y
-
-  apt-get install ca-certificates curl gnupg lsb-release
-
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-  apt-key fingerprint 0EBFCD88
-
-  echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-  apt-get update
-  apt-get install docker-ce docker-ce-cli containerd.io
-  ```
+# 启动docker服务
+service docker start
+```
 ## 安装docker-compose
 ```bash
 # 1. github上查看最新的docker-compose版本,获取下载链接

@@ -281,17 +281,20 @@ iostat -d -k ${Device}
 
 
 ### awk
+- 概览
+    - 字段 Item
+    - 记录 Record
 ```bash
 # 内置变量
-# FS：输入字段分隔符，默认为空白字符
-# OFS：输出字段分隔符，默认为空白字符
-# RS：输入记录分隔符，默认为\n
-# ORS：输出记录分隔符，默认为\n
+# FS：输入Item分隔符，默认为空白字符
+# OFS：输出Item分隔符，默认为空白字符
+# RS：输入Record分隔符，默认为\n
+# ORS：输出Record分隔符，默认为\n
 
-# NF：当前记录的字段的个数
-# NR：当前处理的文本记录的行号
+# NF：当前当前 Record 的 Item 的个数
+# NR：当前处理的 Record 的行号
 
-# FNR：文件记录的数量
+# FNR：Record的数量
 # FILENAME：当前文件名
 # ARGC：命令行参数的个数
 
@@ -302,6 +305,13 @@ awk -v FS=":" '{print $3}'
 awk '{sub(/one/,"two");print}'
 # 过滤操作 = grep -E 'one|two'
 awk '(/one|two/)'
+
+# 求$1平均值
+awk '{sum+=$1} END {print "Average = ", sum/NR}'
+# 求$1最大值
+awk 'BEGIN {max = 0} {if ($1>max) max=$1 } END {print "Max=", max}'
+# 求$1最小值
+awk 'BEGIN {min = 1999999} {if ($1<min) min=$1} END {print "Min=", min}'
 
 # 统计各个IP的访问量，并排序
 awk '{list[$1]++}END{for(i in list) print i,list[i] }' ip.list | sort -n -r -k 2n
