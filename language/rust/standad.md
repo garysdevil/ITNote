@@ -25,15 +25,29 @@ std::vec::Vec
 ## 标准库 基本
 ### env
 ```rs
-// 接收命令行参数
-fn read_args() {
-    let args = std::env::args();
-    for arg in args {
-        println!("{}", arg);
+use std::env;
+fn main() {
+    // 接收命令行参数
+    let args: Vec<String> = env::args().collect();
+    println!("get command args :{:?} ", args);
+
+    // 获取环境变量
+    for (key, value) in env::vars() {
+        println!("  {}  =>  {}", key, value);
+    }
+
+    // 获取指定的环境变量
+    let key = "USER";
+    match env::var(key) {
+        Ok(val) => {
+          println!("val =>{}",val);
+        },
+        Err(e) => println!("couldn't interpret {}: {}", key, e),
     }
 }
+
 ```
-## fmt
+### fmt
 - std::fmt::Debug
     - 实现Debug特征的结构体，可以使用`` {:?} ``或`` {:#?} ``格式化结构体进行输出展示。
     - 所有的结构体都可以直接添加衍生宏 `` #[derive(Debug)] `` 来实现格式化。

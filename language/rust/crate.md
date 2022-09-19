@@ -4,7 +4,7 @@
 
 ```conf
 rust-crypto = "0.2.36" # 各种加密算法功能
-chrono = { version="0.4.19" } # 时间相关的功能
+
 num_cpus = { version = "1.13.1" } # 获取服务器上的CPU数量
 futures-util = { version = "0.3" }  # Combinators and utilities for working with Futures, Streams, Sinks, and the AsyncRead and AsyncWrite traits.
 once_cell = { version = "1.12.0"  } # 线程安全的初始化变量，用来存储堆上的信息，并且具有最多只能赋值一次的特征。
@@ -12,6 +12,13 @@ criterion = { version = "0.3.5" } # 基准测试工具  文档 https://bheisler.
 backoff = "0.4.0" # 指数级回退和重试机制
 bytes = "1.2.1" # 提供高效的字节结构；Buf和BufMut特征。
 rusty-hook = "0.11.2" # 可以运行任何脚本的 Git 钩子工具。
+serial_test = "0.9.0" # 创建串行的测试
+tempfile = "3.3.0" # 创建和管理临时文件
+walkdir = "2.3.2" # 递归遍历文件夹
+
+# 时间
+time =  { version = "0.3.14", features = ["macros"] } # 关于时间的库
+chrono = { version="0.4.19" } # 时间相关的库，基于time 0.1构建更丰富的API。
 
 # 异常处理
 thiserror = "1.0.33" # 为 std::error::Error 特征提供了一个更方便的衍生宏。这个库可以让程序员可以更方便地封装自定义错误。
@@ -63,3 +70,7 @@ crossterm = "0.25.0" # 跨平台的终端操作库，具有监听和控制终端
 tui = "0.19.0" # 用于构建丰富的终端用户界面或仪表板的库。依赖于终端操作库 crossterm 或 termion。
 
 ```
+
+
+### tempfile
+ - tempfile() 依赖于操作系统、在文件句柄被关闭后删除临时文件。
