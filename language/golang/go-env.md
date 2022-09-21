@@ -5,10 +5,11 @@
 ### linux安装
 ```bash
 cd /opt
-wget https://golang.org/dl/go1.15.5.linux-amd64.tar.gz
+wget https://golang.org/dl/go1.19.1.linux-amd64.tar.gz
+wget https://go.dev/dl/go1.19.1.linux-amd64.tar.gz
 
-tar -xzf go1.15.5.linux-amd64.tar.gz
-# tar -C /usr/local -xzf go1.15.5.linux-amd64.tar.gz
+tar -xzf go1.19.1.linux-amd64.tar.gz
+# tar -C /usr/local -xzf go1.19.1.linux-amd64.tar.gz
 # linux环境变量
 vi /etc/profile.d/golang.sh
 export GOROOT=/opt/go/bin # go命令所在的bin目录

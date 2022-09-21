@@ -19,10 +19,12 @@ gcc ${path} # 默认生成a.out可执行文件
 ```bash
 # 配置并且生成Makefile文件
 ./configure
+# ./configure  --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
 # --prefix=软件要安装的路径
 
 # 根据Makefile进行编译 
 make
+# -j 指定编译时使用的线程数量
 
 # 安装
 make install
@@ -55,7 +57,12 @@ make clean
     3. 程序头与Section头需要的数据.text .data
 1. 查看ELF文件的具体信息 `` readelf -a ${file} ``
 
-
+### 动态库
+- 动态库加载的优先级
+    1. LD_PRELOAD
+    2. LD_LIBRARY_PATH
+    3. /etc/ld.so.cache
+    4. /lib>/usr/lib
 
 ### 相关文件与指令
 1. /etc/ld.so.conf 文件记录编译时使用的动态链接库的搜索路径，默认情况下编译器只会使用/lib和/usr/lib两个目录下的库文件。
@@ -77,3 +84,5 @@ make clean
         2. 第二列: 系统提供的与程序需要的库所对应的库 
         3. 第三列：库加载的开始地址
 
+5. ```strings ```
+    - 查看所有的glibc版本 ``` strings /usr/lib/x86_64-linux-gnu/libstdc++.so.6 | grep GLIBC```
