@@ -26,6 +26,14 @@ fs.file-max = 2000000
 vm.nr_hugepages = 2048
 ```
 
+```bash
+# 配置大内存叶
+sysctl -w vm.nr_hugepages=2560
+bash -c "echo vm.nr_hugepages=2560 >> /etc/sysctl.conf"
+# 检查是否配置完成
+cat /proc/meminfo | grep -i huge
+```
+
 ## IO读优化
 - 参考
     - https://www.kernel.org/doc/Documentation/block/stat.txt
@@ -105,4 +113,23 @@ ulimit -f unlimited # 设置创建文件的最大值。
 
 4. 使配置生效``source /etc/profile``
 
-5. 查看内核资源限制 ``ulimit -a``
+
+```bash
+# 查看内核资源限制
+ulimit -a
+
+# 查看当前系统支持打开的最大句柄数
+more /proc/sys/fs/file-max
+
+# 查看打开句柄总数
+lsof -n|awk '{print $2}'|wc -l
+
+# 查看系统中进程占用的句柄数，根据打开文件句柄的数量降序排列，其中第二列为进程ID
+lsof -n|awk '{print $2}'|sort|uniq -c|sort -nr|more
+
+
+# 查看句柄数量的最大限制
+cat /proc/sys/fs/file-max # 系统层面
+ulimit -n # 用户层面
+cat /proc/${PID}/limits # 进程层面
+```

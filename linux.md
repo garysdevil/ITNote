@@ -442,7 +442,7 @@ echo "scale=3; ${num}*5/60/60" | bc -l
 taskset -p ${PID}
 # ffffffffffffffffff 表示可以使用任意的CPU逻辑核
 
-# 查看进程可以使用的CPU范围
+# 查看进程的CPU亲和性范围
 taskset -cp ${PID}
 
 # 查看进程内的所有线程可以使用的CPU范围

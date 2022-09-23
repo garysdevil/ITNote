@@ -62,6 +62,7 @@ Environment="JVM_OPTIONS=-server -Xms64m -Xmx64m -XX:MetaspaceSize=16m $GC_OPTS 
 # WorkingDirectory=/xxx/xxx # 工作目录，必须是绝对目录，不能加入单双引号
 ExecStartPre=/bin/sh -c -- 'pwd'
 ExecStart=/bin/sh -c -- "/usr/bin/java -jar /opt/application/XXXXX/XXXXX.jar 1>> /opt/application/XXXXX/logs/XXXXX.out.log 2>> /opt/application/XXXXX/logs/XXXXX.err.log"
+# ExecStartPost=/bin/sh -c -- 'pwd'
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s QUIT $MAINPID
 # ExecStopPost=
