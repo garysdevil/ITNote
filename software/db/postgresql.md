@@ -14,8 +14,8 @@
 | 10      | 10.21         | Yes       | October 5, 2017    | November 10, 2022 |
 
 
-### Ubuntu安装
-1. 安装
+### 安装
+1. Ubuntu安装
 ```bash
 # https://www.postgresql.org/download/linux/ubuntu/
 echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
@@ -25,17 +25,17 @@ apt-get update
 
 apt-get install postgresql-12 -y
 apt-get install libpq-dev -y
-
 ```
+
 2. 安装完后
     - 生成一个服务 systemctl status postgresql
     - 生成一个用户 postgres
-    - server进程： /usr/lib/postgresql/10/bin/postgres -D /var/lib/postgresql/10/main -c config_file=/etc/postgresql/10/main/postgresql.conf
+    - server进程： /usr/lib/postgresql/12/bin/postgres -D /var/lib/postgresql/12/main -c config_file=/etc/postgresql/12/main/postgresql.conf
     - 默认配置 远程Ip不能访问
     - 默认会有三个数据库 postgres template1 template2
     - 默认端口 5432
 
-4. 更改数据库目录步骤 
+3. 更改数据库目录步骤 
     - 初始化数据库 
         mkdir /data/postgresql; chown postgres.postgres /data/postgresql
         su - postgres
@@ -43,16 +43,27 @@ apt-get install libpq-dev -y
     - 更改配置文件/etc/postgresql/12/main/postgresql.conf文件字段data_directory。
     - root权限下重启服务 systemctl restart postgresql
 
+4. Centos7安装
+```bash
+sudo su -
+yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+yum install -y postgresql14-server
+/usr/pgsql-14/bin/postgresql-14-setup initdb
+systemctl enable postgresql-14
+systemctl start postgresql-14
+```
+
 5. 登入数据库
 ```bash
 # 方式一 本地登入
-\
+su - postgres
+psql
 # 方式二 远程登入
 psql -h IP地址 -p 端口 -d 数据库名 -U 用户名 -W 密码
 psql -h 127.0.0.1 -p 5432 -d eth -U eth
 ```
 
-6. 数据库配置文件  /etc/postgresql/10/main/pg_hba.conf
+6. 数据库配置文件  /etc/postgresql/12/main/pg_hba.conf
 
 7. 彻底删除postgres  https://www.cnblogs.com/jimlee027/p/6276723.html
 
