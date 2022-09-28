@@ -26,8 +26,13 @@ git tag --sort==-createordate | head -n2000 | git push -f ${repo_target_url}
 
 ```
 
-```bash
+## 同步仓库
+```bash 
 git clone --bare 源git仓库地址  #源仓库
 cd project.git/
+git push --mirror 目标git仓库地址  #目标仓库
+
+# 更新
+git fetch
 git push --mirror 目标git仓库地址  #目标仓库
 ```

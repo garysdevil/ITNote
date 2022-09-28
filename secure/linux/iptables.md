@@ -74,7 +74,13 @@ iptables -A INPUT -d ${IP} -p tcp --dport ${PORT} -j DROP  # 禁止所有IP通�
 iptables -A INPUT -s ${IP} -p tcp --dport ${PORT} -j ACCEPT # 允许${IP}通过TCP协议访问本地的${PORT}端口
 
 
-iptables -F # 清空防火墙策略
+# 将本地的端口转发到本机端口
+iptables -t nat -A PREROUTING -p tcp --dport 2222 -j REDIRECT --to-port 22
+# 将本机的端口转发到其他机器
+iptables -t nat -A POSTROUTING -d 192.168.172.131 -p tcp --dport 80 -j SNAT --to 192.168.172.130:80
+
+iptables -t nat -F PREROUTING #清空nat表的PREROUTING链
+iptables -F # 清空所有表格的所有链
 ```
 
 ### multiport扩展

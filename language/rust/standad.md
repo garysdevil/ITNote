@@ -604,6 +604,12 @@ fn main{
 }
 ```
 
+### 标准库 数学
+- u32.checked_next_power_of_two 返回大于或等于 n 的 2 的最小幂
+```rs
+assert_eq!(3u32.checked_next_power_of_two(), Some(4));
+```
+
 ## 标准库 宏
 1. `` dbg!("i am dbg macro") `` 将结果返回并且输出信息到标准错误输出。
 2. `` let b = format!("{}", "i am format macro"); `` 将字符串字面量转为字符串。
