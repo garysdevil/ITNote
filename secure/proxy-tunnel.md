@@ -82,7 +82,7 @@ chmod u+x v2gen
 mv v2gen /usr/local/bin/
 
 # 生成config.json文件
-v2gen -u “订阅url” -o /usr/local/etc/v2ray/config.json
+v2gen -u "订阅url" -o /usr/local/etc/v2ray/config.json
 ```
 
 #### v2rayA

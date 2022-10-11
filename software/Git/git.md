@@ -184,14 +184,18 @@ git clone http://username:password@git.github.com/username/project.git
 git remote rm origin
 git remote add origin http://username:password@git.github.com/username/project.git
 ### ssh方式
-1. 生成公钥私钥   
-  ssh-keygen -t rsa -C 'Git邮箱' 
+1. 生成公钥私钥  ``ssh-keygen -t rsa -C 'Git邮箱' ``
+
 2. 将生成的公钥放入Git公共仓库上
 
 3. 指定git使用的私钥
-https://blog.csdn.net/SCHOLAR_II/article/details/72191042
+    - https://blog.csdn.net/SCHOLAR_II/article/details/72191042
+    - `` GIT_SSH_COMMAND="ssh -i ${privateKeyPath}" git pull ``
 
-GIT_SSH_COMMAND="ssh -i ${privateKeyPath}" git pull
+4. 测试连接git服务 ``ssh -T git@github.com -p22 ``
+
+5. 使用ssh方式访问git服务 ``git clone ssh://git@域名:端口/用户名/仓库名.git``
+
 ### 解决错误
 1. 问题  
 git: 'credential-凭证名字' is not a git command. See 'get --help'.
