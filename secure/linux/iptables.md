@@ -46,7 +46,7 @@ iptables -t filter -L --line-number
 iptables -t filter -L INPUT --line-number -n
 iptables -t ${tabletype} -L ${direction} --line-number
 # --line-number 显示编号
-# -n 以数字格式显示地址和端口号
+# -n 以数字格式显示地址和端口号I
 # -v 显示详细信息
 
 
@@ -69,7 +69,7 @@ iptables -A OUTPUT -d ${IP} -j REJECT
 # IP=127.0.0.1 或 IP=192.168.0.1/16
 iptables -A INPUT -j DROP #禁止其他所有流量进入
 iptables -A INPUT -s ${IP} -j DROP # 禁止${IP}访问
-iptables -A INPUT -p tcp --dport 8545 -j DROP  # 禁止所有IP的访问8545端口
+iptables -A INPUT -p tcp --dport 8545 -j DROP  # 禁止所有IP访问8545端口
 iptables -A INPUT -d ${IP} -p tcp --dport ${PORT} -j DROP  # 禁止所有IP通过TCP协议访问特${IP}:${PORT}
 iptables -A INPUT -s ${IP} -p tcp --dport ${PORT} -j ACCEPT # 允许${IP}通过TCP协议访问本地的${PORT}端口
 

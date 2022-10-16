@@ -63,7 +63,7 @@ tracing-timing  = { version = "0.6.0"}
 
 # 终端
 structopt = { version = "0.3" } # 命令行参数解析进结构体内。由于 structopt 已经被集成进 clap v3 ，所以 structopt 不再添加新功能，只进行维护操作。
-clap = { version = "3.1", features = [ "derive" ] } # 命令行参数解析。
+clap = { version = "4.0.1478/12", features = [ "derive" ] } # 命令行参数解析。
 ansi_term = "0.12.1" # 控制终端颜色输出和格式化(不推荐)
 colored = "2.0.0" # 控制终端颜色输出(推荐)
 crossterm = "0.25.0" # 跨平台的终端操作库，具有监听和控制终端的功能。

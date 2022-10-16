@@ -67,7 +67,110 @@
         installed: /etc/systemd/system/v2ray@.service
         ```
 
-- 验证配置文件的正确性 /usr/local/bin/v2ray -test -config /usr/local/etc/v2ray/config.json
+- ./v2ray uuid
+- 验证配置文件的正确性 /usr/local/bin/v2ray test -config /usr/local/etc/v2ray/config.json
+- ./v2ray run -config ./config.json
+
+##### 服务端配置
+```json
+{
+    "inbounds": [
+        {
+            "port": 10086, // 服务器监听端口
+            "protocol": "vmess",
+            "settings": {
+                "clients": [
+                    {
+                        "id": "b831381d-6324-4d53-ad4f-8cda48b30811" // 客户端需要配置相同的id
+                    }
+                ]
+            }
+        }
+    ],
+    "outbounds": [
+        {
+            "protocol": "freedom"
+        }
+    ]
+}
+```
+```json
+{
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [{
+    "port": 8080,
+    "listen": "0.0.0.0",
+    "protocol": "socks",
+    "settings": {
+      "auth": "noauth",
+      "udp": false,
+      "ip": "127.0.0.1"
+    }
+  }],
+  "outbounds": [{
+    "protocol": "freedom",
+    "settings": {},
+    "tag": "direct"
+  }],
+  "policy": {
+    "levels": {
+      "0": {"uplinkOnly": 0}
+    }
+  }
+}
+```
+
+##### 客户端配置
+```json
+{
+    "inbounds": [
+        {
+            "port": 1080, // SOCKS 代理端口，在浏览器中需配置代理并指向这个端口
+            "listen": "127.0.0.1",
+            "protocol": "socks",
+            "settings": {
+                "udp": true
+            }
+        }
+    ],
+    "outbounds": [
+        {
+            "protocol": "vmess",
+            "settings": {
+                "vnext": [
+                    {
+                        "address": "server", // 服务器地址，请修改为你自己的服务器 ip 或域名
+                        "port": 10086, // 服务器端口
+                        "users": [
+                            {
+                                "id": "b831381d-6324-4d53-ad4f-8cda48b30811"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "protocol": "freedom",
+            "tag": "direct"
+        }
+    ],
+    "routing": {
+        "domainStrategy": "IPOnDemand",
+        "rules": [
+            {
+                "type": "field",
+                "ip": [
+                    "geoip:private"
+                ],
+                "outboundTag": "direct"
+            }
+        ]
+    }
+}
+```
 
 #### v2gen
 - 通过订阅模式配置v2ray
@@ -177,3 +280,90 @@ route 172.121.0.0 255.255.0.0 net_gateway # 与 vpn_gateway 相反，它是指�
 
 - 源码 https://github.com/wangyu-/udp2raw
 - 定义 Udp2raw-Tunnel是一款功能强大的UDP隧道工具
+
+## WireGuard
+### 服务端
+```bash
+apt update
+apt install wireguard
+
+# 生成私钥和公钥
+wg genkey > /etc/wireguard/privatekey
+cat privatekey | wg pubkey > /etc/wireguard/publickey
+
+# 查看访问公网的接口
+ip -o -4 route show to default | awk '{print $5}'
+# 配置流量路由的虚拟接口
+vim /etc/wireguard/wg0.conf
+
+# 将wg0.conf和privatekey文件设置为对普通用户不可读，以此保证私钥的安全。
+chmod 600 /etc/wireguard/{privatekey,wg0.conf}
+
+# 启用wg0接口
+wg-quick up wg0
+
+# 检查接口状态和配置
+wg show wg0
+# 输出wg0接口状态
+ip a show wg0
+# 设置wg0虚拟网卡自动启动
+systemctl enable wg-quick@wg0
+
+# 配置服务器转发功能
+echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf
+sysctl -p
+
+
+# 将客户端的公钥和IP地址添加到服务器
+wg set wg0 peer ${CLIENT_PUBLIC_KEY} allowed-ips 10.0.0.2
+```
+
+- wg0.conf 文件配置
+```conf
+[Interface]
+Address = 10.0.0.1/24
+SaveConfig = true
+ListenPort = 51820
+PrivateKey = ${SERVER_PRIVATE_KEY}
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o ${network_interface} -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o ${network_interface} -j MASQUERADE
+```
+### 客户端
+```bash
+# 生成私钥和公钥
+wg genkey > /etc/wireguard/privatekey
+cat privatekey | wg pubkey > /etc/wireguard/publickey
+# 配置客户端文件
+vim /etc/wireguard/wg0.conf
+
+# 打开客户端wg0接口
+wg-quick up wg0
+# 关闭客户端wg0接口
+wg-quick down wg0
+```
+
+- /etc/wireguard/wg0.conf
+```conf
+[Interface]
+PrivateKey = CLIENT_PRIVATE_KEY # 客户端生成的私钥
+Address = 10.0.0.2/24 # wg0接口的IPv4或IP v6地址
+
+
+[Peer]
+PublicKey = SERVER_PUBLIC_KEY  #服务器端生成的公钥
+Endpoint = SERVER_IP_ADDRESS:51820
+AllowedIPs = 0.0.0.0/0 # 使用逗号分隔的IPv4或IP v6地址列表，如果数据包与IP列表匹配，这些数据包将走wireguard通道。0.0.0.0/0表示将所有流量都转发到wireguard服务器端。
+```
+
+```conf
+[Interface]
+PrivateKey = OJra2+OwuLsdJ1y9Y3Q/UJgZbpr3PqR7OdN/7Y1mdkw=
+Address = 10.0.0.2/24
+
+
+[Peer]
+PublicKey = PTICNQReN7IEIMfB1/lWq1LwGSt4OLEM1LjfDtQPqwY=
+Endpoint = 173.82.143.63:51820
+AllowedIPs = 0.0.0.0/0
+```
+wg set wg0 peer zn5kjX/0XqFMMaDDnIKhnPAbhG7bAdUY6tsSQvwQLhk= allowed-ips 10.0.0.2

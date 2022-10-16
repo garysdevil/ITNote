@@ -23,6 +23,7 @@ git push --mirror 目标git仓库地址
 
 # 更新
 git fetch
+git remote update --prune origin
 git push --mirror 目标git仓库地址 # 通过http方式
 git push --mirror ssh://git@gogs.garys.top:2222/AleoHQ/snarkOS.git # 通过ssh方式
 ```
