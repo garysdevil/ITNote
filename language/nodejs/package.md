@@ -60,3 +60,16 @@ fs.writeFileSync("./1.html", "data")
 - Provider：是一个类，提供了一个抽象的到以太坊网络的连接。它提供对区块链及其状态的仅读取访问。
 - Signer：是一个类，以某种方式直接或间接地有权访问私人密钥，该密钥可以签署消息和交易，以授权网络向以太坊账户收取执行操作的费用。
 - Contract：代表以太坊网络上特定合约的连接，应用程序可以像普通 JavaScript 对象一样使用它。
+
+
+### 包引入的三种方式
+```js
+// es3:
+var ethers = require(‘ethers’);
+
+// es5/es6
+const ethers = require(‘ethers’);
+
+// javascript/typescript es6
+import { ethers } from ‘ethers’;
+```
