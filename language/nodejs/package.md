@@ -63,6 +63,15 @@ fs.writeFileSync("./1.html", "data")
 
 
 ### 包引入的三种方式
+- NodeJS 中有两种模块加载方式
+    1. CommonJS 为 NodeJS 内部实现。
+    2. ECMAScript modules（ES Modules） 为 JS 标准加载方式。
+
+- CommonJS 模块系统，将每个文件都被视为一个单独的模块。
+- ECMAScript 模块系统，是打包 JavaScript 代码以供重用的官方标准格式。使用 import 和 export 导入导出模块。
+- Node.js 默认将 JavaScript 代码视为 CommonJS 模块。可以通过.mjs 文件扩展名 或者 package.json 'type’字段，来默认将 JavaScript 代码视为 CommonJS 模块。
+
+
 ```js
 // es3:
 var ethers = require(‘ethers’);
