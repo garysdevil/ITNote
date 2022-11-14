@@ -215,6 +215,14 @@ v2gen -u "订阅url" -o /usr/local/etc/v2ray/config.json
     server_port = 1080 #socks服务使用的端口 
     ```
 
+### proxychains
+
+```bash
+apt install proxychains4
+PROXYCHAINS_SOCKS5=127.0.0.1:20170 proxychains ${command}
+
+```
+- /etc/proxychains4.conf
 
 # 隧道
 
