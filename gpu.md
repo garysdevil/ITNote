@@ -113,10 +113,14 @@ modinfo ${driver} # 通过显卡驱动名称查看显卡驱动的详情
 ```
 
 ### cuda编译器
+- NVIDIA CUDA toolkit 和  NVIDIA CUDA驱动
+    - https://developer.nvidia.com/cuda-downloads
+    - https://developer.nvidia.com/cuda-toolkit-archive
+    - https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#environment-setup # 安装完设置环境变量
+    - CUDA Toolkit 11.7.0   11.7.0_515.43.04
+    - CUDA Toolkit 11.7.1   11.7.1_515.65.01
+    - CUDA Toolkit 11.8.0   11.8.0_520.61.05
 ```bash
-# CUDA toolkit 
-# https://developer.nvidia.com/cuda-downloads
-# https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#environment-setup # 安装完设置环境变量
 # CUDA的编译器
 apt update
 apt install nvidia-cuda-toolkit
@@ -129,6 +133,11 @@ nvcc --version # 查看cuda编译器版本
 # apt update
 # apt install nvidia-driver-510
 # apt install nvidia-driver-* # 选择一个驱动器
+# 卸载 CUDA Toolkit
+/usr/local/cuda-11.8/bin/cuda-uninstaller
+# 卸载 NVIDIA Driver
+/usr/local/cuda-11.8/bin/nvidia-uninstall
+
 nvidia-smi -L # 查看NVIDIA显卡型号
 nvidia-smi -l 1 # # 查看NVIDIA GPU使用率，每秒刷新一次
 
