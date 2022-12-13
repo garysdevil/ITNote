@@ -1,9 +1,19 @@
-## Django
-```bash
-python manage.py runserver 127.0.0.1:8000
-startapp
+## Python
+- 目录结构
+    - Lib
+        - site-packages
+        - Standard packages
+    - Scripts
+        - pip.exe
+    - python.exe
 
-python manage.py inspectdb t_cmdb_app_info > acd/models.py
+- 虚拟环境
+    - 虚拟环境可以看作是原生Python的副本。
+
+```bash
+venv_name="python_1_venv"
+python3 -m venv ~/devenv/${venv_name}
+source ~/devenv/${venv_name}/bin/activate
 ```
 
 ## 依赖包
@@ -21,23 +31,51 @@ pipreqs ./
 
 # 3. 新环境下安装依赖包的模块
 pip3 install -r requirements.txt
-
 ```
 
-## Python
-- 目录结构
-    - Lib
-        - site-packages
-        - Standard packages
-    - Scripts
-        - pip.exe
-    - python.exe
-
-- 虚拟环境
-    - 虚拟环境可以看作是原生Python的副本。
-
+## Django
+- https://www.djangoproject.com/
+- 文档 https://www.osgeo.cn/django/intro/tutorial01.html
+- 文档 https://docs.djangoproject.com/zh-hans/4.1/
 ```bash
-venv_name="python_1_venv"
+# 创建并进入一个虚拟环境
+venv_name="python_openai_venv"
 python3 -m venv ~/devenv/${venv_name}
 source ~/devenv/${venv_name}/bin/activate
+
+# 安装Django与创建项目
+pip3 install Django==4.1.4
+# 查看安装的Django版本
+python3 -m django --version 
+# 创建项目工作空间
+project_name="mydjango"
+mkdir ${project_name} && cd ${project_name}
+# 创建一个Django项目
+sub_project_name="mysite"
+django-admin startproject ${sub_project_name} .  
+# 创建一个应用程序
+sub_project_name="openai"
+python3 manage.py startapp ${sub_project_name}
+```
+
+- 项目目录结构
+    1. ${project_name}: 项目的容器。
+    2. manage.py: 一个实用的命令行工具，可让你以各种方式与该 Django 项目进行交互。
+    3. django_study/init.py: 一个空文件，告诉 Python 该目录是一个 Python 包。
+    4. django_study/asgi.py: 一个 ASGI 兼容的 Web 服务器的入口，以便运行你的项目。(Django3.x版本可见)
+    5. django_study/settings.py: 该 Django 项目的设置/配置。
+    6. django_study/urls.py: 该 Django 项目的 URL 声明; 一份由 Django 驱动的网站"目录"。
+    7. django_study/wsgi.py: 一个 WSGI 兼容的 Web 服务器的入口，以便运行你的项目。
+
+
+```bash
+# 启动服务 127.0.0.1:8000为默认端口
+python3 manage.py runserver 127.0.0.1:8000
+
+# 创建后台管理
+python3 manage.py migrate # 创建sqlite3数据库表格
+python3 manage.py createsuperuser # 创建管理员
+
+# 导入
+python manage.py inspectdb t_cmdb_app_info > acd/models.py
 ```
