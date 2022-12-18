@@ -41,3 +41,17 @@ import os
 os.environ["http_proxy"] = "http://127.0.0.1:1081"
 os.environ["https_proxy"] = "http://127.0.0.1:1081"
 ```
+
+## 常用的代码块
+```py
+#  从.env文件读取变量，并将其设置为环境变量
+def import_env():
+    if os.path.exists('.env'):
+        print('Importing environment from .env...')
+    for line in open('.env'):
+        var = line.strip().split('=')
+        if len(var) == 2:
+            key, value = var[0].strip(), var[1].strip()
+            os.environ[key] = value
+    openai.api_key = os.environ.get('OPENAI_API_KEY')
+```

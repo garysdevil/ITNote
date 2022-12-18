@@ -27,6 +27,11 @@ cat /proc/cpuinfo| grep "processor"| wc -l
 - --connect-timeout 建立连接超时时间
 - -m 数据传输超时时间
 
+```bash
+curl -d '{"key1":"value1", "key2":"value2"}' -H "Content-Type: application/json" -X POST http://localhost:3000/data
+
+```
+
 ### crontab
 1. 配置crontab
     vim /etc/crontab
