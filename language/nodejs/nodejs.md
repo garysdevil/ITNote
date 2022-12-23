@@ -9,19 +9,36 @@
 
 ### 模块的加载
 - CommonJS Modules CJS模块系统，将每个文件都被视为一个单独的模块。
-- ECMAScript Modules EMS模块系统，是打包 JavaScript 代码以供重用的官方标准格式。使用 import 和 export 导入导出模块。
+- ECMAScript Modules ESM模块系统，是打包 JavaScript 代码以供重用的官方标准格式。使用 import 和 export 导入导出模块。
 
-- Node.js 默认将 JavaScript 代码视为 CommonJS 模块。可以通过.mjs 文件扩展名 或者 package.json 'type’字段，来默认将 JavaScript 代码视为 CommonJS 模块。
+- 配置
+    - Node.js 默认将 JavaScript 代码视为 CommonJS 模块。
+    - 可以通过.mjs 文件扩展名 或者 package.json 'type’字段，来默认将 JavaScript 代码视为 CommonJS 模块。 
+        ```json  package.json
+        {
+            "type": "module",
+                "dependencies": {
+                "babel-core": "^6.26.3",
+                "babel-preset-env": "^1.7.0",
+                }
+        }
+        ```
 
 ```js
 // es3:
 var ethers = require(‘ethers’);
 
-// es5/es6
+// CJS模块化标准
+module.export = 变量名; // 导出方式一
+export { 变量名1, 变量名2 }; // 导出方式二
 const ethers = require(‘ethers’);
 
-// javascript/typescript es6
-import { ethers } from ‘ethers’;
+// EMS/ES6模块化
+export default = { 变量名1, 变量名 } // 导出方式一
+export { 变量名1, 变量名2 }; // 导出方式二
+import { 变量名 } from ‘ethers’;
+import { 变量名 } from ‘./ethers.js’;
+import * as 变量名 from ‘ethers’;
 ```
 
 ### 其它
@@ -29,3 +46,7 @@ import { ethers } from ‘ethers’;
 - ESM 默认使用了严格模式，因此在 ES 模块中的``this``不再指向全局对象（而是 ``undefined``），且变量在声明前无法使用。
 
 - ESM 缺乏 __filename 和 __dirname
+
+
+## ts
+- nodejs环境下执行ts代码 https://github.com/TypeStrong/ts-node
