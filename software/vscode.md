@@ -142,3 +142,9 @@ vscode --install-extension (<extension-id> | <extension-vsix-path>)
         - C++ (Windows)
         - CodeLLDB（Mac或Linux） ~/.vscode/launch.json
 5. Bookmarks
+
+## 错误与解决
+1. vscode 中 js 文件失去高亮 / 没有智能提示
+    - windows删除 AppData\Roaming
+    - mac删除 Library/Application Support/Code
+    - 这个文件夹爱被删除后，vscode的个人设置都会被删除。
