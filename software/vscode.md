@@ -11,8 +11,8 @@
 - 打开
     - Ctrl + Shift + P 
     - Preferences: Open Keyboard shortcurs(JSON)
-```conf
-# 新终端和切换终端的快捷键
+```json
+// 新终端和切换终端的快捷键
 [
     { "key": "ctrl+1",                "command": "workbench.action.terminal.focusAtIndex1", "when": "terminalFocus" },
     { "key": "ctrl+2",                "command": "workbench.action.terminal.focusAtIndex2", "when": "terminalFocus" },
