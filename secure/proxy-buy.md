@@ -20,3 +20,7 @@
 ## 各个商家地址
 - https://9.234456.xyz/abc.html
 - https://www.duyaoss.com/ 
+
+## 代理软件
+1. clah(windows和linux) https://github.com/Dreamacro/clash/tags
+2. clashX(mac) https://github.com/yichengchen/clashX
