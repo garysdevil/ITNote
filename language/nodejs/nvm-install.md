@@ -2,8 +2,7 @@
 ### Linux安装nvm
 ```bash
 # https://github.com/nvm-sh/nvm#installation
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash  或者
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh
 
 source ~/.bashrc 或者
 . ~/.bashrc

@@ -11,8 +11,11 @@
 ```
 
 ```conf
+[server]
 START_SSH_SERVER = true # 开启ssh访问方式
 SSH_PORT = 2222 # ssh监听的端口
+[service]
+DISABLE_REGISTRATION = true # 禁止用户自己注册账户
 ```
 
 ## 同步仓库
