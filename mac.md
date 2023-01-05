@@ -43,13 +43,19 @@ nslookup -q=ns baidu.com
   export PATH=$PATH:/Applications/MySQLWorkbench.app/Contents/MacOS
   mysql --version
   ```
+2. 截图工具 Lightshot Screenshot
 
 ### brew
 #### 安装brew
 - 安装brew
 ```bash
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+# 新版本安装方式
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# 配置环境变量
+echo '# Set PATH, MANPATH, etc., for Homebrew.' >> /Users/gary/.zprofile
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/gary/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 
 - 设置代理
@@ -180,20 +186,15 @@ brew install vim
   - 进程 /opt/homebrew/opt/v2ray/bin/v2ray -config /opt/homebrew/etc/v2ray/config.json
 
 ### 第三方软件
-1. 多屏屏幕，鼠标快速移动
-    - https://github.com/round/CatchMouse
-2. chrome  
-	- https://www.google.com/chrome/thank-you.html?statcb=0&installdataindex=empty&defaultbrowser=0 
-3.  openvpn
-    - https://openvpn.net/downloads/openvpn-connect-v3-macos.dmg
-4.  vscode
-    - https://code.visualstudio.com/Download
-5.  雅思哥
-    - https://ieltsbro.com/
-6.  Mysql官方可视化工具
+1. 多屏屏幕，鼠标快速移动 https://github.com/round/CatchMouse
+2. Chrome   https://www.google.com/chrome/thank-you.html?statcb=0&installdataindex=empty&defaultbrowser=0 
+3. Openvpn  https://openvpn.net/downloads/openvpn-connect-v3-macos.dmg
+4. Vscode   https://code.visualstudio.com/Download
+5. 雅思哥   https://ieltsbro.com/
+6. Mysql官方可视化工具
     - https://dev.mysql.com/downloads/workbench/
     - Mac M1上 8.0.23 闪退，8.0.22 正常使用
-
+7. 监控工具 stats https://github.com/exelban/stats
 
 ## 服务管理launchctl
 ### launchctl
