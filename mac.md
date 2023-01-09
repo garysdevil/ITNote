@@ -27,6 +27,13 @@ sudo killall -HUP mDNSResponder
 # 7. 查看某个域名的 DNS 缓存
 nslookup -q=ns baidu.com
 ```
+```bash
+# 删除终端命令记录
+# 默认登录 shell 是 zsh的话，用以下命令：
+rm ~/.zsh_history
+# 默认登录 shell 是 bash ，用以下命令：
+rm ~/.bash_history
+```
 
 ## 软件
 ### Command Line Tools
