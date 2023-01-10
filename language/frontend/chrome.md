@@ -40,3 +40,6 @@ https://developers.google.com/web/tools/chrome-devtools/network/reference#timing
 
 8. Content Download 是浏览器用来下载资源所用的时间。这个指标越长, 说明资源越大. 理想情况下, 可以通过控制资源的大小来控制这段时间的长度。
 
+## Chrome 快捷键
+1. cmd + w 关闭当前标签页
+2. cmd + shift + w 关闭当前浏览器
