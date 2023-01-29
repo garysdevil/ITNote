@@ -40,7 +40,7 @@ apt-get install libpq-dev -y
         mkdir /data/postgresql; chown postgres.postgres /data/postgresql
         su - postgres
         /usr/lib/postgresql/12/bin/initdb -D /data/postgresql/
-    - 更改配置文件/etc/postgresql/12/main/postgresql.conf文件字段data_directory。
+    - 更改配置文件 /etc/postgresql/12/main/postgresql.conf 文件字段 data_directory 。
     - root权限下重启服务 systemctl restart postgresql
 
 4. Centos7安装
@@ -97,25 +97,25 @@ psql -h 127.0.0.1 -p 5432 -d eth -U eth
 2. 查看服务版本 ``select version();``
 
 #### 权限
- - 用户与数据库
- ```sql
- CREATE USER pg_user WITH PASSWORD '*****';
- CREATE DATABASE db_name OWNER pg_user;
- GRANT ALL PRIVILEGES ON DATABASE db_name TO pg_user;
- ```
+- 用户与数据库
+```sql
+CREATE USER pg_user WITH PASSWORD '*****';
+CREATE DATABASE db_name OWNER pg_user;
+GRANT ALL PRIVILEGES ON DATABASE db_name TO pg_user;
+```
 
- - 用户与表
- ```sql
- create table table_name;
- ALTER TABLE table_name OWNER TO pg_user;
- ```
- 
- - 用户角色密码
- ```sql
- SELECT * FROM pg_roles;
- SELECT * FROM pg_user;
- ALTER USER user_name WITH PASSWORD 'password';
- ```
+- 用户与表
+```sql
+create table table_name;
+ALTER TABLE table_name OWNER TO pg_user;
+```
+
+- 用户角色密码
+```sql
+SELECT * FROM pg_roles;
+SELECT * FROM pg_user;
+ALTER USER user_name WITH PASSWORD 'password';
+```
 
 #### SQL
 ```sql

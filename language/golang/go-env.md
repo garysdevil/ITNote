@@ -20,6 +20,12 @@ export GOPROXY=https://goproxy.cn # 配置go代理
 source /etc/profile
 ```
 
+```bash
+# 安装方式二
+wget -c https://golang.org/dl/go1.18.8.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
+echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.bashrc && source ~/.bashrc
+```
+
 ### windows安装
 默认安装目录 C:\Go
 默认go path目录 C:\Users\Administrator\go

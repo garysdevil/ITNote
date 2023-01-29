@@ -82,8 +82,7 @@ CPUShares=1024
 # cat /proc/${PID}/cgroup 可以看到 8:memory:/  变为 8:memory:system.slice/filebeat.service
 # /sys/fs/cgroup/memory/system.slice/XXXXX
 
-[Install]
-WantedBy=network-online.target # 
+
 WantedBy=multi-user.target # 多用户环境下启用
 Alias=XXXXXd.service # 服务的别名
 ```
