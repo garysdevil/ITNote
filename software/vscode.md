@@ -13,20 +13,31 @@
     - Preferences: Open Keyboard shortcurs(JSON)
 ```json
 // 新终端和切换终端的快捷键
+    { "key": "cmd+1",                "command": "workbench.action.terminal.focusAtIndex1", "when": "terminalFocus" },
+    { "key": "cmd+2",                "command": "workbench.action.terminal.focusAtIndex2", "when": "terminalFocus" },
+    { "key": "cmd+3",                "command": "workbench.action.terminal.focusAtIndex3", "when": "terminalFocus" },
+    { "key": "cmd+4",                "command": "workbench.action.terminal.focusAtIndex4", "when": "terminalFocus" },
+    { "key": "cmd+5",                "command": "workbench.action.terminal.focusAtIndex5", "when": "terminalFocus" },
+    { "key": "cmd+6",                "command": "workbench.action.terminal.focusAtIndex6", "when": "terminalFocus" },
+    { "key": "cmd+7",                "command": "workbench.action.terminal.focusAtIndex7", "when": "terminalFocus" },
+    { "key": "cmd+8",                "command": "workbench.action.terminal.focusAtIndex8", "when": "terminalFocus" },
+    { "key": "cmd+9",                "command": "workbench.action.terminal.focusAtIndex9", "when": "terminalFocus" },
+    { "key": "cmd+m",                "command": "workbench.action.toggleMaximizedPanel", "when": "terminalFocus"},
+    { "key": "cmd+t",                "command": "workbench.action.terminal.new", "when": "terminalFocus" },
+    { "key": "cmd+w",                "command": "workbench.action.terminal.kill",  "when": "terminalFocus"},
+
+// 页面切换
 [
-    { "key": "ctrl+1",                "command": "workbench.action.terminal.focusAtIndex1", "when": "terminalFocus" },
-    { "key": "ctrl+2",                "command": "workbench.action.terminal.focusAtIndex2", "when": "terminalFocus" },
-    { "key": "ctrl+3",                "command": "workbench.action.terminal.focusAtIndex3", "when": "terminalFocus" },
-    { "key": "ctrl+4",                "command": "workbench.action.terminal.focusAtIndex4", "when": "terminalFocus" },
-    { "key": "ctrl+5",                "command": "workbench.action.terminal.focusAtIndex5", "when": "terminalFocus" },
-    { "key": "ctrl+6",                "command": "workbench.action.terminal.focusAtIndex6", "when": "terminalFocus" },
-    { "key": "ctrl+7",                "command": "workbench.action.terminal.focusAtIndex7", "when": "terminalFocus" },
-    { "key": "ctrl+8",                "command": "workbench.action.terminal.focusAtIndex8", "when": "terminalFocus" },
-    { "key": "ctrl+9",                "command": "workbench.action.terminal.focusAtIndex9", "when": "terminalFocus" },
-    { "key": "ctrl+t",                "command": "workbench.action.terminal.new" }
-
+    { "key": "cmd+1",                "command": "workbench.action.openEditorAtIndex1", "when": "editorTextFocus" },
+    { "key": "cmd+2",                "command": "workbench.action.openEditorAtIndex2", "when": "editorTextFocus" },
+    { "key": "cmd+3",                "command": "workbench.action.openEditorAtIndex3", "when": "editorTextFocus" },
+    { "key": "cmd+4",                "command": "workbench.action.openEditorAtIndex4", "when": "editorTextFocus" },
+    { "key": "cmd+5",                "command": "workbench.action.openEditorAtIndex5", "when": "editorTextFocus" },
+    { "key": "cmd+6",                "command": "workbench.action.openEditorAtIndex6", "when": "editorTextFocus" },
+    { "key": "cmd+7",                "command": "workbench.action.openEditorAtIndex7", "when": "editorTextFocus" },
+    { "key": "cmd+8",                "command": "workbench.action.openEditorAtIndex8", "when": "editorTextFocus" },
+    { "key": "cmd+9",                "command": "workbench.action.openEditorAtIndex9", "when": "editorTextFocus" },
 ]
-
 ```
 
 ### 工作区快捷键
