@@ -44,13 +44,7 @@ rm ~/.bash_history
 5. 安装好的工具被放置在这个目录内 /Library/Developer/CommandLineTools/usr/bin/
 
 ### App Store
-1. 安装MySQL客户端
-  ```bash
-  # App Store安装MySQLWorkbench，然后
-  export PATH=$PATH:/Applications/MySQLWorkbench.app/Contents/MacOS
-  mysql --version
-  ```
-2. 截图工具 Lightshot Screenshot
+1. 截图工具 Lightshot Screenshot
 
 ### brew
 #### 安装brew
@@ -107,7 +101,7 @@ brew install vim
     6. sidaf/pentest: 渗透测试工具的tap
     7. osrf/simulation: 机器仿真的tap
 
-#### brew下载软件
+### brew下载软件
 
 1. 安装mysql-shell
   - brew install caskroom/cask/mysql-shell
@@ -201,7 +195,13 @@ brew install vim
 6. Mysql官方可视化工具
     - https://dev.mysql.com/downloads/workbench/
     - Mac M1上 8.0.23 闪退，8.0.22 正常使用
+    ```bash
+    # 安装MySQLWorkbench，然后配置命令行mysql指令
+    export PATH=$PATH:/Applications/MySQLWorkbench.app/Contents/MacOS
+    mysql --version
+    ```
 7. 监控工具 stats https://github.com/exelban/stats
+
 
 ## 服务管理launchctl
 ### launchctl
