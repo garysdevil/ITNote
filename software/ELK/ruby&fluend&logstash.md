@@ -1,36 +1,6 @@
-
+[TOC]
 ## 安装ruby
-- 文档
-https://www.runoob.com/ruby/ruby-installation-unix.html
-
-1. 方式一 通过linux包管理器安装
-yum install ruby
-
-2. 方式二 通过RVM版本管理安装ruby
-```bash
-gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
-curl -sSL https://get.rvm.io | bash -s stable
-source /etc/profile.d/rvm.sh
-
-rvm -v
-rvm list known # 列出本地已经安装的ruby版本
-rvm remove 2.5.7
-rvm list
-rvm 2.5.7 --default
-```
-3. ruby包管理器gem
-gem install 包名
-gem list --local
-
-4. ruby依赖包版本管理器bundler
-gem install bundler
-
-5. 第一个ruby程序
-vim HelloWorld.rb
-```ruby
-puts "Hello world"
-```
-ruby HelloWorld.rb
+- 参考 ruby.md
 
 ## fluentd
 - 文档

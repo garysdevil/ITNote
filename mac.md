@@ -50,12 +50,12 @@ rm ~/.bash_history
 #### 安装brew
 - 安装brew
 ```bash
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+# /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 # 新版本安装方式
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 # 配置环境变量
-echo '# Set PATH, MANPATH, etc., for Homebrew.' >> /Users/gary/.zprofile
-echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/gary/.zprofile
+echo '# Set PATH, MANPATH, etc., for Homebrew.' >> ~/.zprofile
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
 eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 

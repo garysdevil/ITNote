@@ -55,3 +55,30 @@ docker run -d --name centos7 centos:7 sleep 6000
 ```Dockerfile
 FROM ubuntu:18.04
 ```
+
+```Dockerfile
+FROM ubuntu:20.04
+MAINTAINER garysdevil
+WORKDIR /opt/blockscout
+```
+
+```bash
+repath=/Users/gary/git/project/ # The folder path of repository bitcoinops.github.io
+cd ${repath}
+
+git clone https://github.com/bitcoinops/bitcoinops.github.io
+
+docker run -d --name bitcoinops -p 4000:4000 -v ${repath}/bitcoinops.github.io:/root/bitcoinops.github.io ruby:2.6.4-stretch sleep 31536000
+docker exec -w /root/bitcoinops.github.io  bitcoinops  bundle install
+
+docker exec -w /root/bitcoinops.github.io  bitcoinops  make preview
+```
+
+```bash
+repath=/Users/gary/git/project/ # The folder path of repository bitcoinops.github.io
+cd ${repath}
+
+git clone https://github.com/bitcoinops/bitcoinops.github.io
+
+docker run -d --name bitcoinops -p 4000:4000 -v ${repath}/bitcoinops.github.io:/root/bitcoinops.github.io -w /root/bitcoinops.github.io ruby:2.6.4-stretch /bin/bash -c "bundle install && make preview"
+```
