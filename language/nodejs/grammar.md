@@ -78,7 +78,7 @@ function sleep(ms) {
 };
 (async () =>{
   console.log(1)
-  await wait(2000);
+  await sleep(2000);
   console.log(2)
 })()
 ```

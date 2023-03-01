@@ -2,10 +2,16 @@
 ### Linux安装nvm
 ```bash
 # https://github.com/nvm-sh/nvm#installation
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | sh
 
 source ~/.bashrc 或者
 . ~/.bashrc
+```
+
+```bash
+# 中国大陆无法正常连接github的安装方式
+export NVM_SOURCE=https://gitlab.com/mirrorx/nvm.git
+curl -o- https://gitlab.com/mirrorx/nvm/-/raw/master/install.sh | bash
 ```
 
 ### Windows安装nvm-windows/
