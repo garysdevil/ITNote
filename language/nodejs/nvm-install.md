@@ -1,4 +1,4 @@
-## 安装node版本管理器
+## 安装node版本管理器 nvm
 ### Linux安装nvm
 ```bash
 # https://github.com/nvm-sh/nvm#installation
@@ -17,7 +17,7 @@ curl -o- https://gitlab.com/mirrorx/nvm/-/raw/master/install.sh | bash
 ### Windows安装nvm-windows/
 https://github.com/coreybutler/nvm-windows/releases
 
-### Mac
+### Mac安装nvm
 ```bash
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.38.0/install.sh | bash
 curl -o-
@@ -28,7 +28,7 @@ echo 'export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> /Users/gary/.bashrc
 ```
 
-### 使用
+### 使用nvm
 ```bash 
 nvm install stable ## 安装最新稳定版 node
 
