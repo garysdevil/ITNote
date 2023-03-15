@@ -18,6 +18,16 @@ SSH_PORT = 2222 # ssh监听的端口
 DISABLE_REGISTRATION = true # 禁止用户自己注册账户
 ```
 
+### 报错
+1. 报错一
+    ```log
+    error: RPC failed; HTTP 413 curl 22 The requested URL returned error: 413
+    send-pack: unexpected disconnect while reading sideband packet
+    fatal: the remote end hung up unexpectedly
+    ```
+    - nginx反向代理client_max_body_size配置导致的 http://nginx.or
+    - g/en/docs/http/ngx_http_core_module.html#client_max_body_size
+
 ## 同步仓库
 ```bash 
 git clone --bare 源git仓库地址
