@@ -1,4 +1,5 @@
 # 语法
+
 ## 基本
 ```js
 // 去掉所有空格
@@ -81,4 +82,37 @@ function sleep(ms) {
   await sleep(2000);
   console.log(2)
 })()
+```
+
+## 其它
+事件驱动  
+events.EventEmitter()  
+util.inherits(对象名 , events.EventEmitter);  
+readFile('路径',回调函数);  
+
+.on  
+.emit  
+
+IO操作  
+fs  
+流  
+buffer  
+管道操作 .pipe()  
+
+
+# 例子
+## 创建第一个Node.js应用
+1. 引入required模块：使用require指令来载入Node.js模块。
+2. 创建服务.
+3. 通过监听接收请求与响应请求。
+```js nodejss
+var http = require('http');
+http.createServer(function (request, response) {
+    // 发送 HTTP 头部 
+    response.writeHead(200, {'Content-Type': 'text/plain'});
+    // 发送响应数据 "Hello World"
+    response.end('Hello World\n');
+}).listen(8888);
+// 终端打印如下信息
+console.log('Server running at http://127.0.0.1:8888/');
 ```
