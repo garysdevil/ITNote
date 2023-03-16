@@ -3,7 +3,7 @@ https://docs.docker.com
 
 ## 安装docker
 - 官方步骤：
-https://docs.docker.com/install/linux/docker-ce/ubuntu/
+https://docs.docker.com/install/linux/docker-ce/ubuntu/  
 说明：2017年的3月1号之后,新版本的免费版本为docker-ce
 ### centos安装docker
 ```bash
@@ -40,8 +40,11 @@ mkdir -p /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg -y
 
 # 设置Docker稳定版仓库
-add-apt-repository "deb [arch=$(dpkg --print-architecture)] https://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# add-apt-repository "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 # 设置Docker稳定版仓库 国内阿里云仓库 
+# add-apt-repository "deb [arch=$(dpkg --print-architecture)] https://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
 # add-apt-repository "deb [arch=amd64] https://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
 
 # 安装docker引擎
