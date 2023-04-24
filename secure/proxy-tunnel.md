@@ -40,6 +40,10 @@
     --daemon
     --forever # 防止进程意外退出
     ```
+    ```bash
+    iptables -A INPUT  -p tcp --dport 38080 -j DROP 
+    iptables -I INPUT -s ${IP} -p tcp --dport 38080 -j ACCEPT 
+    ```
 
 ### shadowsocks
 - 参考 

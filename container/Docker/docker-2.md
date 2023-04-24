@@ -107,6 +107,9 @@ docker volume create my-volume
 # 使用方式 -v my-volume:/var/lib/postgresql/data
 # 使用方式 --network my-network
 
+docker save image:tag -o ${image_name}
+docker load -i ${image_name}
+
 ```
 
 ### Dockerfile
