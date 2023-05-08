@@ -6,3 +6,6 @@
 2. openai
    1. https://beta.openai.com/
    2. https://chat.openai.com/
+
+3. 图片转Excel
+    1. https://www.easyjob.ink/tools/img2excel.html
