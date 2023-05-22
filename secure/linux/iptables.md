@@ -71,7 +71,7 @@ iptables -A INPUT -j DROP #禁止其他所有流量进入
 iptables -A INPUT -s ${IP} -j DROP # 禁止${IP}访问
 iptables -A INPUT -p tcp --dport 8545 -j DROP  # 禁止所有IP访问8545端口
 iptables -A INPUT -d ${IP} -p tcp --dport ${PORT} -j DROP  # 禁止所有IP通过TCP协议访问特${IP}:${PORT}
-iptables -A INPUT -s ${IP} -p tcp --dport ${PORT} -j ACCEPT # 允许${IP}通过TCP协议访问本地的${PORT}端口
+iptables -I INPUT -s ${IP} -p tcp --dport ${PORT} -j ACCEPT # 允许${IP}通过TCP协议访问本地的${PORT}端口
 
 
 # 将本地的端口转发到本机端口
