@@ -33,6 +33,9 @@ nslookup -q=ns baidu.com
 rm ~/.zsh_history
 # 默认登录 shell 是 bash ，用以下命令：
 rm ~/.bash_history
+
+# 压缩一个文件并且加密
+zip -e ${filename}.zip ${filename}
 ```
 
 ## 软件
