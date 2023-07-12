@@ -82,3 +82,6 @@ git clone https://github.com/bitcoinops/bitcoinops.github.io
 
 docker run -d --name bitcoinops -p 4000:4000 -v ${repath}/bitcoinops.github.io:/root/bitcoinops.github.io -w /root/bitcoinops.github.io ruby:2.6.4-stretch /bin/bash -c "bundle install && make preview"
 ```
+
+## 其它
+- 包含web界面的Ubuntu镜像 https://hub.docker.com/r/dorowu/ubuntu-desktop-lxde-vnc/

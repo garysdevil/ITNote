@@ -71,9 +71,9 @@ modprobe kvm_amd # amd处理器
 如果本地启动了SMTP，25端口
 echo 'test' | mail -s '主题'   xxx@qq.com
 
-2. 命令行游览器
+2. 命令行浏览器
 yum install elinks
-elinsk http://baidu.com
+elinks http://baidu.com
 
 3. ftp客户端
 ftp
