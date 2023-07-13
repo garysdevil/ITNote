@@ -85,3 +85,4 @@ docker run -d --name bitcoinops -p 4000:4000 -v ${repath}/bitcoinops.github.io:/
 
 ## 其它
 - 包含web界面的Ubuntu镜像 https://hub.docker.com/r/dorowu/ubuntu-desktop-lxde-vnc/
+- `` docker run -d --network=host -v /dev/shm:/dev/shm dorowu/ubuntu-desktop-lxde-vnc ``
