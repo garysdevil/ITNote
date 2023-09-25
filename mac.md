@@ -40,6 +40,9 @@ zip -e ${filename}.zip ${filename}
 # 使用 openssl 的 rand 方法，生成一个 16 位字符的随机字符
 openssl rand -base64 16
 while ;do openssl rand -base64 16;done;
+
+# 磁盘管理工具
+diskutil list
 ```
 
 ## 软件
@@ -70,7 +73,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 ```bash
 # brew下载安装包时使用的是curl指令
 vi ~/.curl
-export ALL_PROXY=socks5://127.0.0.1:1080
+export ALL_PROXY=socks5://127.0.0.1:7890
 ```
 
 #### 常用指令
