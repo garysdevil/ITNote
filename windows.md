@@ -7,8 +7,19 @@
     4. Powershell是cmd的超集。
 
 ## cmd
+```sh
 ipconfig /all
 ipconfig /flushdns
+
+
+# shutdown 指令
+# -s 关机
+# -r 重启
+# -l 注销
+# -h -f 休眠
+# -a 取消关机
+# -t 1 指定时间后执行
+```
 
 ### 基本指令
 1. 变量的创建与使用

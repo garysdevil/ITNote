@@ -34,3 +34,9 @@
         wimlib-imagex split /Volumes/CCCOMA_X64FRE_ZH-CN_DV9/sources/install.wim /Volumes/WIN11/sources/install.swm 3800
 
    ```
+
+
+## windows11
+1. 安装新系统时跳过网络连接的方法
+    1. 进入到联网页面后，拔掉网线，并保持无线网络未在连接状态。
+    2. 按Shift + F10调出CMD，输入命令：oobe\BypassNRO.cmd，输入完成后按Enter
