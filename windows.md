@@ -31,7 +31,23 @@ mkdir
 # 文件的创建
 type nul>test.go
 
+
+# 查看所有任务
+tasklist ｜ findstr %PID%
+
+
+# 查看所有 Windows 服务及其详细信息的列表
+sc queryex state=all type=service
+sc query %ServiceName%
+sc stop %ServiceName%
+sc start %ServiceName%
 ```
+
+## Git Bash
+```sh
+netstat -ano | grep "LISTENING"
+```
+
 
 ## PowerShell
 ```sh
@@ -52,6 +68,19 @@ new-item $FILENAEM -type file
 ## 快捷键
 1. Ctrl + W 关闭窗口/标签
 2. Alt + F4 关闭窗口
+
+
+## 端口
+1. 135
+    1. TCP RCP
+    2. TCP RCP 消息队列 、 TCP RCP 远程过程调用 、 TCP RCP Exchange Server
+    3. 爆破弱口令
+2. 445
+    1. SMB
+    2. ...
+    3. 溢出漏洞
+3. 3389
+    1. 远程登入端口
 
 # Others
 1. RSS

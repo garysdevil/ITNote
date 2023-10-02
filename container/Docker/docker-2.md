@@ -162,8 +162,11 @@ cp ~/.docker/config.json /var/lib/kubelet/
   "registry-mirrors": ["http://hub-mirror.c.163.com"],
 ;   "registry-mirrors":["https://mirror.ccs.tencentyun.com/"], ;腾讯云专用
 
-  # 更改docker存储目录 方式一
+  # docker运行时使用的根目录，默认为 /var/lib/docker
   "data-root": "/www/docker",
+
+  # docker执行状态文件的根目录，默认为 /var/run/docker
+  "exec-root": ""
 
   # 更改docker存储目录 方式二
   "graph":"/data/docker", # 默认位置 /var/lib/docker
