@@ -134,17 +134,19 @@ ssh-keygen -C "备注信息"
 
 ### 压缩
 ```bash
+# 排除某个文件夹 --exclude=${filename}/filename
+
 # 将大文件压缩并拆分成小文件进行打包(用 bzip2 压缩)
-tar cjvf - bigFile | split -b 500m - smallFile.tar.bz2
+tar cjvf - ${filename} | split -b 500m - ${filename}.tar.bz2
 # 解压出大文件
 cat smallFile.tar.bz2* | tar -jxv
 
 # 用 bzip2 格式压缩文件
-tar  cjvf FileName.tar.bz2 ./Filename
+tar  cjvf ${filename}.tar.bz2 ./${filename}
 # 用 gzip 格式压缩文件
-tar  czvf FileName.tar.bz2 ./Filename
+tar  czvf ${filename}.tar.gz ./${filename}
 # 用 bzip2 格式解压文件
-tar  xjvf FileName.tar.bz2 ./Filename
+tar  xjvf ${filename}.tar.bz2 ./${filename}
 
 
 # xz压缩工具，比gzip格式压缩比更大
