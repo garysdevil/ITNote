@@ -39,7 +39,7 @@ firewall-cmd --query-port=8080/tcp
 3. 要想使配置的端口号生效,必须重新载入 
 firewall-cmd --reload
 
-4. 开放端口或服务
+4. 开放端口或服务 ``最后记得重载配置才生效 firewall-cmd --reload``
 ``` bash
 # 开放80端口 和 移除端口
 firewall-cmd --permanent --add-port=80/tcp
