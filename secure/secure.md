@@ -117,3 +117,8 @@
 2. 通过CDN技术
 
 3. 流量清洗设备
+
+
+## 名词
+- MFA （Multi-factor authentication）多因子认证
+- OTP （One-time Password）一次性密码

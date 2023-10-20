@@ -59,7 +59,7 @@
     3. 角色列表： 定义可以访问JumpServer的哪些功能菜单 （X-Pack）
 
 3. 资产管理
-    1. 资产列表： 通过云扫描添加。
+    1. 资产列表： 通过云扫描添加。 （云扫描 X-Pack）
     2. 标签列表： 根据需求设置标签。
 
 4. 账号管理
@@ -88,3 +88,14 @@
 10. 系统工具
 11. 系统任务
 12. 许可证
+
+## 配置
+- vim jumpserver/config/config.txt
+```conf
+CHANGE_AUTH_PLAN_SECURE_MODE_ENABLED=False # 允许修改特权账号
+```
+
+```bash
+./jmsctl.sh restart
+./jmsctl.sh status
+```

@@ -763,3 +763,17 @@ prlimit --pid=9999
 # 设置pid为9999的进程的可打开的文件最大数为102400(soft & hard)
 prlimit --pid=9999 --nofile=102400:102400
 ```
+
+## 增加用户
+```sh
+# 自动在/home目录下会自动创建同名文件夹
+# 自动创建同名用户组
+# /bin/bash
+adduser ${用户名}
+
+# /bin/sh
+useradd ${用户名}
+
+# 删除用户
+userdel  -r  ${用户名}
+```
