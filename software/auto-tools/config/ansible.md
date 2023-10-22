@@ -43,42 +43,43 @@ yum  install ansible
 - playbooks.yaml
 - vars/
 - roles/
-    - common/main.yaml
-    - role1/main.yaml
-    - templates/
-    - files/
+    - role_name_1/tasks/main.yaml
+    - role_name_1/handlers/main.yaml
+    - role_name_1/templates/*.j2
+    - role_name_1/files/
+    - role_name_2/main.yaml
 
-0. ansible.cfg 
-```conf
-[defaults]
-host_key_checking = False
-ssh_args = -C -o ControlMaster=auto -o ControlPersist=1d
+1. ansible.cfg 
+  ```conf
+  [defaults]
+  host_key_checking = False
+  ssh_args = -C -o ControlMaster=auto -o ControlPersist=1d
+  ```
+2. inventory
+  ```conf
+  [组名]
+  localhost     ansible_connection=local
+  39.107.74.200 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass='123' ansible_sudo_pass='123'
+  39.107.74.200 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_private_key_file=~/.ssh/keyfile.pem
+  [组名:vars]
+  ```
 
-```
-1. inventory
-```conf
-[组名]
-localhost     ansible_connection=local
-39.107.74.200 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_pass='123' ansible_sudo_pass='123'
-39.107.74.200 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_private_key_file=~/.ssh/keyfile.pem
-[组名:vars]
-```
+3. playbooks.yaml
+  ```yaml
+  - name: Init
+    hosts: default
+    gather_facts: no
+    roles:
+      - role_name_1
+      - role_name_2
+  ```
 
-2. playbooks.yaml
-```yaml
-- name: Init
-  hosts: default
-  gather_facts: no
-  roles:
-    - role1
-    - role2
-```
-3. /role1/main.yaml
-```yaml
-- name: Update apt cache.
-  apt: update_cache=yes cache_valid_time=86400
-  changed_when: false
-```
+4. /role_name_2/main.yaml
+  ```yaml
+  - name: Update apt cache.
+    apt: update_cache=yes cache_valid_time=86400
+    changed_when: false
+  ```
 
 ### 一个简单的剧本
 ```yaml
