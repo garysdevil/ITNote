@@ -48,6 +48,21 @@
 ## 企业版
 - 相比 JumpServer 开源版，JumpServer 企业版提供面向企业级应用场景的 X-Pack 增强包，以及高等级的原厂企业级支持服务，有效助力企业快速构建并运营自己的运维安全审计系统。
 
+```bash
+# 升级
+
+# 备份数据库。进入原有的 JumpServer 安装包或者新下载并解压后的 JumpServer 安装包进行数据库备份。
+./jmsctl.sh backup_db
+
+# 拉取新版本的镜像。进入新版本的 JumpServer 安装包的目录下
+./jmsctl.sh load_image
+
+# 升级。进入新版本的 JumpServer 安装包的目录下
+./jmsctl.sh upgrade
+
+# 启动。进入新版本的 JumpServer 安装包的目录下
+./jmsctl.sh start
+```
 
 ## 功能
 ### 控制台
