@@ -37,8 +37,8 @@ rm ~/.bash_history
 # 压缩一个文件并且加密
 zip -e ${filename}.zip ${filename}
 
-# 使用 openssl 的 rand 方法，生成一个 16 位字符的随机字符，可以作为密码
-openssl rand -base64 16
+# 使用 openssl 的 rand 方法，生成一个 30 位字符的随机字符，可以作为密码
+openssl rand -base64 30
 while ;do openssl rand -base64 16;done;
 
 # 磁盘管理工具
