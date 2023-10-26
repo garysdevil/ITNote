@@ -212,6 +212,7 @@ brew install vim
     ```
 7. 监控工具 stats https://github.com/exelban/stats
 8. 远程控制ToDesk https://www.todesk.com/download.html
+9. 贝瑞向日葵
 
 ## 服务管理launchctl
 ### launchctl
