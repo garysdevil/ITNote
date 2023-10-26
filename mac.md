@@ -34,7 +34,7 @@ rm ~/.zsh_history
 # 默认登录 shell 是 bash ，用以下命令：
 rm ~/.bash_history
 
-# 压缩一个文件并且加密
+# 压缩一个文件并且加密 # -r 压缩文件夹
 zip -e ${filename}.zip ${filename}
 
 # 使用 openssl 的 rand 方法，生成一个 30 位字符的随机字符，可以作为密码
