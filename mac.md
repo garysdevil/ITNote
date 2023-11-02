@@ -26,6 +26,9 @@ sudo killall -HUP mDNSResponder
 
 # 7. 查看某个域名的 DNS 缓存
 nslookup -q=ns baidu.com
+
+# 更改终端名字
+scutil --set HostName gary
 ```
 ```bash
 # 删除终端命令记录

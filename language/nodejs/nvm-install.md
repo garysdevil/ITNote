@@ -19,13 +19,13 @@ https://github.com/coreybutler/nvm-windows/releases
 
 ### Mac安装nvm
 ```bash
-wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.38.0/install.sh | bash
-curl -o-
+# https://github.com/nvm-sh/nvm#installation
+wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.39.5/install.sh | bash
 
-# 手动设置环境变量
+# 手动设置环境变量 ~/.bashrc 或 ~/.bash_profile 或 ~/.zprofile 或 ~/.zshrc 或 ~/.profile
 echo 'export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> /Users/gary/.bashrc
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> ~/.zshrc
 ```
 
 ### 使用nvm
