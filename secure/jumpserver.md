@@ -114,3 +114,16 @@ CHANGE_AUTH_PLAN_SECURE_MODE_ENABLED=False # 允许修改特权账号
 ./jmsctl.sh restart
 ./jmsctl.sh status
 ```
+
+
+## 其他
+### 在服务器内修改用户密码
+```bash
+# 进入 jms_core 容器内
+docker exec -it jms_core /bin/bash
+
+cd apps/
+
+# 修改admin密码
+python manage.py changepassword admin
+```
