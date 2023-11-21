@@ -192,6 +192,10 @@ brew install vim
     end
   end
   ```
+  ```
+  fatal: [10.1.6.88]: FAILED! => {"msg": "to use the 'ssh' connection type with passwords or pkcs11_provider, you must install the sshpass program"}
+  brew install hudochenkov/sshpass/sshpass
+  ```
 
 6. 安装v2ray
   - brew install v2ray
