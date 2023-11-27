@@ -35,6 +35,23 @@ nvm install stable ## 安装最新稳定版 node
 nvm alias default lts/gallium # 指定node的默认版本
 ```
 
+## 软件包源
+```
+npm --- https://registry.npmjs.org/
+
+cnpm --- https://r.cnpmjs.org/
+
+taobao --- https://registry.npm.taobao.org/
+
+nj --- https://registry.nodejitsu.com/
+
+rednpm --- https://registry.mirror.cqupt.edu.cn/
+
+npmMirror --- https://skimdb.npmjs.com/registry/
+
+deunpm --- http://registry.enpmjs.org/
+```
+
 ## 包管理器 npm
 1. npm install的执行过程
     1. 发出npm install命令
@@ -61,6 +78,8 @@ npx
 ```bash
 # 安装yarn
 npm install yarn -g
+# 替换为淘宝的源
+yarn config set registry https://registry.npm.taobao.org/
 ```
 
 ## 源管理器
