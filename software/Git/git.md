@@ -280,3 +280,17 @@
 brew install gpg2
 brew install git-secret
 ```
+
+
+## Windows删除免密登入
+```
+在 Windows 系统下，VSCode 使用 Git 存储和管理 GitHub 登录凭据。默认情况下，Git 会使用 Windows Credential Manager 存储凭据。要删除存储在其中的 GitHub 登录信息，请遵循以下步骤：
+
+打开“控制面板”（Control Panel）。
+点击“用户账户”（User Accounts）。
+点击“凭据管理器”（Credential Manager）。
+切换到“Windows 凭据”（Windows Credentials）选项卡。
+在凭据列表中找到与 GitHub 相关的条目。这些条目的名称通常以 “git:” 开头，后跟 GitHub 的 URL，例如 “git:https://github.com”。
+单击找到的 GitHub 凭据条目，然后点击“删除”（Remove）按钮。
+完成上述操作后，GitHub 登录信息将被从 VSCode 中删除。当您下次尝试执行需要认证的操作时（例如推送代码），VSCode 会提示您重新输入 GitHub 用户名和密码。
+```
