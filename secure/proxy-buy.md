@@ -24,3 +24,6 @@
 ## 代理软件
 1. clah(windows和linux) https://github.com/Dreamacro/clash/tags
 2. clashX(mac) https://github.com/yichengchen/clashX
+
+## 快连
+- https://bitbucket.org/letsgogo/letsgogo_21/src/master/
