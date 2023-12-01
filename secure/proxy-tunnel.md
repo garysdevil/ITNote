@@ -236,7 +236,7 @@ v2gen -u "订阅url" -o /usr/local/etc/v2ray/config.json
 ### proxychains
 
 ```bash
-apt install proxychains4
+apt install proxychains4 -y
 PROXYCHAINS_SOCKS5=127.0.0.1:7890 proxychains ${command}
 
 ```
