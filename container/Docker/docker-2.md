@@ -59,7 +59,7 @@ service docker start
 # 1. github上查看最新的docker-compose版本,获取下载链接
 # https://github.com/docker/compose/releases/
 # 2. 下载
-curl -L https://github.com/docker/compose/releases/download/v2.6.1/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+curl -L https://github.com/docker/compose/releases/download/v2.23.2/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
 
 # 给目录增加可执行权限
 chmod +x /usr/local/bin/docker-compose
