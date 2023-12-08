@@ -21,14 +21,6 @@
     http_access allow all  # 允许的 访问控制规则，all是允许所有IP访问
     ```
 
-3. 客户端HTTP方式连接代理配置 linux系统配置 /etc/profile
-    ```conf
-    # 执行 source /etc/profile，使配置文件立即生效
-    export http_proxy=squid服务端IP地址:3128 # http协议访问时使用代理，也可以设置https，ftp等协议
-    export https_proxy=squid服务端IP地址:3128
-    export no_proxy='localhost,127.0.0.1'
-    ```
-
 ### goproxy
 - 源码 https://github.com/snail007/goproxy
 
@@ -215,6 +207,15 @@ v2gen -u "订阅url" -o /usr/local/etc/v2ray/config.json
 
 
 ## 前置代理工具
+### 系统配置
+-  客户端HTTP方式连接代理配置 linux系统配置 /etc/profile
+```conf
+# 执行 source /etc/profile，使配置文件立即生效
+export http_proxy=服务端IP地址:端口 # http协议访问时使用代理，也可以设置https，ftp等协议
+export https_proxy=服务端IP地址:端口
+export no_proxy='localhost,127.0.0.1'
+```
+
 ### Proxy SwitchyOmega
 - Google游览器代理管理工具插件
 
