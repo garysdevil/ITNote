@@ -11,6 +11,8 @@
 ipconfig /all
 ipconfig /flushdns
 
+# 查看mac地址
+getmac /v
 
 # shutdown 指令
 # -s 关机
