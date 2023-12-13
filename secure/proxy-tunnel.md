@@ -221,18 +221,22 @@ export no_proxy='localhost,127.0.0.1'
 
 ### tsocks
 - 通过SOCKS4或SOCKS5代理提供透明的网络访问。
-    ```bash
-    apt install tsocks
-    ```
+```bash
+apt install tsocks
+```
 
 - vi /etc/tsocks.conf  
-    ```conf
-    local = 192.168.1.0/255.255.255.0  #不使用socks代理的网络
-    local = 127.0.0.0/255.0.0.0  #不使用socks代理的网络
-    server = 127.0.0.1   #socks服务器的IP  
-    server_type = 5  #socks服务版本  
-    server_port = 1080 #socks服务使用的端口 
-    ```
+```conf
+local = 192.168.1.0/255.255.255.0  #不使用socks代理的网络
+local = 127.0.0.0/255.0.0.0  #不使用socks代理的网络
+server = 127.0.0.1   #socks服务器的IP  
+server_type = 5  #socks服务版本  
+server_port = 1080 #socks服务使用的端口 
+```
+
+```bash
+tsocks ${command}
+```
 
 ### proxychains
 

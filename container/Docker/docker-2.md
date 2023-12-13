@@ -142,15 +142,19 @@ CMD 容器入口指令，可以被docker启动指令覆盖掉
 ## docker配置更改
 ### 登陆docker仓库Harbor
 1. 通过密钥-手动创建secret
-cat /root/.docker/config.json | base64 -w
+  - `cat /root/.docker/config.json | base64 -w`
 
 2. 通过密钥-自动创建secret
+```bash
 kubectl create secret docker-registry 密钥的名字 --docker-server=DOCKER_REGISTRY_SERVER --docker-username=DOCKER_USER
 --docker-password=DOCKER_PASSWORD --docker-email=DOCKER_EMAIL
+```
 
 3. 通过docker登陆生成认证文件，然后认证文件考到kubelet认证下
+```bash
 docker login DOCKER_REGISTRY_SERVER
 cp ~/.docker/config.json /var/lib/kubelet/
+```
 
 ### 更改docker存储目录与镜像仓库地址
 - 参考文档 https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file
@@ -160,17 +164,12 @@ cp ~/.docker/config.json /var/lib/kubelet/
 {
   # 1. 更改镜像仓库地址
   "registry-mirrors": ["http://hub-mirror.c.163.com"],
-;   "registry-mirrors":["https://mirror.ccs.tencentyun.com/"], ;腾讯云专用
+  # "registry-mirrors":["https://mirror.ccs.tencentyun.com/"], ;腾讯云专用
 
-  # docker运行时使用的根目录，默认为 /var/lib/docker
-  "data-root": "/www/docker",
-
+  #  docker存储目录，默认为 /var/lib/docker
+  "data-root": "/data1/docker/data-root",
   # docker执行状态文件的根目录，默认为 /var/run/docker
-  "exec-root": ""
-
-  # 更改docker存储目录 方式二
-  "graph":"/data/docker", # 默认位置 /var/lib/docker
-
+  "exec-root": "/data1/docker/exec-root",
   # 容器实例代理 # 未实践成功
   "proxies": {
     "default": {
