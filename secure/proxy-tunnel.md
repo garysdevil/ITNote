@@ -7,7 +7,7 @@
     3. 反向代理
     - 正向代理和透明代理代理服务的对象是客户端，反向代理代理服务的对象是服务端
 
-## 代理服务
+## 服务端代理
 ### squid 正向代理软件
 1. 安装
     ```bash
@@ -206,11 +206,10 @@ v2gen -u "订阅url" -o /usr/local/etc/v2ray/config.json
 
 
 
-## 前置代理工具
-### 系统配置
--  客户端HTTP方式连接代理配置 linux系统配置 /etc/profile
+## 客户端代理
+### 环境变量方式
 ```conf
-# 执行 source /etc/profile，使配置文件立即生效
+# 配置完执行 source /etc/profile 使配置文件立即生效
 export http_proxy=服务端IP地址:端口 # http协议访问时使用代理，也可以设置https，ftp等协议
 export https_proxy=服务端IP地址:端口
 export no_proxy='localhost,127.0.0.1'
