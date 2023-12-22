@@ -82,3 +82,9 @@ DNS1=8.8.8.8 # 第一个dns服务器，BOOTPROTO=static 的时候不会自动生
 ``ifconfig eth0:0 192.168.6.100 netmask 255.255.255.0 up``
 2. 删除网卡
 ``ifconfg eth0:0 down``
+
+### 其它
+```bash
+# 查看默认的dns
+systemd-resolve --status | grep 'DNS Servers'
+```
