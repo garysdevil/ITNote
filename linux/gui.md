@@ -1,3 +1,4 @@
+## GUI
 - GUI客户端工具 https://www.realvnc.com/en/connect/download/viewer/
 
 ```bash
@@ -32,7 +33,8 @@ gnome-session --session=gnome-flashback-metacity --disable-acceleration-check &
 ```bash
 # 启动一个GUI，名字为 :1
 vncserver :1 -rfbport 5901
-vncserver -geometry 1920x1080 :1 -rfbport 5901 -localhost 0.0.0.0
+vncserver -geometry 1920x1080 :1 -rfbport 5901 
+# -localhost
 
 # 列出所有的GPU
 vncserver -list
@@ -41,12 +43,17 @@ vncserver -list
 vncserver -kill :1
 ```
 
+```
+export DISPLAY=:0
+```
+
+## 自动化点击
 ```bash
-apt-get install xdotool
-# yum install xdotool
+apt-get install xdotool -y
+# yum install xdotool -y
 
 # 获取鼠标位置
-xdotool getmouselocation   
+g  
 
 # 将鼠标移动到（X，Y）坐标为（153,63）的位置
 xdotool mousemove 153 63

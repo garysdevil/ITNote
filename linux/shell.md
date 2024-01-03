@@ -2,6 +2,31 @@
 [TOC]
 
 - shell
+
+### 循环
+```bash
+# while 循环
+while $condition
+do
+	$command
+done
+
+# 无限循环
+while true
+do
+	$command
+done
+
+# for循环
+sum=0
+i=1
+for ((;i<=100;i++))
+do
+    ((sum += i))
+done
+echo "the sum is: $sum"
+
+```
 ### 数组长度
 ```bash
 #!/bin/bash
