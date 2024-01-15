@@ -207,9 +207,10 @@ brew install vim
 1. 多屏屏幕，鼠标快速移动 https://github.com/round/CatchMouse
 2. Chrome   https://www.google.com/chrome/thank-you.html?statcb=0&installdataindex=empty&defaultbrowser=0 
 3. Openvpn  https://openvpn.net/downloads/openvpn-connect-v3-macos.dmg
-4. Vscode   https://code.visualstudio.com/Download
-5. 雅思哥   https://ieltsbro.com/
-6. Mysql官方可视化工具
+4. UniVPN   https://www.leagsoft.com/doc/article/103107.html
+5. Vscode   https://code.visualstudio.com/Download
+6. 雅思哥   https://ieltsbro.com/
+7. Mysql官方可视化工具
     - https://dev.mysql.com/downloads/workbench/
     - Mac M1上 8.0.23 闪退，8.0.22 正常使用
     ```bash
@@ -217,9 +218,9 @@ brew install vim
     export PATH=$PATH:/Applications/MySQLWorkbench.app/Contents/MacOS
     mysql --version
     ```
-7. 监控工具 stats https://github.com/exelban/stats
-8. 远程控制ToDesk https://www.todesk.com/download.html
-9. 贝瑞向日葵
+8. 监控工具 stats https://github.com/exelban/stats
+9. 远程控制ToDesk https://www.todesk.com/download.html
+10. 贝瑞向日葵
 
 ## 服务管理launchctl
 ### launchctl
