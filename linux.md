@@ -764,6 +764,13 @@ prlimit --pid=9999
 prlimit --pid=9999 --nofile=102400:102400
 ```
 
+### linux和windows
+```bash
+# Windows 和 Linux 之间文本格式转换
+# yum install -y dos2unx
+dos2unix ${filename}
+```
+
 ## 增加用户
 ```sh
 # 自动在/home目录下会自动创建同名文件夹
