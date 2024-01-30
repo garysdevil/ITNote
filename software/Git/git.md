@@ -155,6 +155,13 @@
     3.  -d 连 untracked 的目录也一起删掉
     4.  -n 查看会删掉哪些文件，并不会执行删除操作
 
+12. 重写历史，删除铭感文件 参考 https://blog.csdn.net/chenlijian/article/details/118719672
+    1.  删除指定文件或目录，提交 `` git filter-branch --tree-filter 'rm -rf src/Info' head ``
+      1.  --all 标志以处理所有分支和标签
+      2.  head 指定从当前分支的最新一次提交开始遍历  HEAD~30..HEAD 指定从当前分支最近30次提交开始遍历
+    2.  强制覆盖 `` git push -f ``  如果push失败，前往git库->settings->protected Branches修改，去除保护，再重新执行。（去除成功后，务必记得修改回来）
+
+
 ## Git免密登陆
 ### https方式-明文
 - 参考 https://www.cnblogs.com/cheyunhua/p/7945109.html
