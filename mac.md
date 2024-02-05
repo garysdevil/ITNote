@@ -46,6 +46,9 @@ while ;do openssl rand -base64 16;done;
 
 # 磁盘管理工具
 diskutil list
+
+# 查看mac物理地址机器IP
+ifconfig | grep -A 4 "en0"
 ```
 
 ## 软件
