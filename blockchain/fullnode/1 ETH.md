@@ -1,5 +1,7 @@
+- POW共识
+
 [TOC]
-#### 部署ETH-主网
+## 部署ETH-主网
 - 使用二进制进行安装部署
 - https://geth.ethereum.org/downloads/
 ```shell
@@ -28,32 +30,11 @@
 	3. Imported new state entries
 	4. Imported new chain segment
 - 同步完成  10088165 227G
-#### 运维须知-主网
+## 运维须知-主网
 1. 默认端口
 	1. p2p：30303
 	2. ws: 8544
 	3. rpc: 8545
-
-2. API操作
-	```bash
-	# 获取块高的API
-	printf %d `curl -sS  127.0.0.1:8545 -H "Content-Type:application/json" -X POST -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' |  grep -Po 'result[" :]+\K[^"]+'`
-
-	# 查看交易信息
-	curl -sS  127.0.0.1:8545 -H "Content-Type:application/json" -X POST  -d '{"jsonrpc":"2.0","method":"eth_getTransactionByHash","params":["0xe82ada99b9c9ab2daffe208035d6f2fba78fea60df6ea9b41c2e99a3054bbe34"],"id":1}' 
-
-	# 查看账户余额
-	curl 127.0.0.1:8545 \
-	-X POST \
-	-H "Content-Type: application/json" \
-	-d '{"jsonrpc":"2.0","method":"eth_getBalance","params": ["以太坊账户地址","latest"],"id":1}'
-
-	# 
-	curl 127.0.0.1:8545 \
-	-X POST \
-	-H "Content-Type: application/json" \
-	-d '{"jsonrpc":"2.0","method":"eth_call","params":[{"from":"钱包地址","to":"智能合约地址","data":"0x70a08231000000000000000000000000不带0x的钱包地址"},"latest"],"id":1}'
-	```
 
 4. 首先进入交互界面-指令操作
 	./geth attach --datadir /data/ethereum
@@ -130,7 +111,7 @@ Synchronisation failed, dropping peer    peer=1a32db2cf244288e err="retrieved ha
 尝试删除最前面的一部份数据，再开始同步 ----- 任然出现此条错误
 debug.setHead("0x637cc0")  6520000块高
 
-#### Eth测试网
+## 部署ETH-测试网
 - Kovan PoA算法，Parity专用
 - Ropsten PoW算法，支持Parity和Get
 - Rinkeby PoA共识算法，Geth专用
@@ -141,7 +122,7 @@ debug.setHead("0x637cc0")  6520000块高
 https://github.com/bokkypoobah/WeenusTokenFaucet
 https://www.liankexing.com/notetwo/12995
 
-##### Ubuntu16部署parity Kovan
+### Ubuntu16部署parity Kovan
 - Parity由Ethcore开发，为Rust语言写的全节点客户端程序。
 - https://www.mycryptopedia.com/how-to-install-and-run-an-ethereum-parity-node/
 - 部署文档 https://www.dazhuanlan.com/2020/01/04/5e1009dd10a04/
@@ -175,13 +156,13 @@ hosts = ["none"]
 ```
 3. 启动
 nohup parity -l sync=debug,rpc=trace --config config.toml > parity.log 2>&1 &
-##### Ubuntu16部署eth rinkeby
+### Ubuntu16部署eth rinkeby
 curl -O https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.9.13-cbc4ac26.tar.gz
 curl -O https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.9.14-6d74d1e5.tar.gz
 /data/geth/geth --datadir /data/geth/data/rinkeby --rinkeby
 /data/geth/geth --rpc --rpcaddr 0.0.0.0 --rpcport 8545 --ws --wsaddr 0.0.0.0 --datadir /data/geth/data --rpcvhosts=* --rinkeby
 
-##### 运维
+## 运维须知-测试网
 1. 默认端口
 	- rpc 8547
 
@@ -198,7 +179,10 @@ parity –unlock <account no> –password <filename>
 
 5. 区块链游览器 rinkeby网络
 https://kovan.etherscan.io/
-#### eth索引库
+
+
+
+## eth索引库
 https://github.com/Adamant-im/ETH-transactions-storage
 https://git.i.garys.top/project/src/eth-indexer
 
@@ -218,7 +202,7 @@ python3.6 you/path/to/script/ethsync.py {yourDB}
 
 服务化 ethstorage.service
 
-##### 主网索引库同步问题
+### 主网索引库同步问题
 索引库同步到 4908668 时出现问题。
 ```log
 Jun 08 11:17:38 hnpvmnn01 bash[29892]: Traceback (most recent call last):
@@ -234,3 +218,91 @@ Jun 08 11:17:38 hnpvmnn01 bash[29892]: Consider a function index of an MD5 hash 
 同步极慢，从0到4908668块高花销了2周
 dev主网同步到4908668后从10222000开始同步
 prd主网同步到4857565后从10222000开始同步
+
+
+## 部署ET-私有网
+
+- 参考文档 
+    - https://geth.ethereum.org/docs/interface/private-network
+    
+### 下载
+```bash
+# 1. 从官网 https://geth.ethereum.org/downloads/ 下载geth，解压即可得到可执行指令
+# 2. 
+mv geth /usr/local/bin/
+```
+
+### 初始化创始区块
+- 创始区块信息文件 genesis.json (官方模版)
+```conf
+{
+  "config": {
+    "chainId": 1337,
+    "homesteadBlock": 0,
+    "eip150Block": 0,
+    "eip155Block": 0,
+    "eip158Block": 0,
+    "byzantiumBlock": 0,
+    "constantinopleBlock": 0,
+    "petersburgBlock": 0,
+    "ethash": {},
+    "coinbase":"0xfeda2DCb016567DEb02C3b59724cf09Dbc41A64D"
+  },
+  "difficulty": "1",
+  "gasLimit": "8000000",
+  "alloc": {
+    "0xfeda2DCb016567DEb02C3b59724cf09Dbc41A64D": { "balance": "80000000000000000000000" }
+  }
+}
+```
+
+- 参数
+    - NetworkId 是用来标识区块链网络的。主要在节点之间握手并相互检验的时候使用。
+    - ChainId 
+        - 链标识符，是在EIP155改进方案中实现，用于防止重放攻击。
+        - 防止交易在不同的以太坊同构网络进行交易重放的。主要在交易签名和验证的时候使用。
+        - 已经被占用的ChainId https://chainlist.org/
+        - 默认为 1337
+    - difficulty 挖矿难度  6291450 = 1分钟2个左右
+    - alloc 创始区块分配给特定地址的余额
+
+- 初始化
+```bash
+# 创建创始区块
+geth --datadir ./ethereumData init genesis.json
+
+```
+
+### 启动
+```bash
+# 启动以太坊私有网络
+./geth --dev --miner.threads 1 --gcmode archive --datadir=./ethereumData/ --networkid 1337 --nodiscover --http --http.addr 127.0.0.1 --http.port  8545 --ws --ws.addr 127.0.0.1 --ws.port 8544 --port 30303 --allow-insecure-unlock --http.corsdomain "*" --http.api "admin debug web3 eth txpool personal miner net" --rpc.txfeecap 0 --rpc.gascap 0 console
+
+# --mine
+# --miner.threads 1 # 启动N个CPU线程进行挖矿，默认为0
+
+# --dev # 开发者模式。
+# --dev.period 0 # 0 或者 1 # 开发者模式下，0: 默认为被动挖矿模式，即当进行交易时，系统才会挖矿打包。 1: 开发者模式主动挖矿。
+# --verbosity 3
+
+# --identity ${name} 给节点自定义名字
+# --gcmode archive # 区块的垃圾回收模式 full 和 archive ，默认是 full # archive模式将保留智能合约中的所有值状态以及帐户余额的完整历史记录
+# --syncmode full # 同步模式 "light", "fast", "full"
+
+# --http
+# --http.api "" # available="[admin,debug,web3,eth,txpool,personal,ethash,miner,net]" # 允许通过http方式访问相关的模块
+# --http.corsdomain "*"  # 跨域访问
+
+# --ws 
+# --ws.addr 127.0.0.1 --ws.port 8544
+# --ws.api ""
+# --ws.origins '*'
+
+# console 进入控制台
+
+# 进入以太坊控制台
+geth --datadir=./ethereumData/ attach
+geth attach ./ethereumData/geth.ipc
+geth attach http://127.0.0.1:8545
+geth attach ws://127.0.0.1:8544
+```
