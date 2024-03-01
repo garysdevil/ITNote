@@ -308,6 +308,9 @@ iostat -d -k ${Device}
 # 指定分隔符
 awk -v FS=":" '{print $3}'
 
+awk 'NR==5 {print}'  # awk 打印第 5 行内容
+awk 'END {print}'  # awk 打印最后一行内容
+
 # 替换操作 = sed 's/one/two'
 awk '{sub(/one/,"two");print}'
 # 过滤操作 = grep -E 'one|two'
