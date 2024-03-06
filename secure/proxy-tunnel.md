@@ -209,10 +209,27 @@ v2gen -u "订阅url" -o /usr/local/etc/v2ray/config.json
 ## 客户端代理
 ### 环境变量方式
 ```conf
-# 配置完执行 source /etc/profile 使配置文件立即生效
-export http_proxy=服务端IP地址:端口 # http协议访问时使用代理，也可以设置https，ftp等协议
-export https_proxy=服务端IP地址:端口
+# vi /etc/profile.d/proxy.conf
+# source /etc/profile.d/proxy.conf # 使配置文件立即生效
+#export all_proxy=http://10.0.0.51:8080  http://user:pass@10.0.0.10:8080    socks4://10.0.0.51:1080  socks5://192.168.1.1:1080
+#export ftp_proxy=
+export http_proxy=
+export https_proxy=
 export no_proxy='localhost,127.0.0.1'
+
+# 取消环境变量的设置
+#unset http_proxy
+#unset https_proxy
+#unset ftp_proxy
+#unset no_proxy
+```
+
+```bash
+# Ubuntu-apt 代理配置
+apt -o Acquire::http::proxy="http://192.168.1.2:3128/" update
+
+# 单独设置yum代理访问，如下文件的变量
+echo "proxy=http://127.0.0.1:8080/" >> /etc/yum.conf
 ```
 
 ### Proxy SwitchyOmega
@@ -242,6 +259,7 @@ tsocks ${command}
 ```bash
 apt install proxychains4 -y
 PROXYCHAINS_SOCKS5=127.0.0.1:7890 proxychains ${command}
+PROXYCHAINS_SOCKS5_HOST=127.0.0.1 PROXYCHAINS_SOCKS5_PORT=4321 proxychains zsh
 
 ```
 - /etc/proxychains4.conf
@@ -291,7 +309,7 @@ nobind #不绑定本地特定的端口号
 verb 3 #指定日志文件的记录详细级别，可选0-9，等级越高日志内容越详细
 persist-key #通过keepalive检测超时后，重新启动VPN，不重新读取keys，保留第一次使用的keys
 persist-tun #检测超时后，重新启动VPN，一直保持tun是linkup的。否则网络会先linkdown然后再linkup
-; block-outside-dns # 阻止使用外部的DNS
+#block-outside-dns # 阻止使用外部的DNS
 # 证书密钥
 ca ca.crt #指定CA证书的文件路径
 cert client.crt #指定当前客户端的证书文件路径
@@ -355,8 +373,8 @@ Address = 10.0.0.1/24
 SaveConfig = true
 ListenPort = 51820
 PrivateKey = ${SERVER_PRIVATE_KEY}
-PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o ${network_interface} -j MASQUERADE
-PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o ${network_interface} -j MASQUERADE
+PostUp = iptables -A FORWARD -i %i -j ACCEPT #iptables -t nat -A POSTROUTING -o ${network_interface} -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT #iptables -t nat -D POSTROUTING -o ${network_interface} -j MASQUERADE
 ```
 ### 客户端
 ```bash
