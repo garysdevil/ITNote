@@ -20,3 +20,5 @@
         - 方式二 在支付宝，选择美国地区，购买Apple礼品卡
         - 方式三 App Store 直接充值
     2. App Store，美国账号，兑换礼品卡
+
+1. 视频自动生成 https://www.capcut.com/
