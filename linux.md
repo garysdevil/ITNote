@@ -774,6 +774,20 @@ prlimit --pid=9999 --nofile=102400:102400
 dos2unix ${filename}
 ```
 
+### 升级内核
+```bash
+# Update and upgrade existing packages
+# sudo apt update && sudo apt full-upgrade -y
+
+# Install a newer kernel version, example for Ubuntu 20.04
+# sudo apt install --install-recommends linux-generic-hwe-20.04 -y
+
+# Reboot the system
+# sudo reboot
+
+dpkg --configure -a; apt --fix-broken install -y; DEBIAN_FRONTEND=noninteractive apt install --install-recommends linux-generic-hwe-20.04 -y; reboot
+```
+
 ## 增加用户
 ```sh
 # 自动在/home目录下会自动创建同名文件夹
