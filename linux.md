@@ -777,7 +777,7 @@ dos2unix ${filename}
 ### 升级内核
 ```bash
 # Update and upgrade existing packages
-# sudo apt update && sudo apt full-upgrade -y
+sudo apt update && sudo apt full-upgrade -y
 
 # Install a newer kernel version, example for Ubuntu 20.04
 # sudo apt install --install-recommends linux-generic-hwe-20.04 -y
@@ -785,7 +785,7 @@ dos2unix ${filename}
 # Reboot the system
 # sudo reboot
 
-dpkg --configure -a; apt --fix-broken install -y; DEBIAN_FRONTEND=noninteractive apt install --install-recommends linux-generic-hwe-20.04 -y; reboot
+dpkg --configure -a; apt --fix-broken install -y; DEBIAN_FRONTEND=noninteractive apt install --install-recommends linux-generic-hwe-20.04 -y && reboot
 ```
 
 ## 增加用户
