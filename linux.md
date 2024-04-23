@@ -490,6 +490,7 @@ update-grub # grub-mkconfig -o /boot/grub/grub.cfg # 或者重启
 
 ### ssh 
 ```bash
+# -o StrictHostKeyChecking=no 告诉SSH客户端不检查主机密钥数据库(/etc/ssh/ssh_known_hosts 或 ~/.ssh/known_hosts)，并自动接受第一次连接到的主机的公钥
 ssh -p22 127.0.0.1 -i 私钥文件路径
 ```
 
