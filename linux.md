@@ -80,11 +80,13 @@ new WebSocket("wss://XXX.XXX.XXX.XXX:9944");
 ```bash
 journalctl -ef -n 100 -p 4
 # -e 从末行开始显示
+# -f 持续跟进日志
+# -u 查看某个Unit的日志
+# _PID=1 查看指定进程的日志
+# -g 等同于 grep
 # --since "2012-10-30 18:17:16"
 # -b 0 查看系统本次启动的日志
 # -k 查看内核日志（不显示应用日志）
-# -u 查看某个Unit的日志
-# _PID=1 查看指定进程的日志
 # -p 指定显示的日志级别
 #     0: emerg
 #     1: alert

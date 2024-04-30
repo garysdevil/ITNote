@@ -5,12 +5,13 @@
 ### linux安装
 ```bash
 cd /opt
-wget https://golang.org/dl/go1.19.1.linux-amd64.tar.gz
-wget https://go.dev/dl/go1.19.1.linux-amd64.tar.gz
+wget https://golang.org/dl/go1.22.2.linux-amd64.tar.gz
+wget https://go.dev/dl/go1.22.2.linux-amd64.tar.gz
 
-tar -xzf go1.19.1.linux-amd64.tar.gz
-# tar -C /usr/local -xzf go1.19.1.linux-amd64.tar.gz
+
 # linux环境变量
+mkdir -p /opt && cd /opt 
+tar -xzf go1.22.2.linux-amd64.tar.gz
 vi /etc/profile.d/golang.sh
 export GOROOT=/opt/go/bin # go命令所在的bin目录
 export GOPATH=/opt/go/space  # 存放第三方依赖的源码文件夹。 编译后二进制文件的存放目的地和import包的搜索路径（默认为当前目录下）。
@@ -62,4 +63,6 @@ ctrl+shift+p 打开命令面板
     ```bash
     go env -w GOPROXY=https://goproxy.io,direct
     go env -w GO111MODULE=on
+    
+    go env -w GOSUMDB=sum.golang.google.cn
     ```
