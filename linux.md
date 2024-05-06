@@ -565,10 +565,15 @@ php-fpm-7.1[60143]: segfault at 0 ip 00007fbc4e998ff1 sp 00007ffe5b9c3238 error 
 查看/tmp目录下每个子目录文件的数量
 for i in /tmp; do echo $i; find $i |wc -l|sort -nr; done
 
-查看所有目录包含隐含目录的大小
+```bash
+# 查看所有目录包含隐含目录的大小
 du -sh * .[^.]*
-只查看隐含目录的大小
+# 只查看隐含目录的大小
 du -sh .[!.]*
+# 排除指定文件
+--exclude="proc"
+--exclude="data*"
+```
 
 除特定文件外删除所有
 rm -rf !(.a|.|..)
