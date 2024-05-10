@@ -8,24 +8,19 @@ cd /opt
 wget https://golang.org/dl/go1.22.2.linux-amd64.tar.gz
 wget https://go.dev/dl/go1.22.2.linux-amd64.tar.gz
 
-
 # linux环境变量
 mkdir -p /opt && cd /opt 
 tar -xzf go1.22.2.linux-amd64.tar.gz
-vi /etc/profile.d/golang.sh
+
+sudo tee /etc/profile.d/golang.sh > /dev/null << EOF
 export GOROOT=/opt/go # go命令所在的bin目录
 export GOPATH=/opt/go/space  # 存放第三方依赖的源码文件夹。 编译后二进制文件的存放目的地和import包的搜索路径（默认为当前目录下）。
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 export GOPROXY=https://goproxy.cn # 配置go代理
 export GOPROXY=https://goproxy.io,direct # 配置go代理
+EOF
 
 source /etc/profile
-```
-
-```bash
-# 安装方式二
-wget -c https://golang.org/dl/go1.18.8.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
-echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.bashrc && source ~/.bashrc
 ```
 
 ### windows安装
