@@ -7,16 +7,15 @@
 cd /opt
 wget https://golang.org/dl/go1.22.2.linux-amd64.tar.gz
 # wget https://go.dev/dl/go1.22.2.linux-amd64.tar.gz
-
-# linux环境变量
 tar -xzf go1.22.2.linux-amd64.tar.gz
 
+# linux环境变量
 tee /etc/profile.d/golang.sh > /dev/null << EOF
 export GOROOT=/opt/go # go命令所在的bin目录
 export GOPATH=/opt/go/space  # 存放第三方依赖的源码文件夹。 编译后二进制文件的存放目的地和import包的搜索路径（默认为当前目录下）。
 export PATH=$PATH:/opt/go/bin:/opt/go/space/bin
-export GOPROXY=https://goproxy.cn # 配置go代理
-export GOPROXY=https://goproxy.io,direct # 配置go代理
+export GO111MODULE=on
+export GOPROXY=https://goproxy.cn
 EOF
 
 source /etc/profile
@@ -54,11 +53,19 @@ ctrl+shift+p 打开命令面板
 
 ## Go指令
 - 临时环境变量
-    - Go version >= 1.13，直接用go env -w 设置
-    ```bash
-    go env -w GOPROXY=https://goproxy.io,direct
-    go env -w GO111MODULE=on
-    
-    
-    
-    ```
+- Go version >= 1.13，直接用go env -w 设置
+```bash
+go env -w GOPROXY=https://goproxy.io,direct # 或 go env -w GOPROXY=https://goproxy.cn
+go env -w GO111MODULE=on
+
+# 取消代理
+#取消  goproxy 代理设置
+go env -u GOPROXY
+go env -w GOPROXY=direct
+```
+
+```bash
+# 查看 GOPROXY 变量
+go env | grep GOPROXY
+go env | findstr GOPROXY # Windows环境
+```
