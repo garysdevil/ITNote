@@ -6,7 +6,7 @@
         - 方式三 App Store 直接充值
     2. App Store 美国账号余额
         1. 兑换礼品卡为余额
-        2. 直接充值
+        2. 直接充值(需要美国信用卡或paypal)
     3. 下载chatgpt软件，订阅chatgpt4
 
 1. 视频自动生成 
@@ -55,3 +55,19 @@ Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
 ### Zero-Shot Prompts 零样本提示
 - Zero-Shot Chain of Thought
 ### Few-Shot Prompting 少量样本提示
+
+
+
+## 实践
+```md
+- 角色: 我是一位精通区块链和nodejs代码的软件工程师
+- 需求:
+- 完成需求方式: 通过Node.js代码实现，给出一个完整可运行的例子
+- Node.js代码规格:
+    1. Node.js版本 v18.19.0
+    2. 将代码写进一个函数内，通过主函数进行调用
+    3. 下载依赖时指定版本号，尽量使用最新的版本依赖
+    4. 函数有注释
+    5. 代码书写规则符合eslint-config-airbnb-base格式
+    6. 使用ESM模块系统
+```
