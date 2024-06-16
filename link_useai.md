@@ -71,3 +71,22 @@ Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
     5. 代码书写规则符合eslint-config-airbnb-base格式
     6. 使用ESM模块系统
 ```
+
+```md
+- 你是一位区块链研究专家。
+- 对于一个区块链项目，针对以下几点进行研究输出，最后输出markdown格式的文档
+    1. 项目的Discord、Twitter、Telegram、Github、白皮书、官网、文档链接
+    2. 项目简介，以及解决了什么问题
+    3. 项目的团队背景
+    4. 项目的融资（每轮融资的时间点和金额）
+    5. 项目的经济模型
+    6. 项目的技术原理
+    7. 项目的共识激励机制
+    8. 项目的路线图和事件
+    9. 项目的同类项目对比
+    10. 项目前景分析
+- 针对XX项目进行研究输出
+
+
+
+```
