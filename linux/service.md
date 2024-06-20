@@ -48,9 +48,9 @@ ntsysv
 Description=XXXXX
 Documentation=https://github.com/garysdevil/ITNote
 After=network.target # 当前服务（<software-name>.service）需要在这些服务启动后，才启动
-# Before: 和 After 相反，当前服务需要在这些服务启动前，先启动
-# Wants：表示当前服务"弱依赖"于这些服务。即当前服务依赖于它们，但是没有它们，当前服务也能正常运行。
-# Requires: 表示"强依赖"关系，即如果该服务启动失败或异常退出，那么当前服务也必须退出。
+# Before 和 After 相反，当前服务需要在这些服务启动前，先启动
+# Wants 表示当前服务"弱依赖"于这些服务。即当前服务依赖于它们，但是没有它们，当前服务也能正常运行。
+# Requires 表示"强依赖"关系，即如果该服务启动失败或异常退出，那么当前服务也必须退出。
 
 [Service]
 User=用户名
