@@ -5,9 +5,9 @@
 ### linux安装
 ```bash
 cd /opt
-wget https://golang.org/dl/go1.22.2.linux-amd64.tar.gz
-# wget https://go.dev/dl/go1.22.2.linux-amd64.tar.gz
-tar -xzf go1.22.2.linux-amd64.tar.gz
+wget https://golang.org/dl/go1.22.4.linux-amd64.tar.gz
+# wget https://go.dev/dl/go1.22.4.linux-amd64.tar.gz
+tar -xzf go1.22.4.linux-amd64.tar.gz
 
 # linux环境变量
 tee /etc/profile.d/golang.sh > /dev/null << EOF
