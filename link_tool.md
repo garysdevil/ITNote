@@ -10,5 +10,7 @@
 3. 图片转Excel
     1. https://www.easyjob.ink/tools/img2excel.html
 
+4. 视频托管网站 https://wave.video/
+
 ## 知识
 1. Z-Library 世界上最大的在线图书馆之一 https://zh.z-library.se/
