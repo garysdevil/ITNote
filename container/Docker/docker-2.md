@@ -139,6 +139,15 @@ ENTRYPOINT 容器入口，不会被docker启动指令覆盖掉
 CMD 容器入口指令，可以被docker启动指令覆盖掉
 ```
 
+### docker-compose
+```bash
+docker-compose up -d
+
+docker-compose down
+
+docker-compose down -v
+```
+
 ## docker配置更改
 ### 登陆docker仓库Harbor
 1. 通过密钥-手动创建secret
