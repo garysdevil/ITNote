@@ -301,3 +301,31 @@ brew install git-secret
 单击找到的 GitHub 凭据条目，然后点击“删除”（Remove）按钮。
 完成上述操作后，GitHub 登录信息将被从 VSCode 中删除。当您下次尝试执行需要认证的操作时（例如推送代码），VSCode 会提示您重新输入 GitHub 用户名和密码。
 ```
+
+
+## 报错与解决
+```log
+error: 1242 bytes of body are still expected
+```
+```bash
+# 增加缓冲区大小
+git config --global http.postBuffer 1024M
+```
+```bash
+# compression 表示压缩，从 clone 的终端输出就知道，服务器会压缩目标文件，然后传输到客户端，客户端再解压。取值为 [-1, 9]，-1 以 zlib 为默认压缩库，0 表示不进行压缩，1…9 是压缩速度与最终获得文件大小的不同程度的权衡，数字越大，压缩越慢，得到的文件会越小。
+git config --global core.compression 0
+```
+
+1. 使用了--depth克隆的仓库就是一个浅克隆的仓库，并不完整。
+  1. 只包含远程仓库的HEAD分支。
+  2. 没有远程仓库的tags。
+  3. 不fetch子仓库(submodules)。
+  4. --depth=N 只克隆最进N次的提交记录。
+
+```bash
+# 浅克隆 # 
+git fetch --depth=1 $URL
+git fetch --depth=100
+git fetch --depth=500
+git fetch --unshallow  # 将仓库转化为非浅克隆状态
+```
