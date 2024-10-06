@@ -73,6 +73,7 @@ docker build --build-arg PROJECT=pre --no-cache --network=host -f Dockerfile -t 
 
 # 2. Run 运行镜像
 docker run -d -e SW_OAP_ADDRESS=127.0.0.1:11800 -p 9000:9000 -v /etc/nginx/html:/var/www/html skyapm/skywalking-php
+# docker run <image-name> <command> arg1 arg2
 # -e 参数
 # -p 主机端口:容器端口
 # -v 主机路径:容器路径
