@@ -21,7 +21,9 @@
 
 3. 软件开发
     1. claude
-    2. cursor 
+    2. cursor
+4. 其它
+    1. https://infinity.theoriq.ai/studio/chat 
 
 ## chatgpt4 定制应用
 - 项目调研类
