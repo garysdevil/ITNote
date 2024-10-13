@@ -13,4 +13,6 @@
 4. 视频托管网站 https://wave.video/
 
 ## 知识
-1. Z-Library 世界上最大的在线图书馆之一 https://zh.z-library.se/
+1. 书籍
+    1. Z-Library 世界上最大的在线图书馆之一 https://zh.z-library.se/
+    2. https://liber3.eth.limo/
