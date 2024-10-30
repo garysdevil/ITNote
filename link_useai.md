@@ -1,4 +1,28 @@
 # AI
+## 链接
+1. 大模型
+    1. https://www.anthropic.com/
+    2. https://chatgpt.com/
+2. 视频自动生成 
+    1. https://www.capcut.com/
+    2. https://app.fliki.ai/
+
+3. 查重
+    1. uoonn.com
+    2. https://originality.ai/
+    3. https://gptzero.me/  检测技术差
+
+4. 软件开发
+    1. claude
+    2. cursor
+5. 其它
+    1. https://infinity.theoriq.ai/studio/chat 
+
+## chatgpt4 定制应用
+- 项目调研类
+    1. College Assignment Hero
+    2. JIJITANG
+
 ## 订阅chatgpt4
 1. 购买苹果美区礼品卡 
     - 方式一 在苹果官网购买 https://www.apple.com/shop/buy-giftcard/giftcard 
@@ -8,27 +32,6 @@
     1. 兑换礼品卡为余额
     2. 直接充值(需要美国信用卡或paypal)
 3. 下载chatgpt软件，订阅chatgpt4
-
-## 链接
-1. 视频自动生成 
-    1. https://www.capcut.com/
-    2. https://app.fliki.ai/
-
-2. 查重
-    1. uoonn.com
-    2. https://originality.ai/
-    3. https://gptzero.me/  检测技术差
-
-3. 软件开发
-    1. claude
-    2. cursor
-4. 其它
-    1. https://infinity.theoriq.ai/studio/chat 
-
-## chatgpt4 定制应用
-- 项目调研类
-    1. College Assignment Hero
-    2. JIJITANG
 
 
 # Prompt 
