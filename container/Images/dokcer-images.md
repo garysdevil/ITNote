@@ -88,3 +88,20 @@ docker run -d --name bitcoinops -p 4000:4000 -v ${repath}/bitcoinops.github.io:/
     - `` docker run -d --network=host -v /dev/shm:/dev/shm dorowu/ubuntu-desktop-lxde-vnc ``
 
 - 包含GUI的mac镜像 sickcodes/docker-osx:big-sur
+
+
+### Chrome
+```bash
+docker run --name chrome -d \
+  --restart always \
+  --shm-size=1024m \
+  -p 16901:6901 \
+  -e VNC_PW=garysdevil \
+  -e LANG=zh_CN.UTF-8 \
+  -e TZ=Asia/Shanghai \
+  -u root \
+  kasmweb/chrome:1.16.0
+```
+- 网页端 https://${IP}:6901
+    - 用户名为 kasm_user
+    - 密码为 garysdevil
