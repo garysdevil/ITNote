@@ -1,5 +1,6 @@
 
 
+## IMAP POP SMTP
 - IMAP 和 POP 是访问电子邮件的两种方法。 
 - IMAP 
     - Internet Mail Access Protocol
@@ -11,3 +12,11 @@
     - 已发送邮件存储在本地电脑上，而不是存储在电子邮件服务器上。
 - SMTP
     - Simple Mail Transfer Protocol
+## Gmail
+1. 开启IMAP
+    1. https://mail.google.com/mail/u/0/#settings/fwdandpop
+
+2. 生成应用密码
+    1. 需要先开启两步验证
+    2. https://security.google.com/settings/security/apppasswords
+    3. 生成应用密码后需要立刻复制记录下来，应用密码窗口关掉后就不能再次查看了。

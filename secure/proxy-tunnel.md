@@ -32,7 +32,7 @@
     curl -L https://raw.githubusercontent.com/snail007/goproxy/master/install_auto.sh | bash
     proxy socks -t tcp -p "0.0.0.0:38080" --log proxy.log  --daemon --forever
     # --forever # 防止进程意外退出
-    ```
+```
     ```bash
     iptables -A INPUT  -p tcp --dport 38080 -j DROP 
     iptables -I INPUT -s ${IP} -p tcp --dport 38080 -j ACCEPT 
@@ -51,7 +51,7 @@
 - 脚本安装 bash <(curl -L https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh)
     - 启动 systemctl start v2ray
     - 安装好的官方v2ray-core文件路径如下
-        ```
+```
         installed: /usr/local/bin/v2ray
         installed: /usr/local/bin/v2ctl
         installed: /usr/local/share/v2ray/geoip.dat
@@ -235,6 +235,18 @@ apt -o Acquire::http::proxy="http://192.168.1.2:3128/" update
 echo "proxy=http://127.0.0.1:8080/" >> /etc/yum.conf
 ```
 
+- 账号密码中有特殊符号，则需要转换
+- 参考 http://ascii.911cha.com/
+| @    | 0x40 |
+| ---- | ---- |
+| :    | 0x3A |
+| ~    | 0x7E |
+| #    | 0x23 |
+| $    | 0x24 |
+| %    | 0x25 |
+| &    | 0x26 |
+
+
 ### Proxy SwitchyOmega
 - Google游览器代理管理工具插件
 
@@ -325,7 +337,7 @@ route 172.121.0.0 255.255.0.0 net_gateway # 与 vpn_gateway 相反，它是指�
 
 ## UDPspeeder
 - 源码 https://github.com/wangyu-/UDPspeeder
-    
+  
 ## Udp2raw-Tunnel
 - 参考 https://www.freebuf.com/sectool/187069.html
 
