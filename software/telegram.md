@@ -15,6 +15,8 @@
 
 - Telegram 目前不允许通过任何脚本、API 或自动化手段来修改 2FA（两步验证）密码。此限制是 Telegram 为确保账户安全而设置的，旨在防止未经授权的访问或恶意脚本篡改账户的安全设置。
 
+- Telegram 支持32个设备同时在线----此类技术被称为多点登录技术。
+
 
 - 获取 API ID 和 API Hash
     1. 访问 my.telegram.org 并使用您的 Telegram 账号登录（您将收到一个验证码，输入后即可登录）。
@@ -23,7 +25,6 @@
     4. 提交表单后，页面将显示您的 api_id 和 api_hash
 
 https://github.com/thedemons/opentele/
-https://github.com/nicollasm/tdata2session_converter
 https://github.com/thaithanhnhat/Telethon_to_Tdata
 https://docs.jifengtg.com/functiondescription/xie-yi-hao-zhuan-zhi-deng-hao
 https://miha.uk/docs/tutor/telegram-format-convert/
