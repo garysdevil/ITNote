@@ -15,6 +15,7 @@
 4. 软件开发
     1. claude
     2. cursor
+    3. Windsurf
 5. 其它
     1. https://infinity.theoriq.ai/studio/chat 
 
