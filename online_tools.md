@@ -24,3 +24,8 @@
 1. 书籍
     1. Z-Library 世界上最大的在线图书馆之一 https://zh.z-library.se/
     2. https://liber3.eth.limo/
+
+2. 研究文章和书籍的数据库
+    1. sci-hub.se
+    2. sci-hub.st
+    3. sci-hub.ru
