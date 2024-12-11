@@ -20,12 +20,18 @@
 
 4. 视频托管网站 https://wave.video/
 
-## 知识
-1. 书籍
-    1. Z-Library 世界上最大的在线图书馆之一 https://zh.z-library.se/
-    2. https://liber3.eth.limo/
+## 知识 
 
-2. 研究文章和书籍的数据库
+1. 研究文章和书籍的数据库
     1. sci-hub.se
     2. sci-hub.st
     3. sci-hub.ru
+
+2. Z-Library 世界上最大的在线图书馆之一，官网：
+    1. https://zh.z-library.se/
+    2. https://z-lib.gs
+    3. https://zh.z-lib.gs/
+    4. https://1lib.sk
+    5. https://zh.z-lib.gd/
+
+3. 在线图书馆 https://liber3.eth.limo/
