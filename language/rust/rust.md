@@ -23,6 +23,7 @@
 # 下载安装Rust工具链管理器
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source $HOME/.cargo/env
+rustc -V
 ```
 
 - channel： Rust发布在三个不同的"channel"上：stable，beta 和 nightly，对应三种不同的版本。

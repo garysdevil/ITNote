@@ -5,22 +5,37 @@
 ### linux安装
 ```bash
 cd /opt
-wget https://golang.org/dl/go1.22.4.linux-amd64.tar.gz
-# wget https://go.dev/dl/go1.22.4.linux-amd64.tar.gz
-tar -xzf go1.22.4.linux-amd64.tar.gz
+wget https://go.dev/dl/go1.23.4.linux-386.tar.gz
+rm -rf /usr/local/go && tar -C /usr/local -xzf go1.23.4.linux-386.tar.gz
 
-# linux环境变量
-tee /etc/profile.d/golang.sh > /dev/null << EOF
-export GOROOT=/opt/go # go命令所在的bin目录
-export GOPATH=/opt/go/space  # 存放第三方依赖的源码文件夹。 编译后二进制文件的存放目的地和import包的搜索路径（默认为当前目录下）。
-export PATH=$PATH:/opt/go/bin:/opt/go/space/bin
-export GO111MODULE=on
-export GOPROXY=https://goproxy.cn
+# linux环境变量 # 中国大陆内环境加一条配置 export GOPROXY=https://goproxy.cn,direct
+tee /etc/profile.d/golang.sh > /dev/null << 'EOF'
+export GOROOT=/usr/local/go
+export GOPATH=/usr/local/go/gopath
+export PATH=$PATH:/usr/local/go/bin:/usr/local/go/gopath/bin
+export GO111MODULE=auto
+export GO15VENDOREXPERIMENT=1
 EOF
 
 source /etc/profile
 go version
 ```
+
+- GOROOT
+    - 是 Go 的安装目录，存放 Go 的编译器、工具链和标准库。
+    - 确保 GOROOT 指向你安装的 Go 版本的路径，特别是如果你可能在同一机器上使用多个 Go 版本。
+- GOPATH
+    - Go 的工作区路径，存储开发项目和依赖包。
+    - Go 1.16 或更高版本时，GOPATH 可以选择不设置，因为 Go Module 模式下，项目目录可以独立于 GOPATH。
+- PATH，添加 Go 的二进制文件路径：
+    - /usr/local/go/bin：Go 编译器和工具链的可执行文件路径。
+    - /usr/local/go/gopath/bin：Go 项目中安装的依赖包的可执行文件路径。
+- GO111MODULE
+    - Go 1.14 及以后的版本默认开启了 Go Module 模式。
+    - auto：在有 go.mod 文件时启用模块模式，否则禁用。
+- GO15VENDOREXPERIMENT
+    - 允许在项目中使用 vendor 文件夹存储依赖包。
+    - 对于 Go 1.5 和 1.6 有意义，但在 Go 1.7+ 后默认启用。
 
 ### windows安装
 默认安装目录 C:\Go
