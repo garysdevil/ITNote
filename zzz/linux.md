@@ -62,9 +62,25 @@ cat /etc/crontab
 1. 查看所有块设备信息 lsblk -m
 2. 打印磁盘信息 blkid 
 3. 查看磁盘分区
+```sh
 cat /proc/partitions
 lsblk
 fdisk -l
+```
+
+4. dd
+    1. 数据来源选择 if=/dev/zero
+        1. 使用 /dev/urandom 生成随机数据，可能稍慢。
+        2. 使用 /dev/zero 可生成零填充数据，速度更快。
+        3. 使用特定内容进行填充 echo "Hello Filecoin!" > input_data.txt
+    2. 输出路径 of=output.bin
+    3. 其它参数
+        1. 显示进度 status=progress
+        2. 异步进行 oflag=dsync
+        3. 块的大小 bs=1M
+        4. 块的数量 count=N
+        5. 在输出文件中跳过的块数量 seek=N
+    4. 示范 dd if=/dev/urandom of=urandom.bin bs=1G count=17 status=progress
 
 
 ### websocket连通性测试
