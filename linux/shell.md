@@ -153,3 +153,21 @@ echo "4"
 wait    # 会等待wait所在bash上的所有子进程的执行结束，本例中就是sleep 5这句
 echo "5"
 ```
+
+## 脚本
+### 循环日期
+```bash
+#!/bin/bash
+startDate=20210401
+endDate=20230401
+startSec=`date -d "$startDate" "+%s"`
+endSec=`date -d "$endDate" "+%s"`
+for((i=$startSec; i<=$endSec; i+=86400))
+do
+    firstday=`date -d "@$i" "+%Y%m%d"`
+    echo ${firstday}
+    # y=$[$i+86400]
+    # secondday=`date -d "@$y" "+%Y%m%d"`
+    # echo ${secondday}
+done
+```

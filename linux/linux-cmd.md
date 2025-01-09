@@ -58,31 +58,6 @@ cat /etc/crontab
 10,20 8-11 * * * # 上午8点到11点的第10和第20分钟执行
 ```
 
-### 磁盘
-1. 查看所有块设备信息 lsblk -m
-2. 打印磁盘信息 blkid 
-3. 查看磁盘分区
-```sh
-cat /proc/partitions
-lsblk
-fdisk -l
-```
-
-4. dd
-    1. 数据来源选择 if=/dev/zero
-        1. 使用 /dev/urandom 生成随机数据，可能稍慢。
-        2. 使用 /dev/zero 可生成零填充数据，速度更快。
-        3. 使用特定内容进行填充 echo "Hello Filecoin!" > input_data.txt
-    2. 输出路径 of=output.bin
-    3. 其它参数
-        1. 显示进度 status=progress
-        2. 异步进行 oflag=dsync
-        3. 块的大小 bs=1M
-        4. 块的数量 count=N
-        5. 在输出文件中跳过的块数量 seek=N
-    4. 示范 dd if=/dev/urandom of=urandom.bin bs=1G count=17 status=progress
-
-
 ### websocket连通性测试
 1. 
 apt install node-ws (ubuntu16)
@@ -356,106 +331,6 @@ else{sub(/mb$/,"",$10); total+=$10}  \
 END{printf"num=%d size=%fgb\n",i,total/1024}'
 ```
 
-### 脚本
-1. 循环日期
-```bash
-#!/bin/bash
-startDate=20210401
-endDate=20230401
-startSec=`date -d "$startDate" "+%s"`
-endSec=`date -d "$endDate" "+%s"`
-for((i=$startSec; i<=$endSec; i+=86400))
-do
-    firstday=`date -d "@$i" "+%Y%m%d"`
-    echo ${firstday}
-    # y=$[$i+86400]
-    # secondday=`date -d "@$y" "+%Y%m%d"`
-    # echo ${secondday}
-done
-```
-
-### 传文件
-```bash
-# 本地快速拷贝文件夹
-tar cvf – 源文件夹路径 | tar xvf – -C 目的文件夹路径
-```
-
-```bash
-# scp  -i 指定密钥文件 -C 允许压缩 源文件 目的地址
-scp -P22 home.tar 192.168.205.34:/home/home.tar
-# -r 拷贝目录
-
-# rsync支持在本地计算机与远程计算机之间，或者两个本地目录之间同步文件
-rsync -P --rsh=ssh home.tar 192.168.205.34:/home/home.tar
-rsync -P -e'ssh -p 22' home.tar 192.168.205.34:/home/home.tar
-# -P 可以实现意外中断后，下次继续传。当于 --partial --progress
-# -r 拷贝目录
-# -a 参数可以替代-r，除了可以递归同步以外，还可以同步元信息（比如修改时间、权限等）,从而做到增量同步
-# --exclude='文件名' 排除某些文件或目录
-# -e 指定协议
-# --partial 允许恢复中断的传输
-# --append 文件接着上次中断的地方，继续传输
-# --append-verify 跟--append参数类似，但会对
-传输完成后的文件进行一次校验。如果校验失败，将重新发送整个文件。非常影响传输速度。
-# -z 同步时压缩数据
-# -S 传输稀疏文件 sparse file
-# --bwlimit=1024 # 单位为KB/s
-# -x 指定传输时不能跨文件系统
-# --inplace
-
-# 通过ssh协议远程同步目录时的参数
-# --append-verify -P -a -z -e'ssh -p 22'
-# -P -a -z -e'ssh -p 22'
-rsync -P -a -z -e'ssh -p 22' 192.168.205.34:/home/home ./
-```
-
-- rsync 使用-a参数时，文件夹内的文件太多，可能会导致这个问题，例如当文件夹内含有8691137个文件时 ``No space left on device (28)``
-
-### 稀疏文件
-- 稀疏文件 sparse file
-    - 稀疏文件就是在文件中留有很多空余空间，留备将来插入数据使用。如果这些空余空间被ASCII码的NULL字符占据，并且这些空间相当大，那么，这个文件就被称为稀疏文件，而且，并不分配相应的磁盘块。
-    - Linux中常见的qcow2文件和raw文件，都是稀疏文件。
-```bash
-# 创建稀疏文件，将创建一个5MB大小的文件，但不在磁盘上存储数据（仅存储元数据）
-spare_file_path=spare_file
-# dd命令创建
-dd of=${spare_file_path} bs=1k seek=5120 count=0
-# truncate命令创建
-truncate -s 5M sparse_file_name
-# qemu-img命令创建
-qemu-img create -f qcow2 ${spare_file_path}.qcow2 5M
-
-# 查看稀疏文件的大小
-qemu-img info ${spare_file_path}
-```
-
-### 传稀疏文件
-```bash
-# 拷贝稀疏文件的几种方式 # 两台机器的文件系统必须相同，否则下面的指令无效
-
-# 进行拷贝稀疏文件测试 稀疏文件大小：virtual size: 1.93 GiB, disk size: 860 MiB, 传输速度维持在11.27MB/s左右
-
-# rsync传输
-rsync -P -S -e'ssh -p 22' 0  10.10.1.42:~/ # 2m55.485s
-
-# rsync压缩传输
-rsync -P -S -z -e'ssh -p 22' 0  10.10.1.42:~/ # 0m46.092s # 显示的传输速度为 43.35MB/s，应该是由于压缩原因，实际上是传输大小减小了
-rsync -P -S -z  0  10.10.1.42:~/  # 0m50.225s
-
-# tar打包，rsync传输
-tar Scvf 0.tar 0 && rsync -P -S -e'ssh -p 22' 0.tar  10.10.1.42:~/ && ssh 10.10.1.42 tar xvf ~/0.tar # 1m23.187s
-
-# tar打包压缩，rsync传输
-tar Sczvf 0.tar.gz 0 && rsync -P -S -e'ssh -p 22' 0.tar.gz  10.10.1.42:~/ && ssh 10.10.1.42 tar xzvf ~/0.tar.gz # 1m7.679s
-
-# tar打包压缩, scp传输
-tar Scjvf - 0 | ssh 10.10.1.42 tar xjvf - -C ./  # 1m41.213s
-tar Sczvf - 0 | ssh 10.10.1.42 tar xzvf - -C ./  # 0m46.807s
-
-# 最佳实践
-time rsync -P -S -a -z  -e'ssh -p 22' ./aa  10.10.3.76:/tank1/
-```
-
 ### 数学计算
 ```bash
 echo "2/3" | bc -l
@@ -692,17 +567,6 @@ kill -15 ${PID}
     CPU平均负载 = 特定时间内运行队列中的平均进程数量（可运行状态和不可中断状态的进程）
     ```
 
-- 查看磁盘是否是SSD
-    ```bash
-    # ROTA为0表示不可以旋转，就是SSD
-    lsblk -d -o name,rota
-    ```
-
-- 软链接
-```bash
-ln -s 源文件 目标文件
-```
-
 ### 排查问题
 - dmesg 并发量太大导致三次握手时超过资源限制，需要调整内核参数
 ```log
@@ -745,31 +609,11 @@ select-editor
 export EDITOR="/usr/bin/vim"
 ```
 
-### Linux查看磁盘是固态还是机械
-```bash
-lsblk
-# 1 代表是机械硬盘，0 则就是 ssd 
-# 查看某个磁盘类型
-cat /sys/block/{block_name}/queue/rotational
-# 查看所有磁盘类型 方式一
-grep ^ /sys/block/*/queue/rotational
-# 查看所有磁盘类型 方式二
-lsblk -d -o name,rota
-```
-
 ### iotop 进程IO监控
 ```bash
 iotop -oP 
 # -o 只显示有I/O行为的线程
 # -P 只显示进程
-```
-
-### hdparm
-- ``hdparm``（即硬盘参数）是Linux的命令行程序之一，用于处理磁盘设备和硬盘。借助此命令，您可以获得有关硬盘，更改写入间隔，声学管理和DMA设置的统计信息。
-```bash
-disk=/dev/sda
-hdparm  ${disk} # 显示指定硬盘的相关信息
-hdparm -t ${disk} # 评估硬盘读取效率
 ```
 
 ### 日志颜色
@@ -812,6 +656,18 @@ sudo apt update && sudo apt full-upgrade -y
 dpkg --configure -a; apt --fix-broken install -y; DEBIAN_FRONTEND=noninteractive apt install --install-recommends linux-generic-hwe-20.04 -y && reboot
 ```
 
+### linux 命令
+1. selinux
+```bash
+# 查看当前selinux功能情况
+sestatus -v
+# 1永久改变selinux的状态（重启后生效）
+sed -i "s/SELINUX=enforcing/SELINUX=disabled/g" /etc/selinux/config
+sed -i 's/SELINUXTYPE=targeted/#&/' /etc/selinux/config
+# 2临时改变selinux的状态
+setenforce 0
+```
+
 ## 增加用户
 ```sh
 # 自动在/home目录下会自动创建同名文件夹
@@ -825,3 +681,49 @@ useradd ${用户名}
 # 删除用户
 userdel  -r  ${用户名}
 ```
+
+
+
+# Unix命令行程序和内建指令
+文件系统	
+▪ cat	▪ cd	▪ chmod	▪ chown
+▪ chgrp	▪ cksum	▪ cmp	▪ cp
+▪ du	▪ df	▪ fsck	▪ fuser
+▪ ln	▪ ls	▪ lsattr	▪ lsof
+▪ mkdir	▪ mount	▪ mv	▪ pwd
+▪ rm	▪ rmdir	▪ split	▪ touch
+▪ umask			
+程序	
+▪ at	▪ bg	▪ chroot	▪ cron
+▪ exit	▪ fg	▪ jobs	▪ kill
+▪ killall	▪ nice	▪ pgrep	▪ pidof
+▪ pkill	▪ ps	▪ pstree	▪ sleep
+▪ time	▪ top	▪ wait	
+使用环境	
+▪ env	▪ finger	▪ id	▪ logname
+▪ mesg	▪ passwd	▪ su	▪ sudo
+▪ uptime	▪ w	▪ wall	▪ who
+▪ whoami	▪ write		
+文字编辑	
+▪ awk	▪ comm	▪ cut	▪ ed
+▪ ex	▪ fmt	▪ head	▪ iconv
+▪ join	▪ less	▪ more	▪ paste
+▪ sed	▪ sort	▪ strings	▪ talk
+▪ tac	▪ tail	▪ tr	▪ uniq
+▪ vi	▪ wc	▪ xargs	
+Shell 程序	
+▪ alias	▪ basename	▪ dirname	▪ echo
+▪ expr	▪ false	▪ printf	▪ test
+▪ true	▪ unset		
+网络	
+▪ inetd	▪ netstat	▪ ping	▪ rlogin
+▪ netcat	▪ traceroute		
+搜索	
+▪ find	▪ grep	▪ locate	▪ whereis
+▪ which			
+杂项	
+▪ apropos	▪ banner	▪ bc	▪ cal
+▪ clear	▪ date	▪ dd	▪ file
+▪ help	▪ info	▪ size	▪ lp
+▪ man	▪ history	▪ tee	▪ tput
+▪ type	▪ yes	▪ uname	▪ whatis
