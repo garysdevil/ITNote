@@ -1,16 +1,7 @@
 [TOC]
 
-## 磁盘阵列raid
-- 参考
-  - https://wenku.baidu.com/view/2734bc162e60ddccda38376baf1ffc4ffe47e2ca.html
-- raid
-    1. raid0，一块磁盘以上：条带化，分片。
-    2. raid1，只能有两块磁盘：镜像备份。
-    3. raid5，3块磁盘以上。
-    4. raid10，4块磁盘以上，先备份后分片。
-
-
-## 块存储/文件存储/块存储
+## 存储方式
+- 块存储/文件存储/对象存储
 ### 块存储
 - 裸盘，不能被操作系统直接访问；必须先通过RAID、LVM等方式格式化为文件系统后，才能被操作系统访问。
 
@@ -23,6 +14,58 @@
 
 ### 对象存储
 - 元数据服务器（服务器+对象存储软件）+ 存储数据的分布式服务器OSD。
+
+## RAID操作
+- RAID
+    1. RAID 0：条带化，分片，提供高性能，无冗余。（一块磁盘以上）
+    2. RAID 1：镜像备份，数据冗余，有容错。（只能有两块磁盘）
+    3. RAID 5：条带化 + 奇偶校验，平衡性能和冗余。（3块磁盘以上）
+    4. RAID 6：类似 RAID 5，多一组奇偶校验，更高容错。
+    5. RAID 10：RAID 1 + RAID 0，既有性能又有冗余；先备份后分片。（4块磁盘以上）
+
+### 创建RAID
+```sh
+# 下载 mdadm
+apt update && sudo apt install -y mdadm  # Debian/Ubuntu
+yum install -y mdadm  # CentOS/RHEL
+
+# 使用7块磁盘做 RAID 0
+# --level=0 表示做 RAID 0
+# --chunk=256 表示条带单元大小为256; chunk 默认值是 512 KiB; XFS 对 log stripe unit 有更小的限制（最大 256KiB）
+mdadm --create --verbose /dev/md0 --level=0 --chunk=256 --raid-devices=7 /dev/nvme[1-7]n1
+
+# 查看 RAID 状态
+cat /proc/mdstat
+mdadm --detail /dev/md0
+
+# 格式化 RAID 设备
+mkfs.xfs -f /dev/md0 # 或 mkfs.ext4 /dev/md0
+
+# 挂载文件系统
+mkdir /mnt/data1 && mount /dev/md0 /mnt/data1
+
+# 确保开机自动挂载
+blkid /dev/md0  # 获取 UUID
+"UUID=<UUID> /mnt/raid xfs defaults 0 0" | tee -a /etc/fstab
+
+# 保存 RAID 配置
+mdadm --detail --scan >> /etc/mdadm/mdadm.conf  # Debian/Ubuntu  
+# mdadm --detail --scan >> /etc/mdadm.conf       # CentOS/RHEL
+```
+### 删除RAID
+```sh
+# 确保 RAID 未被使用，卸载挂载点
+umount /mnt/data1
+# 停止 RAID 阵列并释放设备
+mdadm --stop /dev/md0
+# 从阵列中移除磁盘
+mdadm --remove /dev/md0
+# 清除 RAID 超级块
+mdadm --zero-superblock /dev/nvme[1-7]n1
+# 清理配置文件，移除已删除阵列的条目
+vim /etc/mdadm/mdadm.conf
+update-initramfs -u
+```
 
 ## NFS
 - 参考

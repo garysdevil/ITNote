@@ -136,7 +136,7 @@ yum -y install lvm2
 # 1. 初始化硬盘为物理卷pv： pvcreate 磁盘或者分区的位置
 pvcreate /dev/sdb1
 # 2. 创建卷组vg：vgcreate  vg名称  pv地址1 pv地址2
-vgcreate vg_data /dev/sdb1
+vgcreate vg_data /dev/sdb1 /dev/sdb2
 # 3. 创建逻辑卷lv：lvcreate -n 逻辑卷名称 -L  磁盘大小  卷组名字（假设vg大小为2000g,则磁盘一般最大设置为1999.98G）
 lvcreate -n lv_data -L 1999.99G vg_data
 # 4. 格式化lvm, mkfs.文件系统 /dev/卷组名称/逻辑卷名称

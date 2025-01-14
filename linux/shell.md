@@ -3,6 +3,54 @@
 
 - shell
 
+### 变量
+```bash
+# 整数
+a=10
+b=5
+sum=$((a + b)) # 可以使用 expr 或 $(( )) 进行整数计算
+
+# 浮动数
+a=3.14
+b=1.5
+result=$(echo "$a + $b" | bc) # Shell 本身不直接支持浮动数的变量，但你可以使用外部命令如 bc、awk 或 printf 来进行浮动数运算
+echo $result
+
+# 数组
+arr=("apple" "banana" "cherry")
+echo ${arr[0]}  # 输出 apple
+echo ${arr[@]}   # 输出 apple banana cherry
+
+# 关联数组
+# 从bash 4.x 开始，Shell支持关联数组（类似于字典或哈希表），可以通过字符串键来访问数组值。
+declare -A fruit
+local -A fruit_local # 声明一个局部的关联数组
+fruit["apple"]="red"
+fruit["banana"]="yellow"
+echo ${fruit["apple"]}   # 输出 red
+```
+
+```sh
+# 普通数组作为关联数组的键
+#!/bin/bash
+
+# 声明一个普通数组
+arr=("1" "2" "3")
+
+# 声明一个关联数组
+declare -A deals
+
+# 使用普通数组中的元素作为关联数组的键
+deals["${arr[0]}_data_cid"]="111"
+deals["${arr[1]}_piece_cid"]="222"
+deals["${arr[2]}_piece_size"]="red"
+
+# 打印关联数组
+for key in "${!deals[@]}"; do
+    echo "$key -> ${deals[$key]}"
+done
+```
+
 ### 循环
 ```bash
 # while 循环
