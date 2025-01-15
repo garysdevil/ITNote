@@ -68,14 +68,13 @@ done
 # for循环
 sum=0
 i=1
-for ((;i<=100;i++))
-do
+for ((;i<=100;i++));do
     ((sum += i))
 done
 echo "the sum is: $sum"
 
 ```
-### 数组长度
+### 数组
 ```bash
 #!/bin/bash
 array_name=(
@@ -88,13 +87,12 @@ echo ${#array_name[*]}
 echo ${#array_name[@]}
 # 输出数组所有的值
 echo ${arr[@]} 
-#  遍历数组
-for ipport in ${array_name[@]};do
-    echo $ipport;
-done
+# 遍历数组
+for ipport in ${array_name[@]};do echo $ipport;done
+for i in ${!array_name[@]};do echo ${array_name[i]};done
 ```
 
-### 变量的提取和替换
+### 字符串的提取和替换
 ```bash
 ${var#*/} # 去掉变量var从左边算起的第一个'/'字符及其左边的内容
 ${var##*/} # 去掉变量var从左边算起的最后一个'/'字符及其左边的内容
@@ -103,7 +101,7 @@ ${var%/*}
 for name in `ls *.Linux`;do mv $name ${name%.*};done
 ```
 
-### 变量字符串分割
+### 字符串分割
 ```bash
     # 分割ip和端口号
     ipport="127.0.0.1:8080"

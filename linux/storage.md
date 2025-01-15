@@ -1,21 +1,204 @@
 [TOC]
+# 硬盘和磁盘
+## 概念
+- 硬盘和磁盘
+	- 硬盘（Hard Disk）是计算机中用于存储数据的硬件设备，属于存储介质的一种。
+	- 磁盘（Disk）是一个更广泛的概念，通常指存储数据的盘状介质，可以是物理的，也可以是逻辑上的。
+
+- 硬盘分类
+	- 最快的固态 Nvme
+	- 固态硬盘 SSD(Solid State Drives)
+	- HDD 机械硬盘
+		- 机械硬盘 SAS
+		- 最慢的机械硬盘 SATA
+
+## 磁盘扩容/非关机状态下
+- 添加新硬盘进行扩容，重新扫描SCSI总线来添加设备 
+	echo "- - -" >  /sys/class/scsi_host/host最大的序号/scan
+- 在原有硬盘上进行扩容 
+	echo '1' > /sys/class/scsi_disk/对应的硬盘/device/rescan
+
+## 磁盘分区
+### 情景一 2T以下磁盘
+#### 交互式
+1. 查看所有磁盘的分区。
+	- fdisk -l
+2. 进入磁盘进行分区。
+	1. fdisk /dev/sdb
+	2. 依次输入如下指令进行分区：
+		1. n 创建新磁盘
+		2. p 创建主分区
+		3. 创建分区ID 1-4为主分区（回车即可）
+		4. 根据提示选择磁盘开始位置（回车即可）
+		5. 选择结束位置（回车即可）
+	3. 更改partition's system id为Linux LVM
+		1. t
+		2. 8e
+	4. 查看此磁盘的分区
+		1. p 
+	5. 输入 wq 保存退出。
+	
+3. 通知系统内核分区表的变化 partprobe /dev/sdb # install parted
+#### 非交互式
+- vi fdisk.txt
+```
+n
+p
+1
+
+
+t
+8e
+
+p
+wq
+```
+```bash
+fdisk /dev/sdb < fdisk.txt
+partprobe /dev/sdb # install parted # 通知系统内核分区表的变化
+```
+
+### 情景二 2T以上磁盘：
+```bash
+# 交互式操作
+parted /dev/sdb
+
+# 创建一个分区表，分区表类型为gpt
+parted /dev/sdf mklabel gpt
+# 进行分区  模版： parted /dev/sdf mkpart 1/primary/2/extended 文件系统格式 开始位置 结束位置
+parted /dev/sdf mkpart 1 ext4 1 5.5T 
+parted /dev/sdf mkpart primary ext4 1 100%
+
+# 查看所有分区
+parted -l
+# 查看分区
+parted -s /dev/sdf print
+# 删除分区
+parted -s /dev/sdf rm ${number}
+```
+
+## 其它指令
+1. Linux查看硬盘是固态还是机械
+```bash
+# ROTA为0表示不可以旋转，就是SSD  # 1 代表是机械硬盘，0 则就是 ssd 
+
+# 查看某个磁盘类型 方式一
+cat /sys/block/{block_name}/queue/rotational
+# 查看所有磁盘类型 方式二
+grep ^ /sys/block/*/queue/rotational
+# 查看所有磁盘类型 方式三
+lsblk -d -o name,rota
+```
+2. 查看硬盘信息
+```sh
+### hdparm（即硬盘参数）是Linux的命令行程序之一，用于处理磁盘设备和硬盘。借助此命令，您可以获得有关硬盘，更改写入间隔，声学管理和DMA设置的统计信息。
+disk=/dev/sda
+hdparm  ${disk} # 显示指定硬盘的相关信息
+hdparm -t ${disk} # 评估硬盘读取效率
+```
+3. 查看磁盘信息
+```sh
+# 1. 查看所有块设备信息 
+lsblk -m
+# 2. 打印磁盘信息 
+blkid 
+# 3. 查看磁盘分区
+cat /proc/partitions
+lsblk
+fdisk -l
+```
 
 ## 存储方式
-- 块存储/文件存储/对象存储
-### 块存储
-- 裸盘，不能被操作系统直接访问；必须先通过RAID、LVM等方式格式化为文件系统后，才能被操作系统访问。
 
-### 文件存储
-- 元数据和数据存在一起。最小存储单元为4k的文件系统，则40m的文件会得到10个最小存储单元。
-- 文件存储最明显的特征是支持POSIX的文件访问接口：open、read、write、seek、close等。
-1. 本地文件存储：ext3，ext4，NTFS，FAT32，xfs。
-2. 网络文件存储：NFS，CIFS。
+### 1. 块存储
+- 概述：裸盘，不能直接被操作系统访问。必须通过RAID、LVM等技术格式化为文件系统后才能使用。
+- 特点：
+  - 高性能，适合数据库和虚拟机磁盘等场景。
 
+### 2. 文件存储
+- 概述：数据和元数据一起存储。最小存储单元为文件系统的簇（如4KB）。
+- 特点：
+  - 支持POSIX文件访问接口（如open、read、write等）。
+- 类型：
+    1. 本地文件存储：ext3、ext4、NTFS、FAT32、XFS。
+    2. 网络文件存储：NFS、CIFS。
 
-### 对象存储
-- 元数据服务器（服务器+对象存储软件）+ 存储数据的分布式服务器OSD。
+### 3. 对象存储
+- 概述：分布式存储系统，数据以对象形式存储，每个对象包括数据、元数据和唯一标识符。
+- 特点：
+  - 高扩展性，适合海量数据存储。
+  - 包括元数据服务器和分布式存储节点（OSD）。
 
-## RAID操作
+# 块存储
+## LVM
+- LVM是在磁盘分区和文件系统之间添加的一个逻辑层,目的在于解决磁盘扩容问题。
+- 物理卷: pv ; 卷组: vg ; 逻辑卷: lv 
+- 可以简单理解pv对应着物理分区，lv对应着文件夹，vg为pv与lv的纽带。
+	
+### LVM查询操作 
+```bash
+# 1. 先查看所有的逻辑卷
+lvs  #或者 lvdisplay
+# 2. 先查看所有的卷组
+vgs
+# 3. 先查看所有的物理卷
+pvs
+# 4. 其它查询操作
+lvscan，vgscan，pvscan
+```
+
+### 进行LVM操作
+```bash
+# 0. 如果没有lvm 则 
+yum -y install lvm2
+# 1. 初始化硬盘为物理卷pv： pvcreate 磁盘或者分区的位置
+pvcreate /dev/sdb1
+# 2. 创建卷组vg：vgcreate  vg名称  pv地址1 pv地址2
+vgcreate vg_data /dev/sdb1 /dev/sdb2
+# 3. 创建逻辑卷lv：lvcreate -n 逻辑卷名称 -L  磁盘大小  卷组名字（假设vg大小为2000g,则磁盘一般最大设置为1999.98G）
+lvcreate -n lv_data -L 1999.99G vg_data
+# 4. 格式化lvm, mkfs.文件系统 /dev/卷组名称/逻辑卷名称
+mkfs.xfs /dev/vg_data/lv_data
+mkfs.ext4 /dev/vg_data/lv_data
+# 5. 写入 /etc/fstab 文件，使机器每次开机自动挂载磁盘：/dev/卷组名称/逻辑卷名称 挂载的磁盘目录 磁盘格式 default 0 0
+mkdir /data
+echo '/dev/vg_data/lv_data   /data   xfs    defaults    0  0'  >> /etc/fstab
+# 6. 根据配置文件重新执行挂载操作
+mount -a
+
+#  单独挂载某个磁盘
+mount -t xfs /dev/磁盘分区地址  /目录
+```
+### 添加新pv扩容现有的lvm逻辑卷
+- 思路：创建新的PV---将新的PV加入到当前VG---扩容现有LV---扩容文件系统
+```bash
+# 1. 创建新的pv：pvcreate 磁盘路径
+pvcreate /dev/sdb2
+# 2. 将新的PV加入到当前VG：vgextend 现有的vg名称 PV的绝对路径
+vgextend  vg_data /dev/sdb2
+# 3. 扩容现有的lv （lvdisplay查看lv信息） vextend -L +需要扩的空间 现有逻辑卷的绝对路径
+lvextend -L +9999G /dev/vg_data/lv_data
+# 4. 扩容文件系统：xfs_growfs /dev/卷组名/逻辑卷名
+xfs_growfs /dev/vg_data/lv_data  # （扩容xfs格式）
+resize2fs /dev/vg_data/lv_data   # （扩容ext格式）
+```
+
+### 删除LVM卷
+- 顺序：卸载磁盘，删除逻辑卷，删除卷组，删除物理卷。
+```bash
+# - 查看目前磁盘的挂载情况 df -h
+
+# 1. 卸载文件系统： umount 文件夹的绝对路径 
+umount /data
+# 2. 删除逻辑卷：lvremove /dev/卷组/逻辑卷  
+lvremove /dev/vg_data/lv_data
+# 2. 删除卷组：vgremove 卷组名
+vgremove vg_data
+# 3. 删除物理卷：pvremove 物理卷地址
+pvremove /dev/sdc 
+```
+
+## RAID
 - RAID
     1. RAID 0：条带化，分片，提供高性能，无冗余。（一块磁盘以上）
     2. RAID 1：镜像备份，数据冗余，有容错。（只能有两块磁盘）
@@ -41,12 +224,12 @@ mdadm --detail /dev/md0
 # 格式化 RAID 设备
 mkfs.xfs -f /dev/md0 # 或 mkfs.ext4 /dev/md0
 
-# 挂载文件系统
-mkdir /mnt/data1 && mount /dev/md0 /mnt/data1
-
 # 确保开机自动挂载
+mkdir /data1
 blkid /dev/md0  # 获取 UUID
-"UUID=<UUID> /mnt/raid xfs defaults 0 0" | tee -a /etc/fstab
+echo 'UUID=<UUID> /data1 xfs defaults 0 0'  >> /etc/fstab
+# 刷新
+mount -a
 
 # 保存 RAID 配置
 mdadm --detail --scan >> /etc/mdadm/mdadm.conf  # Debian/Ubuntu  
@@ -67,6 +250,7 @@ vim /etc/mdadm/mdadm.conf
 update-initramfs -u
 ```
 
+# 文件存储
 ## NFS
 - 参考
   - https://ubuntu.com/server/docs/service-nfs

@@ -268,15 +268,25 @@ htop
 ### sysstat
 - 分析服务器的性能和资源的使用效率。可以监控CPU、硬盘、网络等数据.
 ```bash
+# 安装
 # git://github.com/sysstat/sysstat
 apt-get install sysstat
 yum -y install sysstat
 sar -V
+```
 
-# iostat 工具提供CPU使用率及硬盘吞吐效率的数据；  #比较核心的工具
+```sh
+# --human 格式化输出 # --dev=sda 查看指定的块设备
+# -d 查看磁盘 # -u 查看CPU # -r 查看内存 # -b 块设备的 I/O
+# 每10秒钟输出一次磁盘 I/O 情况，持续输出5次
+sar -d 10 --human
+```
+```sh
+# iostat 工具提供CPU使用率及硬盘吞吐效率的数据
+# -x 显示扩展统计信息（包括设备的详细IO情况）
+# -k 数据单位为 kb
 iostat -d -k ${Device}
 # pidstat: 关于运行中的进程/任务、CPU、内存等的统计信息
-# ...
 ```
 
 
