@@ -289,6 +289,12 @@ iostat -d -k ${Device}
 # pidstat: 关于运行中的进程/任务、CPU、内存等的统计信息
 ```
 
+```sh
+# 用于监控和分析各个进程的资源使用情况，包括 CPU、内存、IO 等
+pidstat -d 5 --human
+
+```
+
 
 ### awk
 - 概览
