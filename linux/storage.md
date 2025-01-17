@@ -214,7 +214,7 @@ yum install -y mdadm  # CentOS/RHEL
 
 # 使用7块磁盘做 RAID 0
 # --level=0 表示做 RAID 0
-# --chunk=256 表示条带单元大小为256; chunk 默认值是 512 KiB; XFS 对 log stripe unit 有更小的限制（最大 256KiB）
+# --chunk=256 表示条带单元大小为256; 512-B; XFS 对 log stripe unit 有更小的限制（最大 256KiB）
 mdadm --create --verbose /dev/md0 --level=0 --chunk=256 --raid-devices=7 /dev/nvme[1-7]n1
 
 # 查看 RAID 状态
@@ -223,6 +223,7 @@ mdadm --detail /dev/md0
 
 # 格式化 RAID 设备
 mkfs.xfs -f /dev/md0 # 或 mkfs.ext4 /dev/md0
+xfs_info /dev/md0 # 查看文件系统信息
 
 # 确保开机自动挂载
 mkdir /data1
