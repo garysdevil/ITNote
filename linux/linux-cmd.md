@@ -116,15 +116,6 @@ cat /proc/sys/vm/swappiness
 4. KVM
 - Linux Amazon 系统映像(AMI)使用两种虚拟化类型之一：半虚拟化 (PV) 或硬件虚拟机 (HVM)。
 
-### 公钥
-```bash
-# 扫描其它机器的公钥
-ssh-keyscan
-# 生成公钥
-ssh-keygen -C "备注信息"
-# authorized_keys   id_rsa  id_rsa.pub  know_hosts
-```
-
 ### 压缩
 ```bash
 # 排除某个文件夹 --exclude=${filename}/filename
@@ -149,19 +140,7 @@ xz -z ${文件名} # 不保留原文件压缩
 xz -zk ${文件名} # 保留原文件压缩
 xz -d ${文件名} # 不保留原文件解压
 xz -dk ${文件名} # 保留原文件解压
-# --threads 1 # 指定使用的线程数量 
-```
-
-### ssh-agent
-- 参考 https://wiki.archlinux.org/index.php/SSH_keys_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)
-
-- 普通登入方式 ssh -i 私钥文件路径 ${username}@${ip}
-- ssh-agent 是一个代理程序，它能帮助我们管理我们的私钥
-- ssh-add 把私钥密钥添加到ssh-agent的高速缓存中
-```bash
-eval $(ssh-agent) # ssh-agent bash --login -i  # ssh-agent bash
-# 将私钥添加到高速缓存中
-ssh-add -k 私钥文件路径
+# --threads 1 # 指定使用的线程数量
 ```
 
 ### gRPC测试工具
@@ -397,29 +376,6 @@ update-grub # grub-mkconfig -o /boot/grub/grub.cfg # 或者重启
 
 ```
 
-### ssh 
-```bash
-# -o StrictHostKeyChecking=no 告诉SSH客户端不检查主机密钥数据库(/etc/ssh/ssh_known_hosts 或 ~/.ssh/known_hosts)，并自动接受第一次连接到的主机的公钥
-ssh -p22 127.0.0.1 -i 私钥文件路径
-```
-
-- vi ~/.ssh/config
-```conf
-# 定义ssh登入时默认使用的私钥
-IdentityFile ~/.ssh/私钥文件名
-```
-
-- 问题：用SSH客户端连接linux服务器时，经常会话连接中断。
-- 解决方案：设置服务器向SSH客户端连接会话时发送的频率和时间。
-```bash
-#vi /etc/ssh/sshd_config
-ClientAliveInterval 60 # 定义了每隔多少秒给SSH客户端发送一次信号
-ClientAliveCountMax 86400 # 定义了超过多少秒后断开与ssh客户端连接
-
-# 重启SSH服务
-#service sshd restart
-```
-
 ## 未归类
 获取公网IP ： 
 curl cip.cc 
@@ -427,9 +383,6 @@ curl ipinfo.io
 
 查看CentOS版本 cat /etc/issue 或者 cat /etc/redhat-release 
 查看Ubunto版本 cat /etc/lsb-release
-
-yum -y install openssh-clients 此软件含ssh-copy-id指令
-ssh-copy-id -i ~/.ssh/id_rsa.pub 被免密登陆的主机的IP
 
 yum install bind-utils -y 此软件含nslookup指令
 
@@ -524,7 +477,7 @@ kubectl get pods -o wide | grep ${nodename} | awk {'print $1'} | xargs -n1 kubec
 # -p 等待输入yes后才执行一条语句
 ```
 
-- screen ssh退出后可以运行在后台的窗口，可以替代nohup
+- screen 窗口退出后会继续运行在后台，可以替代nohup
 ```bash
 # 创建一个screen
 screen -l
