@@ -87,8 +87,8 @@ startxfce4 &
 
 ```bash
 # 启动一个GUI，名字为 :1
-# rm -f  /tmp/.X1-lock
-# rm -f /tmp/.X11-unix/X1
+rm -f  /tmp/.X1-lock
+rm -f /tmp/.X11-unix/X1
 vncserver :1 -rfbport 5901
 vncserver -geometry 1920x1080 :1 -rfbport 5901 
 # -localhost
@@ -102,5 +102,5 @@ vncserver -kill :1
 
 ```
 export USER=root
-export DISPLAY=:0
+export DISPLAY=:1
 ```
