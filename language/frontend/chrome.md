@@ -8,6 +8,10 @@
 
 - webrtc调试 chrome://webrtc-internals/
 
+- Chrome 自定义用户数据目录
+    - 在指令后面添加  --user-data-dir=用户数据目录路径
+    - 例如 `"C:\Program Files\Google\Chrome\Application\chrome.exe" --user-data-dir=D:\APP\Chrome\1`
+
 ## Chrome DevTool
 - 参考
     - https://developers.google.com/web/tools/chrome-devtools/  
