@@ -121,3 +121,14 @@ tar Sczvf - 0 | ssh 10.10.1.42 tar xzvf - -C ./  # 0m46.807s
 # 最佳实践
 time rsync -P -S -a -z  -e'ssh -p 22' ./aa  10.10.3.76:/tank1/
 ```
+
+### 查看文件大小
+```bash
+# 查看所有目录包含隐含目录的大小
+du -sh * .[^.]*
+# 只查看隐含目录的大小
+du -sh .[!.]*
+# 排除指定文件
+--exclude="proc"
+--exclude="data*"
+```

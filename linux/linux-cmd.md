@@ -376,6 +376,26 @@ update-grub # grub-mkconfig -o /boot/grub/grub.cfg # 或者重启
 
 ```
 
+### screen
+- screen 窗口退出后会继续运行在后台，可以替代nohup
+```bash
+# 创建一个screen
+screen -l
+# 创建一个screen，并进行命名
+screen -S  ${screenName}
+# 查看已经存在的screen
+screen -ls
+# 切换到某个screen
+screen -r ${screenName}
+
+# -L：开启日志记录
+# -Logfile mylog.txt：指定日志文件名（默认是 screenlog.0）
+screen -L -Logfile mylog.txt -S ${screenName}
+
+
+# 将screen切回后台: Ctr+a 按下后再按下d
+```
+
 ## 未归类
 获取公网IP ： 
 curl cip.cc 
@@ -425,15 +445,6 @@ php-fpm-7.1[60143]: segfault at 0 ip 00007fbc4e998ff1 sp 00007ffe5b9c3238 error 
 查看/tmp目录下每个子目录文件的数量
 for i in /tmp; do echo $i; find $i |wc -l|sort -nr; done
 
-```bash
-# 查看所有目录包含隐含目录的大小
-du -sh * .[^.]*
-# 只查看隐含目录的大小
-du -sh .[!.]*
-# 排除指定文件
---exclude="proc"
---exclude="data*"
-```
 
 除特定文件外删除所有
 rm -rf !(.a|.|..)
@@ -475,20 +486,6 @@ kubectl get pods -o wide | grep ${nodename} | awk {'print $1'} | xargs -n1 kubec
 # xargs 详解
 # -d 指定分隔符
 # -p 等待输入yes后才执行一条语句
-```
-
-- screen 窗口退出后会继续运行在后台，可以替代nohup
-```bash
-# 创建一个screen
-screen -l
-# 创建一个screen，并进行命名
-screen -S  ${screenName}
-# 查看已经存在的screen
-screen -ls
-# 切换到某个screen
-screen -r ${screenName}
-# 将screen切回后台
-Ctr+a 按下后再按下d
 ```
 
 ```bash
