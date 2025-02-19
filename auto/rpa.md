@@ -6,3 +6,7 @@
 
 - RPA 与 AIRPA可以使用编码指令执行重复的、非增值的、基于规则的任务。然而，它没有思考的能力。人工智能可以像人类一样思考和决策，并能自己完成任务
 
+
+## 相关软件
+1. 谷歌插件 Automa
+2. 软件系统 skyvern  https://github.com/Skyvern-AI/skyvern
