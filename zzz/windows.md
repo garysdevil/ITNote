@@ -43,11 +43,9 @@ sc queryex state=all type=service
 sc query %ServiceName%
 sc stop %ServiceName%
 sc start %ServiceName%
-```
 
-## Git Bash
-```sh
-netstat -ano | grep "LISTENING"
+# 查看所有监听的端口
+netstat -ano | find "LISTENING" 
 ```
 
 
