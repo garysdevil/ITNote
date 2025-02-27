@@ -61,3 +61,26 @@
 - 浏览器指纹检测
     1. https://fingerprintjs.github.io/fingerprintjs/  对应源码 https://github.com/fingerprintjs/fingerprintjs
     2. https://browserleaks.com/
+
+
+
+## LavaMoat
+- https://github.com/LavaMoat/LavaMoat
+
+1. LavaMoat：一个沙箱工具，通过隔离依赖和限制权限保护应用。
+    1. 为项目中的每个依赖包创建一个独立的“沙箱环境”（称为 compartment），限制它们能访问的 API 和全局对象。
+    2. 通过静态分析依赖树的模块，LavaMoat 生成配置，明确每个包可以访问哪些资源。
+
+2. Scuttling Mode：LavaMoat 的增强功能，破坏全局对象（如 globalThis），防止恶意代码滥用。
+
+
+- LavaMoat 机制触发的错误
+    ```log
+    unknown error: Runtime.callFunctionOn threw exception: Error: LavaMoat - property "open" of globalThis is inaccessible under scuttling mode.
+    ```
+
+- Scuttling Mode 机制触发的错误
+    ```log
+    Error: LavaMoat - property "Proxy" of globalThis is inaccessible under scuttling mode.
+    To learn more visit https://github.com/LavaMoat/LavaMoat/pull/360
+    ```
