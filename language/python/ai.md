@@ -12,3 +12,17 @@
 
 - 下载安装 
     - https://pytorch.org/get-started/locally/
+
+
+```py
+import torch
+print(torch.__version__)  # 查看版本
+print(torch.version.cuda) #  PyTorch 所依赖的 CUDA 版本
+print(torch.cuda.is_available())  # 查看 torch 是适用于当前主机的CUDA版本
+print(torch.cuda.get_device_name(0))  # 查看 GPU 名称
+```
+
+
+## MSVC
+Microsoft C++ Build Tools
+https://visualstudio.microsoft.com/visual-cpp-build-tools/

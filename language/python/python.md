@@ -31,6 +31,9 @@ pipreqs ./
 
 # 3. 新环境下安装依赖包的模块
 pip3 install -r requirements.txt
+pip install -r requirements.txt --force-reinstall --no-cache-dir
+# --force-reinstall：强制重新安装所有包，即使已存在。
+# --no-cache-dir：避免使用缓存，确保从源下载最新版本。
 ```
 
 ## Django
