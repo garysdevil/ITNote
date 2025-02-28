@@ -82,3 +82,16 @@ python3 manage.py createsuperuser # 创建管理员
 # 导入
 python manage.py inspectdb t_cmdb_app_info > acd/models.py
 ```
+
+## 打包为可执行文件
+```sh
+# 安装 Python：确保已安装 Python（建议 3.7 或更高版本）。
+pip install pyinstaller
+
+# 假如要打包的文件名称是main.py，打完完成后 dist/ 目录下会生成 main.exe。
+pyinstaller -F main.py
+# -F 表示将所有内容打包为单个可执行文件（单文件模式）。
+# -i icon.ico 添加图标（仅 Windows 支持）。
+# -n myapp 指定输出名称
+
+```

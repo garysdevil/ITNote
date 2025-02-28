@@ -16,7 +16,7 @@ which python3.6
 1. https://www.anaconda.com/ 下载安装
 2. 设置环境变量
 ```bash
-setx PATH "%PATH%;D:\APP\DEV\\Anaconda3;D:\APP\DEV\\Anaconda3\Scripts;D:\APP\DEV\\Anaconda3\Library\bin"
+setx PATH "%PATH%;D:\APP\DEV\Anaconda3;D:\APP\DEV\Anaconda3\Scripts;D:\APP\DEV\Anaconda3\Library\bin"
 ```
 ```bash
 conda --version
