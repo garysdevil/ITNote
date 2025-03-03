@@ -89,9 +89,10 @@ python manage.py inspectdb t_cmdb_app_info > acd/models.py
 pip install pyinstaller
 
 # 假如要打包的文件名称是main.py，打完完成后 dist/ 目录下会生成 main.exe。
-pyinstaller -F main.py
+pyinstaller -F main.py -n myapp
 # -F 表示将所有内容打包为单个可执行文件（单文件模式）。
 # -i icon.ico 添加图标（仅 Windows 支持）。
 # -n myapp 指定输出名称
+# --upx-dir 指定UPX程序路径，进行压缩 https://github.com/upx/upx/releases
 
 ```
