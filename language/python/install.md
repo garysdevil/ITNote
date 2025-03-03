@@ -10,13 +10,13 @@ python3.6 -m pip install --upgrade pip -i https://pypi.douban.com/simple
 which python3.6
 ```
 
-### Windows
+### Windows anaconda
 - anaconda 方式: Anaconda中包含了conda等180多个科学包及其依赖项。其中conda则是一个开源的软件包管理系统和环境管理系统，用于安装多个版本的软件包及其依赖关系，并在它们之间轻松切换。
 
 1. https://www.anaconda.com/ 下载安装
 2. 设置环境变量
 ```bash
-setx PATH "%PATH%;D:\APP\DEV\Anaconda3;D:\APP\DEV\Anaconda3\Scripts;D:\APP\DEV\Anaconda3\Library\bin"
+setx PATH "%PATH%;D:\APP\DEV\\Anaconda3;D:\APP\DEV\\Anaconda3\Scripts;D:\APP\DEV\\Anaconda3\Library\bin"
 ```
 ```bash
 conda --version
@@ -24,17 +24,26 @@ conda info
 
 pip --version
 
-# 查看虚拟环境
-conda env list
-
-# 激活一个虚拟环境
-conda activate ${ENV}
-
 # 初始化 conda 环境的命令。它用于配置 shell，使其能够使用 conda 命令。
 conda init
 conda init powershell # powershell代表你要执行conda init的shell
 conda init cmd.exe
 
+# 自动激活base环境
+conda config --set auto_activate_base false
+
+
+conda env export > environment.yml  # 备份当前环境依赖
+conda env update -n new_env --file environment.yml  # 恢复依赖
+
+# 查看虚拟环境
+conda env list
+# 创建新环境
+conda create -n ${ENV} python=3.12.7
+# 激活一个虚拟环境
+conda activate ${ENV}
+# 删除一个虚拟环境
+conda env remove --name ${ENV}
 ```
 
 ## pip
