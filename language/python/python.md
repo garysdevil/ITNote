@@ -93,6 +93,6 @@ pyinstaller -F main.py -n myapp
 # -F 表示将所有内容打包为单个可执行文件（单文件模式）。
 # -i icon.ico 添加图标（仅 Windows 支持）。
 # -n myapp 指定输出名称
-# --upx-dir 指定UPX程序路径，进行压缩 https://github.com/upx/upx/releases
+# --upx-dir 指定UPX程序所在的文件夹目录路径，使用upx压缩可执行文件 https://github.com/upx/upx/releases
 
 ```
