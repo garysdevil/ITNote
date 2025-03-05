@@ -22,10 +22,13 @@ getmac /v
 # -a 取消关机
 # -t 1 指定时间后执行
 
-
-#  变量的创建与使用
+# 临时环境变量的创建与使用
 set var=value
 echo %var%
+# 设置环境变量
+setx VAR_NAME value
+# 环境变量更新或追加值
+setx VAR_NAME "value" /m
 
 # 文件夹的创建
 mkdir
@@ -33,10 +36,8 @@ mkdir
 # 文件的创建
 type nul>test.go
 
-
 # 查看所有任务
 tasklist ｜ findstr %PID%
-
 
 # 查看所有 Windows 服务及其详细信息的列表
 sc queryex state=all type=service
@@ -54,6 +55,10 @@ netstat -ano | find "LISTENING"
 # 1. 变量的创建与使用
 $var = 'value'
 $var
+
+# 设置临时环境变量
+$env:VAR_NAME="value"
+$env:VAR_NAME
 
 # 2. 获取当前会话的历史记录
 get-history
