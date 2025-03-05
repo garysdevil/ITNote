@@ -22,6 +22,12 @@ print(torch.cuda.is_available())  # 查看 torch 是适用于当前主机的CUDA
 print(torch.cuda.get_device_name(0))  # 查看 GPU 名称
 ```
 
+## TensorFlow  
+- 定义
+    - 一个开源的Python机器学习库。
+- 来源
+    - 2015年，Google Brain发布。
+
 
 ## MSVC
 Microsoft C++ Build Tools
