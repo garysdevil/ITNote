@@ -102,6 +102,6 @@ docker run --name chrome -d \
   -u root \
   kasmweb/chrome:1.16.0
 ```
-- 网页端 https://${IP}:6901
+- 网页端 https://${IP}:16901
     - 用户名为 kasm_user
     - 密码为 garysdevil
