@@ -44,6 +44,8 @@ pip install -r requirements.txt --force-reinstall --no-cache-dir
 # 创建并进入一个虚拟环境
 venv_name="python_openai_venv"
 python3 -m venv ~/devenv/${venv_name}
+python3 -m venv 虚拟环境路径 --python=Python解释器路径
+
 source ~/devenv/${venv_name}/bin/activate
 
 # 安装Django与创建项目
