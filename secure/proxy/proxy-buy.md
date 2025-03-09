@@ -1,3 +1,4 @@
+# 商家
 ## v2ray商家 1
 - 下载客户端
     - windows https://www.opai.xin/v2rayN.rar
@@ -17,13 +18,23 @@
 - https://flower.yt/
 - mac: ClashX Pro
 
+## Clash商家 3
+- https://cn3.nfcloud.pro/user
+- nfcloud.net 
+
 ## 各个商家地址
 - https://9.234456.xyz/abc.html
 - https://www.duyaoss.com/ 
 
-## 代理软件
+# 代理软件
 1. clah(windows和linux) https://github.com/Dreamacro/clash/tags
 2. clashX(mac) https://github.com/yichengchen/clashX
+3. ClashVerge https://github.com/clash-verge-rev/clash-verge-rev
+4. Surge
+5. Shadowrocket https://shadowsocks.org
+6. V2ray https://v2ray.com
+7. Trojan https://github.com/trojan-gfw/trojan
 
-## 快连
+# VPN
 - https://bitbucket.org/letsgogo/letsgogo_21/src/master/
+

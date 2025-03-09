@@ -47,6 +47,10 @@ sc start %ServiceName%
 
 # 查看所有监听的端口
 netstat -ano | find "LISTENING" 
+
+# 更改名字
+net user 用户名 /fullname:显示名称
+wmic useraccount where name=当前用户名 rename 新用户名
 ```
 
 
@@ -86,6 +90,26 @@ new-item $FILENAEM -type file
     3. 溢出漏洞
 3. 3389
     1. 远程登入端口
+
+## 远程连接
+1. RDPWrap 
+    1. https://github.com/sebaxakerhtc/rdpwrap/releases/tag/v1.8.9.9
+    2. rdpwrap.ini 
+        1. https://github.com/sebaxakerhtc/rdpwrap.ini 
+        2. https://raw.githubusercontent.com/sebaxakerhtc/rdpwrap.ini/master/rdpwrap.ini
+    3. RDPWrap 的主要功能
+        1. 支持多用户同时远程登录：默认情况下，Windows 只允许一个用户通过远程桌面连接登录。RDPWrap 可以解除这一限制，允许多个用户同时远程登录。
+        2. 在 Windows 家庭版上启用远程桌面：Windows 家庭版默认不支持远程桌面协议（RDP），RDPWrap 可以启用这一功能。
+        3. 绕过远程桌面连接数的限制：即使是非服务器版本的 Windows（如 Windows 10/11 专业版），RDPWrap 也可以解除远程桌面连接数的限制。
+        4. 保持本地登录用户不受影响：使用 RDPWrap 后，远程桌面连接不会断开本地登录的用户。
+    4. RDPWrap 的工作原理
+        1. RDPWrap 通过替换或扩展 Windows 系统的 termsrv.dll 文件（负责远程桌面服务的核心组件），来实现对远程桌面功能的增强。它不会修改系统文件，而是通过一个服务（RDPWrapper）来动态加载配置。
+    5. win11允许的威胁
+        1. Trojan:Win32/Detplock
+        2. HackTool:Win32/RemoteAdmin!MSR
+        3. PUA:Win32/RDPWrap
+2. 配置指定用户不能从网络登入
+    1. Win+R，gpedit.msc，计算机配置，Windows设置，安全设置，本地策略，用户权限分配，拒绝从网络访问这台计算机
 
 # Others
 1. RSS

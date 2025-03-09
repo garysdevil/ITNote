@@ -70,6 +70,7 @@ dig @114.114.114.114 garys.top
     2. TCP同步（SYN）端口扫描（-sS参数）。
     3. UDP端口扫描（-sU参数）。
     4. Ping扫描（-sP参数）。
+    5. `-Pn` 跳过Ping扫描，直接进行端口扫描。
 
 2. 指令
     ```bash
@@ -88,7 +89,9 @@ dig @114.114.114.114 garys.top
     unfiltered 无法确定端口是关闭还是开放时   
     open filtered 监听或者被过滤的  
     closed filtered 关闭或者被过滤的  
-
+```sh
+nmap -p 445 --script smb-os-discovery 192.168.31.100 -Pn
+```
 
 
 ### dstat 是一个用来替换vmstat、iostat、netstat、nfsstat和ifstat这些命令的工具，是一个全能系统信息统计工具
