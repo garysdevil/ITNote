@@ -34,6 +34,7 @@
 5. Shadowrocket https://shadowsocks.org
 6. V2ray https://v2ray.com
 7. Trojan https://github.com/trojan-gfw/trojan
+8. karing（IOS） https://github.com/KaringX/karing
 
 # VPN
 - https://bitbucket.org/letsgogo/letsgogo_21/src/master/
