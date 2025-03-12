@@ -26,16 +26,6 @@
 - https://9.234456.xyz/abc.html
 - https://www.duyaoss.com/ 
 
-# 代理软件
-1. clah(windows和linux) https://github.com/Dreamacro/clash/tags
-2. clashX(mac) https://github.com/yichengchen/clashX
-3. ClashVerge https://github.com/clash-verge-rev/clash-verge-rev
-4. Surge
-5. Shadowrocket https://shadowsocks.org
-6. V2ray https://v2ray.com
-7. Trojan https://github.com/trojan-gfw/trojan
-8. karing（IOS） https://github.com/KaringX/karing
-
 # VPN
 - https://bitbucket.org/letsgogo/letsgogo_21/src/master/
 
