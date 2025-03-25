@@ -47,3 +47,22 @@ https://developers.google.com/web/tools/chrome-devtools/network/reference#timing
 ## Chrome 快捷键
 1. cmd + w 关闭当前标签页
 2. cmd + shift + w 关闭当前浏览器
+
+## Console
+```js
+// 取值
+$x('//div[@class="_affix_oe51y_42"]//div[starts-with(text(), "0x")]');
+
+$x('//div[@class="_affix_oe51y_42"]//div[text()="testnet.humanity.org"]')
+```
+```js
+let xpath = '//table[@role="grid"]/tbody';
+let result = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+let nodes = [];
+let node = result.iterateNext();
+while (node) {
+    nodes.push(node);
+    node = result.iterateNext();
+}
+console.log(`找到 ${nodes.length} 个匹配元素:`, nodes);
+```
