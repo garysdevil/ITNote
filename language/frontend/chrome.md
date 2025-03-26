@@ -50,19 +50,45 @@ https://developers.google.com/web/tools/chrome-devtools/network/reference#timing
 
 ## Console
 ```js
-// 取值
-$x('//div[@class="_affix_oe51y_42"]//div[starts-with(text(), "0x")]');
+let element = 'div._affix_oe51y_42'
+document.querySelectorAll(element)
+// 返回 NodeList[]：类名不存在。
+// 返回 NodeList[div, ...]：类名存在。
+```
 
-$x('//div[@class="_affix_oe51y_42"]//div[text()="testnet.humanity.org"]')
+```js
+let xpath1 = '//div[@class="_left_utrae_24"]]'
+let xpath = '//div[@class="_affix_oe51y_42"]//div[starts-with(text(), "0x")]'
+// 匹配符合xpath的元素集合
+$x(xpath)
+// 元素集合长度
+$x(xpath).length
+// 元素集合的第一个元素
+$x(xpath)[0]
+// 遍历元素集合，输出内容
+$x(xpath).forEach(div => console.log(div.textContent));
 ```
 ```js
-let xpath = '//table[@role="grid"]/tbody';
-let result = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
-let nodes = [];
-let node = result.iterateNext();
-while (node) {
-    nodes.push(node);
-    node = result.iterateNext();
-}
-console.log(`找到 ${nodes.length} 个匹配元素:`, nodes);
+let xpath1 = '//div[@class="_status_utrae_43"]';
+$x(xpath1).forEach(div => {
+    // 获取所有后代节点
+    let allDescendants = div.querySelectorAll('*');
+    allDescendants.forEach(node => {
+        // 只输出有文本内容的节点
+        if (node.textContent.trim()) {
+            console.log(node.textContent.trim());
+        }
+    });
+});
+
+let xpath1 = '//div[@class="_status_utrae_43"]';
+$x(xpath1).forEach(div => {
+    // 只获取直接子节点
+    let children = div.children;
+    Array.from(children).forEach(child => {
+        if (child.textContent.trim()) {
+            console.log(child.textContent.trim());
+        }
+    });
+});
 ```
