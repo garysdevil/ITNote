@@ -68,3 +68,21 @@ pyinstaller -F main.py -n myapp
 brew install python-tk@3.12
 /opt/homebrew/bin/python3.12 -c "import _tkinter; print(_tkinter.TCL_VERSION)"
 ```
+
+## pdb
+- 运行时进行交互式调试
+```py
+import pdb
+def main():
+    x = 10
+    pdb.set_trace()  # 设置断点，运行到这里会暂停
+    y = x + 5
+    print(y)
+if __name__ == "__main__":
+    main()
+```
+1. 在终端运行生成的可执行文件，程序会在 pdb.set_trace() 处暂停，进入交互式调试模式。可以使用以下命令：
+    1. n（next）：执行下一行。
+    2. s（step）：进入函数。
+    3. c（continue）：继续运行。
+    4. p variable：打印变量值。
