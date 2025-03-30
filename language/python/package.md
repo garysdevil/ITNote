@@ -71,6 +71,7 @@ brew install python-tk@3.12
 
 ## pdb
 - 运行时进行交互式调试
+- Python 3.7+：可以用 breakpoint() 替代 pdb.set_trace()，无需导入 pdb。
 ```py
 import pdb
 def main():
@@ -82,7 +83,9 @@ if __name__ == "__main__":
     main()
 ```
 1. 在终端运行生成的可执行文件，程序会在 pdb.set_trace() 处暂停，进入交互式调试模式。可以使用以下命令：
-    1. n（next）：执行下一行。
-    2. s（step）：进入函数。
-    3. c（continue）：继续运行。
-    4. p variable：打印变量值。
+    1. n（next）：执行下一行代码，但不会进入函数内部（单步跳过）。
+    2. s（step）：执行下一行代码，如果遇到函数调用，会进入函数内部（单步进入）。
+    3. c（continue）：继续运行程序，直到遇到下一个断点或程序结束。
+    4. p variable：打印指定变量的值，例如 `p x` 显示变量 `x` 的当前值。
+    5. l（list）：显示当前代码的上下文，默认显示 11 行（当前行居中）。可以加参数，例如 `l 10, 20` 显示第 10 到 20 行。
+    6. w（where）
