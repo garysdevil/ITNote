@@ -10,3 +10,6 @@
 ## 相关软件
 1. 谷歌插件 Automa
 2. 软件系统 skyvern  https://github.com/Skyvern-AI/skyvern
+   
+## 付费软件
+1. 指纹猎手 https://www.browto.com/
