@@ -59,7 +59,7 @@ openssl genrsa -out $domain.CA.key 2048
 # 生成CA证书请求
 # 证书请求都是根据私钥来生成的
 echo "生成CA证书请求.."
-openssl req -new -key $domain.CA.key -out $domain.CA.csr -days 365 -subj /C=CN/ST=GuangDong/L=GuangZhou/O=me-api-stg.garys.top/OU=me-api-stg.garys.top/CN=opcenter/emailAddress=me-api-stg.garys.top -utf8
+openssl req -new -key $domain.CA.key -out $domain.CA.csr -days 365 -subj /C=CN/ST=GuangDong/L=GuangZhou/O=${domain}/OU=${domain}/CN=opcenter/emailAddress=${domain} -utf8
  
 # 签名CA证书请求
 # 使用自己的私钥来给这个CA证书请求签名
@@ -91,18 +91,18 @@ openssl x509 -in $domain.CA.crt -out $domain.CA.der -outform DER
  # 生成网站证书请求
  # CN 一定要是网站的域名, 否则会通不过安全验证
  echo "生成网站(服务端)证书请求.."
- openssl req -new -key $domain.server.key -out $domain.server.csr -days 365 -subj /C=CN/ST=GuangDong/L=GuangZhou/O=me-api-stg.garys.top/OU=me-api-stg.garys.top/CN=$domain/emailAddress=me-api-stg.garys.top -utf8
+ openssl req -new -key $domain.server.key -out $domain.server.csr -days 365 -subj /C=CN/ST=GuangDong/L=GuangZhou/O=${domain}/OU=${domain}/CN=$domain/emailAddress=${domain} -utf8
   
-  # CA签名网站证书请求
-  # 不是拿到 CA 的证书了就可以说自己是 CA 的, 最重要的是, 签名需要有 CA 密钥
-  # 如果客户端（个人浏览器）信任 CA 的证书的话, 那么他也就会信任由 CA 签名的网站证书
-  # 因此让浏览器信任 CA 的证书之后, 客户端就自然信任服务端了, 只要做单向认证的话, 到这一步证书这一类材料就已经准备好了
-  # 但是双向认证就还要给客户端（个人的浏览器）准备一份证书
-  # 让服务端可以知道客户端也是合法的。
-  # 假如让服务端也信任 CA 的证书
-  # 那 CA 签名的客户端证书也就能被信任了。
-  echo "通过CA证书签名, 创建网站(服务端)证书.."
-  openssl x509 -req -in $domain.server.csr -out $domain.server.crt -CA $domain.CA.crt -CAkey $domain.CA.key -CAcreateserial -days 365
+# CA签名网站证书请求
+# 不是拿到 CA 的证书了就可以说自己是 CA 的, 最重要的是, 签名需要有 CA 密钥
+# 如果客户端（个人浏览器）信任 CA 的证书的话, 那么他也就会信任由 CA 签名的网站证书
+# 因此让浏览器信任 CA 的证书之后, 客户端就自然信任服务端了, 只要做单向认证的话, 到这一步证书这一类材料就已经准备好了
+# 但是双向认证就还要给客户端（个人的浏览器）准备一份证书
+# 让服务端可以知道客户端也是合法的。
+# 假如让服务端也信任 CA 的证书
+# 那 CA 签名的客户端证书也就能被信任了。
+echo "通过CA证书签名, 创建网站(服务端)证书.."
+openssl x509 -req -in $domain.server.csr -out $domain.server.crt -CA $domain.CA.crt -CAkey $domain.CA.key -CAcreateserial -days 365
    
 #
 # --------- CLIENT ----------
@@ -112,7 +112,7 @@ echo "创建浏览器(客户端)密钥.."
 openssl genrsa -out $domain.client.key 2048
 # 生成客户端证书请求
 echo "生成浏览器(客户端)证书请求.."
-openssl req -new -key $domain.client.key -out $domain.client.csr -days 3650 -subj /C=CN/ST=GuangDong/L=GuangZhou/O=me-api-stg.garys.top/OU=me-api-stg.garys.top/CN=$domain/emailAddress=me-api-stg.garys.top -utf8
+openssl req -new -key $domain.client.key -out $domain.client.csr -days 3650 -subj /C=CN/ST=GuangDong/L=GuangZhou/O=${domain}/OU=${domain}/CN=$domain/emailAddress=${domain} -utf8
 # CA签名客户端证书请求
 echo "通过CA证书签名, 创建浏览器(客户端)证书.."
 openssl x509 -req -in $domain.client.csr -out $domain.client.crt -CA $domain.CA.crt -CAkey $domain.CA.key -CAcreateserial -days 365 
@@ -124,9 +124,8 @@ openssl x509 -in $domain.client.crt -out $domain.client.der -outform DER
 echo "转换客户端证书为p12格式.."
 openssl pkcs12 -export -in $domain.client.crt -inkey $domain.client.key -out $domain.client.p12 -password pass:123456
 # openssl pkcs12 -in $domain.client.p12 -out all.pem -nodes 
-# - nodes 不加密私钥
+# -nodes 不加密私钥
 ```
-
 #### 最简单的方式生成自签名证书
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /usr/local/nginx/ssl/nginx.key -out /usr/local/nginx/ssl/nginx.crt
 req 表示想使用 X.509 certificate signing request (CSR) 进行管理
