@@ -105,9 +105,8 @@ new-item $FILENAEM -type file
     4. RDPWrap 的工作原理
         1. RDPWrap 通过替换或扩展 Windows 系统的 termsrv.dll 文件（负责远程桌面服务的核心组件），来实现对远程桌面功能的增强。它不会修改系统文件，而是通过一个服务（RDPWrapper）来动态加载配置。
     5. win11允许的威胁
-        1. Trojan:Win32/Detplock
-        2. HackTool:Win32/RemoteAdmin!MSR
-        3. PUA:Win32/RDPWrap
+        1. HackTool:Win32/RemoteAdmin!MSR
+        2. PUA:Win32/RDPWrap
 2. 配置指定用户不能从网络登入
     1. Win+R，gpedit.msc，计算机配置，Windows设置，安全设置，本地策略，用户权限分配，拒绝从网络访问这台计算机
 

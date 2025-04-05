@@ -24,7 +24,7 @@ ClientAliveCountMax 86400 # 定义了超过多少秒后断开与ssh客户端连�
 ```sh
 # 免密登入
 yum -y install openssh-clients # 此软件含ssh-copy-id指令
-ssh-copy-id -i ~/.ssh/id_rsa.pub # 被免密登陆的主机的IP
+ssh-copy-id -i ~/.ssh/公钥文件名 # 被免密登陆的主机的IP
 ```
 
 ## 公钥
@@ -32,8 +32,13 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub # 被免密登陆的主机的IP
 # 扫描其它机器的公钥
 ssh-keyscan
 # 生成公钥
-ssh-keygen -C "备注信息"
+ssh-keygen -C "备注信息" -t 算法类型
 # authorized_keys   id_rsa  id_rsa.pub  know_hosts
+
+# rsa 传统且广泛支持的算法，默认密钥长度为 2048 或 3072 位。
+# ecasa 基于椭圆曲线的算法，密钥较短但安全性高，默认长度为 256、384 或 521 位。
+# ed25519 现代、高效的椭圆曲线算法，固定长度为 256 位，安全性高且生成速度快。
+# 在较新的 OpenSSH 版本中（例如 OpenSSH 7.0 及以上），默认算法可能不再是 RSA，而是更现代的 Ed25519 或 ECDSA，这可能是你在 Windows 环境下生成密钥时发现不是 RSA 的原因。
 ```
 
 ### ssh-agent
