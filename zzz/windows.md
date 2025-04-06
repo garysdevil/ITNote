@@ -1,12 +1,21 @@
 
 # Winodows
-1. cmd vs PowerShell
+## Windows11
+- winget 是 Windows 11 自带的包管理器，可以快速安装最新版 PowerShell。
+```sh
+# 安装 PowerShell 7
+winget install --id Microsoft.PowerShell --source winget
+# 安装完成后，运行 pwsh 启动 PowerShell 7
+```
+
+## 指令
+- cmd vs PowerShell
     1. PowerShell是跨平台的，cmd是Windows专用的。
     2. PowerShell有面向对象的管道。
     3. PowerShell能够调用.NET的很多功能。
     4. Powershell是cmd的超集。
 
-## cmd
+### cmd
 ```sh
 ipconfig /all
 ipconfig /flushdns
@@ -53,9 +62,12 @@ net user 用户名 /fullname:显示名称
 wmic useraccount where name=当前用户名 rename 新用户名
 ```
 
+### PowerShell
+```powershell
+# 查看版本
+$PSVersionTable
+# PowerShell Core / PowerShell 7：版本号为 6.x 或 7.x，需单独安装。
 
-## PowerShell
-```sh
 # 1. 变量的创建与使用
 $var = 'value'
 $var
@@ -64,11 +76,24 @@ $var
 $env:VAR_NAME="value"
 $env:VAR_NAME
 
+# 检查环境变量
+$env:PATH -split ";"
+
 # 2. 获取当前会话的历史记录
 get-history
 
 # 3. 文件的创建
 new-item $FILENAEM -type file
+
+$service_name='scfrpc'
+# 服务的创建
+New-Service -Name $service_name -BinaryPathName "C:\path\to\myapp.exe" -StartupType Automatic
+Remove-Service -Name $service_name
+# 启动类型 Boot, System, Automatic, Manual, Disabled
+Get-Service -Name $service_name | Select-Object Name, Status, StartType, DisplayName
+Get-CimInstance -ClassName Win32_Service -Filter "Name = '$service_name'" | Format-List Name, PathName, State, StartMode, Description
+Start-Service -Name $service_name
+Get-EventLog -LogName "System" | Where-Object { $_.Source -eq "Service Control Manager" -and $_.Message -like "*$service_name*" }
 ```
 
 ## Win + r
@@ -109,7 +134,11 @@ new-item $FILENAEM -type file
         2. PUA:Win32/RDPWrap
 2. 配置指定用户不能从网络登入
     1. Win+R，gpedit.msc，计算机配置，Windows设置，安全设置，本地策略，用户权限分配，拒绝从网络访问这台计算机
-
 # Others
 1. RSS
     - https://juejin.cn/post/6844903760142024711
+
+
+2. NSSM（Non-Sucking Service Manager）
+    1. 可以将非服务程序（如 frpc）包装为 Windows 服务，确保正确运行并响应 SCM。
+    2. `./nssm.exe install 程序服务名 `

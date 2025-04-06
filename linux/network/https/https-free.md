@@ -5,7 +5,10 @@
     3. https://blog.csdn.net/ithomer/article/details/78075006
 
 
-## letsencrypt.org 获取免费证书
+## letsencrypt.org 获取免费证书 
+### certbot
+- 
+### 官方已不再受支持 certbot-auto
 1. 申请获取证书
     - ./certbot-auto certonly -d "*.domain.com" --manual --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory --no-bootstrap
     - 生成的文件
@@ -15,6 +18,8 @@
         - privkey.pem 使用
 
 2. 同一个域名每分钟最多能请求5次
+
+
 ## acme 自动获取更新证书
 ### 安装acme 
 curl  https://get.acme.sh | sh
