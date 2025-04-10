@@ -68,6 +68,27 @@
         time.sleep(0.1)
     ```
 
+## 单例
+```
+from threading import Lock
+
+class ThreadSafeSingleton:
+    _instance = None
+    _lock = Lock()
+    
+    def __new__(cls):
+        # 快速返回已存在的实例，避免不必要的锁竞争
+        if cls._instance is not None:
+            return cls._instance
+            
+        # 只有实例不存在时才获取锁
+        with cls._lock:
+            # 再次检查防止多个线程同时通过第一次检查
+            if cls._instance is None:
+                cls._instance = super().__new__(cls)
+        return cls._instance
+```
+
 # 高级
 ## generator
 1. 生成器（generator）是通过 yield 关键字实现的函数，逐个生成值而不是一次性返回所有值。
