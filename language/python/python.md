@@ -18,7 +18,7 @@ source ~/devenv/${venv_name}/bin/activate
 
 ## 依赖包
 ```bash
-# 1. 获取环境中所有已经被安装了的包
+# 1. 获取当前python环境中所有已经被安装了的依赖包
 pip3 freeze > ./requirements.txt
 # 或者
 pip3 list
@@ -55,5 +55,6 @@ black .             # 格式化整个项目
 ```sh
 pip install ruff
 ruff check .          # Lint 检查
+ruff check --fix      # Lint 检查，并且进行自动修复
 ruff format .         # 格式化代码
 ```

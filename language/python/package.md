@@ -89,3 +89,52 @@ if __name__ == "__main__":
     4. p variable：打印指定变量的值，例如 `p x` 显示变量 `x` 的当前值。
     5. l（list）：显示当前代码的上下文，默认显示 11 行（当前行居中）。可以加参数，例如 `l 10, 20` 显示第 10 到 20 行。
     6. w（where）
+
+
+## pre-commit
+```sh
+pre-commit --version
+
+# 配置 pre-commit 钩子，编辑 .pre-commit-config.yaml 文件
+
+# 将 pre-commit 钩子安装到 .git/hooks/pre-commit 中
+pre-commit install
+
+# 验证钩子是否安装
+ls .git/hooks/pre-commit
+
+# 检查所有 repo 的最新版本，并更新配置文件里的 rev 字段
+pre-commit autoupdate
+
+# 手动运行
+pre-commit run --all-files
+```
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.5
+    hooks:
+      - id: ruff
+        args: [--fix]  # 自动修复 linting 问题
+      - id: ruff-format
+```
+
+## detect-secrets
+- 安全检查
+```sh
+pip install detect-secrets
+# 初始化 detect-secrets
+detect-secrets scan > .secrets.baseline
+```
+
+- 钩子中添加敏感信息检查，提交时会自动检测敏感信息。
+
+```yaml
+- repo: https://github.com/Yelp/detect-secrets
+  rev: v1.4.0
+  hooks:
+    - id: detect-secrets
+      args: [--baseline, .secrets.baseline]
+```
