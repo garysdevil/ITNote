@@ -138,3 +138,7 @@ detect-secrets scan > .secrets.baseline
     - id: detect-secrets
       args: [--baseline, .secrets.baseline]
 ```
+
+
+## tomli
+- Python 3.11+ 内置 tomli（只读）或 tomllib（读写）。
