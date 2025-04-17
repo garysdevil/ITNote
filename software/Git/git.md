@@ -113,13 +113,14 @@
     3. 禁止快进式合并 ``git merge --no-ff 分支名``
     4. 将所有的commit整合为一个新的commit提交到主分支上 ``git merge --squash 分支名``
 
-4. 删除本地分支 ``git branch -D 分支名``
+4. 删除本地分支 
+  1. 删除本地分支  ``git branch -D 分支名``
+  2. 删除本地不存在的远程跟踪分支  `git fetch -p`
 
 5. 删除远程的分支 
     ```bash
     git push origin:分支名 （没有删除跟踪）   
-    git push origin --delete 分支名 （删除了跟踪）  
-    git fetch -p 删除本地不存在的远程跟踪分支  
+    git push origin --delete 分支名 （删除了跟踪）   
     ```
 6. 查看此文件内容修改的详细操作信息  ``git blame fileName ``
 
