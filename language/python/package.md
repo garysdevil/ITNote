@@ -141,4 +141,4 @@ detect-secrets scan > .secrets.baseline
 
 
 ## tomli
-- Python 3.11+ 内置 tomli（只读）或 tomllib（读写）。
+- Python 3.11+ 内置 tomllib（读写）。
