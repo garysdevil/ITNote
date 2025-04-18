@@ -195,9 +195,30 @@ done
 echo "1"
 sleep 5 &
 echo "3"
-echo "4"
-wait    # 会等待wait所在bash上的所有子进程的执行结束，本例中就是sleep 5这句
+wait    # 会等待wait所在bash上的所有子进程执行结束
 echo "5"
+pid=$!  # 获取后台进程的 PID
+wait $pid # 等待指定 PID 的进程完成
+
+# 在 Bash 中，wait 支持 -n 选项结合超时控制，但需要 Bash 4.3 或更高版本。
+sleep 5 &
+sleep 10 &
+wait -n 2s  # 等待任意任务完成或 2 秒超时
+```
+
+### timeout
+```bash
+# timeout 可能在某些系统（如 macOS）上不可用，需安装 coreutils 或使用手动方法。
+#!/bin/bash
+echo "Starting a task with timeout..."
+timeout 3s sleep 5 &  # 设置 3 秒超时，但 sleep 5 秒
+pid=$!
+wait $pid
+if [ $? -eq 124 ]; then
+  echo "Task timed out!"
+else
+  echo "Task completed!"
+fi
 ```
 
 ## 脚本

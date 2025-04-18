@@ -1,5 +1,5 @@
-## 安装python3.6
-### Linux
+## 安装python
+### Linux apt-get
 ```bash
 apt-get update
 apt-get install -y software-properties-common
@@ -9,6 +9,35 @@ apt-get -y install python3.6 python3.6-dev python3-pip
 python3.6 -m pip install --upgrade pip -i https://pypi.douban.com/simple
 which python3.6
 ```
+
+### Mac pyenv
+```bash
+# pyenv 是管理多个 Python 版本的首选工具
+brew install pyenv
+# 查看python可用版本
+pyenv install --list
+# 安装 python 3.12.10
+pyenv install 3.12.10  # Missing the lzma lib # brew install xz
+
+# 配置 ~/.zshrc
+source ~/.zshrc
+
+# 设置 Python 版本 全局使用
+pyenv global 3.12.10
+
+# 为特定项目设置 Python 版本
+cd /path/to/project
+pyenv local 3.12.10
+```
+
+- ~/.zshrc
+```sh 
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+```
+
 
 ### Windows anaconda
 - anaconda 方式: Anaconda中包含了conda等180多个科学包及其依赖项。其中conda则是一个开源的软件包管理系统和环境管理系统，用于安装多个版本的软件包及其依赖关系，并在它们之间轻松切换。
@@ -46,7 +75,7 @@ conda activate ${ENV}
 conda env remove --name ${ENV}
 ```
 
-## pip
+## 安装pip
 https://blog.csdn.net/zwliang98/article/details/83546788
 1. 安装
     ```bash
