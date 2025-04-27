@@ -388,6 +388,9 @@ screen -ls
 # 切换到某个screen
 screen -r ${screenName}
 
+# -m 强制创建一个新的 screen 会话，即使当前已经有同名的会话存在。
+# -d 以“分离模式”（detached mode）运行，会话会在后台启动，不会附加到当前终端。
+
 # -L：开启日志记录
 # -Logfile mylog.txt：指定日志文件名（默认是 screenlog.0）
 screen -L -Logfile mylog.txt -S ${screenName}
