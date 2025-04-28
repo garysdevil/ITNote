@@ -1,6 +1,5 @@
 
 - 参考
-    - http://www.brendangregg.com/blog/2019-01-01/learn-ebpf-tracing.html
     - http://www.brendangregg.com/linuxperf.html
 
 ## 内核参数
