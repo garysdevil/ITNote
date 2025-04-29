@@ -324,6 +324,9 @@ if($10~/gb$/){print $0;sub(/gb/,"",$10);total=total+$10*1024}  \
 else{sub(/mb$/,"",$10); total+=$10}  \
 } \
 END{printf"num=%d size=%fgb\n",i,total/1024}'
+
+# 文件，对比每行进行去重
+awk '!seen[$0]++' info.txt > temp.txt && mv temp.txt info.txt
 ```
 
 ### 数学计算
