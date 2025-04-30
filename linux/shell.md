@@ -161,17 +161,6 @@ fruits=(
 "watermelon" 
 ) 
 
-# echo "Please guess which fruit I like :" 
-# select var in ${fruits[@]} 
-# do 
-# if [ $var = "apple" ]; then 
-#     echo "Congratulations, you are my good firend!" 
-#     break 
-# else 
-#     echo "Try again!" 
-# fi 
-# done 
-
 select var in ${fruits[@]} 
 do 
 case $var in
