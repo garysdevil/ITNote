@@ -7,8 +7,11 @@
 
 ## letsencrypt.org 获取免费证书 
 ### certbot
-- 
-### 官方已不再受支持 certbot-auto
+```sh
+domain=baidu.com
+certbot certonly --webroot -w /etc/nginx/html -d www.${domain} -d ${domain}
+```
+### certbot-auto 官方已不再受支持
 1. 申请获取证书
     - ./certbot-auto certonly -d "*.domain.com" --manual --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory --no-bootstrap
     - 生成的文件
