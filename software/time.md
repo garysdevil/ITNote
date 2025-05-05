@@ -1,3 +1,9 @@
+---
+created_date: 2021-07-24
+---
+
+[TOC]
+
 ## 网络时间协议 ntp
 - 协议说明：https://en.wikipedia.org/wiki/Network_Time_Protocol
 - 功能：进行时钟同步，保证服务器之间的时间是一致的。

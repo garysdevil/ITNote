@@ -1,3 +1,9 @@
+---
+created_date: 2020-11-16
+---
+
+[TOC]
+
 ## 安装pathogen插件管理
 mkdir -p ~/.vim/autoload ~/.vim/bundle
 curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim

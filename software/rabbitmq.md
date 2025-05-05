@@ -1,3 +1,9 @@
+---
+created_date: 2020-11-16
+---
+
+[TOC]
+
 生产者，消费者，频道，交换机，队列，路由键。
 producer，consumer，channel，exchange，queue，routing key。
 note：路由键可以简单地理解为queue的名字。

@@ -1,3 +1,9 @@
+---
+created_date: 2021-08-05
+---
+
+[TOC]
+
 ## 安装
 ### 安装mysql5.6
 - 参考 https://blog.csdn.net/pengjunlee/article/details/81212250

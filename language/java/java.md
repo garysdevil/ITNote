@@ -1,3 +1,9 @@
+---
+created_date: 2021-07-09
+---
+
+[TOC]
+
 # Java
 - 参考
     - https://www.onitroad.com/jc/archive/install-java-on-amazon-linux.html

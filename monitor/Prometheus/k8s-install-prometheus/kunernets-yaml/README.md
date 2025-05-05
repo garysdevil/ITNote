@@ -1,3 +1,9 @@
+---
+created_date: 2020-11-16
+---
+
+[TOC]
+
 # kuernetes集群内部监控部署
 
 ## prometheus server部署

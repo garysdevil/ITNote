@@ -1,3 +1,9 @@
+---
+created_date: 2025-03-07
+---
+
+[TOC]
+
 ## Django
 - https://www.djangoproject.com/
 - 文档 https://www.osgeo.cn/django/intro/tutorial01.html

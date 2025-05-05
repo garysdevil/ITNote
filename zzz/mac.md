@@ -1,3 +1,9 @@
+---
+created_date: 2024-11-19
+---
+
+[TOC]
+
 
 ## 链接
 1. 苹果官网序列号查询 https://checkcoverage.apple.com/cn/zh

@@ -1,3 +1,9 @@
+---
+created_date: 2025-04-28
+---
+
+[TOC]
+
 - 参考
     - http://www.brendangregg.com/blog/2019-01-01/learn-ebpf-tracing.html
     - https://coolshell.cn/articles/22320.html#google_vignette

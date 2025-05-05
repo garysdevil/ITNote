@@ -1,3 +1,7 @@
+---
+created_date: 2020-11-16
+---
+
 [TOC]
 
 ## zabbix-server和zabbix-proxy间的通信机制

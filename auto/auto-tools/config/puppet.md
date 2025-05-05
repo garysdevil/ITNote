@@ -1,3 +1,9 @@
+---
+created_date: 2024-11-19
+---
+
+[TOC]
+
 # puppet
 - 参考文档
 https://www.cnblogs.com/along21/p/10369858.html

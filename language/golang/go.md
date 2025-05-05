@@ -1,3 +1,9 @@
+---
+created_date: 2021-08-06
+---
+
+[TOC]
+
 #### golang的栈内存分配机制
 - 当创建一个goroutine时，Go运行时会分配一段8K字节的内存用于栈供goroutine运行使用，
 1. 第一代 分段栈(Segmented Stacks)

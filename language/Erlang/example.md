@@ -1,3 +1,9 @@
+---
+created_date: 2022-02-04
+---
+
+[TOC]
+
 - 参考 https://github.com/hcvst/erlang-otp-tutorial
 ## None OTP
 ### A non OTP server

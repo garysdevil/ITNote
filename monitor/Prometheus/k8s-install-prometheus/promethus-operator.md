@@ -1,3 +1,9 @@
+---
+created_date: 2020-11-16
+---
+
+[TOC]
+
 1. 通过开源项目部署prometheus
 https://github.com/prometheus-operator/prometheus-operator
 

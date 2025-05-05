@@ -1,3 +1,9 @@
+---
+created_date: 2025-01-02
+---
+
+[TOC]
+
 # 安全学习训练平台
 1. bWAPP
     - www.itsecgameses.com

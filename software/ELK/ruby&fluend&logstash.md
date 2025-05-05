@@ -1,4 +1,9 @@
+---
+created_date: 2020-11-24
+---
+
 [TOC]
+
 ## 安装ruby
 - 参考 ruby.md
 

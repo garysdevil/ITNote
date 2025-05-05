@@ -1,3 +1,9 @@
+---
+created_date: 2021-08-27
+---
+
+[TOC]
+
 https://blog.csdn.net/hkhl_235/article/details/79721645
 tcp连接建立：
 LISTEN：侦听来自远方的TCP端口的连接请求

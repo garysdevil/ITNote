@@ -1,3 +1,9 @@
+---
+created_date: 2020-11-16
+---
+
+[TOC]
+
 ### 健康检查Prob探针
 - 两种类型：livenessProbe , readinessProbe
 - 三种检查方式： httpGet ， exec ， tcpSocket

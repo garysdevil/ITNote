@@ -1,3 +1,9 @@
+---
+created_date: 2020-11-16
+---
+
+[TOC]
+
 ## 宏
 - https://www.zabbix.com/documentation/3.4/zh/manual/config/macros
 - https://www.zabbix.com/documentation/3.4/manual/appendix/macros/supported_by_location

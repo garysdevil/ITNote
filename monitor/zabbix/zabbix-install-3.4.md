@@ -1,4 +1,9 @@
+---
+created_date: 2020-11-16
+---
+
 [TOC]
+
 ## centos安装zabbix服务
 - zabbix服务由3个组件组成
     + 数据库

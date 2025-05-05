@@ -1,4 +1,9 @@
+---
+created_date: 2020-11-16
+---
+
 [TOC]
+
 - 官网
  https://kubernetes.io/zh/docs/concepts/configuration/taint-and-toleration/
  https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/

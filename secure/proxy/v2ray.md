@@ -1,3 +1,9 @@
+---
+created_date: 2025-03-12
+---
+
+[TOC]
+
 ## v2ray
 ### 安装
 - 源码 https://github.com/v2fly/v2ray-core

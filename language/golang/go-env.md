@@ -1,3 +1,9 @@
+---
+created_date: 2020-11-19
+---
+
+[TOC]
+
 ## Go安装
 - https://golang.org/dl
 - https://golang.google.cn/dl/

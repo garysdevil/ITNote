@@ -1,3 +1,9 @@
+---
+created_date: 2021-01-15
+---
+
+[TOC]
+
 ## 二进制安装
 https://github.com/easzlab/kubeasz
 https://my.oschina.net/u/4255236/blog/4873696

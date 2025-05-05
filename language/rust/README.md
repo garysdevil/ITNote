@@ -1,3 +1,9 @@
+---
+created_date: 2022-06-15
+---
+
+[TOC]
+
 ## Rust学习
 - ``rustup doc``文档的学习笔记
     1. rustup 1.24.3 (ce5817a94 2021-05-31)

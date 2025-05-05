@@ -1,3 +1,9 @@
+---
+created_date: 2020-11-16
+---
+
+[TOC]
+
 1. jenkins集成k8s
 ```
 安装jenkins的kubernetes cli插件

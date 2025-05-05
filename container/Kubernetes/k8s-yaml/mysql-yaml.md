@@ -1,3 +1,9 @@
+---
+created_date: 2020-11-16
+---
+
+[TOC]
+
 ## 配置configmap
 ### 方式一 vi mysql.cnf
 kubect create configmap mysql-cm --from-file=mysql.cnf

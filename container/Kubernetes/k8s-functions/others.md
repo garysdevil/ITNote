@@ -1,3 +1,9 @@
+---
+created_date: 2020-12-23
+---
+
+[TOC]
+
 ## static pod
 https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/
 

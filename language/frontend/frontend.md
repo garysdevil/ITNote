@@ -1,3 +1,9 @@
+---
+created_date: 2021-11-30
+---
+
+[TOC]
+
 ## html解析为可视化界面
 - 从顶部往下解析
 1. 解析HTML，生成DOM树；解析CSS，生成CSSOM树

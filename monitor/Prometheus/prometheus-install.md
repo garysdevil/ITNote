@@ -1,4 +1,9 @@
+---
+created_date: 2020-11-16
+---
+
 [TOC]
+
 - 需要安装的组件
     1. Prometheus server 
     2. PushGateway

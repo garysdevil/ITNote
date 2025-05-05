@@ -1,3 +1,9 @@
+---
+created_date: 2024-11-19
+---
+
+[TOC]
+
 ## CICD
 - 参考
     - https://www.jenkins.io/doc/pipeline/tour/post/  构建结束后操作

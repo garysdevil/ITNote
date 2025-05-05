@@ -1,3 +1,9 @@
+---
+created_date: 2024-11-19
+---
+
+[TOC]
+
 # Ansible
 - 参考
   - https://docs.ansible.com/ansible/latest/installation_guide/index.html

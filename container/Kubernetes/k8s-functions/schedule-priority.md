@@ -1,3 +1,9 @@
+---
+created_date: 2020-12-23
+---
+
+[TOC]
+
 ## Pod Priority Preemption
 1. Kubernetes 1.8版本之前，当集群的可用资源不足时，在用户提交新的Pod创建请求后，该Pod会一直处于Pending状态，即使这个Pod是一个很重要的Pod，也只能被动等待其他Pod被删除并释放资源，才能有机会被调度成功。
 2. Kubernetes 1.8版本引入了基于Pod优先级抢占（Pod Priority Preemption）的调度策略，此时Kubernetes会尝试释放目标节点上低优先级的Pod，以腾出资源安置高优先级的Pod，这种调度方式被称为“抢占式调度”。

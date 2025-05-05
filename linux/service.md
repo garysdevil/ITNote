@@ -1,4 +1,9 @@
+---
+created_date: 2021-07-21
+---
+
 [TOC]
+
 ## service
 - 开机启动service配置文件存放位置 ls /etc/init.d/
 

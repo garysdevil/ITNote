@@ -1,3 +1,9 @@
+---
+created_date: 2020-11-27
+---
+
+[TOC]
+
 ### 本地进程间通信方式
 IPC（Inter Process Communication）
 1. 管道

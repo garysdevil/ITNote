@@ -1,3 +1,9 @@
+---
+created_date: 2021-07-01
+---
+
+[TOC]
+
 参考文档：
 https://qizhanming.com/blog/2017/05/27/how-to-configure-bind-as-a-private-network-dns-server-on-centos-7
 http://www.178linux.com/83491

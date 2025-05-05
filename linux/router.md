@@ -1,3 +1,9 @@
+---
+created_date: 2022-06-27
+---
+
+[TOC]
+
 ## 路由器
 - openwrt论坛 https://forum.gl-inet.com/
 - openwrt安装v2ray https://github.com/kuoruan/openwrt-v2ray

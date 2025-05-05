@@ -1,3 +1,9 @@
+---
+created_date: 2025-01-02
+---
+
+[TOC]
+
 # 常见的攻击方法
 1. KeyLogger 键盘监听
 2. DDOS Attack (Distributed Denal of Service)

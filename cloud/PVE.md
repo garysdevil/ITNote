@@ -1,3 +1,9 @@
+---
+created_date: 2021-05-12
+---
+
+[TOC]
+
 # 虚拟化系统程序
 
 1. ESXi，是VMWare vSphere Hypervisor套件之下重要组件。前身是ESX，依赖Linux源码，后来抛弃Linux源码做成了ESXi。整个产品企业气息浓重，界面清晰易用，但硬件兼容性较差，没什么扩展性（毕竟不是linux）。

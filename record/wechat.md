@@ -1,3 +1,9 @@
+---
+created_date: 2022-12-13
+---
+
+[TOC]
+
 - 公众号接入微信企业提供的人工智能
   - https://openai.weixin.qq.com/
   - https://github.com/wechaty/wechaty-weixin-openai

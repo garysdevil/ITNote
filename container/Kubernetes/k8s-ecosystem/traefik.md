@@ -1,3 +1,9 @@
+---
+created_date: 2020-11-16
+---
+
+[TOC]
+
  ## 安装
  1. 在k8s集群内通过yaml安装traefik v2.3
  https://doc.traefik.io/traefik/user-guides/crd-acme/

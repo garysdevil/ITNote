@@ -1,3 +1,9 @@
+---
+created_date: 2025-04-17
+---
+
+[TOC]
+
 - 参考 https://github.com/zhaotoday/fingerprint-browser
 
 ## 浏览器自动化

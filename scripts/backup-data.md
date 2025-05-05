@@ -1,3 +1,9 @@
+---
+created_date: 2020-11-16
+---
+
+[TOC]
+
 ### etcd minio redis
 ```bash
 #!/bin/bash

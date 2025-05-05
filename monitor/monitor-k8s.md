@@ -1,3 +1,9 @@
+---
+created_date: 2020-11-16
+---
+
+[TOC]
+
 1. K8s仪表盘：插件工具，展示每个K8s集群上的资源利用情况，也是实现资源和环境管理与交互的主要工具。
 2. 容器探针：容器健康状态诊断工具。 -- blackbox
 3. Kubelet：每个Node上都运行着Kubelet，监控容器的运行情况。Kubelet也是Master与各个Node通信的渠道。Kubelet能够直接暴露cAdvisor中与容器使用相关的个性化指标数据。

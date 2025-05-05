@@ -1,3 +1,9 @@
+---
+created_date: 2020-11-16
+---
+
+[TOC]
+
 https://docs.mongodb.com/manual/tutorial/enable-authentication/
 1. 数据库级别操作
 use DATABASE_NAME

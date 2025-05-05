@@ -1,4 +1,9 @@
+---
+created_date: 2021-12-21
+---
+
 [TOC]
+
 ## Rust介绍
 - 2006年，Mozilla研究院的 Graydon Hoare 开始设计创造自己的私人项目 Rust 语言。
 - 2009年，Mozilla开始赞助这个项目，后来在Dave Herman, Brendan Eich以及很多其他人的贡献下逐步完善的。

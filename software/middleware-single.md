@@ -1,5 +1,10 @@
+---
+created_date: 2020-11-16
+---
 
 [TOC]
+
+
 ### 2. 安装MongoDB/4.0
 #### 2.1 centos7通过yum源安装mongodb
 ```shell

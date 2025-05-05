@@ -1,3 +1,9 @@
+---
+created_date: 2024-01-02
+---
+
+[TOC]
+
 ## 安装GUI
 ```bash
 # 安装gnome客户端

@@ -1,3 +1,9 @@
+---
+created_date: 2024-11-19
+---
+
+[TOC]
+
 # 安装jenkins
 # https://jenkins.io/download/
 

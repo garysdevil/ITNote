@@ -1,3 +1,9 @@
+---
+created_date: 2021-07-23
+---
+
+[TOC]
+
 ## 配置讲解
 ### /etc/sudoer
 - root ALL=(ALL) ALL

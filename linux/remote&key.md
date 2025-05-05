@@ -1,3 +1,9 @@
+---
+created_date: 2025-01-24
+---
+
+[TOC]
+
 ## ssh 
 ```bash
 # -o StrictHostKeyChecking=no 告诉SSH客户端不检查主机密钥数据库(/etc/ssh/ssh_known_hosts 或 ~/.ssh/known_hosts)，并自动接受第一次连接到的主机的公钥

@@ -1,3 +1,9 @@
+---
+created_date: 2023-02-21
+---
+
+[TOC]
+
 ## 安装ruby
 - 文档
     - https://www.runoob.com/ruby/ruby-installation-unix.html
