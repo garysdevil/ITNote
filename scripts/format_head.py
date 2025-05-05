@@ -3,9 +3,13 @@ import subprocess
 import re
 import datetime
 import argparse
+from colorama import init, Fore, Style
+
+# 初始化 colorama（支持 Windows 和 macOS 终端）
+init(autoreset=True)
 
 def get_git_creation_time(file_path, repo_root):
-    """使用 Git 获取文件的首次提交时间（Windows 兼容）。"""
+    """使用 Git 获取文件的首次提交时间（跨平台兼容）。"""
     try:
         result = subprocess.run(
             ['git', 'log', '--follow', '--format=%aI', '--reverse', '--', file_path],
@@ -67,7 +71,7 @@ def update_md_file(file_path, creation_time):
         # 写回文件
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(content)
-        print(f"Updated {file_path} with Git creation time: {creation_time} and inserted [TOC]")
+        print(f"{Fore.GREEN}Updated {file_path} with Git creation time: {creation_time} and inserted [TOC]{Style.RESET_ALL}")
 
     except Exception as e:
         print(f"Error updating {file_path}: {e}")
