@@ -5,6 +5,7 @@ created_date: 2020-11-16
 [TOC]
 
 ### 安装
+
 ```yaml
 version: '3'
 services:
@@ -17,6 +18,7 @@ services:
 ```
 
 ### 数据库可读取监控
+
 ```bash
 pushgateway=XXX.XXX.XXX.XXX
 port=9091
@@ -31,7 +33,9 @@ cat <<EOF | curl --data-binary @- http://${pushgateway}:${port}/metrics/job/${jo
 chain_index_process_num{process="${process}"} ${process_num}
 EOF
 ```
+
 ### 一 进程监控
+
 ```bash
 pushgateway=XXX.XXX.XXX.XXX
 port=9091
@@ -48,8 +52,10 @@ EOF
 ```
 
 ### 二 通过查看日志是否含有某个关键字来判断节点集群好坏 - 一下脚本有个小问题
+
 1. 写监控脚本
-mkdir  ~/pushgateway_script; cd ~/pushgateway_script && vim garys_status.sh
+   mkdir ~/pushgateway_script; cd ~/pushgateway_script && vim garys_status.sh
+
 ```bash
 #!/bin/bash
 # 监控集群中不同的节点需要修改的变量：instance, path
@@ -78,12 +84,14 @@ cat <<EOF | curl --data-binary @- http://${pushgateway}:${port}/metrics/job/"${j
 chain_garys_log_error{key_word="${key_word}",chain_cluster="${chain_cluster}"} ${chain_garys_log_error}
 EOF
 ```
+
 2. 写定时采集任务
-crontab -e
-*/1 * * * * /bin/bash  ~/pushgateway_script/garys_status.sh >> ~/pushgateway_script/cron.log
+   crontab -e
+   \*/1 * * * * /bin/bash ~/pushgateway_script/garys_status.sh >> ~/pushgateway_script/cron.log
 
 3. 配置告警规则
-根据不同的集群，对应修改expr和description
+   根据不同的集群，对应修改expr和description
+
 ```yaml
 groups:
 - name: fisco-garys cluster status is not ok

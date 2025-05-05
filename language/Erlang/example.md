@@ -5,9 +5,13 @@ created_date: 2022-02-04
 [TOC]
 
 - 参考 https://github.com/hcvst/erlang-otp-tutorial
+
 ## None OTP
+
 ### A non OTP server
+
 - vi no_otp.erl
+
 ```erlang
 %%%---------------------------------------------------------------------------
 %%% @doc A simple server that does not use OTP. 
@@ -88,6 +92,7 @@ loop(#state{count=Count}) ->         % the main server loop
 ```
 
 ### Run A non OTP server
+
 ```erlang
 Eshell V5.8.5  (abort with ^G)
 1> c(no_otp).
@@ -105,6 +110,7 @@ ok
 ```
 
 ### A non-OTP supervisor
+
 ```erlang
 %%%----------------------------------------------------------------------------
 %%% @doc A non-OTP supervisor
@@ -145,6 +151,7 @@ supervise() ->
 ```
 
 ### Run A non-OTP supervisor
+
 ```erlang
 Eshell V5.8.5  (abort with ^G)
 1> c(sup).                                   % compile our supervisor module

@@ -4,41 +4,42 @@ created_date: 2020-12-06
 
 [TOC]
 
-
 ## iptables
+
 - Linux的2.4版内核引入了一种全新的网络包处理引擎Netfilter，能为其它内核模块提供数据包过滤、网络地址转换、负载均衡等功能。
 - iptables 命令是与Netfilter 系统进行交互的主要工具，用于提供数据包过滤和NAT。
 - 基于“过滤规则链”的概念来阻止或转发流量。
 - ip set 是linux内核的一个内部框架，ipset是iptables的扩展。
 
 ### 命令
-- iptables -t ${tabletype} ${action_direction} ${direction}  ${packet_pattern} -j ${what_to_do}
-1. ${tabletype} 总共4张表，每张表提供了特定的功能，默认为filter表。使用方式 ``-t ${tabletype}``
-     - filter
-     - nat
-     - mangle
-     - raw
-2. ${direction} 5个方向(五链) （每个链都代表了数据需要经过的地点）
-    1. PREROUTING 路由前的数据包
-    2. FORWARD 转发的数据包
-    3. INPUT 进入的数据包
-    4. OUTPUT 传出的数据包
-    5. POSTROUTING  路由后的数据包
-3. ${action_direction}  匹配到规则后，停止搜索，因此前面的规则权重大于后面的规则
-    - -I 在规则链头部添加一个规则
-    - -A 在规则链末尾添加一个规则
-    - -D 从规则链删除一个规则
-    - -L 显示规则链上当前配置的规则
-    - -F 删除当前iptables链上的全部规则
-4. ${packet_pattern} 筛选需要进行检查的数据包
-    1. -s 检查所有的数据包，确定它的源IP地址
-    2. ...
-5. -j ${what_to_do}
-    1. DROP 丢弃数据包
-    2. REJECT 丢弃数据包，且向请求计算机发送一个错误消息
-    3. ACCEPT 对数据包进行-A选项相关动作的操作
-    4. REDIRECT 重定向，主要用于实现端口重定向
 
+- iptables -t ${tabletype} ${action_direction} ${direction} ${packet_pattern} -j ${what_to_do}
+
+1. ${tabletype} 总共4张表，每张表提供了特定的功能，默认为filter表。使用方式 `-t ${tabletype}`
+   - filter
+   - nat
+   - mangle
+   - raw
+2. ${direction} 5个方向(五链) （每个链都代表了数据需要经过的地点）
+   1. PREROUTING 路由前的数据包
+   2. FORWARD 转发的数据包
+   3. INPUT 进入的数据包
+   4. OUTPUT 传出的数据包
+   5. POSTROUTING 路由后的数据包
+3. ${action_direction} 匹配到规则后，停止搜索，因此前面的规则权重大于后面的规则
+   - -I 在规则链头部添加一个规则
+   - -A 在规则链末尾添加一个规则
+   - -D 从规则链删除一个规则
+   - -L 显示规则链上当前配置的规则
+   - -F 删除当前iptables链上的全部规则
+4. ${packet_pattern} 筛选需要进行检查的数据包
+   1. -s 检查所有的数据包，确定它的源IP地址
+   2. ...
+5. -j ${what_to_do}
+   1. DROP 丢弃数据包
+   2. REJECT 丢弃数据包，且向请求计算机发送一个错误消息
+   3. ACCEPT 对数据包进行-A选项相关动作的操作
+   4. REDIRECT 重定向，主要用于实现端口重定向
 
 ```bash
 # -p 指定协议， -p all 代表所有协议
@@ -90,13 +91,17 @@ iptables -F # 清空所有表格的所有链
 ```
 
 ### multiport扩展
+
 - 以离散方式定义多端口匹配；最多匹配指定15个端口
+
 ```bash
 iptables -I INPUT -p tcp -m multiport --dport 8545,8546 -j DROP 
 ```
 
 ### iprange扩展
+
 - 指明连续的（但一般是不能扩展为整个网络）ip地址范围时使用.
+
 ```bash
 # 指明连续的（但一般是不能扩展为整个网络）ip地址范围时使用
 –src-range from[-to] # 指明连续的源ip地址范围
@@ -106,7 +111,9 @@ iptables -I INPUT -m iprange –src-range 192.168.1.1-192.168.1.10 -j DROP
 ```
 
 ### time扩展
+
 - 根据报文到达的时间与指定的时间范围进行匹配
+
 ```bash
 iptables -I INPUT -p tcp --dport 8545 -m time –timestart 00:00 –timestop 12:00 -j DROP
 –datestart
@@ -117,6 +124,7 @@ iptables -I INPUT -p tcp --dport 8545 -m time –timestart 00:00 –timestop 12:
 ```
 
 ### ipset扩展
+
 - ipset hash类型的集合默认大小为1024。当在iptables/ip6tables中使用了ipset hash类型的集合，则该集合将不能再新增条目。
 
 ```bash

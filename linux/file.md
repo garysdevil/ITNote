@@ -5,7 +5,9 @@ created_date: 2025-01-15
 [TOC]
 
 # 文件
+
 ## 概念
+
 1. 硬盘的最小存储单位: 扇区-Sector, 每个扇区储存512字节-相当于0.5KB.
 2. 文件存取的最小单位: 块-block, 操作系统读取硬盘的时候, 不会一个个扇区的读取,这样效率太低,而是一次性连续读取多个扇区, 即一次性读取一个块block。 块的大小, 最常见的是4KB, 即连续八个sector组成一个block.
 3. 文件存储在块中。
@@ -14,6 +16,7 @@ created_date: 2025-01-15
 6. Unix/Linux系统内部不使用文件名，而使用inode号码来识别文件。
 
 ## 指令
+
 ```sh
 # stat 查看文件的inode信息
 stat ${file}
@@ -26,26 +29,27 @@ ln ${old_file} ${new_file}
 ln -s ${old_file} ${new_file}
 ```
 
-
 ### dd
+
 - dd 指令用于处理磁盘设备文件
 
 1. 数据来源选择 if=/dev/zero
-	1. 使用 /dev/urandom 生成随机数据，可能稍慢。
-	2. 使用 /dev/zero 可生成零填充数据，速度更快。
-	3. 使用特定内容进行填充 echo "Hello Filecoin!" > input_data.txt
+   1. 使用 /dev/urandom 生成随机数据，可能稍慢。
+   2. 使用 /dev/zero 可生成零填充数据，速度更快。
+   3. 使用特定内容进行填充 echo "Hello Filecoin!" > input_data.txt
 2. 输出路径 of=output.bin
 3. 其它参数
-	1. 显示进度 status=progress
-	2. 异步进行 oflag=dsync
-	3. 块的大小 bs=1M
-	4. 块的数量 count=N
-	5. 在输出文件中跳过的块数量 seek=N
-4. 示范 
-	1. 创建文件 dd if=/dev/urandom of=urandom.bin bs=1G count=17 status=progress
-	2. 备份磁盘分区 dd if=/dev/sda1 of=backup.img status=progress
+   1. 显示进度 status=progress
+   2. 异步进行 oflag=dsync
+   3. 块的大小 bs=1M
+   4. 块的数量 count=N
+   5. 在输出文件中跳过的块数量 seek=N
+4. 示范
+   1. 创建文件 dd if=/dev/urandom of=urandom.bin bs=1G count=17 status=progress
+   2. 备份磁盘分区 dd if=/dev/sda1 of=backup.img status=progress
 
 ### 传文件
+
 ```bash
 # 本地快速拷贝文件夹
 tar cvf – 源文件夹路径 | tar xvf – -C 目的文件夹路径
@@ -80,12 +84,14 @@ rsync -P -e'ssh -p 22' home.tar 192.168.205.34:/home/home.tar
 rsync -P -a -z -e'ssh -p 22' 192.168.205.34:/home/home ./
 ```
 
-- rsync 使用-a参数时，文件夹内的文件太多，可能会导致这个问题，例如当文件夹内含有8691137个文件时 ``No space left on device (28)``
+- rsync 使用-a参数时，文件夹内的文件太多，可能会导致这个问题，例如当文件夹内含有8691137个文件时 `No space left on device (28)`
 
 ### 稀疏文件
+
 - 稀疏文件 sparse file
-    - 稀疏文件就是在文件中留有很多空余空间，留备将来插入数据使用。如果这些空余空间被ASCII码的NULL字符占据，并且这些空间相当大，那么，这个文件就被称为稀疏文件，而且，并不分配相应的磁盘块。
-    - Linux中常见的qcow2文件和raw文件，都是稀疏文件。
+  - 稀疏文件就是在文件中留有很多空余空间，留备将来插入数据使用。如果这些空余空间被ASCII码的NULL字符占据，并且这些空间相当大，那么，这个文件就被称为稀疏文件，而且，并不分配相应的磁盘块。
+  - Linux中常见的qcow2文件和raw文件，都是稀疏文件。
+
 ```bash
 # 创建稀疏文件，将创建一个5MB大小的文件，但不在磁盘上存储数据（仅存储元数据）
 spare_file_path=spare_file
@@ -101,6 +107,7 @@ qemu-img info ${spare_file_path}
 ```
 
 ### 传稀疏文件
+
 ```bash
 # 拷贝稀疏文件的几种方式 # 两台机器的文件系统必须相同，否则下面的指令无效
 
@@ -128,6 +135,7 @@ time rsync -P -S -a -z  -e'ssh -p 22' ./aa  10.10.3.76:/tank1/
 ```
 
 ### 查看文件大小
+
 ```bash
 # 查看所有目录包含隐含目录的大小
 du -sh * .[^.]*

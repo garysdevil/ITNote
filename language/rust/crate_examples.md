@@ -4,19 +4,22 @@ created_date: 2022-09-16
 
 [TOC]
 
-
 ## rayon
+
 - 对比标准库中的迭代函数
-    - rayon并行迭代函数内的闭包不能改变外部状态。
-    - rayon并行迭代函数会有些不同。
+
+  - rayon并行迭代函数内的闭包不能改变外部状态。
+  - rayon并行迭代函数会有些不同。
 
 - 功能
-    - Rayon并行迭代器负责确定如何将数据划分为并行任务。动态适应以达到最佳性能。
-    - Rayon提供了join和scope函数，允许用户自己创建并行任务。提供了更大的灵活性。
-    - 可以创建自定义线程池，而不是使用Rayon的默认全局线程池。获得了更多控制。
+
+  - Rayon并行迭代器负责确定如何将数据划分为并行任务。动态适应以达到最佳性能。
+  - Rayon提供了join和scope函数，允许用户自己创建并行任务。提供了更大的灵活性。
+  - 可以创建自定义线程池，而不是使用Rayon的默认全局线程池。获得了更多控制。
 
 - 工作原理
-    - 通过线程间 Work stealing 的方式达到并行。 
+
+  - 通过线程间 Work stealing 的方式达到并行。
 
 ```rs
 fn main() {
@@ -39,6 +42,7 @@ fn sum_of_squares(input: &[i32]) -> i32 {
 ```
 
 ## rocksdb
+
 - 默认会创建rocksdb:low 和 rocksdb:high两个线程。
 
 ```rs
@@ -76,8 +80,8 @@ pub fn main() {
 
 ```
 
-
 ## rand
+
 ```rs
 use rand::prelude::*;
 
@@ -118,16 +122,16 @@ fn main() {
 
 ```
 
-
 ## backoff
-- 可以用于同步和异步编程中
 
+- 可以用于同步和异步编程中
 
 ```toml
 [dependencies]
 backoff = "0.4.0"
 reqwest = {version = "0.11", features = ["json", "blocking"]}
 ```
+
 ```rs
 fn main() {
     use backoff::{retry, Error, ExponentialBackoff};
@@ -149,6 +153,7 @@ fn main() {
 ```
 
 ## bytes
+
 - Bytes
 - BytesMut 容量会进行伸缩。
 
@@ -180,6 +185,7 @@ fn main2() {
 ```
 
 ## wrap
+
 ```rs
 use warp::Filter;
 
@@ -196,6 +202,7 @@ async fn main() {
 ```
 
 ## ansi_term
+
 ```rs
 use ansi_term::Colour::Red;
 use ansi_term::Colour::Cyan;
@@ -212,6 +219,7 @@ fn main() {
 ```
 
 ## colored
+
 ```rs
 use colored::*;
 fn main() {

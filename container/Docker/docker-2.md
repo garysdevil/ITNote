@@ -5,13 +5,17 @@ created_date: 2020-12-04
 [TOC]
 
 # docker
+
 https://docs.docker.com
 
 ## 安装docker
+
 - 官方步骤：
-https://docs.docker.com/install/linux/docker-ce/ubuntu/  
-说明：2017年的3月1号之后,新版本的免费版本为docker-ce
+  https://docs.docker.com/install/linux/docker-ce/ubuntu/\
+  说明：2017年的3月1号之后,新版本的免费版本为docker-ce
+
 ### centos安装docker
+
 ```bash
 # yum 安装docker-ce
 # 1.安装依赖
@@ -35,7 +39,9 @@ systemctl start docker
 # 使docker跟随系统一起启动
 systemctl enable docker.service
 ```
+
 ### ubuntu安装docker
+
 ```bash
 # 删除旧的版本
 apt-get remove docker docker-engine docker.io containerd runc
@@ -61,7 +67,9 @@ apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
 systemctl enable docker
 systemctl start docker
 ```
+
 ## 安装docker-compose
+
 ```bash
 # 1. github上查看最新的docker-compose版本,获取下载链接
 # https://github.com/docker/compose/releases/
@@ -73,7 +81,9 @@ chmod +x /usr/local/bin/docker-compose
 ```
 
 ## 常用指令
+
 ### Docker
+
 ```bash
 # 1. Build 构建镜像
 docker build --build-arg PROJECT=pre --no-cache --network=host -f Dockerfile -t ${url}:${image_tag} .
@@ -122,16 +132,21 @@ docker load -i ${image_name}
 ```
 
 ### Dockerfile
+
 1. 从编译阶段的中拷贝编译结果到当前镜像中
+
 ```dockerfile
 COPY --from=builder /build/server /
 ```
+
 2. 直接从一个已经存在的镜像中拷贝
+
 ```dockerfile
 COPY --from=quay.io/coreos/etcd:v3.3.9 /usr/local/bin/etcd /usr/local/bin/
 ```
 
 - 基本语法
+
 ```dockerfile
 FROM 基础镜像
 ARG 输入参数健=输入参数值
@@ -149,6 +164,7 @@ CMD 容器入口指令，可以被docker启动指令覆盖掉
 ```
 
 ### docker-compose
+
 ```bash
 docker-compose up -d
 
@@ -158,26 +174,33 @@ docker-compose down -v
 ```
 
 ## docker配置更改
+
 ### 登陆docker仓库Harbor
+
 1. 通过密钥-手动创建secret
-  - `cat /root/.docker/config.json | base64 -w`
+
+- `cat /root/.docker/config.json | base64 -w`
 
 2. 通过密钥-自动创建secret
+
 ```bash
 kubectl create secret docker-registry 密钥的名字 --docker-server=DOCKER_REGISTRY_SERVER --docker-username=DOCKER_USER
 --docker-password=DOCKER_PASSWORD --docker-email=DOCKER_EMAIL
 ```
 
 3. 通过docker登陆生成认证文件，然后认证文件考到kubelet认证下
+
 ```bash
 docker login DOCKER_REGISTRY_SERVER
 cp ~/.docker/config.json /var/lib/kubelet/
 ```
 
 ### 更改docker存储目录与镜像仓库地址
+
 - 参考文档 https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file
 
-- vi /etc/docker/daemon.json 
+- vi /etc/docker/daemon.json
+
 ```conf
 {
   # 1. 更改镜像仓库地址
@@ -200,10 +223,10 @@ cp ~/.docker/config.json /var/lib/kubelet/
 ```
 
 - 更改docker存储目录 方式三
-    - 更改service里的启动方式 ExecStart=/usr/bin/dockerd --graph /home/docker
-
+  - 更改service里的启动方式 ExecStart=/usr/bin/dockerd --graph /home/docker
 
 ## 配置docker可以使用宿主机的GPU
+
 ```sh
 # 添加 NVIDIA Container Toolkit
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
@@ -227,8 +250,10 @@ docker pull nvidia/cuda:12.3.0-base-ubuntu20.04
 docker run --rm --gpus=all nvidia/cuda:12.3.0-base-ubuntu20.04 nvidia-smi
 ```
 
-##  其它
+## 其它
+
 1. 使普通用户也可以操作docker
+
 ```bash
 # 将普通用户添加进docker用户组
 #sudo groupadd docker     # 添加docker用户组 ，如果安装了docker，默认会存在，只需要执行下面的即可

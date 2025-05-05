@@ -5,9 +5,11 @@ created_date: 2021-07-21
 [TOC]
 
 ## service
+
 - 开机启动service配置文件存放位置 ls /etc/init.d/
 
 - 常用指令
+
 ```bash
 service ${服务名} start
 service --status-all
@@ -21,33 +23,40 @@ chkconfig ${service} off
 ntsysv
 ```
 
+## systemctl
 
-## systemctl 
 - 参考
-    - http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html
-    - https://www.cnblogs.com/jimbo17/p/9107052.html 资源管理
+
+  - http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html
+  - https://www.cnblogs.com/jimbo17/p/9107052.html 资源管理
 
 - systemctl兼容service指令
 
 - 所有可用的单元文件存放在 /usr/lib/systemd/system/ 和 /etc/systemd/system/ 目录（后者优先级更高）
 
 - 开机执行脚本 /etc/rc.d/rc.local
+
 - 查看rc-local.service是否启动 systemctl | grep rc-local.service
 
 - systemd有自己的资源控制机制
 
 - service的三种启动方式
-    - Type=simple（默认值）：systemd 启动服务进程。服务进程不会被fork。如果该服务要启动其他服务，不要使用此类型启动，除非该服务是socket激活型。
-    - Type=forking：systemd 通过fork方式启动服务进程，且父进程退出后服务启动成功。对于常规的守护进程（daemon），除非你确定此启动方式无法满足需求，使用此类型启动即可。使用此启动类型应同时指定 PIDFile=，以便systemd能够跟踪服务的主进程。
-    - Type=oneshot：这一选项适用于只执行一项任务、随后立即退出的服务。可能需要同时设置 RemainAfterExit=yes 使得 systemd 在服务进程退出之后仍然认为服务处于激活状态。
-    - Type=notify：与 Type=simple 相同，但约定服务会在就绪后向 systemd 发送一个信号。这一通知的实现由 libsystemd-daemon.so 提供。
-    - Type=dbus：若以此方式启动，当指定的 BusName 出现在DBus系统总线上时，systemd认为服务就绪。
+
+  - Type=simple（默认值）：systemd 启动服务进程。服务进程不会被fork。如果该服务要启动其他服务，不要使用此类型启动，除非该服务是socket激活型。
+  - Type=forking：systemd 通过fork方式启动服务进程，且父进程退出后服务启动成功。对于常规的守护进程（daemon），除非你确定此启动方式无法满足需求，使用此类型启动即可。使用此启动类型应同时指定 PIDFile=，以便systemd能够跟踪服务的主进程。
+  - Type=oneshot：这一选项适用于只执行一项任务、随后立即退出的服务。可能需要同时设置 RemainAfterExit=yes 使得 systemd 在服务进程退出之后仍然认为服务处于激活状态。
+  - Type=notify：与 Type=simple 相同，但约定服务会在就绪后向 systemd 发送一个信号。这一通知的实现由 libsystemd-daemon.so 提供。
+  - Type=dbus：若以此方式启动，当指定的 BusName 出现在DBus系统总线上时，systemd认为服务就绪。
+
 ### 创建服务
-- 参考 
-    - https://www.bbsmax.com/A/lk5aWAmZz1/
-    - https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/working-with-systemd-unit-files_configuring-basic-system-settings
+
+- 参考
+
+  - https://www.bbsmax.com/A/lk5aWAmZz1/
+  - https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/working-with-systemd-unit-files_configuring-basic-system-settings
 
 - vim /usr/lib/systemd/system/XXXXX.service
+
 ```conf
 [Unit]
 Description=XXXXX
@@ -91,13 +100,14 @@ CPUShares=1024
 WantedBy=multi-user.target # 多用户环境下启用
 Alias=XXXXXd.service # 服务的别名
 ```
-- 在systemd配置选项上，cgroup v2相比cgroup v1有如下不一样的地方：
-    1. CPU： CPUWeight=和StartupCPUWeight=取代了CPUShares=和StartupCPUShares=。cgroup v2没有"cpuacct"控制器。
-    2. Memory：MemoryMax=取代了MemoryLimit=. MemoryLow= and MemoryHigh=只在cgroup v2上支持。
-    3. IO：BlockIO前缀取代了IO前缀。在cgroup v2，Buffered写入也统计在了cgroup写IO里，这是cgroup v1一直存在的问题。
 
+- 在systemd配置选项上，cgroup v2相比cgroup v1有如下不一样的地方：
+  1. CPU： CPUWeight=和StartupCPUWeight=取代了CPUShares=和StartupCPUShares=。cgroup v2没有"cpuacct"控制器。
+  2. Memory：MemoryMax=取代了MemoryLimit=. MemoryLow= and MemoryHigh=只在cgroup v2上支持。
+  3. IO：BlockIO前缀取代了IO前缀。在cgroup v2，Buffered写入也统计在了cgroup写IO里，这是cgroup v1一直存在的问题。
 
 ### 常用指令
+
 ```bash
 # 查看运行失败的单元
 systemctl --failed
@@ -122,15 +132,19 @@ systemctl show --property=Environment ${service_name}
 ```
 
 ## supervisorctl
+
 1. Supervisor（http://supervisord.org/）是用Python开发的一个client/server服务，是Linux/Unix系统下的一个进程管理工具，不支持Windows系统。它可以很方便的监听、启动、停止、重启一个或多个进程。用Supervisor管理的进程，当一个进程意外被杀死，supervisort监听到进程死后，会自动将它重新拉起。
+
 2. 安装
 
 3. 启动Supervisor服务
-supervisord -c /etc/supervisord.conf
+   supervisord -c /etc/supervisord.conf
+
 4. 进入交互界面
-supervisorctl
+   supervisorctl
 
 ## 资源限制
+
 - 参考 https://www.cnblogs.com/jimbo17/p/9107052.html
 - cgroup有两个版本: v1和v2
 - 在新版的Linux（4.x）上，v1和v2同时存在，但同一种资源（CPU、内存、IO等）只能用v1或者v2一种cgroup版本进行控制

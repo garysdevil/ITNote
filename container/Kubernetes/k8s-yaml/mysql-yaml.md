@@ -5,8 +5,11 @@ created_date: 2020-11-16
 [TOC]
 
 ## 配置configmap
+
 ### 方式一 vi mysql.cnf
+
 kubect create configmap mysql-cm --from-file=mysql.cnf
+
 ```yaml
 [mysqld]
 port = 3306
@@ -110,8 +113,11 @@ max_allowed_packet = 16M
 [mysqlhotcopy]
 interactive-timeout
 ```
+
 ### 方式二 vi mysql.cnf.yaml
+
 kubect create -f mysql.cnf.yaml
+
 ```yaml
 apiVersion: v1
 kind: ConfigMap
@@ -222,9 +228,12 @@ data:
     [mysqlhotcopy]
     interactive-timeout
 ```
+
 ### 部署mysql
+
 kubectl apply -f deployment-mysql_ceph.yaml
 deployment-mysql_ceph.yaml
+
 ```yaml
 apiVersion: v1
 kind: Service
@@ -308,4 +317,3 @@ spec:
         requests:
           storage: 100Gi
 ```
-

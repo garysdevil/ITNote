@@ -5,26 +5,35 @@ created_date: 2024-11-19
 [TOC]
 
 ## CICD
+
 - 参考
-    - https://www.jenkins.io/doc/pipeline/tour/post/  构建结束后操作
-    - https://www.jenkins.io/zh/doc/book/pipeline/syntax/
+  - https://www.jenkins.io/doc/pipeline/tour/post/ 构建结束后操作
+  - https://www.jenkins.io/zh/doc/book/pipeline/syntax/
 
 ### 信息
-1. 
+
+1.
 
 ### 流程
-- 方式一(aws k8s)
-    1. 下载代码（通过credentialsId登入git仓库）
-    2. build dockerfile
-    3. aws 登入（）
-    4. 推送镜像进入aws
 
-    5. 登入k8s集群（执行pipeline脚本的机器能在k8s集群内执行操作）
-    6. 更新yaml并且apply
+- 方式一(aws k8s)
+
+  1. 下载代码（通过credentialsId登入git仓库）
+
+  2. build dockerfile
+
+  3. aws 登入（）
+
+  4. 推送镜像进入aws
+
+  5. 登入k8s集群（执行pipeline脚本的机器能在k8s集群内执行操作）
+
+  6. 更新yaml并且apply
 
 - 方式二（裸部署方式）
 
 ### template
+
 ```groovy
 // clone code
 def git_url = 'ssh://git@IP:PORT/PROJECT.git'
@@ -347,10 +356,13 @@ def notifyQA(ppl_params) {
 ```
 
 ## Notice
-1. jenkins
-    - 如果在agent上有操作，job会创建两个文件夹 ${jobname}  ${jobname}@tmp
-    - 如果在agent上无操作，job会创建一个文件夹 ${jobname}@tmp
 
-2. 插件 SSH Pipeline Steps 
-    - 如果这个文件所属者不属于root用户，root用户操作也会报错
-    - get过来的文件放在${jobname}目录内
+1. jenkins
+
+   - 如果在agent上有操作，job会创建两个文件夹 ${jobname} ${jobname}@tmp
+   - 如果在agent上无操作，job会创建一个文件夹 ${jobname}@tmp
+
+2. 插件 SSH Pipeline Steps
+
+   - 如果这个文件所属者不属于root用户，root用户操作也会报错
+   - get过来的文件放在${jobname}目录内

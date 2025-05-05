@@ -4,28 +4,33 @@ created_date: 2020-11-16
 
 [TOC]
 
-
 ## 数据类型
+
 ### 声明与赋值
+
 - 变量的声明与赋值。
-   ```go
-   var var_name string = "gary" 
-   var var_name1,var_name2 string = "gary1","gary2"
-   // 多个不同类型变量的声明
-   var (
-      var_name2 string
-      var_name2 int
-   )
-   // 函数内可简写为。
-   func test(){
-      var_name := "gary" // 一种动态声明方式，左侧的变量不能是已经被声明过的，否则会导致编译错误，此方式只能在函数体中出现。
-   }
-   ```
+  ```go
+  var var_name string = "gary" 
+  var var_name1,var_name2 string = "gary1","gary2"
+  // 多个不同类型变量的声明
+  var (
+     var_name2 string
+     var_name2 int
+  )
+  // 函数内可简写为。
+  func test(){
+     var_name := "gary" // 一种动态声明方式，左侧的变量不能是已经被声明过的，否则会导致编译错误，此方式只能在函数体中出现。
+  }
+  ```
+
 ### 基本类型
+
 1. 基本类型
+
    - 布尔型、数字类型、字符串类型、数组
 
 2. 数组
+
    ```go
    // 声明
    var var_arr_name1 [var_size] var_type
@@ -33,7 +38,8 @@ created_date: 2020-11-16
    var var_arr_name2 = [5]float32{10.0, 50.0}
    ```
 
-3. 常量 
+3. 常量
+
    ```go
    // 常量的值必须是编译运行前确定的
    // 常量中的数据类型只可以是布尔型、数字型（整数型、浮点型和复数）和字符串型
@@ -51,18 +57,22 @@ created_date: 2020-11-16
    ```
 
 ### 引用类型
+
 - 引用类型
-   - 切片、字典(map)、通道（channel）、接口（interface）
+
+  - 切片、字典(map)、通道（channel）、接口（interface）
 
 - 指针类型
-   ```go
-	num1_var := 255
-	var num2_var *int = &num1_var
-	fmt.Printf("Type of num2_var is %T\n", num2_var)
-	fmt.Println("Address of num2_var is", num2_var)
-   ```
-   
+
+  ```go
+   num1_var := 255
+   var num2_var *int = &num1_var
+   fmt.Printf("Type of num2_var is %T\n", num2_var)
+   fmt.Println("Address of num2_var is", num2_var)
+  ```
+
 1. 切片：动态数组
+
    ```go
    // 声明与初始化切片
    var var_slice_name []var_type = make([]var_type, var_length, var_capacity)
@@ -76,6 +86,7 @@ created_date: 2020-11-16
    ```
 
 2. 无序集合map
+
    ```go
    /* 声明变量，默认 map = nil */
    var var_map_name map[key_type]value_type
@@ -93,6 +104,7 @@ created_date: 2020-11-16
 ### type关键字
 
 1. 结构体 struct
+
    ```go
    // 定义结构体
    type Struct_var_type struct {
@@ -111,6 +123,7 @@ created_date: 2020-11-16
    ```
 
 2. 接口 interface
+
    ```go
    type interface_name interface {
       method_name1(slice []string) string
@@ -125,11 +138,15 @@ created_date: 2020-11-16
    ```
 
 3. 函数类型
+
    - 声明
+
    ```go
    type func_name func(name string) string
    ```
+
    - 示范
+
    ```go
    //定义函数类型 Doing
    type Doing func(thing string) string
@@ -150,18 +167,24 @@ created_date: 2020-11-16
       fmt.Println(result)
    }
    ```
+
 4. 根据已有数据类型，定义新类型
+
    ```go
    type typename string
    func (n typename) len() int {
       return len(n)
    }
    ```
+
 ### 通道
+
 1. 通道 channel
    - 传递数据的一钟数据结构。
+
    - 可用于两个 goroutine 之间通过传递一个指定类型的值来同步运行和通讯。
-   - 操作符 <- 用于指定通道的方向，发送或接收。如果未指定方向，则为双向通道。
+
+   - 操作符 \<- 用于指定通道的方向，发送或接收。如果未指定方向，则为双向通道。
 
    - 通道的创建
    ```go
@@ -169,22 +192,28 @@ created_date: 2020-11-16
    ch := make(chan int) 
    // 创建int类型的通道并设置缓冲区
    ch := make(chan int, 100)
-   ``` 
+   ```
 
 ## 语法特性
+
 ### 基本特性
+
 1. 在函数内，变量声明而不使用，编译时则会报错。
 
 2. 结构体变量名：大写表示外部可以访问。
 
 3. 支持类型转换
+
    ```go
    var1_name := 22
    var2_name := float32(var1_name)
    fmt.Printf("Type of var2_name is %T\n", var2_name)
    ```
+
 ### 函数
+
 1. 关于函数的大括号
+
 ```go
 func main()  
 {  // 错误，{ 不能在单独的行上
@@ -193,6 +222,7 @@ func main()
 ```
 
 2. 函数可以直接返回多个值
+
 ```go
 func swap(x, y string) (string, string) {
    return y, x
@@ -200,13 +230,17 @@ func swap(x, y string) (string, string) {
 ```
 
 3. 匿名函数
+
 ```go
 func(){
     fmt.Println("hello")
 }
 ```
+
 ### 接口
+
 - 在golang里，接口内函数的实现不需要关键字，是被隐式实现的
+
 ```go
    type Mammal interface {
       Say()
@@ -223,14 +257,17 @@ func(){
 ```
 
 ### 循环
+
 1. 循环 只有for循坏：break，continue，goto
 
 2. for 循环不需要()
+
    ```go
    for i := 0; i < 10; i++{} 
    ```
 
 3. 循环数组、切片、map，返回元素的索引和索引对应的值。
+
 ```go
 for k, v := range kvs{
    if v == 1 {continue} // 跳过当前循环的剩余语句，然后继续进行下一轮循环
@@ -240,7 +277,9 @@ MyBreak: fmt.Println("my break")
 ```
 
 ### 条件语句
+
 1. if
+
 ```go
 func judge(num int) int {
     if num > 100 {
@@ -251,8 +290,10 @@ func judge(num int) int {
         return -1
     }
 }
-``` 
-2. switch 
+```
+
+2. switch
+
 ```go
 func main() {
    // 使用方式一
@@ -286,8 +327,8 @@ func main() {
 ```
 
 ### 并发
+
 1. Go 并发，通过go关键字开启一个 goroutine 协程
    ```go
    go function_name ( var_value )
    ```
-

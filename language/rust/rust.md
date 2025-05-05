@@ -5,25 +5,33 @@ created_date: 2021-12-21
 [TOC]
 
 ## Rust介绍
+
 - 2006年，Mozilla研究院的 Graydon Hoare 开始设计创造自己的私人项目 Rust 语言。
+
 - 2009年，Mozilla开始赞助这个项目，后来在Dave Herman, Brendan Eich以及很多其他人的贡献下逐步完善的。
+
 - 2010年，Rust 首次公开，同年开始改写自托管编译器（基于 LLVM 后端）来替换原来用 OCaml 写的编译器，在 2011 年实现了自我编译 [1]
+
 - 2015年，第一个稳定版本 Rust 1.0 首次发布。
 
 - Rust 的编译器是在 MIT License 和 Apache License 2.0 双重协议声明下的免费开源软件。
+
 - Rust 有完善的提案流程（RFC，Request For Comments），每一个人都可以提交提案，进行开发工作的核心团队细分为专项治理语言package、社区运营、语言核心开发、工具开发、库开发等，来管理维护各个package的各方面事项。
 
 ## 相关链接
-- 官网  https://www.rust-lang.org/
+
+- 官网 https://www.rust-lang.org/
 - 学习 https://doc.rust-lang.org/book/
-- 学习 https://course.rs/about-book.html  https://github.com/sunface/rust-course  Rust语言圣经(中文)
-- 学习 通过```rustup doc```获取离线学习文档
+- 学习 https://course.rs/about-book.html https://github.com/sunface/rust-course Rust语言圣经(中文)
+- 学习 通过`rustup doc`获取离线学习文档
 - Rust安装教程 https://www.rust-lang.org/tools/install
 - 在线编译器 https://play.rust-lang.org/
 - 宝箱文档 https://docs.rs/
 
 ## Rust工具包
-- Rust工具链管理器 ``rustup``
+
+- Rust工具链管理器 `rustup`
+
 ```bash
 # 下载安装Rust工具链管理器
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -32,33 +40,40 @@ rustc -V
 ```
 
 - channel： Rust发布在三个不同的"channel"上：stable，beta 和 nightly，对应三种不同的版本。
+
 ### rustup 工具链
-1. Rust编译器 ``rustc``
+
+1. Rust编译器 `rustc`
 
 2. Rust标准库rust-std
 
-3. Rust包管理和构建工具 ``cargo``
-    - 可以使用 cargo 指令进行 工程构建、编译、运行、打包、获取包等功能。
+3. Rust包管理和构建工具 `cargo`
 
-4. Rust文档生成器 ``rustup doc``
+   - 可以使用 cargo 指令进行 工程构建、编译、运行、打包、获取包等功能。
+
+4. Rust文档生成器 `rustup doc`
 
 5. Rust源代码格式化工具
-    - ``cargo-fmt 或者 cargo fmt``
-    - ``rustfmt``
 
-6. Rust代码检查工具 ``cargo clippy``
-    - 参考 https://magiclen.org/clippy/
-    - lint最早用于C语言，是一种用来检查代码的工具，现在的主流编程语言几乎都有lint可以使用，尤其是JavaScript、Python等直译式编程语言，因为它们的代码不会经过编译，所以特别需要使用lint来检查原代码。
-    - 通过lint，可以写出疑虑较少、性能更好或是更容易阅读的代码。
-    - Rust编程语言虽然是静态类型的编程语言，而且拥有十分严谨的编译器，但官方还是提供了一个lint工具 Clippy。
+   - `cargo-fmt 或者 cargo fmt`
+   - `rustfmt`
+
+6. Rust代码检查工具 `cargo clippy`
+
+   - 参考 https://magiclen.org/clippy/
+   - lint最早用于C语言，是一种用来检查代码的工具，现在的主流编程语言几乎都有lint可以使用，尤其是JavaScript、Python等直译式编程语言，因为它们的代码不会经过编译，所以特别需要使用lint来检查原代码。
+   - 通过lint，可以写出疑虑较少、性能更好或是更容易阅读的代码。
+   - Rust编程语言虽然是静态类型的编程语言，而且拥有十分严谨的编译器，但官方还是提供了一个lint工具 Clippy。
 
 ### 其它
-- 调试器 ``rust-gdb``
+
+- 调试器 `rust-gdb`
 
 - 代码提示工具
-    - rls
-        - Rust 语言服务器（RLS）基于 LSP（Language Server Protocol），即语言服务器协议，LSP 由红帽、微软和 Codenvy 联合推出，可以让不同的程序编辑器与集成开发环境（IDE）方便地嵌入各种编程语言，允许开发人员在最喜爱的工具中使用各种语言来编写程序。
-    - racer
+
+  - rls
+    - Rust 语言服务器（RLS）基于 LSP（Language Server Protocol），即语言服务器协议，LSP 由红帽、微软和 Codenvy 联合推出，可以让不同的程序编辑器与集成开发环境（IDE）方便地嵌入各种编程语言，允许开发人员在最喜爱的工具中使用各种语言来编写程序。
+  - racer
 
 ## 指令
 
@@ -125,24 +140,27 @@ cargo yank --vers 1.0.1 --undo # 撤回
 ```
 
 ## 编译器
-- 编译过程
-    1. 源代码（Rust Code）
-    2. 通过分词变为词条流（Tokens）
-    3. 通过解析变为抽象语法树（AST）
-    4. 通过降级简化为高级中间语言HIR，生成*.hir文件（HIR）
-    5. 编译器对高级中间语言HIR进行类型检查、方法查找等。（HIR）
-    6. 通过降级简化为中级中间语言MIL（MIL）
-    7. 编译器对中级中间语言MIL进行借用检查、优化、宏的代码生成、范型、单态化等。（MIL）
-    8. 转译为LLVM的中间语言LLVMIR（LLVMIR）
-    9. 通过LLVM后端，优化，生成机器码。
 
+- 编译过程
+  1. 源代码（Rust Code）
+  2. 通过分词变为词条流（Tokens）
+  3. 通过解析变为抽象语法树（AST）
+  4. 通过降级简化为高级中间语言HIR，生成\*.hir文件（HIR）
+  5. 编译器对高级中间语言HIR进行类型检查、方法查找等。（HIR）
+  6. 通过降级简化为中级中间语言MIL（MIL）
+  7. 编译器对中级中间语言MIL进行借用检查、优化、宏的代码生成、范型、单态化等。（MIL）
+  8. 转译为LLVM的中间语言LLVMIR（LLVMIR）
+  9. 通过LLVM后端，优化，生成机器码。
 
 ## Rust编程思想
+
 - 逻辑代码
-    - 把程序分成main.rs和lib.rs，主要代码逻辑放在lib.rs里。
-    - main.rs主要负责调用命令行解析逻辑、设置配置项、调取lib.rs的运行函数、处理lib.rs运行函数返回的错误。
+
+  - 把程序分成main.rs和lib.rs，主要代码逻辑放在lib.rs里。
+  - main.rs主要负责调用命令行解析逻辑、设置配置项、调取lib.rs的运行函数、处理lib.rs运行函数返回的错误。
 
 - Test-driven development (TDD) process
 
 ## Rust
+
 - rustacian rust编程者

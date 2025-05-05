@@ -5,13 +5,16 @@ created_date: 2022-06-27
 [TOC]
 
 ## 路由器
+
 - openwrt论坛 https://forum.gl-inet.com/
 - openwrt安装v2ray https://github.com/kuoruan/openwrt-v2ray
-    - mips_siflower架构版本 https://github.com/kuoruan/openwrt-v2ray/issues/171
+  - mips_siflower架构版本 https://github.com/kuoruan/openwrt-v2ray/issues/171
 
 ### 嵌入式设备
+
 - 安装包 ipk
 - 包管理工具 opkg
+
 ```bash
 opkg update # 更新可以获取的软件包列表
 opkg upgrade # 对已经安装的软件包升级

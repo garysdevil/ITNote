@@ -8,11 +8,9 @@ created_date: 2020-11-16
 2. 容器探针：容器健康状态诊断工具。 -- blackbox
 3. Kubelet：每个Node上都运行着Kubelet，监控容器的运行情况。Kubelet也是Master与各个Node通信的渠道。Kubelet能够直接暴露cAdvisor中与容器使用相关的个性化指标数据。
 4. cAdvisor：开源的单节点agent，负责监控容器资源使用情况与性能，采集机器上所有容器的内存、网络使用情况、文件系统和CPU等数据。
-    cAdvisor简单易用，但也存在不足：一是仅能监控基础资源利用情况，无法分析应用的实际性能；二是不具备长期存储和趋势分析能力。
+   cAdvisor简单易用，但也存在不足：一是仅能监控基础资源利用情况，无法分析应用的实际性能；二是不具备长期存储和趋势分析能力。
 5. Kube-state-metrics：轮询Kubernetes API，并将Kubernetes的结构化信息转换为metrics。
 6. Metrics server：Metrics server定时从Kubelet的Summary API采集指标数据，并以metric-api的形式暴露出去。
-
-
 
 https://blog.csdn.net/u013256816/article/details/107724335
 

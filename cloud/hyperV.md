@@ -5,9 +5,11 @@ created_date: 2023-11-14
 [TOC]
 
 ## 镜像
+
 - iso属于光盘镜像文件，vhd属于虚拟硬盘文件（微软出品）
 
 ## multipass
+
 - https://multipass.run/install
 
 ```bash
@@ -43,6 +45,7 @@ multipass help <command>
 ```
 
 ## VMware vSphere PowerCLI
+
 - - https://learn.microsoft.com/zh-cn/virtualization/hyper-v-on-windows/quick-start/try-hyper-v-powershell
 
 ```bash
@@ -76,5 +79,5 @@ New-VM -Name vm001 -MemoryStartupBytes 536870912  -BootDevice VHD -VHDPath   "E:
 New-VM -Name vm_1 -MemoryStartupBytes 1GB  -VMISOPath "D:\APP\ISO\cn_windows_7_ultimate_with_sp1_x86_dvd_u_677486.iso"
 ```
 
-- 默认虚拟机目录 C:\ProgramData\Microsoft\Windows\Hyper-V
-- 默认虚拟硬盘目录 C:\ProgramData\Microsoft\Windows\Virtual Hard Disks
+- 默认虚拟机目录 C:\\ProgramData\\Microsoft\\Windows\\Hyper-V
+- 默认虚拟硬盘目录 C:\\ProgramData\\Microsoft\\Windows\\Virtual Hard Disks

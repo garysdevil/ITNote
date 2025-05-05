@@ -5,6 +5,7 @@ created_date: 2024-01-02
 [TOC]
 
 ## 安装GUI
+
 ```bash
 # 安装gnome客户端
 sudo apt update
@@ -15,6 +16,7 @@ systemctl start gdm3
 ```
 
 ## 自动化点击
+
 ```bash
 apt-get install xdotool -y
 # yum install xdotool -y

@@ -4,9 +4,8 @@ created_date: 2020-11-16
 
 [TOC]
 
-
-
 ## Redis
+
 ```yaml
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -37,6 +36,7 @@ spec:
           persistentVolumeClaim:
             claimName: redis-single-pvc # pvc的名字
 ```
+
 ```yaml
 apiVersion: v1
 kind: Service
@@ -54,7 +54,9 @@ spec:
 ```
 
 ## Redis Cluster
+
 ### 部署redis
+
 ```yaml
 apiVersion: v1
 kind: Service
@@ -175,8 +177,9 @@ spec:
 ```
 
 ### 构建redis集群
+
 - 下载容器
-kubectl run -it tool --image=docker.garys.top/zhouxian/tool:v1 /bin/bash
+  kubectl run -it tool --image=docker.garys.top/zhouxian/tool:v1 /bin/bash
 - 构建集群
-cd /opt
-./redis-trib.rb create  --replicas 1 ip1:port  ip2:port  ip3:port ip4:port ip5:port ip6:port 
+  cd /opt
+  ./redis-trib.rb create --replicas 1 ip1:port ip2:port ip3:port ip4:port ip5:port ip6:port

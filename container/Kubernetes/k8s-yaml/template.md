@@ -5,6 +5,7 @@ created_date: 2020-11-16
 [TOC]
 
 ## configmap
+
 ```yaml
 apiVersion: v1
 kind: ConfigMap
@@ -14,8 +15,11 @@ metadata:
 data:
   nacos_addr: xxx.com:8848
 ```
+
 ## service
+
 ### ClusterIP
+
 ```yaml
 apiVersion: v1
 kind: Service
@@ -38,7 +42,9 @@ spec:
   # type: NodePort 
 
 ```
+
 ### service aws LoadBalancer
+
 ```yaml
 apiVersion: v1
 kind: Service
@@ -70,6 +76,7 @@ spec:
 ```
 
 ### service google LoadBalancer
+
 ```yaml
 kind: Service
 apiVersion: v1
@@ -87,8 +94,11 @@ spec:
      targetPort: htpp-port
  type: LoadBalancer
 ```
+
 ## deployment
+
 1. standad
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -181,7 +191,9 @@ spec:
 ```
 
 ## busybox
-1. 
+
+1.
+
 ```yaml
 kind: Pod
 apiVersion: v1
@@ -203,7 +215,9 @@ spec:
   # nodeSelector:
   #   kubernetes.io/hostname: 10.200.79.70
 ```
-2. 
+
+2.
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -249,6 +263,7 @@ spec:
 ```
 
 ## cornjob
+
 ```yaml
 piVersion: batch/v1beta1
 kind: CronJob
@@ -273,6 +288,7 @@ spec:
 ```
 
 ## job
+
 ```yaml
 apiVersion: batch/v1
 kind: Job
@@ -302,6 +318,7 @@ spec:
 ```
 
 ## strss
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment

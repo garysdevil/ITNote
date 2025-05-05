@@ -5,42 +5,52 @@ created_date: 2020-11-16
 [TOC]
 
 # Filebeat
+
 参考文档
+
 - https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-reference-yml.html
 - https://www.cnblogs.com/cjsblog/p/9495024.html
 - https://segmentfault.com/a/1190000019714761 博客剖析
 - https://www.elastic.co/guide/en/beats/filebeat/6.4/filebeat-module-nginx.html 模块
 
 ## 概念
+
 - 语言：Golang
 - 基于libbeat库进行开发而成。
 
-1. 日志收集，主要由两个组件组成：inputs 和  harvesters
-    - version 7.x
-    1. 一个 harvester 负责读取一个文件的内容。每个文件启动一个 harvester 。
-    2. 一个 input 找到所有要读取的源，负责管理 harvesters。 每个input都在自己的Go协程中运行。
+1. 日志收集，主要由两个组件组成：inputs 和 harvesters
 
+   - version 7.x
+
+   1. 一个 harvester 负责读取一个文件的内容。每个文件启动一个 harvester 。
+   2. 一个 input 找到所有要读取的源，负责管理 harvesters。 每个input都在自己的Go协程中运行。
 
 2. 工作流程
-    - 不同的harvester goroutine采集到的日志数据都会发送至一个全局的队列queue中，queue的实现有两种：基于内存和基于磁盘的队列，目前基于磁盘的队列还是处于alpha阶段，filebeat默认启用的是基于内存的缓存队列。 
-    - 每当队列中的数据缓存到一定的大小或者超过了定时的时间（默认1s)，会被注册的client从队列中消费，发送至配置的后端。目前可以设置的client有kafka、elasticsearch、redis等。
-    
+
+   - 不同的harvester goroutine采集到的日志数据都会发送至一个全局的队列queue中，queue的实现有两种：基于内存和基于磁盘的队列，目前基于磁盘的队列还是处于alpha阶段，filebeat默认启用的是基于内存的缓存队列。
+   - 每当队列中的数据缓存到一定的大小或者超过了定时的时间（默认1s)，会被注册的client从队列中消费，发送至配置的后端。目前可以设置的client有kafka、elasticsearch、redis等。
+
 3. 组成结构
-    - input: 找到配置的日志文件，启动harvester
-    - harvester: 读取文件，发送至spooler
-    - spooler: 缓存日志数据，直到可以发送至publisher
-    - publisher: 发送日志至后端，同时通知registrar
-    - registrar: 记录日志文件被采集的状态
+
+   - input: 找到配置的日志文件，启动harvester
+   - harvester: 读取文件，发送至spooler
+   - spooler: 缓存日志数据，直到可以发送至publisher
+   - publisher: 发送日志至后端，同时通知registrar
+   - registrar: 记录日志文件被采集的状态
 
 4. 内部机制
-    1. 保存文件状态在注册表文件registry中
-    2. 至少投递一次
+
+   1. 保存文件状态在注册表文件registry中
+   2. 至少投递一次
 
 ## 注意
+
 1. 如果使用容器部署filebeat，需要将registry文件挂载到宿主机上，否则容器重启后registry文件丢失，会使filebeat从头开始重复采集日志文件。
 
 ## 安装
+
 1. 通过yum安装
+
 ```bash
 # 参考 https://www.elastic.co/guide/en/beats/filebeat/current/setup-repositories.html
 rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch
@@ -58,8 +68,11 @@ systemctl enable filebeat
 ```
 
 ## 配置
+
 - 版本 7.X
+
 ### input 从日志文件读取数据
+
 ```yaml
 filebeat.config: # 全局配置
     inputs: # 包含额外的input文件列表
@@ -113,7 +126,8 @@ filebeat.inputs:
 ```
 
 2. version 6.1 https://www.elastic.co/guide/en/beats/filebeat/6.1/configuration-filebeat-options.html
-filebeat.yml
+   filebeat.yml
+
 ```yaml
 filebeat.config:
   prospectors:
@@ -121,9 +135,10 @@ filebeat.config:
 
 ```
 
+### output 数据输出
 
-### output 数据输出 
 1. 配置示范 输出到logstash
+
 ```yaml
     output.logstash:
         hosts: ["127.0.0.1:5044"]
@@ -133,6 +148,7 @@ filebeat.config:
 ```
 
 2. 配置示范 输出到elasticsearch
+
 ```yaml
 # 解析json格式日志
 processors:
@@ -176,6 +192,7 @@ output.elasticsearch:
 ```
 
 ### others
+
 ```conf
 # Filebeat自身日志配置
 logging.level: debug
@@ -189,6 +206,7 @@ logging.files:
 ```
 
 ### 标准输入标准输出
+
 ```yaml
 filebeat.inputs:
 - type: stdin
@@ -198,25 +216,32 @@ output.console:
   pretty: true
   enable: true
 ```
+
 ### 模块
+
 1. es
+
 ```bash
 # 这两个插件用来捕获地理位置和浏览器信息，以供可视化组件所用
 sudo bin/elasticsearch-plugin install ingest-geoip
 sudo bin/elasticsearch-plugin install ingest-user-agent
 ```
+
 重启Elasticsearc
 
 2. 设置初始环境
+
 ```bash
 # Setup index template, dashboards and ML jobs
 ./filebeat setup -e
 ```
 
 3. 开启nginx模块
+
 ```bash
 ./filebeat modules enable nginx
 ```
+
 ```yaml
 filebeat.config.modules: 
     path: ${path.config}/modules.d/*.yml # 需要加载的模块配置文件的位置
@@ -235,13 +260,15 @@ filebeat.config.modules:
 ```
 
 ## 模块 -- Elasticsearch Pipeline
+
 - 参考
-    - https://blog.csdn.net/xujiamin0022016/article/details/86306571
+
+  - https://blog.csdn.net/xujiamin0022016/article/details/86306571
 
 - 在ES 5.x之后的版本中，ES增量了Ingest node功能（对数据进行预处理）
 
-
 ## 指令
+
 ```bash
 # 指定家目录 --path.home ./
 
@@ -263,10 +290,12 @@ filebeat test config filebeat.yml
 ```
 
 ## 调优
+
 正常启动filebeat，一般确实只会占用3、40MB内存。
 
 - filebeat内存
+
 1. 运行的容器个数较多，导致创建大量的harvester去采集日志。
 2. 内存占据较大部分的是memqueue，所有采集到的日志都会先发送至memqueue聚集，再通过output发送出去。每条日志的数据在filebeat中都被组装为event结构，filebeat默认配置的memqueue缓存的event个数为4096，可通过queue.mem.events设置。
-默认最大的一条日志的event大小限制为10MB，可通过max_bytes设置。
-4096 * 10MB = 40GB 。极端场景下，filebeat至少占据40GB的内存。特别是配置了multiline多行模式的情况下，如果multiline配置有误，单个event误采集为上千条日志的数据，很可能导致memqueue占据了大量内存，致使内存爆炸。  
+   默认最大的一条日志的event大小限制为10MB，可通过max_bytes设置。
+   4096 * 10MB = 40GB 。极端场景下，filebeat至少占据40GB的内存。特别是配置了multiline多行模式的情况下，如果multiline配置有误，单个event误采集为上千条日志的数据，很可能导致memqueue占据了大量内存，致使内存爆炸。

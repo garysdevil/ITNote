@@ -5,7 +5,9 @@ created_date: 2020-11-16
 [TOC]
 
 ## 安装node版本管理器 nvm
+
 ### Linux安装nvm
+
 ```bash
 # https://github.com/nvm-sh/nvm#installation
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
@@ -21,9 +23,11 @@ curl -o- https://gitlab.com/mirrorx/nvm/-/raw/master/install.sh | bash
 ```
 
 ### Windows安装nvm-windows/
+
 https://github.com/coreybutler/nvm-windows/releases
 
 ### Mac安装nvm
+
 ```bash
 # https://github.com/nvm-sh/nvm#installation
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.39.5/install.sh | bash
@@ -35,13 +39,15 @@ echo 'export NVM_DIR="$HOME/.nvm"
 ```
 
 ### 使用nvm
-```bash 
+
+```bash
 nvm install stable ## 安装最新稳定版 node
 
 nvm alias default lts/gallium # 指定node的默认版本
 ```
 
 ## 软件包源
+
 ```
 npm --- https://registry.npmjs.org/
 
@@ -59,18 +65,22 @@ deunpm --- http://registry.enpmjs.org/
 ```
 
 ## 包管理器 npm
+
 1. npm install的执行过程
-    1. 发出npm install命令
-    2. npm 向 registry 查询模块压缩包的网址
-    3. 下载压缩包，存放在~/.npm(本地NPM缓存路径)目录
-    4. 解压压缩包到当前项目的node_modules目录
+
+   1. 发出npm install命令
+   2. npm 向 registry 查询模块压缩包的网址
+   3. 下载压缩包，存放在~/.npm(本地NPM缓存路径)目录
+   4. 解压压缩包到当前项目的node_modules目录
 
 2. npm设置源
-npm set registry http://localhost:4873/
-3. npm 指定源然后安装包  
-npm i --registry=https://registry.npm.taobao.org 
+   npm set registry http://localhost:4873/
 
-3. 指令
+3. npm 指定源然后安装包\
+   npm i --registry=https://registry.npm.taobao.org
+
+4. 指令
+
 ```bash
 # 查看全局安装过的包
 npm list -g --depth 0
@@ -81,6 +91,7 @@ npx
 ```
 
 ## 包管理器 yarn
+
 ```bash
 # 安装yarn
 npm install yarn -g
@@ -89,16 +100,20 @@ yarn config set registry https://registry.npm.taobao.org/
 ```
 
 ## 源管理器
+
 npm install -g nrm
 nrm ls
 nrm use taobao
 nrm add 别名 源地址：添加源
 
 ## 私服verdaccio
+
 - 参考
-    - https://verdaccio.org/docs/en/installation
-    - https://github.com/verdaccio/verdaccio
+  - https://verdaccio.org/docs/en/installation
+  - https://github.com/verdaccio/verdaccio
+
 1. docker部署
+
 ```bash
 V_PATH=/opt/verdaccio; docker run -d --name verdaccio \
   -p 4873:4873 \
@@ -107,13 +122,15 @@ V_PATH=/opt/verdaccio; docker run -d --name verdaccio \
   -v $V_PATH/plugins:/verdaccio/plugins \
   verdaccio/verdaccio:5.x-next
 ```
+
 2. 添加用户
-npm adduser --registry http://x.x.x.x:4873
-npm who am i --registry http://x.x.x.x:4873
-npm profile get --registry http://x.x.x.x:4873/
+   npm adduser --registry http://x.x.x.x:4873
+   npm who am i --registry http://x.x.x.x:4873
+   npm profile get --registry http://x.x.x.x:4873/
 3. 发布私有包
-npm init -f 
-vi index.js
+   npm init -f
+   vi index.js
+
 ```js
 var user ={
  name:"gary",
@@ -121,4 +138,5 @@ var user ={
 }
 module.exports=user;
 ```
+
 npm publish --registry http://x.x.x.x:4873

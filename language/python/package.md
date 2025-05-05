@@ -5,9 +5,11 @@ created_date: 2025-03-07
 [TOC]
 
 ## Django
+
 - https://www.djangoproject.com/
 - 文档 https://www.osgeo.cn/django/intro/tutorial01.html
 - 文档 https://docs.djangoproject.com/zh-hans/4.1/
+
 ```bash
 # 创建并进入一个虚拟环境
 venv_name="python_openai_venv"
@@ -32,14 +34,13 @@ python3 manage.py startapp ${sub_project_name}
 ```
 
 - 项目目录结构
-    1. ${project_name}: 项目的容器。
-    2. manage.py: 一个实用的命令行工具，可让你以各种方式与该 Django 项目进行交互。
-    3. django_study/init.py: 一个空文件，告诉 Python 该目录是一个 Python 包。
-    4. django_study/asgi.py: 一个 ASGI 兼容的 Web 服务器的入口，以便运行你的项目。(Django3.x版本可见)
-    5. django_study/settings.py: 该 Django 项目的设置/配置。
-    6. django_study/urls.py: 该 Django 项目的 URL 声明; 一份由 Django 驱动的网站"目录"。
-    7. django_study/wsgi.py: 一个 WSGI 兼容的 Web 服务器的入口，以便运行你的项目。
-
+  1. ${project_name}: 项目的容器。
+  2. manage.py: 一个实用的命令行工具，可让你以各种方式与该 Django 项目进行交互。
+  3. django_study/init.py: 一个空文件，告诉 Python 该目录是一个 Python 包。
+  4. django_study/asgi.py: 一个 ASGI 兼容的 Web 服务器的入口，以便运行你的项目。(Django3.x版本可见)
+  5. django_study/settings.py: 该 Django 项目的设置/配置。
+  6. django_study/urls.py: 该 Django 项目的 URL 声明; 一份由 Django 驱动的网站"目录"。
+  7. django_study/wsgi.py: 一个 WSGI 兼容的 Web 服务器的入口，以便运行你的项目。
 
 ```bash
 # 启动服务 127.0.0.1:8000为默认端口
@@ -54,7 +55,9 @@ python manage.py inspectdb t_cmdb_app_info > acd/models.py
 ```
 
 ## pyinstaller
+
 - 打包为可执行文件
+
 ```sh
 # 安装 Python：确保已安装 Python（建议 3.7 或更高版本）。
 pip install pyinstaller
@@ -68,16 +71,20 @@ pyinstaller -F main.py -n myapp
 ```
 
 ## tkinter
+
 - 图形化界面库
 - tkinter 是 Python 标准库
+
 ```sh
 brew install python-tk@3.12
 /opt/homebrew/bin/python3.12 -c "import _tkinter; print(_tkinter.TCL_VERSION)"
 ```
 
 ## pdb
+
 - 运行时进行交互式调试
 - Python 3.7+：可以用 breakpoint() 替代 pdb.set_trace()，无需导入 pdb。
+
 ```py
 import pdb
 def main():
@@ -88,16 +95,17 @@ def main():
 if __name__ == "__main__":
     main()
 ```
-1. 在终端运行生成的可执行文件，程序会在 pdb.set_trace() 处暂停，进入交互式调试模式。可以使用以下命令：
-    1. n（next）：执行下一行代码，但不会进入函数内部（单步跳过）。
-    2. s（step）：执行下一行代码，如果遇到函数调用，会进入函数内部（单步进入）。
-    3. c（continue）：继续运行程序，直到遇到下一个断点或程序结束。
-    4. p variable：打印指定变量的值，例如 `p x` 显示变量 `x` 的当前值。
-    5. l（list）：显示当前代码的上下文，默认显示 11 行（当前行居中）。可以加参数，例如 `l 10, 20` 显示第 10 到 20 行。
-    6. w（where）
 
+1. 在终端运行生成的可执行文件，程序会在 pdb.set_trace() 处暂停，进入交互式调试模式。可以使用以下命令：
+   1. n（next）：执行下一行代码，但不会进入函数内部（单步跳过）。
+   2. s（step）：执行下一行代码，如果遇到函数调用，会进入函数内部（单步进入）。
+   3. c（continue）：继续运行程序，直到遇到下一个断点或程序结束。
+   4. p variable：打印指定变量的值，例如 `p x` 显示变量 `x` 的当前值。
+   5. l（list）：显示当前代码的上下文，默认显示 11 行（当前行居中）。可以加参数，例如 `l 10, 20` 显示第 10 到 20 行。
+   6. w（where）
 
 ## pre-commit
+
 ```sh
 pre-commit --version
 
@@ -128,7 +136,9 @@ repos:
 ```
 
 ## detect-secrets
+
 - 安全检查
+
 ```sh
 pip install detect-secrets
 # 初始化 detect-secrets
@@ -145,6 +155,6 @@ detect-secrets scan > .secrets.baseline
       args: [--baseline, .secrets.baseline]
 ```
 
-
 ## tomli
+
 - Python 3.11+ 内置 tomllib（读写）。

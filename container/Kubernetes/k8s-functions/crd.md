@@ -5,9 +5,12 @@ created_date: 2020-11-16
 [TOC]
 
 # CRD
+
 https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/
 CustomResourceDefinition(自定义资源)
+
 1. 创建CRD
+
 ```yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
@@ -37,7 +40,9 @@ spec:
     shortNames:
     - ct
 ```
+
 2. 根据CRD对象资源创建出来的RESTful API，来创建testcrd类型资源对象
+
 ```yaml
 apiVersion: "stable.example.com/v1"
 kind: CronTab
@@ -49,6 +54,7 @@ spec:
 ```
 
 3. 为自定义资源添加验证
+
 ```yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
@@ -84,6 +90,7 @@ spec:
 ```
 
 4. 为自定义资源添加额外的打印列
+
 ```yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
@@ -118,6 +125,7 @@ spec:
 ```
 
 5. 为自定义的资源添加状态和伸缩配置
+
 ```yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
@@ -146,11 +154,13 @@ spec:
       statusReplicasPath: .status.replicas
       labelSelectorPath: .status.labelSelector
 ```
+
 扩充自定义资源对象副本数目
 kubectl scale --replicas=5 crontabs/my-new-cron-object
 测试失败 kubectl v1.15 https://github.com/openkruise/kruise/issues/278
 
 6. categories字段指定自定义资源所属的组
+
 ```yaml
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
@@ -173,4 +183,5 @@ spec:
     categories:
     - all
 ```
+
 kubectl get all

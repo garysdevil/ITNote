@@ -4,11 +4,12 @@ created_date: 2022-06-12
 
 [TOC]
 
-
 - zabbix调试测试工具
 
 ## zabbix-get
+
 - 实现从zabbix-agent端获取数据
+
 ```bash
 # 安装
 yum install zabbix-get -y
@@ -19,7 +20,9 @@ zabbix_get -s ${IP} -i data.txt
 ```
 
 ## zabbix_sender
+
 - 实现向zabbix-server主动推送数据
+
 ```bash
 # 安装
 rpm -i http://repo.zabbix.com/zabbix/3.4/rhel/7/x86_64/zabbix-release-3.4-2.el7.noarch.rpm
@@ -36,6 +39,7 @@ zabbix_sender -z ${IP} -i 文件路径
 ```
 
 ## snmp检测工具
+
 ```bash
 snmpwalk -v 2c -c public ${IP} 
 #   -v 指定版本（必填项）

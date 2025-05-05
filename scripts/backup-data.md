@@ -5,6 +5,7 @@ created_date: 2020-11-16
 [TOC]
 
 ### etcd minio redis
+
 ```bash
 #!/bin/bash
 set -x
@@ -71,7 +72,9 @@ cd /opt/backups/
 scp ${filename} ${remote}
 rm -f ${old_filename}
 ```
+
 ### log backup
+
 ```bash
 #!/bin/bash
 set -x

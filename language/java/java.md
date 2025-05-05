@@ -5,17 +5,22 @@ created_date: 2021-07-09
 [TOC]
 
 # Java
+
 - 参考
-    - https://www.onitroad.com/jc/archive/install-java-on-amazon-linux.html
-    - https://www.oracle.com/java/technologies/downloads/#java17
+  - https://www.onitroad.com/jc/archive/install-java-on-amazon-linux.html
+  - https://www.oracle.com/java/technologies/downloads/#java17
+
 ## 安装openjdk
+
 1. CentOS7源安装
+
 ```bash
 yum install java-1.8.0-openjdk -y
 # yum install java-1.8.0-openjdk* -y # 安装所有相关文件
 ```
 
 2. Ubuntu16源安装
+
 ```bash
 apt-get update -y
 apt-get install openjdk-8-jdk -y
@@ -25,27 +30,28 @@ apt-get install openjdk-8-jdk -y
 - java目录 /usr/lib/jvm/
 
 3. 手动环境变量配置
-vi /etc/profile.d/java.sh
+   vi /etc/profile.d/java.sh
+
 ```conf
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.265.b01-0.54.amzn1.x86_64  # 名字会不一样
 export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JAVA_HOME/jre/lib/rt.jar
 export PATH=$PATH:$JAVA_HOME/bin
 ```
 
-
 4. 设置新的软连接
-/usr/bin/java -> /etc/alternatives/java
-/etc/alternatives/java -> /usr/lib/jvm/jre-1.7.0-openjdk.x86_64/bin/java
+   /usr/bin/java -> /etc/alternatives/java
+   /etc/alternatives/java -> /usr/lib/jvm/jre-1.7.0-openjdk.x86_64/bin/java
 
 ln -fs /usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java /etc/alternatives/java
 
 5. 卸载
-    - 若是oracle-jdk 
-        apt-get remove oracle-java8-installer
-    - 若是openjdk
-        apt-get remove/purge openjdk* 
+   - 若是oracle-jdk
+     apt-get remove oracle-java8-installer
+   - 若是openjdk
+     apt-get remove/purge openjdk\*
 
 ### aws ec2
+
 ```bash
 # 安装jdk11
 amazon-linux-extras install java-openjdk11
@@ -59,11 +65,14 @@ yum install tomcat
 ```
 
 ## JVM
+
 - HotSpot VM
 - JRockit VM
 
 ### 指令
+
 - 参考 https://www.jdon.com/51214
+
 ```bash
 # 0. 查看当前用户的Java进程信息
 jps -mlv 
@@ -81,24 +90,27 @@ jstat -gccapacity ${PID}
 jstat -gcutil ${PID}
 ```
 
-
-
 ### 配置jvm的堆内存占据宿主机内存的百分比
+
 - 基于 Java 8u131 或 Java 9
-    - java XX:InitialRAMFraction=1 -XX:MaxRAMFraction=1 -XX:MinRAMFraction=1  -jar test.jar
+  - java XX:InitialRAMFraction=1 -XX:MaxRAMFraction=1 -XX:MinRAMFraction=1 -jar test.jar
 - 基于 Java 10
-    - 这三个参数是JDK8U191为适配Docker容器新增的
-    - java MaxRAMPercentage=1 InitialRAMPercentage=1 MinRAMPercentage=1 -jar test.jar
+  - 这三个参数是JDK8U191为适配Docker容器新增的
+  - java MaxRAMPercentage=1 InitialRAMPercentage=1 MinRAMPercentage=1 -jar test.jar
 
 ### 常用 JVM 参数
-- -Xms：初始堆大小，默认为物理内存的1/64(<1GB)；
-    - 默认(MinHeapFreeRatio参数可以调整)空余堆内存小于40%时，JVM就会增大堆直到-Xmx的最大限制
+
+- -Xms：初始堆大小，默认为物理内存的1/64(\<1GB)；
+
+  - 默认(MinHeapFreeRatio参数可以调整)空余堆内存小于40%时，JVM就会增大堆直到-Xmx的最大限制
 
 - -Xmx：最大堆大小，默认为物理内存的1/4；
-    - 默认(MaxHeapFreeRatio参数可以调整)空余堆内存大于70%时，JVM会减少堆直到 -Xms的最小限制
+
+  - 默认(MaxHeapFreeRatio参数可以调整)空余堆内存大于70%时，JVM会减少堆直到 -Xms的最小限制
 
 - -Xmn：新生代的内存空间大小，注意：此处的大小是（eden+ 2 survivor space)。与jmap -heap中显示的New gen是不同的。
-    - 整个堆大小 = 新生代大小 + 老生代大小 + 永久代大小。在保证堆大小不变的情况下，增大新生代后,将会减小老生代大小。此值对系统性能影响较大,Sun官方推荐配置为整个堆的3/8。
+
+  - 整个堆大小 = 新生代大小 + 老生代大小 + 永久代大小。在保证堆大小不变的情况下，增大新生代后,将会减小老生代大小。此值对系统性能影响较大,Sun官方推荐配置为整个堆的3/8。
 
 - -XX:SurvivorRatio：新生代中Eden区域与Survivor区域的容量比值，默认值为8。两个Survivor区与一个Eden区的比值为2:8,一个Survivor区占整个年轻代的1/10。
 
@@ -109,22 +121,27 @@ jstat -gcutil ${PID}
 - -XX:MaxPermSize：设置永久代最大值。物理内存的1/4。
 
 - -XX:ReservedCodeCacheSize
-    - JIT编译的代码都放在Code Cache中，若Code Cache空间不足则JIT无法继续编译，编译执行改为解释执行，性能将会降低
+
+  - JIT编译的代码都放在Code Cache中，若Code Cache空间不足则JIT无法继续编译，编译执行改为解释执行，性能将会降低
 
 ### GC
+
 #### 垃圾回收器
+
 1. CMS（-XX:+UseConcMarkSweepGC）
-    - 基于“标记—清除”算法实现
-    - 一般新生代使用ParNew（复制回收），老年代的用CMS
+   - 基于“标记—清除”算法实现
+   - 一般新生代使用ParNew（复制回收），老年代的用CMS
 2. G1（-XX:+UseG1GC）
-    - G1 把堆划分成多个大小相等的独立区域（Region），新生代和老年代不再物理隔离。
-    - 算法：标记—整理 （old，humongous） 和复制回收算法(survivor)。
-    - 1.9之后是默认，1.7之后才有，1.8才算成熟。
-    - 区域划分很散（2048块），不适合小内存使用
-####
+   - G1 把堆划分成多个大小相等的独立区域（Region），新生代和老年代不再物理隔离。
+   - 算法：标记—整理 （old，humongous） 和复制回收算法(survivor)。
+   - 1.9之后是默认，1.7之后才有，1.8才算成熟。
+   - 区域划分很散（2048块），不适合小内存使用
+
+#### 
+
 - Java的堆内存逻辑上分成两块：新生代、老年代
 - 根据垃圾收集回收的区域不同可分为： Young GC、Old GC、Full GC、Mixed GC
 - 大多数情况下，对象在新生代Eden区中分配。当Eden区没有足够空间进行分配时，虚拟机将发起一次Young GC。
 - -XX:PretenureSizeThreshold
 - -XX:MaxTenuringThreshold
-- 
+-

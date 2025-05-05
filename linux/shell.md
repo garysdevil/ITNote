@@ -4,10 +4,10 @@ created_date: 2022-08-14
 
 [TOC]
 
-
 - shell
 
 ### 变量
+
 ```bash
 # 整数
 a=10
@@ -56,6 +56,7 @@ done
 ```
 
 ### 循环
+
 ```bash
 # while 循环
 while $condition
@@ -78,7 +79,9 @@ done
 echo "the sum is: $sum"
 
 ```
+
 ### 数组
+
 ```bash
 #!/bin/bash
 array_name=(
@@ -97,6 +100,7 @@ for i in ${!array_name[@]};do echo ${array_name[i]};done
 ```
 
 ### 字符串的提取和替换
+
 ```bash
 ${var#*/} # 去掉变量var从左边算起的第一个'/'字符及其左边的内容
 ${var##*/} # 去掉变量var从左边算起的最后一个'/'字符及其左边的内容
@@ -106,6 +110,7 @@ for name in `ls *.Linux`;do mv $name ${name%.*};done
 ```
 
 ### 字符串分割
+
 ```bash
     # 分割ip和端口号
     ipport="127.0.0.1:8080"
@@ -115,6 +120,7 @@ for name in `ls *.Linux`;do mv $name ${name%.*};done
 ```
 
 ### 去掉字符串两边的双引号
+
 ```bash
     echo '"127.0.0.1:8080"' > ipport.txt
     
@@ -127,6 +133,7 @@ for name in `ls *.Linux`;do mv $name ${name%.*};done
 ```
 
 ### 判断/比较符号
+
 ```
 -e filename 如果 filename存在，则为真
 -d filename 如果 filename为目录，则为真 
@@ -146,6 +153,7 @@ filename1 -ot filename2 如果 filename1比 filename2旧，则为真。
 -lt 小于
 -le 小于等于
 ```
+
 ```bash
 #!/bin/bash
 source /etc/profile
@@ -155,6 +163,7 @@ fi
 ```
 
 ### linux select 指令建立菜单
+
 ```bash
 #!/bin/bash 
 
@@ -183,6 +192,7 @@ done
 ```
 
 ### wait
+
 ```bash
 #!/bin/bash
 echo "1"
@@ -200,6 +210,7 @@ wait -n 2s  # 等待任意任务完成或 2 秒超时
 ```
 
 ### timeout
+
 ```bash
 # timeout 可能在某些系统（如 macOS）上不可用，需安装 coreutils 或使用手动方法。
 #!/bin/bash
@@ -215,7 +226,9 @@ fi
 ```
 
 ## 脚本
+
 ### 循环日期
+
 ```bash
 #!/bin/bash
 startDate=20210401

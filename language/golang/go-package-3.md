@@ -5,38 +5,47 @@ created_date: 2021-08-12
 [TOC]
 
 # 非内置包
-1. 读取配置与热加载  github.com/spf13/viper  github.com/fsnotify/fsnotify
-2. 数据库ORM github.com/jinzhu/gorm  github.com/go-sql-driver/mysql  gorm.io/gorm(v2 要求go1.14版本)
+
+1. 读取配置与热加载 github.com/spf13/viper github.com/fsnotify/fsnotify
+2. 数据库ORM github.com/jinzhu/gorm github.com/go-sql-driver/mysql gorm.io/gorm(v2 要求go1.14版本)
 3. ldap认证 github.com/go-ldap/ldap/v3 学习文档https://godoc.org/gopkg.in/ldap.v3
 4. web框架 github.com/gin-gonic/gin
 5. Token github.com/dgrijalva/jwt-go
-6. 文档 github.com/swaggo/gin-swagger  github.com/swaggo/files   github.com/swaggo/swag（生成doc）
+6. 文档 github.com/swaggo/gin-swagger github.com/swaggo/files github.com/swaggo/swag（生成doc）
 7. 日志 github.com/sirupsen/logrus
 8. 命令行程序 https://github.com/spf13/cobra
 9. 热重启（修改完代码后保存，就能自动重启运行） github.com/cosmtrek/air
 
 ## ORM包
+
 ### gorm
+
 - 关联查询
-db.Model(&user).Association("company").Find(&company)
+  db.Model(&user).Association("company").Find(&company)
 
 - 预加载
-https://gorm.io/zh_CN/docs/preload.html
+  https://gorm.io/zh_CN/docs/preload.html
+
 2. db.Preload 使用了子查询加载关联数据。
 3. db.Joins 使用 inner join 加载关联数据。
-3. 预加载全部 db.Preload(clause.Associations).Find(&users) 或者开启自动预加载 db.Set("gorm:auto_preload", true).Find(&users)
+4. 预加载全部 db.Preload(clause.Associations).Find(&users) 或者开启自动预加载 db.Set("gorm:auto_preload", true).Find(&users)
 
 - 软删除硬删除
+
 1. 查找所有包含deleted的 model.DB.Unscoped().Find(&api)
 2. 删除所有的包含deleted的 model.DB.Unscoped().Delete(&API{})
 
-## 生成接口文档的包 
+## 生成接口文档的包
+
 - swagger
+
 ### go-swagger
+
 1. 功能
-    - 文档即注解
-    - 文档即测试
+   - 文档即注解
+   - 文档即测试
 2. windows下简单安装
+
 ```bash
 # https://github.com/go-swagger/go-swagger/blob/master/docs/install.md
 go clone github.com/go-swagger/go-swagger
@@ -52,17 +61,22 @@ swagger generate server -f ./swagger.json
 swagger serve -F=swagger ./swagger.yaml (文档格式必须是yaml)
 swagger serve  ./swagger.yaml
 ```
+
 ### go集成gin+swagger自动生成文档
+
 - 参考 https://github.com/swaggo/gin-swagger
+
 1. swag 用于生成 docs 文件夹(swagger文档程序使用)
-    go get github.com/swaggo/swag/cmd/swag
-    swag init
+   go get github.com/swaggo/swag/cmd/swag
+   swag init
 
 2. 集成进go代码里
-    1. 下载 gin-swagger 
-        go get github.com/swaggo/gin-swagger
-        go get github.com/swaggo/files
-    2. 示范
+
+   1. 下载 gin-swagger
+      go get github.com/swaggo/gin-swagger
+      go get github.com/swaggo/files
+   2. 示范
+
 ```go
 package main
 
@@ -102,8 +116,11 @@ func sayHello(c *gin.Context) {
 ```
 
 ## 命令行程序
+
 cobra
+
 - https://github.com/spf13/cobra
+
 ```go
 package main
 
@@ -161,6 +178,7 @@ a count and a string.`,
 }
 
 ```
+
 ```bash
 go run . echo "hello"
 go run . echo times -t=3 "hello"

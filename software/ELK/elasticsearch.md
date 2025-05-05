@@ -5,101 +5,121 @@ created_date: 2020-11-24
 [TOC]
 
 ## 概览
+
 - 参考
-    - https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-index_.html 官方文档
-    - https://www.cnblogs.com/wyq178/p/11968529.html  ElasticSearch的API使用
-    - https://www.cnblogs.com/kevingrace/p/10671063.html 常见错误
+  - https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-index\_.html 官方文档
+  - https://www.cnblogs.com/wyq178/p/11968529.html ElasticSearch的API使用
+  - https://www.cnblogs.com/kevingrace/p/10671063.html 常见错误
 
 ## 安装
+
 - 参考
-    - https://www.elastic.co/cn/downloads/past-releases#elasticsearch
+  - https://www.elastic.co/cn/downloads/past-releases#elasticsearch
 
 1. 安装java1.8环境
+
 2. 下载安装elasticsearch
-    ```bash
-    useradd elk;
 
-    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.3-linux-x86_64.tar.gz
+   ```bash
+   useradd elk;
 
-    # [1]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
-    echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
-    /sbin/sysctl -p
-    ```
+   wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.3-linux-x86_64.tar.gz
+
+   # [1]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+   echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
+   /sbin/sysctl -p
+   ```
 
 3. 配置文件
-    - vi config/elasticsearch.yml
-    ```conf
-    node.name: elasticsearch_master_1 # node名字
-    http.port: 9200
-    transport.tcp.port: 9300 # 节点间相互通信的端口号
 
-    # cluster.name: elasticsearch_prod # 集群名字，不设置则为elasticsearch
-    cluster.max_shards_per_node: 3000 # 配置每个节点最大的分片数量，默认为1000
+   - vi config/elasticsearch.yml
 
-    cluster.initial_master_nodes: ["Master_Name_1","Master_Name_2"]  # 填写集群每个master节点的node.name # 启动全新的集群时需要此参数
-    discovery.seed_hosts: ["Master_IP_1:9300","Master_IP_2:9300","Master_IP_3:9300"] # 填写集群master节点的IP端口号
-    network.host: 0.0.0.0 # 默认只有本机才能访问 
-    
-    http.max_content_length: 100mb # 设置内容的最大容量，默认为100mb
-    ```
-    - jvm.options
-    ```conf
-    # 设置堆内存为机器内存的一半 # 6.2.x ES_JAVA_OPTS="-Xms15g -Xmx15g" ./bin/elasticsearch
-    # es内核使用lucene，lucene本身单独占用不少的内存。官方建议设置es内存，大小为物理内存的一半，剩下的一半留给lucene。
-    # es使用堆外缓冲区来实现高效的网络通信
-    -Xms15g
-    -Xmx15g
-    ```
+   ```conf
+   node.name: elasticsearch_master_1 # node名字
+   http.port: 9200
+   transport.tcp.port: 9300 # 节点间相互通信的端口号
+
+   # cluster.name: elasticsearch_prod # 集群名字，不设置则为elasticsearch
+   cluster.max_shards_per_node: 3000 # 配置每个节点最大的分片数量，默认为1000
+
+   cluster.initial_master_nodes: ["Master_Name_1","Master_Name_2"]  # 填写集群每个master节点的node.name # 启动全新的集群时需要此参数
+   discovery.seed_hosts: ["Master_IP_1:9300","Master_IP_2:9300","Master_IP_3:9300"] # 填写集群master节点的IP端口号
+   network.host: 0.0.0.0 # 默认只有本机才能访问 
+
+   http.max_content_length: 100mb # 设置内容的最大容量，默认为100mb
+   ```
+
+   - jvm.options
+
+   ```conf
+   # 设置堆内存为机器内存的一半 # 6.2.x ES_JAVA_OPTS="-Xms15g -Xmx15g" ./bin/elasticsearch
+   # es内核使用lucene，lucene本身单独占用不少的内存。官方建议设置es内存，大小为物理内存的一半，剩下的一半留给lucene。
+   # es使用堆外缓冲区来实现高效的网络通信
+   -Xms15g
+   -Xmx15g
+   ```
+
 4. 启动 nohup ./bin/elasticsearch 2>&1 &
+
 5. 访问 http://localhost:9200/
 
-
 ## 机制
+
 ### 节点角色
+
 - 一个节点可以充当一个或多个角色，默认四个角色都有。
-1. Master 
-    - 主节点：存储节点状态和元数据信息
-    - 配置 普通服务器即可(CPU 内存 消耗一般)
-2. Data Node 
-    - 主要消耗磁盘，内存
-3. Coordinating Node 
-    - 协调节点：一个节点作为接收请求、转发请求到其他节点、汇总各个节点返回数据等功能的节点。就叫协调节点。
-4. Ingest Node/Client Node 
-    - 在数据被索引之前，通过预定义好的处理管道对数据进行预处理(如果要进行分组聚合操作的话，建议这个节点内存也分配多一点)
+
+1. Master
+   - 主节点：存储节点状态和元数据信息
+   - 配置 普通服务器即可(CPU 内存 消耗一般)
+2. Data Node
+   - 主要消耗磁盘，内存
+3. Coordinating Node
+   - 协调节点：一个节点作为接收请求、转发请求到其他节点、汇总各个节点返回数据等功能的节点。就叫协调节点。
+4. Ingest Node/Client Node
+   - 在数据被索引之前，通过预定义好的处理管道对数据进行预处理(如果要进行分组聚合操作的话，建议这个节点内存也分配多一点)
 
 ### 术语
+
 1. Index 类似于数据库的概念。索引的名字只能是小写,不能是大写。
-    - Type 是Index里分组的概念。 在7.4.2版本中已经去除了Index里type的概念。6.0的版本不允许一个Index下面有多个Type。
-    - Mapping 类似于mysql中表结构, properties类似于mysql表中的字段概念。 es的mapping创建之后无法修改,如果需要修改则需要重新建立index,然后reindex迁移数据。
+
+   - Type 是Index里分组的概念。 在7.4.2版本中已经去除了Index里type的概念。6.0的版本不允许一个Index下面有多个Type。
+   - Mapping 类似于mysql中表结构, properties类似于mysql表中的字段概念。 es的mapping创建之后无法修改,如果需要修改则需要重新建立index,然后reindex迁移数据。
 
 2. invertedindex 逆向索引
-    - es维护一个逆向索引的表，表内包含了所有文档中出现的所有单词，同时记录了这个单词在哪个文档中出现过。
-    - lucene将一个大的逆向索引拆分成了多个小的段segment
-    - 客户端每次进行搜索时都会通过逆向索引的表来提取 Index里的document。
-### Shard
-- 分片
-    1. 分片是 Elasticsearch 在集群中分发数据的关键.
-    2. 分片是装载数据的容器。文档存储在分片中，然后分片分配到集群中的节点上。当集群扩容或缩小，Elasticsearch 将会自动在节点间迁移分片，以使集群保持平衡。
-    3. 一个分片是一个最小级别“工作单元(worker unit)”，它只是保存了索引中所有数据的一部分。
-    4. 分片类似于 MySql 的分库分表，只不过 Mysql 分库分表需要借助第三方组件而 ES 内部自身实现了此功能。
-    5. 分片可以是主分片(primary shard)或者是副本分片(replica shard)。
-    6. Version 7+ 默认创建1000个分片。
-- 分片的配置
-    - 参考 
-        - https://www.elastic.co/cn/blog/how-many-shards-should-i-have-in-my-elasticsearch-cluster
-    - 分片过小会导致段过小，进而致使开销增加。尽量将分片的平均大小控制在至少几 GB 到几十 GB 之间。对时序型数据用例而言，分片大小通常介于 20GB 至 40GB 之间。
 
+   - es维护一个逆向索引的表，表内包含了所有文档中出现的所有单词，同时记录了这个单词在哪个文档中出现过。
+   - lucene将一个大的逆向索引拆分成了多个小的段segment
+   - 客户端每次进行搜索时都会通过逆向索引的表来提取 Index里的document。
+
+### Shard
+
+- 分片
+  1. 分片是 Elasticsearch 在集群中分发数据的关键.
+  2. 分片是装载数据的容器。文档存储在分片中，然后分片分配到集群中的节点上。当集群扩容或缩小，Elasticsearch 将会自动在节点间迁移分片，以使集群保持平衡。
+  3. 一个分片是一个最小级别“工作单元(worker unit)”，它只是保存了索引中所有数据的一部分。
+  4. 分片类似于 MySql 的分库分表，只不过 Mysql 分库分表需要借助第三方组件而 ES 内部自身实现了此功能。
+  5. 分片可以是主分片(primary shard)或者是副本分片(replica shard)。
+  6. Version 7+ 默认创建1000个分片。
+- 分片的配置
+  - 参考
+    - https://www.elastic.co/cn/blog/how-many-shards-should-i-have-in-my-elasticsearch-cluster
+  - 分片过小会导致段过小，进而致使开销增加。尽量将分片的平均大小控制在至少几 GB 到几十 GB 之间。对时序型数据用例而言，分片大小通常介于 20GB 至 40GB 之间。
 
 ### 索引的主分片数和主分片的副本数
-1. number_of_shards  
-    - 每个索引的主分片数，默认值是 5 。这个配置在索引创建后不能修改。
 
-2. number_of_replicas  
-    - 每个主分片的副本数，默认值是 1 。对于活动的索引库，这个配置可以随时修改。
+1. number_of_shards
+
+   - 每个索引的主分片数，默认值是 5 。这个配置在索引创建后不能修改。
+
+2. number_of_replicas
+
+   - 每个主分片的副本数，默认值是 1 。对于活动的索引库，这个配置可以随时修改。
 
 3. 设置
-    - number_of_shards 和 number_of_replicas 都是index级别的设置。
-    - 如果打算每个新建的index都设置副本数为0，可以通过index template 来设置。
+
+   - number_of_shards 和 number_of_replicas 都是index级别的设置。
+   - 如果打算每个新建的index都设置副本数为0，可以通过index template 来设置。
 
 ### ES写入数据时的步骤
 
@@ -112,6 +132,7 @@ created_date: 2020-11-24
 4. 默认每隔30分钟或translog过大时，ES会将当前内存中所有的index segment标记并形成一个commit point（类似git 的commit id），进行原子性的持久化操作，操作完毕后，删除本次已经已经了持久化的index segment，腾出内存空间。
 
 ### ES搜索数据时的步骤
+
 1. Coordinate节点接受请求，将请求转达到分片所在的数据节点
 
 2. 数据节点执行查询和排序，将结果返回给Coordinate节点
@@ -121,6 +142,7 @@ created_date: 2020-11-24
 4. Coordinate节点将数据返回给客户端
 
 - 查询结果解读
+
 ```json
 {
     "took":3, 查询所用的毫秒数
@@ -156,18 +178,20 @@ created_date: 2020-11-24
 }    
 ```
 
-
 ## API
 
-- 参考 
-    - https://www.elastic.co/guide/cn/elasticsearch/guide/current/_cat_api.html
+- 参考
+
+  - https://www.elastic.co/guide/cn/elasticsearch/guide/current/\_cat_api.html
 
 - 在HTTP的method中
-1. PUT  代表具有幂等性操作(多次执行都能得到同样的结果)。
+
+1. PUT 代表具有幂等性操作(多次执行都能得到同样的结果)。
 2. POST 是非幂等，在资源创建时候，执行多次会产生不同的结果。
 3. 在ES中，PUT具有幂等性，使用PUT需要在当前操作索引下指定一个文档ID， 当文档ID不存在时，会进行创建一个文档，如果存在的话，则进行更新。
 
 ### 集群管理
+
 ```bash
 IP=127.0.0.1
 PORT=9200
@@ -207,7 +231,9 @@ curl -s /dev/null -XGET "http://${IP}:${PORT}/_nodes/stats/indices/fielddata?fie
 curl -s /dev/null -XGET "http://${IP}:${PORT}/_nodes/stats/indices/fielddata?level=indices&fields=*&pretty"
 
 ```
+
 ### 设置
+
 ```bash
 # 临时改变集群分片的数量    
 curl -XPUT -H "Content-Type: application/json" -d '{"transient":{"cluster":{"max_shards_per_node":2000}}}' "http://${IP}:${PORT}/_cluster/settings"
@@ -219,7 +245,9 @@ curl -XPUT "Content-Type: application/json" -d '{  "number_of_replicas" : 0 }' "
 
 # indices.fielddata.cache.size: 20% # 设置单个索引占用缓存的大小，如果超出这个值，该数据将被逐出，默认值为unbounded无限
 ```
+
 ### 常规操作
+
 ```bash
 # 查看当前节点的所有 Index
 curl -X GET "http://${IP}:${PORT}/_cat/indices?v"
@@ -290,7 +318,9 @@ curl -H "Content-Type: application/json" "${IP}:${PORT}/${index}/_search?from=0&
 
 # size 显示多少条数据
 ```
+
 查询status字段为400到499的document数量
+
 ```json
 {
     "size": 0,
@@ -337,59 +367,60 @@ curl -H "Content-Type: application/json" "${IP}:${PORT}/${index}/_search?from=0&
 ```
 
 ## 常见错误
-1. message字段太大，超出了字符偏移量上限
-    - 报错 
-    ```log
-    The length of [message] field of [pAuVMXYBWMKQqimE8lSp] doc of [filebeat-7.6.0-2020.12.05] index has exceeded [1000000] - maximum allowed to be analyzed for highlighting. This maximum can be set by changing the [index.highlight.max_analyzed_offset] index level setting. For large texts, indexing with offsets or term vectors is recommended!"
-    type: "illegal_argument_exception
 
-    ```
-    - 在kibana的Dev Tool内修改
-    ```
-    PUT /索引名*/_settings
-    {
-        "index" : {
-            "highlight.max_analyzed_offset" : 2000000
-        }
-    }
-    ```
-    - 通过elasticsearch的API进行修改
-    ```bash
-    index=aaa
-    curl -XPUT "127.0.0.1:9200/${index}/_settings" -H 'Content-Type: application/json' -d '{
-        "index" : {
-            "highlight.max_analyzed_offset" : 3000000
-        }
-    }'
-    ```
+1. message字段太大，超出了字符偏移量上限
+   - 报错
+   ```log
+   The length of [message] field of [pAuVMXYBWMKQqimE8lSp] doc of [filebeat-7.6.0-2020.12.05] index has exceeded [1000000] - maximum allowed to be analyzed for highlighting. This maximum can be set by changing the [index.highlight.max_analyzed_offset] index level setting. For large texts, indexing with offsets or term vectors is recommended!"
+   type: "illegal_argument_exception
+
+   ```
+   - 在kibana的Dev Tool内修改
+   ```
+   PUT /索引名*/_settings
+   {
+       "index" : {
+           "highlight.max_analyzed_offset" : 2000000
+       }
+   }
+   ```
+   - 通过elasticsearch的API进行修改
+   ```bash
+   index=aaa
+   curl -XPUT "127.0.0.1:9200/${index}/_settings" -H 'Content-Type: application/json' -d '{
+       "index" : {
+           "highlight.max_analyzed_offset" : 3000000
+       }
+   }'
+   ```
 2. 分配给ES的堆内存不够用了
-    - 报错
-    ```log
-    curl http://${IP}:${PORT}/_cat/shards/?pretty
-    {
-    "error" : {
-        "root_cause" : [
-        {
-            "type" : "circuit_breaking_exception",
-            "reason" : "[parent] Data too large, data for [<http_request>] would be [4080692272/3.8gb], which is larger than the limit of [4080218931/3.7gb], real usage: [4080692272/3.8gb], new bytes reserved: [0/0b], usages [request=0/0b, fielddata=0/0b, in_flight_requests=0/0b, accounting=82023656/78.2mb]",
-            "bytes_wanted" : 4080692272,
-            "bytes_limit" : 4080218931,
-            "durability" : "PERMANENT"
-        }
-        ],
-        "type" : "circuit_breaking_exception",
-        "reason" : "[parent] Data too large, data for [<http_request>] would be [4080692272/3.8gb], which is larger than the limit of [4080218931/3.7gb], real usage: [4080692272/3.8gb], new bytes reserved: [0/0b], usages [request=0/0b, fielddata=0/0b, in_flight_requests=0/0b, accounting=82023656/78.2mb]",
-        "bytes_wanted" : 4080692272,
-        "bytes_limit" : 4080218931,
-        "durability" : "PERMANENT"
-    },
-    "status" : 429
-    }
-    ```
-    - 原因 jvm 堆内存不够加载当前查询到的数据 data too large, 请求被熔断，indices.breaker.request.limit 默认为 jvm heap 的 60%。
-        - https://www.elastic.co/guide/en/elasticsearch/reference/7.6/circuit-breaker.html
-    - 解决方案一 编辑 elasticsearch jvm.option配置，将-Xms和-Xmx 调大，初始值都是1G。修改配置后，重启ES。
-    - 解决方案二 清空缓存(临时性解决)
-    ```bash
-    curl -XPOST -u admin:Admin@123 'http://${IP}:${PORT}/elasticsearch/_cache/clear?fielddata=true' 
-    ```
+   - 报错
+   ```log
+   curl http://${IP}:${PORT}/_cat/shards/?pretty
+   {
+   "error" : {
+       "root_cause" : [
+       {
+           "type" : "circuit_breaking_exception",
+           "reason" : "[parent] Data too large, data for [<http_request>] would be [4080692272/3.8gb], which is larger than the limit of [4080218931/3.7gb], real usage: [4080692272/3.8gb], new bytes reserved: [0/0b], usages [request=0/0b, fielddata=0/0b, in_flight_requests=0/0b, accounting=82023656/78.2mb]",
+           "bytes_wanted" : 4080692272,
+           "bytes_limit" : 4080218931,
+           "durability" : "PERMANENT"
+       }
+       ],
+       "type" : "circuit_breaking_exception",
+       "reason" : "[parent] Data too large, data for [<http_request>] would be [4080692272/3.8gb], which is larger than the limit of [4080218931/3.7gb], real usage: [4080692272/3.8gb], new bytes reserved: [0/0b], usages [request=0/0b, fielddata=0/0b, in_flight_requests=0/0b, accounting=82023656/78.2mb]",
+       "bytes_wanted" : 4080692272,
+       "bytes_limit" : 4080218931,
+       "durability" : "PERMANENT"
+   },
+   "status" : 429
+   }
+   ```
+   - 原因 jvm 堆内存不够加载当前查询到的数据 data too large, 请求被熔断，indices.breaker.request.limit 默认为 jvm heap 的 60%。
+     - https://www.elastic.co/guide/en/elasticsearch/reference/7.6/circuit-breaker.html
+   - 解决方案一 编辑 elasticsearch jvm.option配置，将-Xms和-Xmx 调大，初始值都是1G。修改配置后，重启ES。
+   - 解决方案二 清空缓存(临时性解决)
+   ```bash
+   curl -XPOST -u admin:Admin@123 'http://${IP}:${PORT}/elasticsearch/_cache/clear?fielddata=true' 
+   ```

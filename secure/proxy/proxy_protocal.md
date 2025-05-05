@@ -5,15 +5,16 @@ created_date: 2025-03-12
 [TOC]
 
 ## 代理协议
-1. VMess
-2. VLESS
-3. Trojan https://github.com/trojan-gfw/trojan
-4. Shadowsocks (SS)
-5. ShadowsocksR (SSR)
-6. HTTP/2
-7. gRPC
-8. WireGuard
-9. OpenVPN
-10. Hysteria  
+
+01. VMess
+02. VLESS
+03. Trojan https://github.com/trojan-gfw/trojan
+04. Shadowsocks (SS)
+05. ShadowsocksR (SSR)
+06. HTTP/2
+07. gRPC
+08. WireGuard
+09. OpenVPN
+10. Hysteria
 11. TUIC
-12. Socks5  
+12. Socks5

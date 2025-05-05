@@ -5,16 +5,20 @@ created_date: 2020-11-16
 [TOC]
 
 # php-fpm
+
 - 参考文档 https://www.cnblogs.com/donghui521/p/10334776.html
+
 ## 一 概念
+
 1. php-fpm：在整个网络请求的过程中php是一个cgi程序的角色，采用名为php-fpm的进程管理程序来对这些被请求的php程序进行管理。php-fpm工作原理类似于nginx。默认监听127.0.0.1:9000.
 
 2. 协议
-cgi 通用网关协议，最早的协议，不高效。用于在http服务和CGI服务之间传输数据
-fastcgi 是一种常驻型CGI服务，相对httpd服务器而言是独立的，php就是这种
-scgi 和uwsgi 是新出的一种CGI协议，类似于fastcgi
+   cgi 通用网关协议，最早的协议，不高效。用于在http服务和CGI服务之间传输数据
+   fastcgi 是一种常驻型CGI服务，相对httpd服务器而言是独立的，php就是这种
+   scgi 和uwsgi 是新出的一种CGI协议，类似于fastcgi
 
 3. 工作数据流
+
 ```
 www.example.com        
        |
@@ -30,11 +34,15 @@ www.example.com
        | php-fpm 处理完请求，返回给nginx        
        | nginx 将结果通过http返回给浏览器
 ```
+
 ## 二 yum安装php73-php-fpm
-1. 
+
+1.
+
 PHP在 5.3.3 之后已经把php-fpm并入到php的核心代码中了，所以php-fpm不需要单独的下载安装。
 要想php支持php-fpm，只需要在编译php源码的时候带上 --enable-fpm。
-2. 安装重启
+2\. 安装重启
+
 ```bash
 # 安装 EPEL 源
 yum install epel-release -y
@@ -50,16 +58,21 @@ systemctl start php73-php-fpm
 ## 通过信号重启
 kill -USR2 php-fpm的master进程号 
 ```
-3. 扩展包位置
-/opt/rh/rh-php72/root/usr/lib64/php/modules/
 
-3. /etc/opt/remi/php73/php.ini
-vim php.ini
+3. 扩展包位置
+   /opt/rh/rh-php72/root/usr/lib64/php/modules/
+
+4. /etc/opt/remi/php73/php.ini
+   vim php.ini
+
 ```conf  php.ini
 php_flag[display_errors] = on # 是否以200状态输出错误日志
 ```
+
 4. php-fpm.conf
+
 ## 三 nginx连接php-fpm配置
+
 ```conf
 server { 
     listen       80; 
@@ -73,8 +86,10 @@ server {
     } 
 }
 ```
+
 vim scgi_params 传递给php-fpm的参数
-```conf 
+
+```conf
 
 fastcgi_param  SCRIPT_FILENAME    $document_root$fastcgi_script_name; #脚本文件请求的路径
 fastcgi_param  QUERY_STRING       $query_string; #请求的参数;如?app=123

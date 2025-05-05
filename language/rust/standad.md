@@ -4,10 +4,10 @@ created_date: 2022-06-15
 
 [TOC]
 
-
 [toc]
 
 ## 全局作用域的标准库
+
 ```rust
 // Rust 的标准库，有一个 prelude 子模块。 
 // prelude 子模块里的模块默认导入程序的整个作作用域，也就是说不再需要使用use进行引用。 
@@ -29,7 +29,9 @@ std::vec::Vec
 ```
 
 ## 标准库 基本
+
 ### env
+
 ```rs
 use std::env;
 fn main() {
@@ -53,12 +55,17 @@ fn main() {
 }
 
 ```
+
 ### fmt
+
 - std::fmt::Debug
-    - 实现Debug特征的结构体，可以使用`` {:?} ``或`` {:#?} ``格式化结构体进行输出展示。
-    - 所有的结构体都可以直接添加衍生宏 `` #[derive(Debug)] `` 来实现格式化。
+
+  - 实现Debug特征的结构体，可以使用`{:?}`或`{:#?}`格式化结构体进行输出展示。
+  - 所有的结构体都可以直接添加衍生宏 `#[derive(Debug)]` 来实现格式化。
+
 - std::fmt::Display
-    - 实现Display特征的结构体，可以使用``{}``格式化结构体进行输出展示
+
+  - 实现Display特征的结构体，可以使用`{}`格式化结构体进行输出展示
 
 - 标准库里的类型都实现了Debug和Display特征。
 
@@ -68,6 +75,7 @@ struct DebugPrintable(i32);
 ```
 
 ### io
+
 ```rs
 // 读取命令行输入
 fn read_stdin() {
@@ -87,7 +95,9 @@ fn read_stdin() {
     assert_eq!(num_bytes, 5);
 }
 ```
+
 ### fs
+
 ```rs
 // 文件读取与写入
 use std::fs;
@@ -111,7 +121,9 @@ fn main() -> std::io::Result<()> {
     Ok(())
 }
 ```
+
 ### time
+
 ```rs
 use std::time::{Duration, Instant};
 use std::thread;
@@ -141,6 +153,7 @@ fn main() {
 ```
 
 ### net
+
 ```rs
 // 服务端监听地址端口 // 一个简单的单线程服务器
 use std::net::{TcpListener, TcpStream};
@@ -188,6 +201,7 @@ fn main() -> std::io::Result<()> {
 ```
 
 ### collections
+
 ```rs
 use std::collections::HashMap;
 
@@ -209,14 +223,15 @@ fn main(){
 ```
 
 ### cell
+
 - 内部可变性智能指针。
 - 来源
-    - Rust 通过其所有权机制，严格控制拥有和借用关系，来保证程序的安全，并且这种安全是在编译期可计算、可预测的。但是这种严格的控制，有时也会带来灵活性的丧失，有的场景下甚至还满足不了需求。
-    - Rust 标准库中，设计了这样一个系统的组件 ``Cell 和 RefCell``,它们弥补了 Rust 所有权机制在灵活性上和某些场景下的不足。同时，又没有打破 Rust 的核心设计。它们的出现，使得 Rust 革命性的语言理论设计更加完整，更加实用。
+  - Rust 通过其所有权机制，严格控制拥有和借用关系，来保证程序的安全，并且这种安全是在编译期可计算、可预测的。但是这种严格的控制，有时也会带来灵活性的丧失，有的场景下甚至还满足不了需求。
+  - Rust 标准库中，设计了这样一个系统的组件 `Cell 和 RefCell`,它们弥补了 Rust 所有权机制在灵活性上和某些场景下的不足。同时，又没有打破 Rust 的核心设计。它们的出现，使得 Rust 革命性的语言理论设计更加完整，更加实用。
 - Rust 机制里修改一个值，必须是值的拥有者，并且声明 mut；或 以 &mut 的形式，借用。而通过 Cell, RefCell，则可以在需要的时候，就可以修改里面的对象。而不受编译期静态借用规则束缚。
 - Cell 和 RefCell 的区别
-    - Cell只能包装拥有Copy特征的类型。
-    - RefCell能够包装任何类型。
+  - Cell只能包装拥有Copy特征的类型。
+  - RefCell能够包装任何类型。
 
 ```rs
 use std::cell::Cell;
@@ -243,6 +258,7 @@ assert_eq!(my_struct.special_field.get(), new_value);
 ```
 
 ### hash
+
 ```rs
 pub fn main() {
     use std::collections::hash_map::DefaultHasher;
@@ -255,15 +271,18 @@ pub fn main() {
 ```
 
 ### error
+
 - std::error::Error 特征
-    - 也实现了Debug和Display 特征。
-    - 实现了 source backtrace  description cause 4个方法。
+
+  - 也实现了Debug和Display 特征。
+  - 实现了 source backtrace description cause 4个方法。
 
 - 去除unwrap()
-    1. unwrap() 的不出现可能会使得程序的健壮性高出很多。
-    2. 直接通过match匹配的方式，判断是否有Error，去除unwrap()的使用，但这会使代码不断嵌套，代码的可读性变差。
-    3. 将多个Error变成自定义Error的子Error，对外的Result统一返回自定义的Error，由外部统一处理Error，减少处理异常代码的嵌套。
-    4. 通过重命名Result，并且通过操作符 ? 直接返回错误，减少代码的冗余。
+
+  1. unwrap() 的不出现可能会使得程序的健壮性高出很多。
+  2. 直接通过match匹配的方式，判断是否有Error，去除unwrap()的使用，但这会使代码不断嵌套，代码的可读性变差。
+  3. 将多个Error变成自定义Error的子Error，对外的Result统一返回自定义的Error，由外部统一处理Error，减少处理异常代码的嵌套。
+  4. 通过重命名Result，并且通过操作符 ? 直接返回错误，减少代码的冗余。
 
 ```rs
 use std::io::Error as IoError;
@@ -342,11 +361,13 @@ pub type IResult<I> = std::result::Result<I, CustomError>;
 ```
 
 ## 标准库 特殊
+
 ### marker
+
 - PhantomData<T> 特点
-    1. 零成本抽象，一个不占用任何空间的单元结构体
-    2. 在编译期，PhantomData<T> 等同于 T
-    3. 在运行时，PhantomData<T> 等同于 ()
+  1. 零成本抽象，一个不占用任何空间的单元结构体
+  2. 在编译期，PhantomData<T> 等同于 T
+  3. 在运行时，PhantomData<T> 等同于 ()
 
 ```rs
 use std::marker::PhantomData;
@@ -366,14 +387,15 @@ fn borrow_vec<T>(vec: &Vec<T>) -> Slice<'_, T> {
 ```
 
 ### borrow
+
 - Cow
-    - Cow表示copy on write
-    - Cow是一个enum。
-    - Cow可以是两个变体中的任意一种，可以是指向类型B的一个引用，也可以在需要的时候，把这个引用变成Owned类型。
-    - Cow内部会根据请求的方式内部来决定是否需要clone。
+  - Cow表示copy on write
+  - Cow是一个enum。
+  - Cow可以是两个变体中的任意一种，可以是指向类型B的一个引用，也可以在需要的时候，把这个引用变成Owned类型。
+  - Cow内部会根据请求的方式内部来决定是否需要clone。
 - 结构体方法
-    - .into_owned() 取出 Cow 中的所有权数据，当为获取所有权时，进行 clone 操作
-    - .to_mut() 获取所有权的可变引用
+  - .into_owned() 取出 Cow 中的所有权数据，当为获取所有权时，进行 clone 操作
+  - .to_mut() 获取所有权的可变引用
 
 ```rs
 pub enum Cow<'a, B> 
@@ -384,6 +406,7 @@ where
     Owned(<B as ToOwned>::Owned),
 }
 ```
+
 ```rs
 use std::borrow::Cow;
 fn abs_all(input: &mut Cow<[i32]>) {
@@ -434,9 +457,10 @@ fn main(){
 }
 ```
 
-
 ## 标准库 多线程
+
 ### thread
+
 ```rs
 // 启动线程
 use std::thread;
@@ -480,6 +504,7 @@ fn main() {
     }
 }
 ```
+
 ```rs
 // 线程间通讯： 通过共享内存
 use std::thread;
@@ -496,6 +521,7 @@ fn main() {
     println!("share value in main thread: {}, address: {:p}", var, &*var);
 }
 ```
+
 ```rs
 // 线程间通讯： 通过通道
 use std::sync::mpsc;
@@ -514,6 +540,7 @@ fn main() {
     new_thread.join().unwrap();
 }
 ```
+
 ```rs
 // 线程通讯： 通过通道 // 多个发送者
 use std::sync::mpsc;
@@ -557,7 +584,9 @@ fn main() {
     }
 }
 ```
+
 ### sync::Arc
+
 ```rust
 use std::thread;
 use std::time::Duration;
@@ -579,30 +608,39 @@ fn main() {
 ```
 
 ### sync::atomic
+
 - 诞生： Rust编程语言在1.34之后的版本中开始正式提供完整的原子(Atomic)类型。
+
 - 原子操作
-    - 原子是指一系列不可被上下文交换(Context Switch)的机器指令，这些机器指令组成的操作又称为原子操作(Atomic Operation)。
-    - 在多CPU内核的环境下，当某个CPU内核开始运行原子操作时，就会先暂停其它CPU内核对内存的操作，以保证在原子操作运行的过程中，内存内容不会受到其它CPU内核干扰。
-    - 原子操作会牵扯到编译器优化以及CPU架构的问题.
+
+  - 原子是指一系列不可被上下文交换(Context Switch)的机器指令，这些机器指令组成的操作又称为原子操作(Atomic Operation)。
+  - 在多CPU内核的环境下，当某个CPU内核开始运行原子操作时，就会先暂停其它CPU内核对内存的操作，以保证在原子操作运行的过程中，内存内容不会受到其它CPU内核干扰。
+  - 原子操作会牵扯到编译器优化以及CPU架构的问题.
+
 - 使用场景： 多线程之间使用原子类型通过共享内存的方式进行线程间通信。
+
 - 使用条件： 支持原子类型操作的指令集架构平台, 如x86/x86_64支持LOCK前缀的指令是原子操作。
+
 - 原子类型优点： 原子操作若用得好，就不需要去使用会拖累程序性能的互斥锁(Mutex)或是消息传递(message passing)机制。
 
 - 为什么需要内存顺序
-    - 一些编译器有指令重排功能以优化代码执行效率, 在不同线程中针对同一变量(内存)的读写顺序可能会被打乱, 不能保证顺序的一致性。
-    - 一些处理器中有Cache缓存, 对某一内存的读取可能是从缓存中直接读取, 因此不同线程对同一变量的读写顺序亦不能保证一致性。
+
+  - 一些编译器有指令重排功能以优化代码执行效率, 在不同线程中针对同一变量(内存)的读写顺序可能会被打乱, 不能保证顺序的一致性。
+  - 一些处理器中有Cache缓存, 对某一内存的读取可能是从缓存中直接读取, 因此不同线程对同一变量的读写顺序亦不能保证一致性。
+
 - Rust原子操作操作有5中内存顺序: Relaxed/Release/Acquire/AcqRel/SeqCst
-    1. Relaxed 没有内存顺序约束, 仅仅是原子类型自己的 store/load 函数是原子操作。
-    2. Release/Acquire Release之前的写原子操作优先于Acquire之后的读原子操作。
-       1. Release： CPU每次写数据，立刻将其刷新到内存里。一定会被使用Acquire的线程看到。
-       2. Acquire： CPU每次读数据，都从内存里获取最新的数据。
-    3. AcqRel 读的时候使用Acquire顺序, 写的时候使用Release顺序。
-    4. SeqCst 该原子操作的优先级最低。
+
+  1. Relaxed 没有内存顺序约束, 仅仅是原子类型自己的 store/load 函数是原子操作。
+  2. Release/Acquire Release之前的写原子操作优先于Acquire之后的读原子操作。
+     1. Release： CPU每次写数据，立刻将其刷新到内存里。一定会被使用Acquire的线程看到。
+     2. Acquire： CPU每次读数据，都从内存里获取最新的数据。
+  3. AcqRel 读的时候使用Acquire顺序, 写的时候使用Release顺序。
+  4. SeqCst 该原子操作的优先级最低。
 
 1. std::sync::atomic::AtomicBool
 
-
 ## 标准库 其它
+
 ```rs
 fn main{
     let array = [1, 2, 3];
@@ -611,11 +649,14 @@ fn main{
 ```
 
 ### 标准库 数学
+
 - u32.checked_next_power_of_two 返回大于或等于 n 的 2 的最小幂
+
 ```rs
 assert_eq!(3u32.checked_next_power_of_two(), Some(4));
 ```
 
 ## 标准库 宏
-1. `` dbg!("i am dbg macro") `` 将结果返回并且输出信息到标准错误输出。
-2. `` let b = format!("{}", "i am format macro"); `` 将字符串字面量转为字符串。
+
+1. `dbg!("i am dbg macro")` 将结果返回并且输出信息到标准错误输出。
+2. `let b = format!("{}", "i am format macro");` 将字符串字面量转为字符串。

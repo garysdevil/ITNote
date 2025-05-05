@@ -4,103 +4,118 @@ created_date: 2020-11-16
 
 [TOC]
 
-
 # Grafana
+
 - 参考
-    - 官方文档 https://grafana.com/docs/installation/rpm/
+  - 官方文档 https://grafana.com/docs/installation/rpm/
+
 ## 安装Grafana
+
 - 默认使用sqlite3 数据库
+
 - 配置文件 /etc/grafana/grafana.ini
 
 - 默认账户密码是 admin/admin
-- 默认web端口是 3000
-### 通过包管理软件安装
-1. Centos7安装Grafana
-    ```bash
-    echo '[grafana]
-    name=grafana
-    baseurl=https://packages.grafana.com/oss/rpm
-    repo_gpgcheck=1
-    enabled=1
-    gpgcheck=1
-    gpgkey=https://packages.grafana.com/gpg.key
-    sslverify=1
-    sslcacert=/etc/pki/tls/certs/ca-bundle.crt' > /etc/yum.repos.d/grafana.repo
-    yum install grafana -y 
 
-    # 或者
-    wget https://dl.grafana.com/oss/release/grafana-7.3.1-1.x86_64.rpm 
-    sudo yum install grafana-7.3.1-1.x86_64.rpm 
-    ```
+- 默认web端口是 3000
+
+### 通过包管理软件安装
+
+1. Centos7安装Grafana
+
+   ```bash
+   echo '[grafana]
+   name=grafana
+   baseurl=https://packages.grafana.com/oss/rpm
+   repo_gpgcheck=1
+   enabled=1
+   gpgcheck=1
+   gpgkey=https://packages.grafana.com/gpg.key
+   sslverify=1
+   sslcacert=/etc/pki/tls/certs/ca-bundle.crt' > /etc/yum.repos.d/grafana.repo
+   yum install grafana -y 
+
+   # 或者
+   wget https://dl.grafana.com/oss/release/grafana-7.3.1-1.x86_64.rpm 
+   sudo yum install grafana-7.3.1-1.x86_64.rpm 
+   ```
 
 2. Ubuntu16安装Grafana
-    ```bash
-    wget https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana_4.6.2_amd64.deb
-    dpkg -i grafana_4.6.2_amd64.deb
-    ```
+
+   ```bash
+   wget https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana_4.6.2_amd64.deb
+   dpkg -i grafana_4.6.2_amd64.deb
+   ```
 
 3. 启动服务
-    ```bash
-    systemctl start grafana-server
-    systemctl enable grafana-server
-    # 默认账户密码是 admin/admin
-    # 默认web端口是 3000
-    ```
+
+   ```bash
+   systemctl start grafana-server
+   systemctl enable grafana-server
+   # 默认账户密码是 admin/admin
+   # 默认web端口是 3000
+   ```
+
 ### 通过二进制安装
+
 1. 安装
-    ```shell
-    wget https://dl.grafana.com/oss/release/grafana-7.3.1.linux-amd64.tar.gz
-    tar -zxvf grafana-7.3.1.linux-amd64.tar.gz
-    mkdir -p /opt/
-    cd /opt/
-    mv grafana-7.3.1 grafana
+   ```shell
+   wget https://dl.grafana.com/oss/release/grafana-7.3.1.linux-amd64.tar.gz
+   tar -zxvf grafana-7.3.1.linux-amd64.tar.gz
+   mkdir -p /opt/
+   cd /opt/
+   mv grafana-7.3.1 grafana
 
-    # nohup /opt/grafana/bin/grafana-server -config /opt/grafana/conf/defaults.ini -homepath /opt/grafana > /opt/grafana/grafana.log 2>&1 &
-    ```
+   # nohup /opt/grafana/bin/grafana-server -config /opt/grafana/conf/defaults.ini -homepath /opt/grafana > /opt/grafana/grafana.log 2>&1 &
+   ```
 2. 服务化程序
-    - vim /usr/lib/systemd/system/grafana-server.service
-    ```conf
-    [Unit]
-    Description=Grafana instance
-    Documentation=http://docs.grafana.org
-    Wants=network-online.target
-    After=network-online.target
-    After=postgresql.service mariadb.service mysqld.service
+   - vim /usr/lib/systemd/system/grafana-server.service
+   ```conf
+   [Unit]
+   Description=Grafana instance
+   Documentation=http://docs.grafana.org
+   Wants=network-online.target
+   After=network-online.target
+   After=postgresql.service mariadb.service mysqld.service
 
-    [Service]
-    # EnvironmentFile=/etc/sysconfig/grafana-server # 选定要加载的环境变量文件
-    User=grafana
-    Group=grafana
-    Type=notify
-    Restart=on-failure
-    WorkingDirectory=/opt/grafana
-    RuntimeDirectory=grafana
-    RuntimeDirectoryMode=0750
+   [Service]
+   # EnvironmentFile=/etc/sysconfig/grafana-server # 选定要加载的环境变量文件
+   User=grafana
+   Group=grafana
+   Type=notify
+   Restart=on-failure
+   WorkingDirectory=/opt/grafana
+   RuntimeDirectory=grafana
+   RuntimeDirectoryMode=0750
 
-    Environment="CONFFILE=/opt/grafana/conf/defaults.ini test=/tmp"
-    ExecStart=/opt/grafana/bin/grafana-server --config $CONFFILE
-    LimitNOFILE=10000
-    TimeoutStopSec=20
+   Environment="CONFFILE=/opt/grafana/conf/defaults.ini test=/tmp"
+   ExecStart=/opt/grafana/bin/grafana-server --config $CONFFILE
+   LimitNOFILE=10000
+   TimeoutStopSec=20
 
-    [Install]
-    WantedBy=multi-user.target
+   [Install]
+   WantedBy=multi-user.target
 
-    ```
+   ```
 
 ### 错误
+
 #### 错误一
+
 - Garafana 日志
-    ```log
-    12月 23 00:42:01 VM-16-2-centos grafana-server[16806]: t=2021-12-23T00:42:01+0800 lvl=info msg="Request Completed" logger=context userId=1 orgId=1 uname=admin method=GET path=/api/live/ws status=400 remote_addr=127.0.0.1 time_ms=1 size=12 referer=
-    ```
+  ```log
+  12月 23 00:42:01 VM-16-2-centos grafana-server[16806]: t=2021-12-23T00:42:01+0800 lvl=info msg="Request Completed" logger=context userId=1 orgId=1 uname=admin method=GET path=/api/live/ws status=400 remote_addr=127.0.0.1 time_ms=1 size=12 referer=
+  ```
 - web界面，开发者模式 Console
-    ```log
-    633.fab5d6bbd438adca1160.js:sourcemap:2 WebSocket connection to 'ws://grafana.garys.top/api/live/ws' failed: 
-    ```
+  ```log
+  633.fab5d6bbd438adca1160.js:sourcemap:2 WebSocket connection to 'ws://grafana.garys.top/api/live/ws' failed: 
+  ```
 - 解决办法 https://grafana.com/docs/grafana/latest/live/configure-grafana-live/#websocket-and-proxies
 
 ## 使用
+
 ### 插件
+
 ```bash
 # 查找官网所有可用插件
 grafana-cli plugins list-remote
@@ -126,51 +141,56 @@ systemctl restart grafana-server
 ```
 
 #### 数据源
-1. 配置zabbix作为Grafana的数据源
-    ```text
-    http://XXX.XXX.XXX.XXX/zabbix/api_jsonrpc.php
-    http://XXX.XXX.XXX.XXX/api_jsonrpc.php
-    ```
 
+1. 配置zabbix作为Grafana的数据源
+   ```text
+   http://XXX.XXX.XXX.XXX/zabbix/api_jsonrpc.php
+   http://XXX.XXX.XXX.XXX/api_jsonrpc.php
+   ```
 
 ## dashboard
+
 ### 常用的模版
+
 ### prometheus
+
 - mysql
-    https://grafana.com/grafana/dashboards/6239
-    https://grafana.com/dashboards/7362
+  https://grafana.com/grafana/dashboards/6239
+  https://grafana.com/dashboards/7362
 
 - node
-    https://grafana.com/grafana/dashboards/1860   Node Exporter Full
-    https://grafana.com/grafana/dashboards/11074   Node Exporter for Prometheus Dashboard English Version UPDATE 1102
+  https://grafana.com/grafana/dashboards/1860 Node Exporter Full
+  https://grafana.com/grafana/dashboards/11074 Node Exporter for Prometheus Dashboard English Version UPDATE 1102
 
 - docker/pod
-    395 
-    893
+  395
+  893
 
 - 集群资源监控：9276
 
 - kube-state-metrics k8s资源对象
-    https://grafana.com/grafana/dashboards/13332
+  https://grafana.com/grafana/dashboards/13332
 
 ## Grafana As Code
+
 - 使用代码生成管理grafana 的 dashboard
-https://zhuanlan.zhihu.com/p/61660797
-http://dockone.io/article/10655
-https://grafana.com/blog/2020/02/26/how-to-configure-grafana-as-code/
-https://github.com/alanpeng/grafonnet-lib
-https://github.com/prometheus-operator/kube-prometheus/blob/master/docs/developing-prometheus-rules-and-grafana-dashboards.md
+  https://zhuanlan.zhihu.com/p/61660797
+  http://dockone.io/article/10655
+  https://grafana.com/blog/2020/02/26/how-to-configure-grafana-as-code/
+  https://github.com/alanpeng/grafonnet-lib
+  https://github.com/prometheus-operator/kube-prometheus/blob/master/docs/developing-prometheus-rules-and-grafana-dashboards.md
 
 - json-model
-https://grafana.com/docs/grafana/latest/dashboards/json-model/
-
+  https://grafana.com/docs/grafana/latest/dashboards/json-model/
 
 ## grafana内置函数
+
 https://graphite.readthedocs.io/en/latest/functions.html
 
 asPercent(#B, sumSeries(#A)
 
 ## TO-DO
+
 ```
 模板变量的隐藏玩法
 模板变量甚至可以用在 grafana 的跳转中，这是连文档中都没有提及的一个隐藏玩法，在 Link 或者 Dashboard 里 URL 中任意位置填入 $name ，那么在用户点击该链接跳转时 grafana 同样会替换该变量来让你跳到正确的链接去。这和其他系统整合起来能够做到很不错的用户体验，例如跳转到 kibana 那边去查询日志。

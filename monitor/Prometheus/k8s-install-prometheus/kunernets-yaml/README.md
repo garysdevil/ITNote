@@ -58,14 +58,13 @@ created_date: 2020-11-16
 
 以前的标签都不规范，namespace在不同项目中的标签都不一致
 
-- k8s外prometheus监控k8s内prometheus需打k8s_cluster标签，值是prometheus的__address__
+- k8s外prometheus监控k8s内prometheus需打k8s_cluster标签，值是prometheus的\_\_address\_\_
 
 - 对kubernetes自动发现的service,pod,endpoint监控打上namespace的标签，标签名为kubernetes_namespace
 
 - 对kubernetes自动发现的service,pod,endpoint监控打上service的标签，标签名为service_name
 
 - 对kubernetes自动发现的pod,endpoint监控打上pod的标签，标签名为pod_name
-
 
 ## node-exporter部署
 
@@ -83,7 +82,6 @@ daemonset.extensions/node-exporter created
 blackbox-exporter是用于探测service或ednpoints的http或tcp进行探活的exporter
 
 service中需添加注解，需添加的注解请见[service-annotations.example](exporters/blackbox-exporter/kubernetes-yaml/service-annotations.example)
-
 
 ```shell
 # kubectl apply -f exporters/blackbox-exporter/kubernetes-yaml/blackbox-configmap.yml 
@@ -177,7 +175,6 @@ metadata:
 
 - [mysql_监控](./exporters/mysqld-exporter/README.md)
 
-
 # 告警分级
 
 对告警危害进行分级可以更规范化，更有效，更及时的处理告警，根据不同等级进行不同响应度的处理
@@ -192,10 +189,6 @@ metadata:
 
 # 告警的静默
 
-添加静默规则目前只能登陆alertmanager网页进行操作，点击`Silence``New Silence`按钮进行静默规则的编辑及添加
+添加静默规则目前只能登陆alertmanager网页进行操作，点击``` Silence``New Silence ```按钮进行静默规则的编辑及添加
 
 silence将通过label的匹配去匹配对应的告警，altermanager将不会发送这些被静默的告警消息
-
-
-
-

@@ -5,18 +5,23 @@ created_date: 2020-11-16
 [TOC]
 
 ## 配置
-- 参考文档 
+
+- 参考文档
 - 配置
-https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
-https://yunlzheng.gitbook.io/prometheus-book/parti-prometheus-ji-chu/alert/prometheus-alert-rule
+  https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
+  https://yunlzheng.gitbook.io/prometheus-book/parti-prometheus-ji-chu/alert/prometheus-alert-rule
+
 1. 全局配置
+
 ```conf
 rule_files:
   - <filepath_glob>  # 告警规则文件的位置
 global:
   evaluation_interval: 1m # 默认情况下Prometheus会每分钟对这些告警规则进行计算，如果想定义自己的告警计算周期，则可以通过evaluation_interval来覆盖默认的计算周期
 ```
+
 2. 示范
+
 ```yaml
 groups:
 - name: example1
@@ -41,20 +46,26 @@ groups:
     annotations:
       summary: High request latency
 ```
+
 {{ $labels.job }} :获取实例中指定标签的值
 {{ $value }} :获取当前PromQL表达式计算的样本值。
 
 3. 告警值的存储
-同时对于已经pending或者firing的告警，Prometheus也会将它们存储到时间序列ALERTS{}中。
-样本值为1表示当前告警处于活动状态（pending或者firing），当告警从活动状态转换为非活动状态时，样本值则为0。
+   同时对于已经pending或者firing的告警，Prometheus也会将它们存储到时间序列ALERTS{}中。
+   样本值为1表示当前告警处于活动状态（pending或者firing），当告警从活动状态转换为非活动状态时，样本值则为0。
+
 ```查询
 ALERTS{alertname="<alert name>", alertstate="pending|firing", <additional alert labels>}
 ```
+
 ## 告警等级
+
 emergency
 critical
 warning
+
 ## blackbox_rules
+
 ```conf
 groups:
 - name: '探活失败'
@@ -79,9 +90,11 @@ groups:
 ```
 
 ## kube-state-metrics
+
 - 参考文档
-https://kubernetes.io/docs/concepts/architecture/nodes/
-https://github.com/kubernetes/kube-state-metrics/tree/v2.0.0-alpha.2/docs
+  https://kubernetes.io/docs/concepts/architecture/nodes/
+  https://github.com/kubernetes/kube-state-metrics/tree/v2.0.0-alpha.2/docs
+
 ```conf
 groups:
 - name: NodesStatusException
@@ -151,4 +164,3 @@ groups:
 
 kube_pod_container_status_terminated_reason reason=<OOMKilled|Error|Completed|ContainerCannotRun|DeadlineExceeded|Evicted>
 ```
-

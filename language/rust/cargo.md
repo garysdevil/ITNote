@@ -4,12 +4,12 @@ created_date: 2022-05-26
 
 [TOC]
 
-
 ## Cargo镜像源设置
 
 ```bash
 vi $HOME/.cargo/config
 ```
+
 ```conf
 [source.crates-io]
 registry = "https://github.com/rust-lang/crates.io-index"
@@ -37,8 +37,8 @@ registry = "https://code.aliyun.com/rustcc/crates.io-index.git"
 
 ```
 
-
 ## Cargo.toml
+
 - 官方文档 https://doc.rust-lang.org/cargo/reference/manifest.html
 
 ```conf

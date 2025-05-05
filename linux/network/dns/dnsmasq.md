@@ -4,26 +4,28 @@ created_date: 2021-07-01
 
 [TOC]
 
-
-
 - 参考
-    - https://cokebar.github.io/gfwlist2dnsmasq/dnsmasq_gfwlist.conf 被墙的域名文件
-    - https://cokebar.github.io/gfwlist2dnsmasq/dnsmasq_gfwlist_ipset.conf 被墙的域名文件
+
+  - https://cokebar.github.io/gfwlist2dnsmasq/dnsmasq_gfwlist.conf 被墙的域名文件
+  - https://cokebar.github.io/gfwlist2dnsmasq/dnsmasq_gfwlist_ipset.conf 被墙的域名文件
 
 - dnsmasq DNS解析过程
-    1. 寻找本地hosts文件
-    2. 寻找本地缓存的域名
-    3. 寻找dnsmasq上的 addn-hosts 配置
-    4. 寻找dnsmasq上的 server 和 address 配置
-    4. 寻找上游dns服务器（resolv-file）
+
+  1. 寻找本地hosts文件
+  2. 寻找本地缓存的域名
+  3. 寻找dnsmasq上的 addn-hosts 配置
+  4. 寻找dnsmasq上的 server 和 address 配置
+  5. 寻找上游dns服务器（resolv-file）
 
 ## 安装配置
+
 ```bash
 yum install -y dnsmasq
 systemctl start dnsmasq.service
 ```
 
 - /etc/dnsmasq.conf
+
 ```conf
 # strict-order 表示严格按照resolv-file文件中的顺序从上到下进行DNS解析，直到第一个解析成功为止。
 # listen-address=0.0.0.0,127.0.0.0 定义dnsmasq监听的地址，默认是监控本机的所有网卡上。
@@ -50,4 +52,3 @@ ipset=/google.com/ipset_name1,ipset_name2
 # 检查配置文件语法是否正确
 dnsmasq --test
 ```
-

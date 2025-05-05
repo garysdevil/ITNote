@@ -12,44 +12,55 @@ created_date: 2020-11-16
   5. https://zabbix.org/wiki/Docs/DB_schema/3.4/triggers
 
 ## zabbix数据库表
+
 1. hosts 表对应了主机或模板，
-    - interfaceid表示这个主机所对应的监控接口类型。
-    - status为0表示active，1表示disable，3表示为Template。
+
+   - interfaceid表示这个主机所对应的监控接口类型。
+   - status为0表示active，1表示disable，3表示为Template。
+
 2. interface 表对应接口（Agent,SNMP,JMX,IPMI）。
+
 3. items 表包含了所有主机所有模板的监控项。
-    - status为0表示是启用状态。
-    - templateid表示这个监控项来源于模板里的那个监控项。
+
+   - status为0表示是启用状态。
+   - templateid表示这个监控项来源于模板里的那个监控项。
+
 4. functions表 记录了trigger中使用的表达式
+
 5. triggers表
-    - templateid表示这个触发器来源于模板里的那个触发器。
-    - expression字段示范：{functionid}<阈值;触发器表达式不能同时包含有模板和主机里的监控项，并且A模板上的触发器表达式不能包含非A模板上的监控项，当触发器同时包含两台主机的item时则这个triiger会同时出现在这两台主机上。
-    - status字段为0表示active，1表示disable。
-    - value为0表示OK，1表示Problem，2表示UNKNOWN。
-    - priority为0表示Not classified，1表示Information，2表示Warning，3表示Average，4表示High，5表示Disaster。
-    - garys的推测：flags=0是自定义的触发器，=2是触发器原型，=4是触发器原型生成的触发器。
+
+   - templateid表示这个触发器来源于模板里的那个触发器。
+   - expression字段示范：{functionid}\<阈值;触发器表达式不能同时包含有模板和主机里的监控项，并且A模板上的触发器表达式不能包含非A模板上的监控项，当触发器同时包含两台主机的item时则这个triiger会同时出现在这两台主机上。
+   - status字段为0表示active，1表示disable。
+   - value为0表示OK，1表示Problem，2表示UNKNOWN。
+   - priority为0表示Not classified，1表示Information，2表示Warning，3表示Average，4表示High，5表示Disaster。
+   - garys的推测：flags=0是自定义的触发器，=2是触发器原型，=4是触发器原型生成的触发器。
+
 6. events表
-    - source字段表示event是由什么生成的。0代表triiger，1代表discovery rule，2代表 agent auto-registration,3代表internal。（触发器事件、自动发现事件、自动注册事件、内部事件）
-        + 触发器事件：触器状态发生变化时。
-        + 自动注册事件：agent自动注册进server时。
-        + 自动发现事件：
-            ```
-            Service Up       –  每当zabbix检测到active service
-            Service Down  –   每当zabbix检测不到service
-            Host Up  –   目标IP，至少有一个service是UP
-            Host Down  –   所有的services都没响应.
-            Service Discovered  –   service在维护时间之后恢复或者第一次被发现
-            Service Lost  –           service在up之后丢失了
-            Host Discovered  -主机在维护时间之后恢复或者第一次被发现
-            Host Lost  –   主机在up之后丢失.
-            ```
-        + 内部事件：
-            - 监控项item状态从normal变为unsupported，或者从unsupported变为normal
-            - low-level发现规则状态从normal变为unsupported，或者从unsupported变为normal
-            - 触发器状态从normal变为unknown，或者从unknown转为normal
-        
+
+   - source字段表示event是由什么生成的。0代表triiger，1代表discovery rule，2代表 agent auto-registration,3代表internal。（触发器事件、自动发现事件、自动注册事件、内部事件）
+     - 触发器事件：触器状态发生变化时。
+     - 自动注册事件：agent自动注册进server时。
+     - 自动发现事件：
+       ```
+       Service Up       –  每当zabbix检测到active service
+       Service Down  –   每当zabbix检测不到service
+       Host Up  –   目标IP，至少有一个service是UP
+       Host Down  –   所有的services都没响应.
+       Service Discovered  –   service在维护时间之后恢复或者第一次被发现
+       Service Lost  –           service在up之后丢失了
+       Host Discovered  -主机在维护时间之后恢复或者第一次被发现
+       Host Lost  –   主机在up之后丢失.
+       ```
+     - 内部事件：
+       - 监控项item状态从normal变为unsupported，或者从unsupported变为normal
+       - low-level发现规则状态从normal变为unsupported，或者从unsupported变为normal
+       - 触发器状态从normal变为unknown，或者从unknown转为normal
+
 7. hosts表和items表关联，items表和functions表关联，functions表和triigers表关联，trigger表和evetns表关联。
 
 ## 监控项整理sql语句
+
 ```sql
 -- 1. 获取所有的模板名
 select hostid, host as 'Template name', name as 'Visible name' from hosts where status=3;
@@ -83,6 +94,7 @@ ${sql} into outfile '/tmp/test.xls';
 ```
 
 ## 监控项整理语sql脚本
+
 ```bash
 HOST=127.0.0.1
 USER=root

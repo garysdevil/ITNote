@@ -5,20 +5,22 @@ created_date: 2020-11-16
 [TOC]
 
 ### 告警
-1. 合格的告警通知
-    1. 报警级别
-    2. 简短的报警名称
-    3. 简要说明
-    4. 解决办法
-    5. 一个链接，点击后进入指标的 Graph
 
+1. 合格的告警通知
+   1. 报警级别
+   2. 简短的报警名称
+   3. 简要说明
+   4. 解决办法
+   5. 一个链接，点击后进入指标的 Graph
 
 #### dingding告警
+
 - 模板
-https://github.com/timonwong/prometheus-webhook-dingtalk/issues/17
-https://golang.org/pkg/text/template/
+  https://github.com/timonwong/prometheus-webhook-dingtalk/issues/17
+  https://golang.org/pkg/text/template/
 
 - 模板语法 https://www.cnblogs.com/Pynix/p/4154630.html
+
 ```go 参考1
 {{ define "__subject" }}[{{ if eq .Status "firing" }}告警:{{ .Alerts.Firing | len }}{{ else }}恢复{{ end }}]{{ end }}
 
@@ -63,7 +65,6 @@ https://golang.org/pkg/text/template/
 {{ template "__text_list" .Alerts.Resolved }}{{ end }}
 {{ end }}
 ```
-
 
 ```go 我写的
 {{ define "__text_alert_list" }}{{ range . }}

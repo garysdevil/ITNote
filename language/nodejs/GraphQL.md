@@ -5,15 +5,18 @@ created_date: 2020-11-16
 [TOC]
 
 # GraohQL
+
 - 参考
-    - https://github.com/graphql/graphiql
-    - https://graphql.org/learn/
-    - https://graphql.cn/
+
+  - https://github.com/graphql/graphiql
+  - https://graphql.org/learn/
+  - https://graphql.cn/
 
 - 数据传输风格
-    - RPC
-    - REST
-    - GraphQL
+
+  - RPC
+  - REST
+  - GraphQL
 
 1. 前端可以 一次性取取完所有需要的数据（可以获取多个接口的数据，可以选择性地获取接口中的字段)
 
@@ -22,12 +25,14 @@ created_date: 2020-11-16
 3. 使用强大的Type System来定义API的功能，所有的API中公开类型都是使用GraphQL
 
 ## SDL
+
 - schema Definition Language(SDL)该模式充当客户端和服务器之间的契约，以定义客户机如何访问数据。
-    - query
-    - mutation
-    - subscription
+  - query
+  - mutation
+  - subscription
 
 ### 查询
+
 ```graphql
 query {
   # 刷选id等于5的数据

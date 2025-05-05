@@ -4,13 +4,13 @@ created_date: 2022-07-26
 
 [TOC]
 
-
-
 ## 初始化日志系统的几种方式
+
 - tracing_subscriber负责生成span IDs和将它们指派给spans。
-- tracing_subscriber对tracing事件``tracing::{trace,debug,info,warn,error};``进行监听，然后进行相关的处理。
+- tracing_subscriber对tracing事件`tracing::{trace,debug,info,warn,error};`进行监听，然后进行相关的处理。
 
 ### 默认方式启动全局订阅者
+
 ```rs
 use tracing::{trace,debug,info,warn,error};
 use tracing_subscriber;
@@ -23,6 +23,7 @@ fn main() {
 ```
 
 ### 配置化启动全局订阅者
+
 ```rs
 use tracing::{trace,debug,info,warn,error};
 use tracing_subscriber::{self, util::SubscriberInitExt};
@@ -51,6 +52,7 @@ fn main() {
 ```
 
 ### 手动设置全局订阅者
+
 ```rs
 use tracing::{trace,debug,info,warn,error};
 use tracing_subscriber;
@@ -64,8 +66,10 @@ fn main() {
 ```
 
 ### 注册配置全局订阅者
+
 - 抽象出Layer特征，每一个特征可以对同一个事件进行不同的处理。
 - tracing_subscriber可以实现多个Layer特征，然后注册多个Layer特征。
+
 ```rs
 use tracing::{trace,debug,info,warn,error};
 use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt};
@@ -81,6 +85,7 @@ fn main() {
 ```
 
 ### 例子
+
 ```rs
 fn config_log(debug: bool) {
     let tracing_level = if debug {

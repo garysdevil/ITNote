@@ -5,28 +5,32 @@ created_date: 2020-11-16
 [TOC]
 
 ### Keepalived
+
 - 待补充lvs部分
+
 1. 参考文档
-    + https://www.keepalived.org/manpage.html 
-    + http://m.elecfans.com/article/700023.html
-    + https://www.cnblogs.com/clsn/p/8052649.html
+
+   - https://www.keepalived.org/manpage.html
+   - http://m.elecfans.com/article/700023.html
+   - https://www.cnblogs.com/clsn/p/8052649.html
 
 2. keepalived：是开源负载均衡项目LVS的增强和虚拟路由冗余协议VRRP实现的集合，为Linux系统提供了负载均衡和高可用能力的服务软件。
 
 3. 模块组成
-    - core 模块为keepalived的核心，负责主进程的启动、维护以及全局配置文件的加载和解析。
-    - check 模块负责健康检查。
-    - vrrp 模块负责实现VRRP协议。
+
+   - core 模块为keepalived的核心，负责主进程的启动、维护以及全局配置文件的加载和解析。
+   - check 模块负责健康检查。
+   - vrrp 模块负责实现VRRP协议。
 
 4. VRRP：虚拟路由冗余协议，是一种选择协议，是一种实现路由器高可用的协议。
 
 5. 高可用原理：将N台提供相同功能的路由器组成一个路由器组，这个组里面有一个master和多个backup，master上面有一个对外提供服务的vip，master会发组播，当backup收不到vrrp包时就认为master宕掉了，这时就需要根据VRRP的优先级来选举一个backup当master。通过这个原理就可以保证路由器的高可用。
 
-
 6. Centos安装keepalived
-yum install keepalived -y
+   yum install keepalived -y
 
 7. 文件信息
+
 ```bash
 /etc/keepalived
 /etc/keepalived/keepalived.conf     # keepalived服务配置文件
@@ -37,8 +41,10 @@ yum install keepalived -y
 ```
 
 8. 配置信息
+
 - /etc/keepalived/keepalived.conf
-```conf
+
+````conf
 # 全局配置
  global_defs {              
     router_id LVS_DEVEL     # 定义路由标识信息，相同局域网唯一/必须配置
@@ -111,8 +117,10 @@ virtual_server 10.10.10.3 1358 { # 虚拟Ip
     }
     # real_server 192.168.200.5 1358 {...}
 
-```
+````
+
 9. 启动
+
 ```bash
 systemctl start keepalived
 # 配置文件里定义了要使用的网卡和虚Ip，通过以下指令可以看到master的网卡上添加了一个虚IP
@@ -120,8 +128,10 @@ ip a
 ```
 
 10. ipvsadm
+
 - 是linux下的LVS虚拟服务器的管理工具，LVS工作于内核空间，而ipvsadm则提供了用户空间的接口
-```bash 
+
+```bash
 yum -y install ipvsadm
 
 # 调整默认超时时间
@@ -140,19 +150,24 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 ```
 
 11. 负载调度算法讲解
+
     - 轮询(rr)：将收到的访问请求按照顺序轮流分配给群集中的各个节点（真实服务器），均等地对侍每一台服务器，而不管服务器实际的连接数和系统负载。
     - 加权轮询(wrr)：根据真实服务器的处理能力轮流分配收到的访问请求，调度器可以自动查询各节点的负载情况，并动态调整其权重。这样可以保证处理能力强的服务器承担更多的访问流量。
     - 最少连接(lc)：根据真实服务器已建立的连接数进行分配，将收到的访问请求优先分配给连接数最少的节点。如果所有服务器节点性能相近，采用这种方式可以更好地均衡负载。
     - 加权最少连接(wlc)：在服务器节点的性能差异较大的情况下，可以为真实服务器自动调整权重，权重较高的节点将承担更大比例的活动连接负载。
 
 12. 负载均衡模式
+
     - 网络地址转换(NAT)：类似于防火墙的私有网络结构，负载调度器作为所有服务器节点的网关，即作为客户机的访问入口，也是各节点回应客户机的访问出口。服务器节点使用私有IP地址。与负载调度器位于同一个物理网络，安全性要优于其他两种方式。
     - IP隧道(TUN)：采用开放式的网络结构，负载调度器仅作为客户机的访问入口，各节点通过各自的INTERNET连接直接回应客户机，而不再经过负载调度器。服务器节点分散在互联网中的不同位置。具有独立的公网IP地址，通过专用IP隧道与负载调度器相互通信。
     - 直接路由（DR）：采用半开放式的网络结构，与TUN模式的结构类似，但各节点并不是分散在各地，而是与调度器位于同一个物理网络。负载调度器与各节点服务器通过本地网络连接，不需要建立专用的IP隧道。
 
 ### 错误日志
+
 1. 路由集群内的virtual_router_id和局域网内的其它路由集群的virtual_router_id有冲突
+
 - 解决办法： 修改/etc/keepalived/keepalived.conf 配置文件里的 virtual_router_id 值
+
 ```log
 Apr 01 17:32:58 garys-126 Keepalived_vrrp[47600]: VRRP_Instance(VI_1) Dropping received VRRP packet...
 Apr 01 17:32:59 garys-126 Keepalived_vrrp[47600]: (VI_1): ip address associated with VRID 51 not present in MASTER advert : 172.16.212.118
@@ -160,6 +175,7 @@ Apr 01 17:32:59 garys-126 Keepalived_vrrp[47600]: bogus VRRP packet received on 
 ```
 
 2. 可能是从windows上复制过来的字符问题
+
 ```log
 Missing '{' at beginning of configuration block
 Unknown keyword 'script'
@@ -168,21 +184,22 @@ Unknown keyword '}'
 ```
 
 3. 警告1
+
 - 解决办法：在 /etc/keepalived/keepalived.conf 配置文件里增加 script_user
-global_defs {
-   script_user root
-}
+  global_defs {
+  script_user root
+  }
+
 ```log
 WARNING - default user 'keepalived_script' for script execution does not exist - please create.
 ```
 
 4. 警告2
-解决办法：在 /etc/keepalived/keepalived.conf 配置文件里增加 enable_script_security
-global_defs {
+   解决办法：在 /etc/keepalived/keepalived.conf 配置文件里增加 enable_script_security
+   global_defs {
    enable_script_security
-}
+   }
+
 ```log
 SECURITY VIOLATION - scripts are being executed but script_security not enabled.
 ```
-
-

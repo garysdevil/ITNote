@@ -4,11 +4,12 @@ created_date: 2021-06-09
 
 [TOC]
 
-
 ## 安装
+
 1. 数据库启用binlog
 
 2. 数据库配置maxwell用户和数据库
+
 ```sql
 create database maxwell;
 create user 'maxwell'@'%' identified BY 'maxwell';
@@ -17,10 +18,12 @@ grant select, replication client, replication slave on *.* to 'maxwell'@'%';
 ```
 
 3. 安装maxwell-1.33
-    - java-11 
-    - https://github.com/zendesk/maxwell/releases/download/v1.33.1/maxwell-1.33.1.tar.gz
+
+   - java-11
+   - https://github.com/zendesk/maxwell/releases/download/v1.33.1/maxwell-1.33.1.tar.gz
 
 4. 启动maxwell
+
 ```bash
 ./bin/maxwell  --user='maxwell' --password='password' --port=3306 --host='localhost' --producer=stdout
 
@@ -45,6 +48,7 @@ grant select, replication client, replication slave on *.* to 'maxwell'@'%';
 ```
 
 5. 通过配置文件启动maxwell ./bin/maxwell --config config.properties
+
 ```conf
 # tl;dr config
 log_level=warn

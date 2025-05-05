@@ -5,15 +5,21 @@ created_date: 2022-02-04
 [TOC]
 
 ## 相关链接
+
 1. Vue官方文档 https://v3.cn.vuejs.org/
+
 2. Vue源码 https://github.com/vuejs/core
+
 3. Vue在线编辑器 https://codepen.io/team/Vue/pen/KKpRVpx
 
-1. uni-app官网 https://uniapp.dcloud.io/history
-2. uni-app编译器 https://www.dcloud.io/hbuilderx.html
+4. uni-app官网 https://uniapp.dcloud.io/history
+
+5. uni-app编译器 https://www.dcloud.io/hbuilderx.html
 
 ## Vue
+
 ### 声明式地将数据渲染进 DOM 的系统
+
 ```html
 <div id="counter">
     Counter: {{ counter }}
@@ -36,7 +42,9 @@ created_date: 2022-02-04
     Vue.createApp(Counter).mount('#counter')
 </script>
 ```
+
 ### 通过以 v- 开头的attribute提供特殊的功能
+
 ```html
 <div id="bind-attribute">
     <!-- 指令带有前缀 v-，表示它们是 Vue 提供的特殊 attribute  -->
@@ -61,6 +69,7 @@ created_date: 2022-02-04
 ```
 
 ### 通过 v-on 指令，添加一个事件监听器
+
 ```html
 <div id="event-handling">
   <p>{{ message }}</p>
@@ -91,8 +100,8 @@ created_date: 2022-02-04
 </script>
 ```
 
-
 ### 通过 v-model 指令，实现表单输入和应用状态之间的双向绑定
+
 ```html
 <div id="two-way-binding">
   <p>{{ message }}</p>
@@ -115,6 +124,7 @@ created_date: 2022-02-04
 ```
 
 ### 通过 v-if 指令，实现条件
+
 ```html
 <div id="conditional-rendering">
   <span v-if="seen">现在你看到我了</span>
@@ -136,6 +146,7 @@ created_date: 2022-02-04
 ```
 
 ### 通过 v-for 指令，实现循环
+
 ```html
 <div id="list-rendering">
   <ol>
@@ -165,6 +176,7 @@ created_date: 2022-02-04
 ```
 
 ### 组件化应用构建一
+
 ```html
 <ol id='component_test'>
   <!-- 创建一个 todo-item 组件实例，在js代码中对应组建名为TodoItem -->
@@ -193,6 +205,7 @@ created_date: 2022-02-04
 ```
 
 ### 组件化应用构建二
+
 ```html
 <div id="todo-list-app">
   <ol>

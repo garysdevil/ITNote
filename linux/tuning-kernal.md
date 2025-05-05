@@ -4,12 +4,13 @@ created_date: 2020-11-28
 
 [TOC]
 
-
 - 参考
-    - http://www.brendangregg.com/linuxperf.html
+  - http://www.brendangregg.com/linuxperf.html
 
 ## 内核参数
+
 - 配置位置 /etc/sysctl.conf 和 /etc/sysctl.d
+
 ```bash
 sysctl  -a  # 显示当前所有可用的内核参数
 sysctl  kernel.hostname  # 读特定的内核参数，比如kernel.hostname
@@ -18,7 +19,6 @@ sysctl  -p  # 从配置文件/etc/sysctl.conf中加载内核参数
 sysctl -w net.ipv4.ip_forward=1 # 临时改变某个指定参数的值
 echo 1 >  /proc/sys/net/ipv4/ip_forward # 临时改变某个指定参数的值
 ```
-
 
 ```conf
 # 1. 一个进程可以拥有的VMA(虚拟内存区域)的数量
@@ -40,9 +40,10 @@ cat /proc/meminfo | grep -i huge
 ```
 
 ## IO读优化
+
 - 参考
-    - https://www.kernel.org/doc/Documentation/block/stat.txt
-    - https://cromwell-intl.com/open-source/performance-tuning/disks.html
+  - https://www.kernel.org/doc/Documentation/block/stat.txt
+  - https://cromwell-intl.com/open-source/performance-tuning/disks.html
 
 ```bash
 # 更改最大IO请求大小硬件支持的最大值/sys/block/${disk}/queue/max_hw_sectors_kb
@@ -61,16 +62,18 @@ echo anticipatory  /sys/block/${disk}/queue/scheduler
 # 查看
 cat /sys/block/${disk}/queue/
 ```
-- I/O调度算法
-    1. deadline (适合小文件读写，跳跃式读写，零散读写(数据库)) 
-    2. anticipatory  (适合大文件读写，整块式，重复读写(web server))
-    3. cfg (完全公平算法)  
-    4. noop (没有算法，适用于SAN架构，不在本地优化)
 
+- I/O调度算法
+  1. deadline (适合小文件读写，跳跃式读写，零散读写(数据库))
+  2. anticipatory  (适合大文件读写，整块式，重复读写(web server))
+  3. cfg (完全公平算法)
+  4. noop (没有算法，适用于SAN架构，不在本地优化)
 
 ## 更改HugePage大小
+
 - HugePage是通过使用大页内存来取代传统的4KB内存页面，使得管理虚拟地址数变少，加快了从虚拟地址到物理地址的映射，通过摒弃内存页面的换入换出以提高内存的整体性能。
 - 为了能以最小的代价实现大页面支持，Linux 操作系统采用了基于 hugetlbfs 特殊文件系统支持的 2MB 大页面。
+
 ```bash
 getconf PAGESIZE # 查看内存页的大小，单位为bit
 
@@ -82,10 +85,12 @@ cat /proc/sys/vm/nr_hugepages # 查看大内存页的数量
 ```
 
 ## 更改系统可以打开的最大文件句柄数
-- 参考 
-    - https://www.cnblogs.com/operationhome/p/11966041.html
 
-1. ``vim /etc/security/limits.conf``
+- 参考
+  - https://www.cnblogs.com/operationhome/p/11966041.html
+
+1. `vim /etc/security/limits.conf`
+
 ```conf
 ; 注意/etc/security/limits.d文件夹内的配置会覆盖/etc/security/limits.conf的配置
 ; nofile 表示最大文件句柄数,不能设置为 unlimited，可以设置的最大值为 1048576(2**20)
@@ -104,7 +109,9 @@ cat /proc/sys/vm/nr_hugepages # 查看大内存页的数量
 * soft sigpending	255983
 * hard sigpending	255983
 ```
-2. ``vim /etc/profile``
+
+2. `vim /etc/profile`
+
 ```conf
 ulimit -n 102400  # 设置最大可以的打开文件描述符
 ulimit -u unlimited # 设置用户可以创建的最大线程数
@@ -114,10 +121,9 @@ ulimit -SH 102400 # 设置软硬限制
 ulimit -f unlimited # 设置创建文件的最大值。
 ```
 
-3. 网上说还需要设置这些 ``echo "session  required  pam_limits.so"  >>  /etc/pam.d/common-session``
+3. 网上说还需要设置这些 `echo "session  required  pam_limits.so"  >>  /etc/pam.d/common-session`
 
-4. 使配置生效``source /etc/profile``
-
+4. 使配置生效`source /etc/profile`
 
 ```bash
 # 查看内核资源限制

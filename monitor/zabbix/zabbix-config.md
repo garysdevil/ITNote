@@ -7,7 +7,9 @@ created_date: 2020-11-16
 ﻿[TOC]
 
 - 参考文档 https://www.cnblogs.com/jjzd/p/7010214.html
+
 ## zabbix的master
+
 ```conf
 Server=XXX.XXX.XXX.XXX
 Hostname=XXX.XXX.XXX.XXX
@@ -18,6 +20,7 @@ DBPassword=zabbix
 ```
 
 ## zabbix的agent
+
 ```conf
 # vim /etc/zabbix/zabbix_agentd.conf  更改
 StartAgents=1  # 客户端agent模式，设置为0表示关闭被动模式，被监控端的 zabbix_agentd 不监听

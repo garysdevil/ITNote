@@ -5,10 +5,12 @@ created_date: 2022-08-18
 [TOC]
 
 ## 相关链接
+
 - Github https://github.com/gogs/gogs
 - 安装教程 https://gogs.io/docs/installation
 
 ## 安装Git服务Gogs
+
 ```bash
 # 安装Postgresql数据库，下载二进制包
 ./gogs web --port 3000 # 默认端口为3000
@@ -23,17 +25,19 @@ DISABLE_REGISTRATION = true # 禁止用户自己注册账户
 ```
 
 ### 报错
+
 1. 报错一
-    ```log
-    error: RPC failed; HTTP 413 curl 22 The requested URL returned error: 413
-    send-pack: unexpected disconnect while reading sideband packet
-    fatal: the remote end hung up unexpectedly
-    ```
-    - nginx反向代理client_max_body_size配置导致的 http://nginx.or
-    - g/en/docs/http/ngx_http_core_module.html#client_max_body_size
+   ```log
+   error: RPC failed; HTTP 413 curl 22 The requested URL returned error: 413
+   send-pack: unexpected disconnect while reading sideband packet
+   fatal: the remote end hung up unexpectedly
+   ```
+   - nginx反向代理client_max_body_size配置导致的 http://nginx.or
+   - g/en/docs/http/ngx_http_core_module.html#client_max_body_size
 
 ## 同步仓库
-```bash 
+
+```bash
 git clone --bare 源git仓库地址
 cd project.git/
 git push --mirror 目标git仓库地址
@@ -46,6 +50,7 @@ git push --mirror ssh://git@gogs.garys.top:2222/AleoHQ/snarkOS.git # 通过ssh�
 ```
 
 ## 同步仓库（未使用）
+
 ```bash
 # 同步仓库
 

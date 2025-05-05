@@ -15,36 +15,46 @@ created_date: 2021-05-12
 4. KVM + OpenStack
 
 ## Proxmox
+
 - 参考
-    - https://pve.proxmox.com/pve-docs/
+
+  - https://pve.proxmox.com/pve-docs/
 
 - 安装方式
-    - 方式一：直接通过PVE的ISO安装
-    - 方式二：先装Debian再添加proxmox的安装源来安装
+
+  - 方式一：直接通过PVE的ISO安装
+  - 方式二：先装Debian再添加proxmox的安装源来安装
 
 - 默认路径
-    - iso存放路径： /var/lib/vz/template/iso/
-    - 备份路径： /var/lib/vz/dump/
+
+  - iso存放路径： /var/lib/vz/template/iso/
+  - 备份路径： /var/lib/vz/dump/
 
 ### 指令
+
 1. 查看集群状态
-    - pvecm status
+
+   - pvecm status
+
 2. 重启PVE服务8006端口
-service pveproxy restart && service pvedaemon restart
+   service pveproxy restart && service pvedaemon restart
 
 3. 解锁VM
-qm unlock ${PVE_VM_ID}
+   qm unlock ${PVE_VM_ID}
 
-4. 
-
+4.
 
 ### 相关工具
+
 #### 定时快照工具
+
 - 参考
-    - https://github.com/Corsinvest/cv4pve-autosnap
-    - http://blog.heishacker.com/Proxomox-autosnapshot
+
+  - https://github.com/Corsinvest/cv4pve-autosnap
+  - http://blog.heishacker.com/Proxomox-autosnapshot
 
 - cv4pve-autosnap
+
 ```bash
 # 下载解压
 https://github.com/Corsinvest/cv4pve-autosnap/tags

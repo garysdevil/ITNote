@@ -4,10 +4,10 @@ created_date: 2020-12-19
 
 [TOC]
 
-
 ## SIG API Machinery
 
 ## SIG-autoscaling
+
 - SIG Autoscaling 专注于改进 HPA （Horizontal Pod Autoscaling）API 和算法
 
 ## SIG-Azure
@@ -25,4 +25,3 @@ created_date: 2020-12-19
 ## SIG-scheduling
 
 ## SIG-storage
-

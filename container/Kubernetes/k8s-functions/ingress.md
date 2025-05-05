@@ -5,6 +5,7 @@ created_date: 2021-03-12
 [TOC]
 
 1. ingress
+
 ```yaml
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -27,6 +28,7 @@ spec:
 ```
 
 2. 谷歌云服务配置证书
+
 ```yaml
 apiVersion: networking.gke.io/v1beta1
 kind: ManagedCertificate

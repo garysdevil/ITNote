@@ -4,14 +4,16 @@ created_date: 2021-05-10
 
 [TOC]
 
-
 ## 全局参数
+
 1. 指定需要使用的密钥配置
-    ```bash
-    AWS_PROFILE=${profile} aws指令
-    aws指令 --profile ${profile}
-    ```
+   ```bash
+   AWS_PROFILE=${profile} aws指令
+   aws指令 --profile ${profile}
+   ```
+
 ## ec2实例
+
 ```bash
 # 1. 查看正在运行的ec2
 aws ec2 describe-instances --query 'Reservations[*].Instances[*].[Placement.AvailabilityZone, PrivateIpAddress, InstanceId, InstanceType]' --output text|grep '关键字'
@@ -51,6 +53,7 @@ aws ec2 modify-instance-attribute   --instance-id ${instance-id} --instance-type
 ```
 
 ## vpc网络
+
 ```bash
 # 1. 创建vpc
 aws ec2 create-vpc --cidr-block 172.10.0.0/16
@@ -93,6 +96,7 @@ aws ec2 describe-security-groups  --group-ids sg-5aa21533
 ```
 
 ## 存储卷
+
 ```bash
 # 1. 创建存储卷
 aws ec2 create-volume --size 50 --availability-zone ap-south-1b --volume-type gp2
@@ -113,7 +117,8 @@ aws ec2 detach-volume --volume-id vol-02aaed26650c96fe5
 aws ec2 delete-volume --volume-id vol-02aaed26650c96fe5
 ```
 
-7.  ec2机器磁盘扩容
+7. ec2机器磁盘扩容
+
 ```bash
 
 aws ec2 describe-volumes --region us-east-1 --filters Name=attachment.instance-id,Values=${instance-id}
@@ -130,6 +135,7 @@ lsblk # 查看设备名称
 ```
 
 8. eks nodes扩容
+
 ```bash
 growpart /dev/nvme0n1p1 1 # (如果输出的是中文，那么加一个export LANG=en_us.utf-8，再执行一次)
 xfs_growfs /dev/nvme0n1p1  # (是xfs filesystem)
@@ -141,7 +147,9 @@ sudo xfs_growfs -d /
 ```
 
 ## s3
+
 1. 查看
+
 ```bash
 aws s3 ls
 aws s3 ls s3://bucket
@@ -154,6 +162,7 @@ aws s3 cp /${folder} s3://${path} --profile ${profile}
 ```
 
 2. 拷贝
+
 ```bash
 aws s3 cp /to/local/path s3://bucket/prefix
 aws s3 cp s3://bucket/prefix /to/local/path
@@ -161,17 +170,21 @@ aws s3 cp s3://bucket1/prefix1 s3://bucket2/prefix2
 ```
 
 3. 同步
+
 ```bash
 aws sync [--delete] /to/local/dir s3://bucket/prefixdir
 aws sync [--delete] s3://bucket/prefixdir /to/local/dir
 aws sync [--delete] s3://bucket1/prefixdir1 s3://bucket2/prefixdir2
 ```
+
 4. 创建桶
+
 ```bash
 aws s3api create-bucket --bucket ${my-bucket} --region eu-west-1 --create-bucket-configuration LocationConstraint=eu-west-1
 ```
 
 ## elb
+
 ```bash
 # 1. 查看某个elb
 aws elb describe-load-balancers --load-balancer-name project-api-pre
@@ -231,8 +244,8 @@ sudo mount -t efs -o tls fs-d6fab935:/ efs
 使用 NFS 客户端:
 sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport fs-d6fab935.efs.us-east-1.amazonaws.com:/ efs
 
-
 ## 安全组规则
+
 ```bash
 # 1. 安全组中添加规则
 
@@ -251,19 +264,24 @@ aws ec2 revoke-security-group-ingress --group-name ${group-name} --protocol tcp 
 
 aws ec2 revoke-security-group-ingress --group-id  ${group_id} --protocol tcp   --port 49102 --cidr ${IP}/32
 ```
+
 ## 添加路由表
+
 ```bash
 aws ec2 create-route --route-table-id ${route_table_id}  --destination-cidr-block ${IP}/32 --network-interface-id   eni-0ecf1228a078c99e7
 
 aws ec2 delete-route --route-table-id rtb-044654990eeb5d685 --destination-cidr-block  ${IP}/32
 
 ```
-## ses
-aws ses get-account-sending-enabled --region us-east-1 
 
-aws ses update-account-sending-enabled --enabled --region us-east-1 
+## ses
+
+aws ses get-account-sending-enabled --region us-east-1
+
+aws ses update-account-sending-enabled --enabled --region us-east-1
 
 ## 创建ecr
+
 ```bash
 aws ecr create-repository  \
     --repository-name ${project}  \
@@ -272,12 +290,15 @@ aws ecr create-repository  \
 ```
 
 ## 创建eks集群
+
 ```bash
 eksctl create cluster --name project-pay --version 1.14 --region us-east-1 --vpc-private-subnets=subnet-0bb1762f69c14375d,subnet-0fa86dfc8e7e49e22 --authenticator-role-arn=${authenticator_role_arn}
 ```
 
 ## 其它
+
 1. 将aws映像传到s3然后下载下来
+
 ```bash
 # 将aws映像传到s3
 image-id=ami-1111111111
@@ -292,12 +313,14 @@ aws s3 cp s3://${bucket}//${filename} ./
 ```
 
 ## route53
+
 1. 域名解析
-aws route53 change-resource-record-sets --hosted-zone-id Z10397021NVPZUW2HGARY  --change-batch file://gary.json --profile=gary
+   aws route53 change-resource-record-sets --hosted-zone-id Z10397021NVPZUW2HGARY --change-batch file://gary.json --profile=gary
 2. 查看域名解析更改后的状态
-aws route53  get-change --id /change/C3QYC83OA0KX5K
+   aws route53 get-change --id /change/C3QYC83OA0KX5K
 
 - gary.json
+
 ```json
 {
     "Comment": "Action:CREATE/UPSERT/DELETE",

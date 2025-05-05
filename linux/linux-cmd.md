@@ -5,6 +5,7 @@ created_date: 2025-01-09
 [TOC]
 
 ### 查看CPU数量
+
 ```bash
 # 查看物理CPU个数
 cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l
@@ -14,7 +15,8 @@ cat /proc/cpuinfo| grep "cpu cores"| uniq
 cat /proc/cpuinfo| grep "processor"| wc -l
 ```
 
-### curl 
+### curl
+
 - -o 保存结果进自定义名字文件里面
 - -x 设置代理
 - -l 只返回head信息
@@ -22,7 +24,7 @@ cat /proc/cpuinfo| grep "processor"| wc -l
 - -C 断点续传
 - -L 请求时跟随链接跳转
 - -T 上传文件 curl -T picture.jpg -u 用户名:密码 ftp://www.linux.com/img/
-- -H 自定义头信息，例如指定host  -H 'Host: baidu.com'
+- -H 自定义头信息，例如指定host -H 'Host: baidu.com'
 - -A (or --user-agent): 设置 "User-Agent" 字段.
 - -b (or --cookie): 设置 "Cookie" 字段.
 - -e (or --referer): 设置 "Referer" 字段.
@@ -37,10 +39,12 @@ curl -d '{"key1":"value1", "key2":"value2"}' -H "Content-Type: application/json"
 ```
 
 ### crontab
+
 1. 配置crontab
-    vim /etc/crontab
+   vim /etc/crontab
 
 2. 获取所有的job任务
+
 ```bash
 for u in `cat /etc/passwd | cut -d":" -f1`;do crontab -l -u $u;done 
 # 或者
@@ -49,7 +53,9 @@ cd /var/spool/cron && cat *
 # and
 cat /etc/crontab
 ```
+
 3. crontab
+
 ```bash
 * * * * * # 每分钟执行 
 0 * * * * # 每小时执行 
@@ -63,15 +69,18 @@ cat /etc/crontab
 ```
 
 ### websocket连通性测试
-1. 
+
+1.
+
 apt install node-ws (ubuntu16)
 npm install -g wscat (centos)
 wscat -c ws://IP:PORT
-2. 
+2\.
 游览器
 new WebSocket("wss://XXX.XXX.XXX.XXX:9944");
 
 ### journalctl
+
 ```bash
 journalctl -ef -n 100 -p 4
 # -e 从末行开始显示
@@ -100,6 +109,7 @@ journalctl --vacuum-size=500M
 ```
 
 ### swap
+
 ```bash
 # 创建用于交换分区的文件
 dd if=/dev/zero of=/swapfile bs=1M count=2048 
@@ -114,13 +124,16 @@ cat /proc/sys/vm/swappiness
 ```
 
 ### 虚拟化
+
 1. PV AMI: 半虚拟化
 2. HVM: aws目前使用的
 3. XEM
 4. KVM
+
 - Linux Amazon 系统映像(AMI)使用两种虚拟化类型之一：半虚拟化 (PV) 或硬件虚拟机 (HVM)。
 
 ### 压缩
+
 ```bash
 # 排除某个文件夹 --exclude=${filename}/filename
 
@@ -148,16 +161,18 @@ xz -dk ${文件名} # 保留原文件解压
 ```
 
 ### gRPC测试工具
+
 - https://github.com/bojand/ghz
 - wget https://github.com/bojand/ghz/releases/download/v0.90.0/ghz-linux-x86_64.tar.gz
 - 参数
-    - -c 并发数量 default 50
-    - -n 总共的请求数量 default 200
-    - --call 请求的方法
-    - --insecure
-    - -m 元数据
+  - -c 并发数量 default 50
+  - -n 总共的请求数量 default 200
+  - --call 请求的方法
+  - --insecure
+  - -m 元数据
 
 ### 内核报错
+
 ```bash
 
 dmesg -T -w
@@ -169,7 +184,8 @@ dmesg -T -w
 cat /var/log/messages 
 ```
 
-### ps & top & lsof 
+### ps & top & lsof
+
 ```bash
 # - ps指令的安装 
 apt-get install procps
@@ -187,6 +203,7 @@ ps -A  -o comm,pmem,pcpu | sort | uniq -c | head -15
 ps -eo pid,ppid,%mem,%cpu,cmd --sort=-%mem | head
 ps -eo pid,ppid,%mem,%cpu,comm --sort=-%mem | head
 ```
+
 ```bash
 # top 只显示一次CPU资源使用信息
 top -n 1
@@ -198,12 +215,14 @@ top -H -p ${pid}
 top -c -b -o +%MEM | head -n 20 | tail -15
 top -b -o +%MEM | head -n 20 | tail -15
 ```
+
 ```bash
 # lsof（list open files）是一个列出当前系统打开文件的工具
 lsof  -i @fw.google.com:2150=2180
 ```
 
 ### htop
+
 ```bash
 # 一个基于ncurses的交互进程查看器
 htop
@@ -215,41 +234,46 @@ htop
 # -s --sort-key COLUMN　    依此列来排序
 # -v –version　　　　　　　   显示版本信息 
 ```
+
 - 交互式界面从左到右依次各项的含义
-    1. PID      表示进程的标识号。
-    2. USER     表示运行此进程的用户。
-    3. PRI      表示进程的优先级。
-    4. NI       表示进程的优先级别值，默认的为0，可以进行调整。
-    5. VIRT     表示进程占用的虚拟内存值。
-    6. RES      表示进程占用的物理内存值。
-    7. SHR      表示进程占用的共享内存值。
-    8. S        表示进程的运行状况，R表示正在运行、S表示休眠，等待唤醒、Z表示僵死状态。
-    9. %CPU     表示该进程占用的CPU使用率。
-    10. %MEM    表示该进程占用的物理内存和总内存的百分比。
-    11. TIME+   表示该进程启动后占用的总的CPU时间。
-    12. COMMAND 表示进程启动的启动命令名称。
+
+  01. PID 表示进程的标识号。
+  02. USER 表示运行此进程的用户。
+  03. PRI 表示进程的优先级。
+  04. NI 表示进程的优先级别值，默认的为0，可以进行调整。
+  05. VIRT 表示进程占用的虚拟内存值。
+  06. RES 表示进程占用的物理内存值。
+  07. SHR 表示进程占用的共享内存值。
+  08. S 表示进程的运行状况，R表示正在运行、S表示休眠，等待唤醒、Z表示僵死状态。
+  09. %CPU 表示该进程占用的CPU使用率。
+  10. %MEM 表示该进程占用的物理内存和总内存的百分比。
+  11. TIME+ 表示该进程启动后占用的总的CPU时间。
+  12. COMMAND 表示进程启动的启动命令名称。
 
 - 交互式界面指令
-    1. F1 或者h    查看帮助文档。
-    2. F2 或者S    设置htop
-    3. / 或者F3    搜索进程。
-    4. \ 或者F4    增量进程过滤器。
-    5. t 或者F5    显示树形结构。
-    6. F6 +,-     按照某个指标进行排序。
-    7. ] 或者F7    可提高nice值可以提高对应进程的优先级
-    8. [ 或者F8    可减少nice值可以提高对应进程的优先级
-    9. k 或者 F9   杀掉进程。
-    10. q 或者F10  结束htop。
-    11. u         只显示一个给定的用户的进程。
-    12. H         显示或隐藏用户线程。
-    13. K         显示或隐藏内核线程。
-    14. F         跟踪进程。
-    15. P         按CPU 使用排序。
-    16. M         按内存使用排序。
-    17. T         按Time+ 使用排序。
+
+  01. F1 或者h 查看帮助文档。
+  02. F2 或者S 设置htop
+  03. / 或者F3 搜索进程。
+  04. \\ 或者F4 增量进程过滤器。
+  05. t 或者F5 显示树形结构。
+  06. F6 +,- 按照某个指标进行排序。
+  07. \] 或者F7 可提高nice值可以提高对应进程的优先级
+  08. \[ 或者F8 可减少nice值可以提高对应进程的优先级
+  09. k 或者 F9 杀掉进程。
+  10. q 或者F10 结束htop。
+  11. u 只显示一个给定的用户的进程。
+  12. H 显示或隐藏用户线程。
+  13. K 显示或隐藏内核线程。
+  14. F 跟踪进程。
+  15. P 按CPU 使用排序。
+  16. M 按内存使用排序。
+  17. T 按Time+ 使用排序。
 
 ### sysstat
+
 - 分析服务器的性能和资源的使用效率。可以监控CPU、硬盘、网络等数据.
+
 ```bash
 # 安装
 # git://github.com/sysstat/sysstat
@@ -264,6 +288,7 @@ sar -V
 # 每10秒钟输出一次磁盘 I/O 情况，持续输出5次
 sar -d 10 --human
 ```
+
 ```sh
 # iostat 工具提供CPU使用率及硬盘吞吐效率的数据
 # -x 显示扩展统计信息（包括设备的详细IO情况）
@@ -278,11 +303,12 @@ pidstat -d 5 --human
 
 ```
 
-
 ### awk
+
 - 概览
-    - 字段 Item
-    - 记录 Record
+  - 字段 Item
+  - 记录 Record
+
 ```bash
 # 内置变量
 # FS：输入Item分隔符，默认为空白字符
@@ -334,6 +360,7 @@ awk '!seen[$0]++' info.txt > temp.txt && mv temp.txt info.txt
 ```
 
 ### 数学计算
+
 ```bash
 echo "2/3" | bc -l
 # scale=3 保留几位小数
@@ -341,7 +368,9 @@ echo "scale=3; ${num}*5/60/60" | bc -l
 ```
 
 ### taskset CPU隔离
+
 - taskset 设置和查看CPU和进程间的亲和性
+
 ```bash
 # 查看线程和CPU间的亲和性
 taskset -p ${PID}
@@ -384,7 +413,9 @@ update-grub # grub-mkconfig -o /boot/grub/grub.cfg # 或者重启
 ```
 
 ### screen
+
 - screen 窗口退出后会继续运行在后台，可以替代nohup
+
 ```bash
 # 创建一个screen
 screen -l
@@ -407,26 +438,24 @@ screen -L -Logfile mylog.txt -S ${screenName}
 ```
 
 ## 未归类
-获取公网IP ： 
-curl cip.cc 
+
+获取公网IP ：
+curl cip.cc
 curl ipinfo.io
 
-查看CentOS版本 cat /etc/issue 或者 cat /etc/redhat-release 
+查看CentOS版本 cat /etc/issue 或者 cat /etc/redhat-release
 查看Ubunto版本 cat /etc/lsb-release
 
 yum install bind-utils -y 此软件含nslookup指令
 
 进入容器
-docker inspect -f {{.State.Pid}} 容器名或者容器id  
-nsenter  -n --target  PID名称
-
+docker inspect -f {{.State.Pid}} 容器名或者容器id\
+nsenter -n --target PID名称
 
 linux环境测网速
 curl -O https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py
 
-
 netstat apt-get install net-tools
-
 
 ```bash
 # 只要./test.lock的当前状态未被外部改变，其它flock ./test.lock的就执行失败，直到当前的flock执行结束
@@ -436,29 +465,29 @@ flock -xn ./test.lock -c "sh ./test.sh"
 ```
 
 查看内核报错
+
 - 参考
-https://blog.csdn.net/zhaohaijie600/article/details/45246569 
+  https://blog.csdn.net/zhaohaijie600/article/details/45246569
+
 ```log
 php-fpm-7.1[60143]: segfault at 0 ip 00007fbc4e998ff1 sp 00007ffe5b9c3238 error 4 in libc-2.17.so[7fbc4e82a000+1c3000]
 ```
-1. 程序名  php-fpm-7.1
-2. 线程PID  60143
-3. 标识应该是由内存访问越界造成的  segfault  
-4. 具体的错误  error 4
-    1. error 4 转为二进制 error 100
-    2. error ${bit2}${bit1}${bit0}
-        1. bit2: 值为1表示是用户态程序内存访问越界，值为0表示是内核态程序内存访问越界. 
-        2. bit1: 值为1表示是写操作导致内存访问越界，值为0表示是读操作导致内存访问越界.
-        3. bit0: 值为1表示没有足够的权限访问非法地址的内容，值为0表示访问的非法地址根本没有对应的页面，也就是无效地址.
-    
+
+1. 程序名 php-fpm-7.1
+2. 线程PID 60143
+3. 标识应该是由内存访问越界造成的 segfault
+4. 具体的错误 error 4
+   1. error 4 转为二进制 error 100
+   2. error ${bit2}${bit1}${bit0}
+      1. bit2: 值为1表示是用户态程序内存访问越界，值为0表示是内核态程序内存访问越界.
+      2. bit1: 值为1表示是写操作导致内存访问越界，值为0表示是读操作导致内存访问越界.
+      3. bit0: 值为1表示没有足够的权限访问非法地址的内容，值为0表示访问的非法地址根本没有对应的页面，也就是无效地址.
 
 查看/tmp目录下每个子目录文件的数量
 for i in /tmp; do echo $i; find $i |wc -l|sort -nr; done
 
-
 除特定文件外删除所有
 rm -rf !(.a|.|..)
-
 
 ping 缺失
 apt-get install iputils-ping
@@ -481,14 +510,13 @@ sed -i "/^name/c\name=$var" 文件名
 ```
 
 - 删除Evicted状态的Pod
-kubectl get pods | grep Evicted | awk '{print $1}' | xargs kubectl delete pod
-
+  kubectl get pods | grep Evicted | awk '{print $1}' | xargs kubectl delete pod
 
 - 查看网络连接
-netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
-
+  netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
 
 - 查看某个节点的所有pod的top
+
 ```bash
 nodename=XXXX
 kubectl get pods -o wide | grep ${nodename} | awk {'print $1'} | xargs -n1 kubectl top pods --no-headers
@@ -520,43 +548,47 @@ kill -KILL ${PID}
 kill -15 ${PID} 
 ```
 
-
 - linux系统语言中英文切换
-    ```bash
-    # 永久切换
-    vim /etc/locale.conf # 或者 vim /etc/sysconfig/i18n
-    # 然后更改配置 LANG=en_US.UTF-8 或者 LANG=zh_CN.UTF-8
-    source /etc/locale.conf
 
-    # 临时切换
-    export LANG="zh_CN.UTF-8" # 中文
-    export LANG="en_US.UTF-8" # 英文
-    ```
+  ```bash
+  # 永久切换
+  vim /etc/locale.conf # 或者 vim /etc/sysconfig/i18n
+  # 然后更改配置 LANG=en_US.UTF-8 或者 LANG=zh_CN.UTF-8
+  source /etc/locale.conf
+
+  # 临时切换
+  export LANG="zh_CN.UTF-8" # 中文
+  export LANG="en_US.UTF-8" # 英文
+  ```
 
 - cpu负载，cpu使用率
-    ```bash
-    ps -aux
-    # 系统中可运行（R）和不可中断（D）进程
-    # R：正在CPU上运行或者正在等待CPU的进程状态
-    # D：不可中断是指一些正在处于内核关键流程的进程，如果盲目打断，会造成不可预知的后果，比如正在写磁盘的进程，盲目被打断，可能会造成读写不一致的问题。
-    CPU的使用率 = 单位时间内CPU执行任务的时间 / 单位时间
-    CPU平均负载 = 特定时间内运行队列中的平均进程数量（可运行状态和不可中断状态的进程）
-    ```
+
+  ```bash
+  ps -aux
+  # 系统中可运行（R）和不可中断（D）进程
+  # R：正在CPU上运行或者正在等待CPU的进程状态
+  # D：不可中断是指一些正在处于内核关键流程的进程，如果盲目打断，会造成不可预知的后果，比如正在写磁盘的进程，盲目被打断，可能会造成读写不一致的问题。
+  CPU的使用率 = 单位时间内CPU执行任务的时间 / 单位时间
+  CPU平均负载 = 特定时间内运行队列中的平均进程数量（可运行状态和不可中断状态的进程）
+  ```
 
 ### 排查问题
+
 - dmesg 并发量太大导致三次握手时超过资源限制，需要调整内核参数
+
 ```log
 SYN flooding on port 80. Sending cookies.  Check SNMP counters.
 ```
 
 ### 休眠问题
+
 ```bash
 # 关掉所有的休眠服务
 systemctl mask sleep.target suspend.target hibernate.target hybridsleep.target
 ```
 
-
 ### grep
+
 ```bash
 # -E 使用正则表达式
 # -i 忽视大小写
@@ -564,10 +596,10 @@ systemctl mask sleep.target suspend.target hibernate.target hybridsleep.target
 ```
 
 - 通过主线程名字查看所有子线程
-    - ps -ef | grep ${process_name} | grep -v grep | awk '{print $2}' | xargs ps -T -p
-
+  - ps -ef | grep ${process_name} | grep -v grep | awk '{print $2}' | xargs ps -T -p
 
 ### jq
+
 ```bash
 jq .元素名字.元素名字
 jq .[数组索引]
@@ -576,6 +608,7 @@ jq -r # 输出字符串原始值而不是字符串 JSON 序列化后的值
 ```
 
 ### linux默认编辑器
+
 ```bash
 # 更改默认编辑器 方式一
 update-alternatives --config editor 
@@ -586,6 +619,7 @@ export EDITOR="/usr/bin/vim"
 ```
 
 ### iotop 进程IO监控
+
 ```bash
 iotop -oP 
 # -o 只显示有I/O行为的线程
@@ -593,6 +627,7 @@ iotop -oP
 ```
 
 ### 日志颜色
+
 ```bash
 apt install expect
 # 保留日志的颜色进文件内
@@ -600,7 +635,8 @@ unbuffer 可执行程序 >> log
 unbuffer 可执行程序 | tee log
 ```
 
-### prlimit 
+### prlimit
+
 - prlimit 这个命令用来设置或者获取某进程的资源限制数.
 
 ```bash
@@ -612,6 +648,7 @@ prlimit --pid=9999 --nofile=102400:102400
 ```
 
 ### linux和windows
+
 ```bash
 # Windows 和 Linux 之间文本格式转换
 # yum install -y dos2unx
@@ -619,6 +656,7 @@ dos2unix ${filename}
 ```
 
 ### 升级内核
+
 ```bash
 # Update and upgrade existing packages
 sudo apt update && sudo apt full-upgrade -y
@@ -633,7 +671,9 @@ dpkg --configure -a; apt --fix-broken install -y; DEBIAN_FRONTEND=noninteractive
 ```
 
 ### linux 命令
+
 1. selinux
+
 ```bash
 # 查看当前selinux功能情况
 sestatus -v
@@ -645,6 +685,7 @@ setenforce 0
 ```
 
 ## 增加用户
+
 ```sh
 # 自动在/home目录下会自动创建同名文件夹
 # 自动创建同名用户组
@@ -658,48 +699,47 @@ useradd ${用户名}
 userdel  -r  ${用户名}
 ```
 
-
-
 # Unix命令行程序和内建指令
-文件系统	
-▪ cat	▪ cd	▪ chmod	▪ chown
-▪ chgrp	▪ cksum	▪ cmp	▪ cp
-▪ du	▪ df	▪ fsck	▪ fuser
-▪ ln	▪ ls	▪ lsattr	▪ lsof
-▪ mkdir	▪ mount	▪ mv	▪ pwd
-▪ rm	▪ rmdir	▪ split	▪ touch
-▪ umask			
-程序	
-▪ at	▪ bg	▪ chroot	▪ cron
-▪ exit	▪ fg	▪ jobs	▪ kill
-▪ killall	▪ nice	▪ pgrep	▪ pidof
-▪ pkill	▪ ps	▪ pstree	▪ sleep
-▪ time	▪ top	▪ wait	
-使用环境	
-▪ env	▪ finger	▪ id	▪ logname
-▪ mesg	▪ passwd	▪ su	▪ sudo
-▪ uptime	▪ w	▪ wall	▪ who
-▪ whoami	▪ write		
-文字编辑	
-▪ awk	▪ comm	▪ cut	▪ ed
-▪ ex	▪ fmt	▪ head	▪ iconv
-▪ join	▪ less	▪ more	▪ paste
-▪ sed	▪ sort	▪ strings	▪ talk
-▪ tac	▪ tail	▪ tr	▪ uniq
-▪ vi	▪ wc	▪ xargs	
-Shell 程序	
-▪ alias	▪ basename	▪ dirname	▪ echo
-▪ expr	▪ false	▪ printf	▪ test
-▪ true	▪ unset		
-网络	
-▪ inetd	▪ netstat	▪ ping	▪ rlogin
-▪ netcat	▪ traceroute		
-搜索	
-▪ find	▪ grep	▪ locate	▪ whereis
-▪ which			
-杂项	
-▪ apropos	▪ banner	▪ bc	▪ cal
-▪ clear	▪ date	▪ dd	▪ file
-▪ help	▪ info	▪ size	▪ lp
-▪ man	▪ history	▪ tee	▪ tput
-▪ type	▪ yes	▪ uname	▪ whatis
+
+文件系统
+▪ cat ▪ cd ▪ chmod ▪ chown
+▪ chgrp ▪ cksum ▪ cmp ▪ cp
+▪ du ▪ df ▪ fsck ▪ fuser
+▪ ln ▪ ls ▪ lsattr ▪ lsof
+▪ mkdir ▪ mount ▪ mv ▪ pwd
+▪ rm ▪ rmdir ▪ split ▪ touch
+▪ umask
+程序
+▪ at ▪ bg ▪ chroot ▪ cron
+▪ exit ▪ fg ▪ jobs ▪ kill
+▪ killall ▪ nice ▪ pgrep ▪ pidof
+▪ pkill ▪ ps ▪ pstree ▪ sleep
+▪ time ▪ top ▪ wait
+使用环境
+▪ env ▪ finger ▪ id ▪ logname
+▪ mesg ▪ passwd ▪ su ▪ sudo
+▪ uptime ▪ w ▪ wall ▪ who
+▪ whoami ▪ write
+文字编辑
+▪ awk ▪ comm ▪ cut ▪ ed
+▪ ex ▪ fmt ▪ head ▪ iconv
+▪ join ▪ less ▪ more ▪ paste
+▪ sed ▪ sort ▪ strings ▪ talk
+▪ tac ▪ tail ▪ tr ▪ uniq
+▪ vi ▪ wc ▪ xargs
+Shell 程序
+▪ alias ▪ basename ▪ dirname ▪ echo
+▪ expr ▪ false ▪ printf ▪ test
+▪ true ▪ unset
+网络
+▪ inetd ▪ netstat ▪ ping ▪ rlogin
+▪ netcat ▪ traceroute
+搜索
+▪ find ▪ grep ▪ locate ▪ whereis
+▪ which
+杂项
+▪ apropos ▪ banner ▪ bc ▪ cal
+▪ clear ▪ date ▪ dd ▪ file
+▪ help ▪ info ▪ size ▪ lp
+▪ man ▪ history ▪ tee ▪ tput
+▪ type ▪ yes ▪ uname ▪ whatis

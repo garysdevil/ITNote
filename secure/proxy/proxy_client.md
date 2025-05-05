@@ -4,8 +4,8 @@ created_date: 2025-03-12
 
 [TOC]
 
-
 ### 环境变量方式
+
 ```conf
 # vi /etc/profile.d/proxy.conf
 # source /etc/profile.d/proxy.conf # 使配置文件立即生效
@@ -32,26 +32,29 @@ echo "proxy=http://127.0.0.1:8080/" >> /etc/yum.conf
 
 - 账号密码中有特殊符号，则需要转换
 - 参考 http://ascii.911cha.com/
-| @    | 0x40 |
-| ---- | ---- |
-| :    | 0x3A |
-| ~    | 0x7E |
-| #    | 0x23 |
-| $    | 0x24 |
-| %    | 0x25 |
-| &    | 0x26 |
-
+  | @ | 0x40 |
+  | ---- | ---- |
+  | : | 0x3A |
+  | ~ | 0x7E |
+  | # | 0x23 |
+  | $ | 0x24 |
+  | % | 0x25 |
+  | & | 0x26 |
 
 ### Proxy SwitchyOmega
+
 - Google游览器代理管理工具插件
 
 ### tsocks
+
 - 通过SOCKS4或SOCKS5代理提供透明的网络访问。
+
 ```bash
 apt install tsocks
 ```
 
-- vi /etc/tsocks.conf  
+- vi /etc/tsocks.conf
+
 ```conf
 local = 192.168.1.0/255.255.255.0  #不使用socks代理的网络
 local = 127.0.0.0/255.0.0.0  #不使用socks代理的网络
@@ -72,15 +75,18 @@ PROXYCHAINS_SOCKS5=127.0.0.1:7890 proxychains ${command}
 PROXYCHAINS_SOCKS5_HOST=127.0.0.1 PROXYCHAINS_SOCKS5_PORT=4321 proxychains zsh
 
 ```
+
 - /etc/proxychains4.conf
 
 ### clash生态
+
 1. 内核 https://github.com/MetaCubeX/mihomo
 2. Clah(Windows/Linux) https://github.com/Dreamacro/clash 原开发者下架了
-3. ClashX(Mac) https://github.com/yichengchen/clashX  原开发者下架了
-4. ClashVerg(Windows/Mac) https://github.com/clash-verge-rev/clash-verge-rev 
+3. ClashX(Mac) https://github.com/yichengchen/clashX 原开发者下架了
+4. ClashVerg(Windows/Mac) https://github.com/clash-verge-rev/clash-verge-rev
 
 ### 其它
+
 1. Shadowrocket https://shadowsocks.org
 2. V2ray https://v2ray.com
 3. Surge

@@ -10,26 +10,29 @@ https://kubernetes.io/zh/docs/tasks/administer-cluster/manage-resources/memory-d
 ### 概览
 
 1. 服务质量等级
+
 - QoS Class（Quality of service class）
 - kubernetes 通过requests 和limits 来判断服务质量等级，以维护服务器的安全性。
   1. Guaranteed:优先级最高。pod中每个容器同时定义了cpu和memory的request和limit，并且两者的request=limit；
   2. Burstable:优先级中等。pod中至少有一个容器定义了cpu或memory的request属性，且二者不一定要相等；
   3. BestEffort:优先级最低。pod中没有任何一个容器定义了request或limit属性；
-  
+
 2. k8s/docker/linux
-requests.cpu被转成docker的--cpu-shares参数，与cgroup cpu.shares功能相同
-requests.memory没有对应的docker参数，作为k8s调度依据
+   requests.cpu被转成docker的--cpu-shares参数，与cgroup cpu.shares功能相同
+   requests.memory没有对应的docker参数，作为k8s调度依据
 
 limits.cpu会被转换成docker的–cpu-quota参数。与cgroup cpu.cfs_quota_us功能相同
 limits.memory会被转换成docker的–memory参数。用来限制容器使用的最大内存
 
 ### 设置Pod的limit和request
-- CPU的默认单位多少核cpu 
+
+- CPU的默认单位多少核cpu
   100m = 0.1CPU
 - 内存的默认单位是Ki
   可用用的单位 E, P, T, G, M, K, Ei, Pi, Ti, Gi, Mi, Ki
 
 1. 设置整个命名空间里容器cpu和memory的requests和limits默认值
+
 ```yaml
 apiVersion: v1
 kind: LimitRange
@@ -53,6 +56,7 @@ spec:
 ```
 
 2. 单独限制container的cpu和memory
+
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -79,11 +83,13 @@ spec:
 4. 容器声明了内存请求，但没有内存限制；则使用命名空间的默认内存限制。
 
 ### 命名空间的默认request和limit
+
 - 查看
-kubectl get limitrange
-kubectl get ResourceQuota
+  kubectl get limitrange
+  kubectl get ResourceQuota
 
 1. 命名空间request和limit默认值
+
 ```yaml
 apiVersion: v1
 kind: LimitRange
@@ -101,6 +107,7 @@ spec:
 ```
 
 2. 最大值最小值
+
 ```yaml
 apiVersion: v1
 kind: LimitRange
@@ -116,6 +123,7 @@ spec:
 ```
 
 3. 命名空间的配额
+
 ```yaml
 apiVersion: v1
 kind: ResourceQuota

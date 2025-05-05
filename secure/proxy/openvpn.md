@@ -6,10 +6,11 @@ created_date: 2025-03-12
 
 - Openvpn
 - 参考
-    - 官方 https://openvpn.net/access-server-manual/deployment-overview/
-    - https://www.wanhebin.com/openvpn/639.html
+  - 官方 https://openvpn.net/access-server-manual/deployment-overview/
+  - https://www.wanhebin.com/openvpn/639.html
 
 ## 安装
+
 ```bash
 # Centos系统
 # 安装epel 仓库源
@@ -21,6 +22,7 @@ yum install easy-rsa openvpn
 
 echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 ```
+
 ```bash
 # Ubuntu系统
 apt-get install openvpn
@@ -33,11 +35,14 @@ openvpn --ca /etc/openvpn/client/ca.crt --config /etc/openvpn/client/client.ovpn
 ```
 
 ## 使用openVPN自带的http-proxy作代理
+
 - OpenVPN本身可以使用http代理，也就是说，OpenVPN客户端不是直接和OpenVPN服务器连接，而是使用http代理进行连接。这个特性是OpenVPN的外围特性，不是其核心的，然而却能解决很多实际问题，它相当于隧道外面又套了一个隧道，不过这个外面的隧道并不是真实的隧道，因为它并没有封装，而仅仅是伪装了端口信息而已。
-- OpenVPN客户端 -->  http代理服务器（squid）  -->  OpenVPN服务器
+- OpenVPN客户端 --> http代理服务器（squid） --> OpenVPN服务器
 
 ## Openvpn客户端配置
-- *.ovpn
+
+- \*.ovpn
+
 ```conf
 client #指定当前VPN是客户端
 dev tun #使用tun隧道传输协议

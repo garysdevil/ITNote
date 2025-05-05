@@ -5,26 +5,34 @@ created_date: 2021-07-09
 [TOC]
 
 # Maven
+
 ## 安装
+
 1. 下载
+
 ```bash
 # https://maven.apache.org/download.cgi
 wget https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.zip
 tar xzvf apache-maven-3.6.3-bin.tar.gz
 ```
+
 2. 配置环境变量
-vi /etc/profile/maven.sh
+   vi /etc/profile/maven.sh
+
 ```conf
 export M2_HOME=/opt/app/apache-maven-3.8.6
 export PATH=$PATH:$M2_HOME/bin
 ```
+
 ```bash
 source /etc/profile
 mvn -v
 ```
 
 3. 配置 本地仓库存储位置/中央仓库
-- conf/settings.xml  
+
+- conf/settings.xml
+
 ```xml
 <localRepository>本地仓库在磁盘中的路径</localRepository>
 <mirror>  
@@ -38,6 +46,7 @@ mvn -v
 ## 使用
 
 1. 下载jar包
+
 ```bash
 mvn dependency:get  -DgroupId=junit -DartifactId=junit -Dversion=4.8.2
 # 或	
@@ -45,11 +54,13 @@ mvn -f pom.xml dependency:copy-dependencies
 ```
 
 2. 浏览项目依赖
+
 ```bash
 mvn dependency:resolve
 ```
 
 3. 完整命令详解
+
 ```bash
 mvn archetype:create 创建Maven项目
 mvn compile 编译源代码
@@ -93,6 +104,7 @@ mvn dependency:sources 获取依赖源代码
 ```
 
 4. 常用打包指令
+
 ```bash
 mvn clean  install package -Dmaven.test.skip=true #清理之前项目生成结果并构建然后将依赖包安装到本地仓库跳过测试
 mvn clean deploy package  -Dmaven.test.skip=true #构建并将依赖放入私有仓库

@@ -5,6 +5,7 @@ created_date: 2020-11-16
 [TOC]
 
 ### 七层反向代理
+
 ```conf
 http {
     upstream backend_service {
@@ -23,7 +24,9 @@ http {
     include /etc/nginx/http.d/*.conf;
 }
 ```
+
 ### 四层反向代理
+
 ```conf
 stream {
     upstream backend_instance {
@@ -39,6 +42,7 @@ stream {
 ```
 
 ### url访问路径规则
+
 ```
 空	location后没有参数直接跟着URI，表示前缀匹配，代表跟请求中的URI从头开始匹配。
 =	用于标准 uri 前，要求请求字符串与其严格匹配，成功则立即处理，nginx停止搜索其他匹配。
@@ -49,6 +53,7 @@ stream {
 ```
 
 ### http 转 https
+
 ```conf
 server {
     listen       80;
@@ -58,6 +63,7 @@ server {
 ```
 
 ### https配置/单向&&双向
+
 ```conf
     server {
         listen       443 ssl;
@@ -76,7 +82,9 @@ server {
 ```
 
 ### IP访问限制
+
 - 可放在 server 内, 或者在 location 内
+
 ```conf IP
 server {
     listen       80;
@@ -92,7 +100,8 @@ server {
 ```
 
 ### 速率限制 对整个server生效
-```conf  
+
+```conf
 http {
     limit_req_zone $binary_remote_addr zone=one:10m rate=8r/s;
     server {
@@ -104,11 +113,12 @@ http {
 }
 ```
 
-
 ### 默认请求的server
+
 http://nginx.org/en/docs/http/request_processing.html
 "default_server"参数从0.8.21版开始可用。在之前的版本中，应该使用"default"参数代替。
 nginx 的 default_server 指令可以定义默认的 server 去处理一些没有匹配到 server_name 的请求，如果没有显式定义，则会选取第一个定义的 server 作为 default_server。
+
 ```conf
 server {
     listen       80  default_server; # 
@@ -116,8 +126,11 @@ server {
     return       200 '请访问garys.top';
 }
 ```
+
 ### server 的匹配顺序
+
 Nginx中的server_name指令主要用于配置基于名称的虚拟主机，server_name指令在接到请求后的匹配顺序分别为：
+
 ```conf
 # 1 准确的server_name匹配，例如：
 server {
@@ -146,7 +159,9 @@ server {
 ```
 
 ### 重定向和跳转
+
 1. 重定向
+
 ```conf
 server {
     listen 80;
@@ -159,7 +174,9 @@ server {
 # last 相当于Apache里的[L]标记，表示完成rewrite
 # break 终止匹配, 不再匹配后面的规则
 ```
+
 2. 跳转
+
 ```conf
 server {
     listen 80;
@@ -171,8 +188,10 @@ server {
 ```
 
 ### dns解析
+
 1. Nginx0.6.18以后的版本中启用了一个resolver指令
 2. 解决错误 no resolver defined to resolve 或 could not be resolved
+
 ```conf
 http {
     # 依次从左到右

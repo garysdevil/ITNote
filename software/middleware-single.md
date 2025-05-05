@@ -4,9 +4,10 @@ created_date: 2020-11-16
 
 [TOC]
 
-
 ### 2. 安装MongoDB/4.0
+
 #### 2.1 centos7通过yum源安装mongodb
+
 ```shell
 # 配置yum源
 [mongodb-org-4.0]
@@ -26,8 +27,11 @@ mongod --auth
 vi /etc/mongod.conf #修改数据库目录，修改的dbPath参
 service mongod start
 ```
+
 #### ubuntu16 apt源安装
+
 - https://docs.mongodb.com/v4.0/tutorial/install-mongodb-on-ubuntu/#install-mongodb-community-edition
+
 ```
 wget -qO - https://www.mongodb.org/static/pgp/server-4.0.asc | sudo apt-key add -
 
@@ -37,8 +41,11 @@ sudo apt-get update
 
 apt-get install mongodb-org -y 
 ```
+
 #### 2.2 通过二进制文件安装mongodb
-- mongodb官网内的所有版本： https://www.mongodb.com/download-center/community   
+
+- mongodb官网内的所有版本： https://www.mongodb.com/download-center/community
+
 ```shell
 cd /opt/jadepool-all/mongodb
 # 下载centos系统的安装包
@@ -66,7 +73,9 @@ PATH=$PATH:${mongodbPath}
 ./mongod -f /usr/local/mongodb/bin/mongodb.conf
 
 ```
+
 #### 2.3 使用
+
 ```shell
 # 创建数据库账户密码（MongoDB 默认安装完成以后，只允许本地连接，同时不需要使用任何账号密码就可以直接连接MongoDB）
 use admin
@@ -80,7 +89,9 @@ mongo IP/数据库名 -u 用户 -p 密码
 
 # 先进行管理员用户的验证，查看所有的用户 db.system.users.find().pretty()
 ```
+
 ### 3. 安装Redis/5.0
+
 ```shell
 # 下载源码包进行编译安装
 curl -O http://download.redis.io/releases/redis-5.0.4.tar.gz
@@ -102,7 +113,9 @@ nohup src/redis-server redis.conf > ./redis.log 2>&1 &
 # 增加密码后连接命令：src/redis-cli -a mypassword
 # 增加密码后关闭命令：src/redis-cli -a mypassword shutdown
 ```
+
 ### 4. 安装consul
+
 ```shell
 # 单节点安装一个consul即可
 curl -O  https://releases.hashicorp.com/consul/1.6.0/consul_1.6.0_linux_amd64.zip
@@ -114,7 +127,9 @@ nohup consul agent -server -bootstrap-expect=1 -data-dir=./data -node=master -bi
 ```
 
 ### 5. seed的安装使用
+
 1. 安装
+
 ```shell
 mkdir data
 # 初始化seed,设置密码，请务必记住设置的密码，忘记密码将不能恢复。
@@ -123,11 +138,12 @@ mkdir data
 screen -S seed
 ./seed --path=./data/
 ```
+
 2. 查看设置
-./seed --path=./data/ --list
+   ./seed --path=./data/ --list
 3. 配置白名单
-./seed --path=./data/ --config
-输入client回车
-输入IP
+   ./seed --path=./data/ --config
+   输入client回车
+   输入IP
 4. 设置需要支持的链
-./seed --path=./data/ --data
+   ./seed --path=./data/ --data

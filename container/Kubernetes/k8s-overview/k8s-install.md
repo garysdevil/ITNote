@@ -5,12 +5,14 @@ created_date: 2021-01-15
 [TOC]
 
 ## 二进制安装
+
 https://github.com/easzlab/kubeasz
 https://my.oschina.net/u/4255236/blog/4873696
 
 ## kind 测试环境
+
 - 参考
-https://kind.sigs.k8s.io/  
+  https://kind.sigs.k8s.io/
 
 ```bash
 # 简单创建集群
@@ -44,6 +46,7 @@ docker exec ${node-name} crictl images
 ```
 
 vim kind-config.yaml
+
 ```yaml
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
@@ -53,4 +56,3 @@ nodes:
 - role: worker
 # kind create cluster --config kind.yaml
 ```
-

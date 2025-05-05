@@ -5,6 +5,7 @@ created_date: 2021-01-13
 [TOC]
 
 ## pod重启的原因
+
 1. POD正常退出
 2. POD异常退出
 3. POD使用从CPU超过POD yaml里设置的CPU上限,或者超过容器所在namespace里配置的CPU上限

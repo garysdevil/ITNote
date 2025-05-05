@@ -4,7 +4,8 @@ created_date: 2025-01-24
 
 [TOC]
 
-## ssh 
+## ssh
+
 ```bash
 # -o StrictHostKeyChecking=no 告诉SSH客户端不检查主机密钥数据库(/etc/ssh/ssh_known_hosts 或 ~/.ssh/known_hosts)，并自动接受第一次连接到的主机的公钥
 ssh -p22 127.0.0.1 -i 私钥文件路径
@@ -15,7 +16,6 @@ ssh -p22 127.0.0.1 -i 私钥文件路径
 # 定义ssh登入时默认使用的私钥
 IdentityFile ~/.ssh/私钥文件名
 ```
-
 
 ```conf
 # 服务端配置文件 /etc/ssh/sshd_config
@@ -34,6 +34,7 @@ ssh-copy-id -i ~/.ssh/公钥文件名 # 被免密登陆的主机的IP
 ```
 
 ## 公钥
+
 ```bash
 # 扫描其它机器的公钥
 ssh-keyscan
@@ -48,11 +49,15 @@ ssh-keygen -C "备注信息" -t 算法类型
 ```
 
 ### ssh-agent
-- 参考 https://wiki.archlinux.org/index.php/SSH_keys_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)
+
+- 参考 https://wiki.archlinux.org/index.php/SSH_keys\_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)
 
 - 普通登入方式 ssh -i 私钥文件路径 ${username}@${ip}
+
 - ssh-agent 是一个代理程序，它能帮助我们管理我们的私钥
+
 - ssh-add 把私钥密钥添加到ssh-agent的高速缓存中
+
 ```bash
 eval $(ssh-agent) # ssh-agent bash --login -i  # ssh-agent bash
 # 将私钥添加到高速缓存中
@@ -60,6 +65,7 @@ ssh-add -k 私钥文件路径
 ```
 
 ## VNC
+
 - GUI客户端工具 https://www.realvnc.com/en/connect/download/viewer/
 
 ```bash
@@ -90,6 +96,7 @@ export XDG_CURRENT_DESKTOP="GNOME-Flashback:GNOME"
 export XDG_MENU_PREFIX="gnome-flashback-"
 gnome-session --session=gnome-flashback-metacity --disable-acceleration-check &
 ```
+
 ```conf
 #!/bin/bash
 xrdb $HOME/.Xresources

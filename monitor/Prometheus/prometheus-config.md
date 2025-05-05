@@ -5,7 +5,9 @@ created_date: 2020-11-16
 [TOC]
 
 ### prometheus配置
+
 - https://prometheus.io/docs/prometheus/latest/configuration/configuration/
+
 ```yaml prometheus.yaml
 global:
   scrape_interval:     15s # default = 1m. 抓取时间间隔
@@ -96,7 +98,9 @@ scrape_configs:
       target_label: k8s_cluster
       replacement: $1
 ```
-*.rules
+
+\*.rules
+
 ```yaml
 groups:
 - name: new expression  # 构建一条表达式  
@@ -116,7 +120,9 @@ groups:
 ```
 
 ### Alertmanager配置
+
 - https://prometheus.io/docs/alerting/configuration/
+
 ```yaml alertmanager.yaml
 # vi alertmanager.yml
 global:

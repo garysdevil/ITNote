@@ -5,13 +5,16 @@ created_date: 2020-11-16
 [TOC]
 
 ## centos安装zabbix服务
+
 - zabbix服务由3个组件组成
-    + 数据库
-    + zabbix后端程序
-    + zabbix-web
+  - 数据库
+  - zabbix后端程序
+  - zabbix-web
 
 ### 一 安装数据库mariadb
+
 1. 安装
+
 ```bash
 yum -y install mariadb mariadb-server 
 # 安装mysql-server
@@ -27,7 +30,9 @@ systemctl enable mariadb
 # 设置密码
  mysqladmin -u root -h localhost password XXXXXX
 ```
+
 2. 配置MariaDB的字符集
+
 ```bash
  vi /etc/my.cnf
  # 在[mysqld]标签下添加
@@ -52,12 +57,17 @@ systemctl status mariadb
 show variables like "%character%";
 show variables like "%collation%";
 ```
+
 ### 二 安装zabbix后端程序
+
 - 在centos7下安装zabbix-server3.4或zabbix-proxy3.4，使用mysql-mariadb数据库
 - 官方教程： https://www.zabbix.com/documentation/3.4/manual/installation/install_from_packages/rhel_centos
+
 #### 二.A 安装zabbix-server
+
 - 在centos7下安装zabbix-server3.4或者zabbix-proxy3.4，使用mysql-mariadb数据库
 - 官方教程： https://www.zabbix.com/documentation/3.4/manual/installation/install_from_packages/rhel_centos
+
 ```bash
 # 1 创建zabbix用户和数据库
 mysql -uroot -pXXXXXX -e "create database zabbix character set utf8 collate utf8_bin;"
@@ -82,7 +92,9 @@ systemctl enable zabbix-server
 systemctl start zabbix-server
 systemctl status zabbix-server
 ```
+
 #### 二.B 安装zabbix-proxy
+
 ```bash
 # 1 创建zabbix用户和数据库
 mysql -uroot -pXXXXXX -e "create database zabbix_proxy character set utf8 collate utf8_bin;"
@@ -107,8 +119,11 @@ systemctl enable zabbix-proxy
 ystemctl start zabbix-proxy
 ystemctl status zabbix-proxy
 ```
-### 三 安装zabbix-web 
+
+### 三 安装zabbix-web
+
 1. 安装
+
 ```bash
 # 1 安装
 yum-config-manager --enable rhel-7-server-optional-rpms
@@ -127,12 +142,15 @@ systemctl enable httpd
 systemctl start httpd
 systemctl status httpd
 ```
+
 2. 打开网页
-http://IP/zabbix
+   http://IP/zabbix
+
 - /etc/zabbix/web/zabbix.conf.php 被创建
 - 默认管理员账号密码 Admin/zabbix
 
-## 密码重置 
+## 密码重置
+
 ```bash
 select userid,alias,passwd from users;
 echo -n  admin  | openssl md5

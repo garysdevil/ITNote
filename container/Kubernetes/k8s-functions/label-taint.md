@@ -5,20 +5,25 @@ created_date: 2020-11-16
 [TOC]
 
 - 官网
- https://kubernetes.io/zh/docs/concepts/configuration/taint-and-toleration/
- https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  https://kubernetes.io/zh/docs/concepts/configuration/taint-and-toleration/
+  https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 
-### 标签 
+### 标签
+
 1. nodeSelector
+
 - 添加标签
-kubectl label nodes ${ip} ${key}=${value}
+  kubectl label nodes ${ip} ${key}=${value}
+
 - 删除node的标签
-kubectl label nodes ${ip} ${key}- 
+  kubectl label nodes ${ip} ${key}-
+
 - 更新标签
-kubectl label nodes ${ip} ${key}=${value} --overwrite
+  kubectl label nodes ${ip} ${key}=${value} --overwrite
 
 - 查看标签
-kubectl get nodes --show-labels
+  kubectl get nodes --show-labels
+
 2. 如果pod想要选择在含有这个标签的node节点上运行，则需要在此pod的yaml添加如下配置
 
 ```yaml
@@ -42,7 +47,9 @@ spec:
       nodeSelector:
         project: "project"
 ```
+
 3. nodeName
+
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -56,19 +63,22 @@ spec:
 ```
 
 ### 污点
+
 1. 污点
+
 - effect策略：
   NoSchedule:K8Snode添加这个effecf类型污点，新的不能容忍的pod不能再调度过来，但是老的运行在node上不受影响
   NoExecute：K8Snode添加这个effecf类型污点，新的不能容忍的pod不能调度过来，老的pod也会被驱逐
   PreferNoSchedule：pod会尝试将pod分配到该节点
 - 添加污点
-kubectl taint nodes $ip $key=$value:$effect
+  kubectl taint nodes $ip $key=$value:$effect
 - 删除污点
-kubectl taint nodes $ip $key:$effect-
+  kubectl taint nodes $ip $key:$effect-
 - 获取节点的污点信息
-kubectl describe node ${ip} | grep Taints
+  kubectl describe node ${ip} | grep Taints
 
 2. 如果pod想要忽视node节点上的这个污点，则需要在此pod的yaml添加如下配置
+
 ```yaml
   tolerations:
   - key: "dam-taint" 
@@ -79,7 +89,9 @@ kubectl describe node ${ip} | grep Taints
 # operator为Equal时 表示 key=value:effect 和 node节点上的taint完全一样则可以容忍这个污点。 
 # operator为Exists时 不能指定value的值否则会报错。如果key为空则这个 toleration 能容忍任意 taint；如果effect 为空，则 key 值与之相同的相匹配 taint 的 effect 可以是任意值。
 ```
+
 3. 具体例子
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
