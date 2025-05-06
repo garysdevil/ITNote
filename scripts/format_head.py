@@ -1,3 +1,5 @@
+# pip install colorama
+
 import os
 import subprocess
 import re
