@@ -70,6 +70,16 @@ netstat -ano | find "LISTENING"
 # 更改名字
 net user 用户名 /fullname:显示名称
 wmic useraccount where name=当前用户名 rename 新用户名
+
+
+# 端口转发
+netsh interface portproxy add v4tov4 listenport=原端口 listenaddress=原IP connectport=目的端口 connectaddress=目的IP
+# 查看存在的转发规则
+netsh interface portproxy show all
+# 删除指定规则
+netsh interface portproxy delete v4tov4 listenport=目的端口 listenaddress=目的IP
+# 使用netstat确保原端口当前处于被侦听状态：
+netstat -ano | findstr :原端口
 ```
 
 ### PowerShell
