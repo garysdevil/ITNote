@@ -60,8 +60,11 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.
 # add-apt-repository "deb [arch=amd64] https://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
 
 # 安装docker引擎
-apt-get update
-apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+apt-get update -y
+# 安装时禁止任何弹窗
+DEBIAN_FRONTEND=noninteractive UCF_FORCE_CONFFOLD=1 apt-get install -y \
+-o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" \
+docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 # 启动docker服务
 systemctl enable docker
