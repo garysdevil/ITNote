@@ -70,3 +70,6 @@ ruff check .          # Lint 检查
 ruff check --fix      # Lint 检查，并且进行自动修复
 ruff format .         # 格式化代码
 ```
+
+### Python语言服务器
+- Pylance
