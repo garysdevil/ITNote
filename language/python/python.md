@@ -72,4 +72,5 @@ ruff format .         # 格式化代码
 ```
 
 ### Python语言服务器
+
 - Pylance
