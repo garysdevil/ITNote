@@ -25,7 +25,7 @@ created_date: 2025-04-17
 - 其它工具
   1. DrissionPage 简化版的Selenium
 
-  4. Katalon Studio 基于Selenium和Appium的开源工具，支持无代码录制（通过“间谍对象”记录操作步骤生成脚本）
+  2. Katalon Studio 基于Selenium和Appium的开源工具，支持无代码录制（通过“间谍对象”记录操作步骤生成脚本）
 
 ## 无头浏览器
 
