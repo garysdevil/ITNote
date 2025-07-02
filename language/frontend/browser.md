@@ -76,6 +76,7 @@ created_date: 2025-04-17
 
   1. https://fingerprintjs.github.io/fingerprintjs/ 对应源码 https://github.com/fingerprintjs/fingerprintjs
   2. https://browserleaks.com/
+  3. https://webcha.cn/
 
 ## LavaMoat
 
