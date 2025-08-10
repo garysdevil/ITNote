@@ -84,6 +84,7 @@ PROXYCHAINS_SOCKS5_HOST=127.0.0.1 PROXYCHAINS_SOCKS5_PORT=4321 proxychains zsh
 2. Clah(Windows/Linux) https://github.com/Dreamacro/clash 原开发者下架了
 3. ClashX(Mac) https://github.com/yichengchen/clashX 原开发者下架了
 4. ClashVerg(Windows/Mac) https://github.com/clash-verge-rev/clash-verge-rev
+5. v2rayNG(Android) https://github.com/2dust/v2rayNG
 
 ### 其它
 
