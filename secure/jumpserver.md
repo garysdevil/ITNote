@@ -157,3 +157,13 @@ cd apps/
 # 修改admin密码
 python manage.py changepassword admin
 ```
+
+### 登入放松
+```bash
+ssh jumpserverUsername@systemUsername@AssetIP@jumpserverHostIP -p2222
+# 解释：
+# jumpserverUsername：登录 JumpServer 的用户
+# systemUsername：连接资产指定的系统用户
+# AssetIP：指定要连接的资产IP
+# jumpserverHostIP：JumpServer 服务 IP
+```
