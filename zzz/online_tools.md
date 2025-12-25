@@ -47,3 +47,6 @@ created_date: 2025-05-05
    5. https://zh.z-lib.gd/
 
 3. 在线图书馆 https://liber3.eth.limo/
+
+## 组织
+1. 寻找DC服务频道 https://discordhunt.com/zh
