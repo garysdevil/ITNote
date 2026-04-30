@@ -41,12 +41,11 @@ created_date: 2025-05-05
 2. Z-Library 世界上最大的在线图书馆之一，官网：
 
    1. https://zh.z-library.se/
-   2. https://z-lib.gs
-   3. https://zh.z-lib.gs/
-   4. https://1lib.sk
-   5. https://zh.z-lib.gd/
+   2. https://1lib.sk
+   3. https://zh.z-lib.gd/
 
 3. 在线图书馆 https://liber3.eth.limo/
+4. 图书 https://github.com/jbiaojerry/ebook-treasure-chest
 
 ## 组织
 1. 寻找DC服务频道 https://discordhunt.com/zh
